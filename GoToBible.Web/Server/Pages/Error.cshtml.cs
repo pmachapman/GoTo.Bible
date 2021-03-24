@@ -41,7 +41,7 @@ namespace GoToBible.Web.Server.Pages
         /// <value>
         /// The request identifier.
         /// </value>
-        public string RequestId { get; set; }
+        public string RequestId { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets a value indicating whether we are to show the request identifier.

@@ -36,11 +36,11 @@ else
 }
 
 @code {
-    private Translation[] translations;
+    private Translation[] translations = Array.Empty<Translation>();
 
     protected override async Task OnInitializedAsync()
     {
-        this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations");
+        this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations") ?? Array.Empty<Translation>();
     }
 
 }
