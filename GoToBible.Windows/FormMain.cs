@@ -15,7 +15,6 @@ namespace GoToBible.Windows
     using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Windows.Forms;
@@ -1199,30 +1198,6 @@ namespace GoToBible.Windows
 
             // Debug the passage renderer
             await this.ShowPassage(true, true);
-        }
-
-        /// <summary>
-        /// Handles the Click event of the Digital Bible Platform ToolStripMenuItem.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private async void ToolStripMenuItemDigitalBiblePlatform_Click(object sender, EventArgs e)
-        {
-            // Show the Digital Bible Platform API Key Dialog
-            string key = Properties.Settings.Default.DigitalBiblePlatformApiKey;
-            using FormApiKey formApiKey = new FormApiKey(key, "Digital Bible Platform API", new Uri("https://www.digitalbibleplatform.com/", UriKind.Absolute), Properties.Resources.DigitalBiblePlatformIcon);
-            formApiKey.ShowDialog(this);
-
-            // Only load the provider if the key has changed
-            if (key != formApiKey.Key)
-            {
-                // Save the key
-                Properties.Settings.Default.DigitalBiblePlatformApiKey = formApiKey.Key;
-                Properties.Settings.Default.Save();
-
-                // Reload the providers and translations
-                await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
-            }
         }
 
         /// <summary>

@@ -59,9 +59,6 @@
     <Setting Name="SqlConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DigitalBiblePlatformApiKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="NltApiKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>

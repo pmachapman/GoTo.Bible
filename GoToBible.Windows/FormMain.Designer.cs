@@ -34,7 +34,6 @@
             this.ToolStripMenuItemEnterApiKeys = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemBibleApi = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemBiblia = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemDigitalBiblePlatform = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemEsv = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemNlt = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemSql = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,7 +90,7 @@
             // ToolStripContainerMain.ContentPanel
             // 
             this.ToolStripContainerMain.ContentPanel.Controls.Add(this.SplitContainerMain);
-            this.ToolStripContainerMain.ContentPanel.Size = new System.Drawing.Size(1014, 392);
+            this.ToolStripContainerMain.ContentPanel.Size = new System.Drawing.Size(1014, 367);
             this.ToolStripContainerMain.Location = new System.Drawing.Point(-1, 0);
             this.ToolStripContainerMain.Name = "ToolStripContainerMain";
             this.ToolStripContainerMain.Size = new System.Drawing.Size(1014, 467);
@@ -103,8 +102,8 @@
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripSettings);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripNavigate);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripTranslation);
-            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripResource);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripPassage);
+            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripResource);
             // 
             // SplitContainerMain
             // 
@@ -120,7 +119,7 @@
             // 
             this.SplitContainerMain.Panel2.Controls.Add(this.WebViewResource);
             this.SplitContainerMain.Panel2Collapsed = true;
-            this.SplitContainerMain.Size = new System.Drawing.Size(1014, 392);
+            this.SplitContainerMain.Size = new System.Drawing.Size(1014, 367);
             this.SplitContainerMain.SplitterDistance = 615;
             this.SplitContainerMain.SplitterWidth = 6;
             this.SplitContainerMain.TabIndex = 0;
@@ -132,7 +131,7 @@
             this.WebViewMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.WebViewMain.Location = new System.Drawing.Point(0, 0);
             this.WebViewMain.Name = "WebViewMain";
-            this.WebViewMain.Size = new System.Drawing.Size(1014, 392);
+            this.WebViewMain.Size = new System.Drawing.Size(1014, 367);
             this.WebViewMain.TabIndex = 1;
             this.WebViewMain.ZoomFactor = 1D;
             // 
@@ -254,7 +253,6 @@
             this.ToolStripMenuItemEnterApiKeys.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemBibleApi,
             this.ToolStripMenuItemBiblia,
-            this.ToolStripMenuItemDigitalBiblePlatform,
             this.ToolStripMenuItemEsv,
             this.ToolStripMenuItemNlt,
             this.ToolStripMenuItemSql});
@@ -268,7 +266,7 @@
             // 
             this.ToolStripMenuItemBibleApi.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemBibleApi.Image")));
             this.ToolStripMenuItemBibleApi.Name = "ToolStripMenuItemBibleApi";
-            this.ToolStripMenuItemBibleApi.Size = new System.Drawing.Size(186, 22);
+            this.ToolStripMenuItemBibleApi.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemBibleApi.Text = "&API.Bible";
             this.ToolStripMenuItemBibleApi.ToolTipText = "Enter your key for API.Bible";
             this.ToolStripMenuItemBibleApi.Click += new System.EventHandler(this.ToolStripMenuItemBibleApi_Click);
@@ -277,25 +275,16 @@
             // 
             this.ToolStripMenuItemBiblia.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemBiblia.Image")));
             this.ToolStripMenuItemBiblia.Name = "ToolStripMenuItemBiblia";
-            this.ToolStripMenuItemBiblia.Size = new System.Drawing.Size(186, 22);
+            this.ToolStripMenuItemBiblia.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemBiblia.Text = "&Biblia";
             this.ToolStripMenuItemBiblia.ToolTipText = "Enter your key for the Biblia API";
             this.ToolStripMenuItemBiblia.Click += new System.EventHandler(this.ToolStripMenuItemBiblia_Click);
-            // 
-            // ToolStripMenuItemDigitalBiblePlatform
-            // 
-            this.ToolStripMenuItemDigitalBiblePlatform.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemDigitalBiblePlatform.Image")));
-            this.ToolStripMenuItemDigitalBiblePlatform.Name = "ToolStripMenuItemDigitalBiblePlatform";
-            this.ToolStripMenuItemDigitalBiblePlatform.Size = new System.Drawing.Size(186, 22);
-            this.ToolStripMenuItemDigitalBiblePlatform.Text = "&Digital Bible Platform";
-            this.ToolStripMenuItemDigitalBiblePlatform.ToolTipText = "Enter your key for the Digital Bible Platform";
-            this.ToolStripMenuItemDigitalBiblePlatform.Click += new System.EventHandler(this.ToolStripMenuItemDigitalBiblePlatform_Click);
             // 
             // ToolStripMenuItemEsv
             // 
             this.ToolStripMenuItemEsv.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemEsv.Image")));
             this.ToolStripMenuItemEsv.Name = "ToolStripMenuItemEsv";
-            this.ToolStripMenuItemEsv.Size = new System.Drawing.Size(186, 22);
+            this.ToolStripMenuItemEsv.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemEsv.Text = "&ESV";
             this.ToolStripMenuItemEsv.ToolTipText = "Enter your key for the ESV API";
             this.ToolStripMenuItemEsv.Click += new System.EventHandler(this.ToolStripMenuItemEsv_Click);
@@ -304,7 +293,7 @@
             // 
             this.ToolStripMenuItemNlt.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemNlt.Image")));
             this.ToolStripMenuItemNlt.Name = "ToolStripMenuItemNlt";
-            this.ToolStripMenuItemNlt.Size = new System.Drawing.Size(186, 22);
+            this.ToolStripMenuItemNlt.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemNlt.Text = "&NLT";
             this.ToolStripMenuItemNlt.ToolTipText = "Enter your key for the NLT API";
             this.ToolStripMenuItemNlt.Click += new System.EventHandler(this.ToolStripMenuItemNlt_Click);
@@ -313,7 +302,7 @@
             // 
             this.ToolStripMenuItemSql.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemSql.Image")));
             this.ToolStripMenuItemSql.Name = "ToolStripMenuItemSql";
-            this.ToolStripMenuItemSql.Size = new System.Drawing.Size(186, 22);
+            this.ToolStripMenuItemSql.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemSql.Text = "&SQL Server";
             this.ToolStripMenuItemSql.ToolTipText = "Enter your SQL Server connection string to enable persistent caching";
             this.ToolStripMenuItemSql.Click += new System.EventHandler(this.ToolStripMenuItemSql_Click);
@@ -474,7 +463,7 @@
             this.ToolStripResource.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripLabelResource,
             this.ToolStripComboBoxResource});
-            this.ToolStripResource.Location = new System.Drawing.Point(189, 50);
+            this.ToolStripResource.Location = new System.Drawing.Point(3, 75);
             this.ToolStripResource.Name = "ToolStripResource";
             this.ToolStripResource.Size = new System.Drawing.Size(244, 25);
             this.ToolStripResource.TabIndex = 4;
@@ -512,6 +501,7 @@
             // 
             // ToolStripTextBoxPassage
             // 
+            this.ToolStripTextBoxPassage.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.ToolStripTextBoxPassage.Name = "ToolStripTextBoxPassage";
             this.ToolStripTextBoxPassage.Size = new System.Drawing.Size(100, 25);
             this.ToolStripTextBoxPassage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ToolStripTextBoxPassage_KeyDown);
@@ -617,7 +607,6 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemBiblia;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemConfigure;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSql;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemDigitalBiblePlatform;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemNlt;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemTranslations;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemProviders;

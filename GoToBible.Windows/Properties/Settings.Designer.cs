@@ -253,18 +253,6 @@ namespace GoToBible.Windows.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DigitalBiblePlatformApiKey {
-            get {
-                return ((string)(this["DigitalBiblePlatformApiKey"]));
-            }
-            set {
-                this["DigitalBiblePlatformApiKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string NltApiKey {
             get {
                 return ((string)(this["NltApiKey"]));
