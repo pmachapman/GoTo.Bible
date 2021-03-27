@@ -175,45 +175,48 @@ namespace GoToBible.Providers
         public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            yield return new Translation
+            if (!string.IsNullOrWhiteSpace(this.options.ApiKey))
             {
-                Code = "NLT",
-                Copyright = NltCopyright,
-                Language = "English",
-                Name = "New Living Translation", // (American English)
-                Provider = this.Id,
-                Year = 2015,
-            };
+                yield return new Translation
+                {
+                    Code = "NLT",
+                    Copyright = NltCopyright,
+                    Language = "English",
+                    Name = "New Living Translation", // (American English)
+                    Provider = this.Id,
+                    Year = 2015,
+                };
 
-            // The next two translations do not have the verse_export tags
-            /*
-            yield return new Translation
-            {
-                Code = "NLTUK",
-                Copyright = NltCopyright,
-                Language = "English",
-                Name = "New Living Translation (British English)",
-                Provider = this.Id,
-                Year = 2015,
-            };
-            yield return new Translation
-            {
-                Code = "KJV",
-                Copyright = "Public Domain",
-                Language = "English",
-                Name = "King James Version",
-                Provider = this.Id,
-                Year = 1769,
-            };*/
-            yield return new Translation
-            {
-                Code = "NTV",
-                Copyright = NtvCopyright,
-                Language = "Spanish",
-                Name = "Nueva Traducción Viviente",
-                Provider = this.Id,
-                Year = 2010,
-            };
+                // The next two translations do not have the verse_export tags
+                /*
+                yield return new Translation
+                {
+                    Code = "NLTUK",
+                    Copyright = NltCopyright,
+                    Language = "English",
+                    Name = "New Living Translation (British English)",
+                    Provider = this.Id,
+                    Year = 2015,
+                };
+                yield return new Translation
+                {
+                    Code = "KJV",
+                    Copyright = "Public Domain",
+                    Language = "English",
+                    Name = "King James Version",
+                    Provider = this.Id,
+                    Year = 1769,
+                };*/
+                yield return new Translation
+                {
+                    Code = "NTV",
+                    Copyright = NtvCopyright,
+                    Language = "Spanish",
+                    Name = "Nueva Traducción Viviente",
+                    Provider = this.Id,
+                    Year = 2010,
+                };
+            }
         }
     }
 }

@@ -130,6 +130,11 @@ namespace GoToBible.Providers
         };
 
         /// <summary>
+        /// The options.
+        /// </summary>
+        private readonly EsvBibleOptions options;
+
+        /// <summary>
         /// Initialises a new instance of the <see cref="EsvBible" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
@@ -138,9 +143,10 @@ namespace GoToBible.Providers
             : base(cache)
         {
             this.HttpClient.BaseAddress = new Uri("https://api.esv.org/v3/passage/text/", UriKind.Absolute);
-            if (!string.IsNullOrWhiteSpace(options.Value.ApiKey))
+            this.options = options.Value;
+            if (!string.IsNullOrWhiteSpace(this.options.ApiKey))
             {
-                string apiKey = options.Value.ApiKey;
+                string apiKey = this.options.ApiKey;
                 if (!apiKey.StartsWith("Token", StringComparison.OrdinalIgnoreCase))
                 {
                     apiKey = "Token " + apiKey;
@@ -267,7 +273,10 @@ namespace GoToBible.Providers
         public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            yield return Translation;
+            if (!string.IsNullOrWhiteSpace(this.options.ApiKey))
+            {
+                yield return Translation;
+            }
         }
 
         /// <summary>

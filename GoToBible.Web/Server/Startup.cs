@@ -8,11 +8,15 @@ namespace GoToBible.Web.Server
 {
     using GoToBible.Model;
     using GoToBible.Providers;
+    using GoToBible.Web.Server.Models;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Caching.Distributed;
+    using Microsoft.Extensions.Caching.SqlServer;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Pomelo.Extensions.Caching.MySql;
 
     /// <summary>
     /// Start up configuration.
@@ -51,9 +55,37 @@ namespace GoToBible.Web.Server
             services.AddRazorPages();
 
             // Add supported translation providers
+            services.AddSingleton<IProvider, BibleApi>();
+            services.AddSingleton<IProvider, BibliaApi>();
+            services.AddSingleton<IProvider, EsvBible>();
             services.AddSingleton<IProvider, Laodiceans>();
             services.AddSingleton<IProvider, NetBible>();
+            services.AddSingleton<IProvider, NltBible>();
             services.AddSingleton<IProvider, SblGnt>();
+
+            // Add options for providers that require them
+            services.Configure<BibleApiOptions>(this.Configuration.GetSection("Providers:BibleApi"));
+            services.Configure<BibliaApiOptions>(this.Configuration.GetSection("Providers:BibliaApi"));
+            services.Configure<EsvBibleOptions>(this.Configuration.GetSection("Providers:EsvBible"));
+            services.Configure<NltBibleOptions>(this.Configuration.GetSection("Providers:NltBible"));
+
+            // Load the caching provider
+            CacheSettings cacheConfig = this.Configuration.GetSection("Providers:Cache").Get<CacheSettings>();
+            switch (cacheConfig.DatabaseProvider.ToUpperInvariant())
+            {
+                case "MSSQL":
+                    services.Configure<SqlServerCacheOptions>(this.Configuration.GetSection("Providers:Cache"));
+                    services.AddSingleton<IDistributedCache, SqlServerCache>();
+                    break;
+                case "MYSQL":
+                    services.Configure<MySqlCacheOptions>(this.Configuration.GetSection("Providers:Cache"));
+                    services.AddSingleton<IDistributedCache, MySqlCache>();
+                    break;
+                case "MEMORY":
+                default:
+                    services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
+                    break;
+            }
         }
 
         /// <summary>
