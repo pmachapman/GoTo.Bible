@@ -73,7 +73,7 @@ namespace GoToBible.Providers
             // Only allow one book at this stage
             if (book.ToLowerInvariant() == "laodiceans" && chapterNumber == 1)
             {
-                if (translation == "ANG")
+                if (translation == "LAO-ANG")
                 {
                     chapter.Text = @"
 1  Poul, apostle, not of men, ne by man, but bi Jhesu Crist, to the britheren that ben at Laodice,
@@ -97,7 +97,7 @@ namespace GoToBible.Providers
 20  And do &#541;e that pistil of Colocensis to be red to you.
 ";
                 }
-                else if (translation == "ENG")
+                else if (translation == "LAO-ENG")
                 {
                     chapter.Text = @"
 1  Paul, an apostle not from men nor through man, but through Jesus Christ, to the brethren who are of Laodicea. 
@@ -121,7 +121,7 @@ namespace GoToBible.Providers
 20  And cause [this letter] to be read to the Colossians and that of the Colossians to you. 
 ";
                 }
-                else if (translation == "GRK")
+                else if (translation == "LAO-GRK")
                 {
                     chapter.Text = @"
 1  ΠΑΥΛΟς ἀπόστολος οὐκ ἀπ̓ ἀνθρώπων οὐδὲ δἰ ἀνθρώπου ἀλλὰ διὰ Ἰησοῦ Χριστοῦ, τοῖς ἀδελφοῖς τοῖς οὖσιν ἐν Λαοδικείᾳ. 
@@ -145,7 +145,7 @@ namespace GoToBible.Providers
 20  καὶ ποιήσατε ἵνα τοῖς Κολασσαεῦσιν ἀναγνωσθῇ, καὶ ἡ τῶν Κολασσαέων ἵνα καὶ ὑμῖν. 
 ";
                 }
-                else if (translation == "LAT")
+                else if (translation == "LAO-LAT")
                 {
                     chapter.Text = @"
 1  Paulus Apostolus non ab hominibus neque per hominem sed per Ihesum Christum, fratribus qui sunt Laodiciae. 
@@ -183,7 +183,7 @@ namespace GoToBible.Providers
             {
                 Author = "John Wycliffe",
                 CanBeExported = true,
-                Code = "ANG",
+                Code = "LAO-ANG",
                 Copyright = "Public Domain",
                 Language = "Old English",
                 Name = "Epistle to the Laodiceans (Old English)",
@@ -194,7 +194,7 @@ namespace GoToBible.Providers
             {
                 Author = "Peter Chapman",
                 CanBeExported = true,
-                Code = "ENG",
+                Code = "LAO-ENG",
                 Copyright = "Public Domain",
                 Language = "English",
                 Name = "Epistle to the Laodiceans (English)",
@@ -205,7 +205,7 @@ namespace GoToBible.Providers
             {
                 Author = "Joseph Barber Lightfoot",
                 CanBeExported = true,
-                Code = "GRK",
+                Code = "LAO-GRK",
                 Copyright = "Public Domain",
                 Language = "Greek",
                 Name = "Epistle to the Laodiceans (Greek)",
@@ -216,7 +216,7 @@ namespace GoToBible.Providers
             {
                 Author = "Pseudepigraphical",
                 CanBeExported = true,
-                Code = "LAT",
+                Code = "LAO-LAT",
                 Copyright = "Public Domain",
                 Language = "Latin",
                 Name = "Epistle to the Laodiceans (Latin)",

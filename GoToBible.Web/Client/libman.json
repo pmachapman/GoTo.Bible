@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "twitter-bootstrap@4.6.0",
+      "destination": "wwwroot/",
+      "files": [
+        "css/bootstrap.min.css.map",
+        "css/bootstrap.min.css",
+        "js/bootstrap.bundle.min.js",
+        "js/bootstrap.bundle.min.js.map"
+      ]
+    },
+    {
+      "library": "open-iconic@1.1.1",
+      "destination": "wwwroot/css/open-iconic",
+      "files": [
+        "font/css/open-iconic-bootstrap.min.css",
+        "font/fonts/open-iconic.eot",
+        "font/fonts/open-iconic.otf",
+        "font/fonts/open-iconic.svg",
+        "font/fonts/open-iconic.ttf",
+        "font/fonts/open-iconic.woff"
+      ]
+    }
+  ,
+{
+  "library": "jquery@3.6.0",
+  "destination": "wwwroot/js/",
+  "files": [
+    "jquery.min.js",
+    "jquery.min.map",
+    "jquery.js"
+  ]
+}
+]
+}

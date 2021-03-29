@@ -1,7 +1,77 @@
 ﻿@page "/"
+@inject HttpClient Http
+    <div class="top-row">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassage">
+                    <DataAnnotationsValidator />
+                    <div class="input-group mt-2 mt-lg-0 mr-lg-2">
+                        <InputText class="form-control" placeholder="Passage" aria-label="Passage" aria-describedby="button-go" @bind-Value="renderingParametersModel.Passage" />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-go"><span class="oi oi-media-play"></span></button>
+                        </div>
+                    </div>
+                    <div class="input-group mt-2 mt-lg-0 mr-lg-2">
+                        @if (translations.Any())
+                        {
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="primary-translation">Primary</label>
+                            </div>
+                        }
+                        <InputSelect class="custom-select" id="primary-translation" @bind-Value="renderingParametersModel.PrimaryTranslation">
+                            @if (!translations.Any())
+                            {
+                                <option value="" selected>Loading...</option>
+                            }
+                            else
+                            {
+                                string lastLanguage = string.Empty;
+                                foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language).ThenBy(t => t.Name))
+                                {
+                                    if (translation.Language != lastLanguage)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(lastLanguage))
+                                        {
+                                            @((MarkupString)"</optgroup>")
+                                        }
+                                        lastLanguage = translation.Language ?? "Other";
+                                        @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
+                                    }
 
-<h1>Hello, world!</h1>
+                                    <option value="@translation.Code">@translation.Name</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                </EditForm>
+                <ul class="navbar-nav ml-lg-auto">
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
+                            <span class="oi oi-code" aria-hidden="true"></span> Contribute
+                        </NavLink>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
 
-Welcome to your new app.
+    <div class="content px-4">
+        <h1>Hello, world!</h1>
+        Welcome to your new app.
+    </div>
+@code {
+    private RenderingParametersModel renderingParametersModel = new RenderingParametersModel();
+    private Translation[] translations = Array.Empty<Translation>();
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override async Task OnInitializedAsync()
+    {
+        this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations") ?? Array.Empty<Translation>();
+    }
+
+    private void ShowPassage()
+    {
+    }
+}
