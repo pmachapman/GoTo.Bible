@@ -621,7 +621,7 @@ namespace GoToBible.Windows
                     body = LoadingCodeBody;
                 }
 
-                webView.NavigateToString($"<!DOCTYPE html>\n<html><head><style type=\"text/css\">{Renderer.RenderCss(this.parameters)}{LoadingCodeCss}</style></head><body>{body}</body></html>");
+                webView.NavigateToString($"<!DOCTYPE html>\n<html><head><style type=\"text/css\">{this.parameters.RenderCss()}{LoadingCodeCss}</style></head><body>{body}</body></html>");
             }
             catch (InvalidOperationException)
             {

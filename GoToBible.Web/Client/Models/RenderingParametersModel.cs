@@ -30,5 +30,13 @@ namespace GoToBible.Web.Client.Models
         /// </value>
         [Required]
         public string PrimaryTranslation { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the secondary translation.
+        /// </summary>
+        /// <value>
+        /// The secondary translation.
+        /// </value>
+        public string? SecondaryTranslation { get; set; }
     }
 }

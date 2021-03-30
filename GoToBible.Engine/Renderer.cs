@@ -8,7 +8,6 @@ namespace GoToBible.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -32,6 +31,23 @@ namespace GoToBible.Engine
         private bool disposedValue;
 
         /// <summary>
+        /// Initialises a new instance of the <see cref="Renderer"/> class.
+        /// </summary>
+        public Renderer()
+        {
+            this.Providers = new List<IProvider>();
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="Renderer" /> class.
+        /// </summary>
+        /// <param name="providers">The providers.</param>
+        public Renderer(IEnumerable<IProvider> providers)
+        {
+            this.Providers = providers.ToList();
+        }
+
+        /// <summary>
         /// Finalises an instance of the <see cref="Renderer"/> class.
         /// </summary>
         ~Renderer()
@@ -46,68 +62,7 @@ namespace GoToBible.Engine
         /// <value>
         /// The providers.
         /// </value>
-        public List<IProvider> Providers { get; } = new List<IProvider>();
-
-        /// <summary>
-        /// Renders the CSS.
-        /// </summary>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>
-        /// The CSS code.
-        /// </returns>
-        public static string RenderCss(RenderingParameters parameters)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("body{");
-            sb.Append($"background-color:{ColorTranslator.ToHtml(parameters.BackgroundColour)};");
-            sb.Append($"color:{ColorTranslator.ToHtml(parameters.ForegroundColour)};");
-            if (parameters.Font.Bold)
-            {
-                sb.Append("font-weight:bold;");
-            }
-            else
-            {
-                sb.Append("font-weight:normal;");
-            }
-
-            if (parameters.Font.Italic)
-            {
-                sb.Append("font-style:italic;");
-            }
-            else
-            {
-                sb.Append("font-style:normal;");
-            }
-
-            if (parameters.Font.Strikeout && parameters.Font.Underline)
-            {
-                sb.Append("text-decoration:underline line-through;");
-            }
-            else if (parameters.Font.Strikeout)
-            {
-                sb.Append("text-decoration:line-through;");
-            }
-            else if (parameters.Font.Underline)
-            {
-                sb.Append("text-decoration:underline;");
-            }
-            else
-            {
-                sb.Append("text-decoration:none;");
-            }
-
-            sb.Append($"font-size:{parameters.Font.SizeInPoints}pt;");
-            sb.Append($"font-family:{parameters.Font.FamilyName}}}");
-            if (parameters.Font.Italic)
-            {
-                sb.Append("em{font-style:normal}");
-            }
-
-            sb.Append($"sup{{font-size:{parameters.Font.SizeInPoints * 0.75f}pt;font-weight:bold}}.sup{{font-weight:bold}}");
-            sb.Append($".copyright{{border-top:1px solid {ColorTranslator.ToHtml(parameters.ForegroundColour)};font-size:{Math.Round(parameters.Font.SizeInPoints * 0.75, 2)}pt}}");
-            sb.Append(".supsub{display:inline-flex;flex-direction:column;justify-content:space-between;vertical-align:middle;font-size:50%}");
-            return sb.ToString();
-        }
+        public List<IProvider> Providers { get; }
 
         /// <inheritdoc/>
         public void Dispose()
@@ -150,48 +105,22 @@ namespace GoToBible.Engine
             Chapter firstChapter = await firstProvider.GetChapterAsync(parameters.PrimaryTranslation, book, chapter);
 
             // Setup the previous chapter reference
-            if (firstChapter.PreviousChapterReference != null)
+            if (firstChapter.PreviousChapterReference.IsValid)
             {
-                if (firstChapter.PreviousChapterReference.IsValid)
-                {
-                    renderedPassage.PreviousPassage = new PassageReference(firstChapter.PreviousChapterReference.ToString());
-                }
-                else
-                {
-                    renderedPassage.PreviousPassage = new PassageReference();
-                }
-            }
-            else if (parameters.PassageReference.IsValid)
-            {
-                // For backwards compatibility with providers that cannot supply the next chapter
-                renderedPassage.PreviousPassage = parameters.PassageReference.PreviousChapter;
+                renderedPassage.PreviousPassage = new PassageReference(firstChapter.PreviousChapterReference.ToString());
             }
             else
             {
-                // Do not allow previous passage navigation
                 renderedPassage.PreviousPassage = new PassageReference();
             }
 
             // Setup the next chapter reference
-            if (firstChapter.NextChapterReference != null)
+            if (firstChapter.NextChapterReference.IsValid)
             {
-                if (firstChapter.NextChapterReference.IsValid)
-                {
-                    renderedPassage.NextPassage = new PassageReference(firstChapter.NextChapterReference.ToString());
-                }
-                else
-                {
-                    renderedPassage.NextPassage = new PassageReference();
-                }
-            }
-            else if (parameters.PassageReference.IsValid)
-            {
-                // For backwards compatibility with providers that cannot supply the next chapter
-                renderedPassage.NextPassage = parameters.PassageReference.NextChapter;
+                renderedPassage.NextPassage = new PassageReference(firstChapter.NextChapterReference.ToString());
             }
             else
             {
-                // Do not allow next passage navigation
                 renderedPassage.NextPassage = new PassageReference();
             }
 
@@ -252,7 +181,7 @@ namespace GoToBible.Engine
                     sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
                     sb.AppendLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
                     sb.Append("<style>");
-                    sb.Append(RenderCss(parameters));
+                    sb.Append(parameters.RenderCss());
                     sb.AppendLine("</style></head><body>");
                 }
 
@@ -269,13 +198,13 @@ namespace GoToBible.Engine
                     Chapter secondChapter = await secondProvider.GetChapterAsync(parameters.SecondaryTranslation, book, chapter);
 
                     // If the next chapter reference is invalid, see if this chapter has a valid reference
-                    if (!renderedPassage.NextPassage.IsValid && (secondChapter.NextChapterReference?.IsValid ?? false))
+                    if (!renderedPassage.NextPassage.IsValid && secondChapter.NextChapterReference.IsValid)
                     {
                         renderedPassage.NextPassage = new PassageReference(secondChapter.NextChapterReference.ToString());
                     }
 
                     // If the previous chapter reference is invalid, see if this chapter has a valid reference
-                    if (!renderedPassage.PreviousPassage.IsValid && (secondChapter.PreviousChapterReference?.IsValid ?? false))
+                    if (!renderedPassage.PreviousPassage.IsValid && secondChapter.PreviousChapterReference.IsValid)
                     {
                         renderedPassage.PreviousPassage = new PassageReference(secondChapter.PreviousChapterReference.ToString());
                     }
@@ -361,7 +290,7 @@ namespace GoToBible.Engine
                         }
                         else
                         {
-                            sb.Append(this.RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false));
+                            sb.Append(this.RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false).Content);
                         }
                     }
 
@@ -371,7 +300,7 @@ namespace GoToBible.Engine
                         sb.AppendLine("</head><body>");
                         for (int i = lines1.Count; i < lines2.Count; i++)
                         {
-                            sb.Append(this.RenderInterlinearLinesAsHtml(string.Empty, lines2[i], parameters, false));
+                            sb.Append(this.RenderInterlinearLinesAsHtml(string.Empty, lines2[i], parameters, false).Content);
                         }
                     }
 
@@ -883,9 +812,6 @@ namespace GoToBible.Engine
             }
             else if (!string.IsNullOrWhiteSpace(line1))
             {
-                // Clean up
-                line1 = line1.Trim();
-
                 // Extract the verse number
                 if (line1.Contains(' '))
                 {
@@ -908,9 +834,6 @@ namespace GoToBible.Engine
             }
             else if (!string.IsNullOrWhiteSpace(line2))
             {
-                // Clean up
-                line2 = line2.Trim();
-
                 // Extract the verse number
                 if (line2.Contains(' '))
                 {

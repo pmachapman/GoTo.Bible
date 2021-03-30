@@ -1,68 +1,103 @@
 ﻿@page "/"
 @inject HttpClient Http
-    <div class="top-row">
-        <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassage">
-                    <DataAnnotationsValidator />
-                    <div class="input-group mt-2 mt-lg-0 mr-lg-2">
-                        <InputText class="form-control" placeholder="Passage" aria-label="Passage" aria-describedby="button-go" @bind-Value="renderingParametersModel.Passage" />
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit" id="button-go"><span class="oi oi-media-play"></span></button>
+<style type="text/css">@parameters.RenderCss()</style>
+<div class="top-row">
+    <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassage">
+                <DataAnnotationsValidator />
+                <div class="input-group mt-2 mt-lg-0 mr-lg-2">
+                    <InputText class="form-control" placeholder="Passage" aria-label="Passage" aria-describedby="button-go" @bind-Value="renderingParametersModel.Passage" />
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" id="button-go"><span class="oi oi-media-play"></span></button>
+                    </div>
+                </div>
+                <div class="input-group mt-2 mt-lg-0 mr-lg-2">
+                    @if (translations.Any())
+                    {
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="primary-translation">Primary</label>
                         </div>
-                    </div>
-                    <div class="input-group mt-2 mt-lg-0 mr-lg-2">
-                        @if (translations.Any())
+                    }
+                    <InputSelect class="custom-select" id="primary-translation" @bind-Value="renderingParametersModel.PrimaryTranslation">
+                        @if (!translations.Any())
                         {
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="primary-translation">Primary</label>
-                            </div>
+                            <option value="" selected>Loading...</option>
                         }
-                        <InputSelect class="custom-select" id="primary-translation" @bind-Value="renderingParametersModel.PrimaryTranslation">
-                            @if (!translations.Any())
+                        else
+                        {
+                            string lastLanguage = string.Empty;
+                            foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language).ThenBy(t => t.Name))
                             {
-                                <option value="" selected>Loading...</option>
-                            }
-                            else
-                            {
-                                string lastLanguage = string.Empty;
-                                foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language).ThenBy(t => t.Name))
+                                if (translation.Language != lastLanguage)
                                 {
-                                    if (translation.Language != lastLanguage)
+                                    if (!string.IsNullOrWhiteSpace(lastLanguage))
                                     {
-                                        if (!string.IsNullOrWhiteSpace(lastLanguage))
-                                        {
-                                            @((MarkupString)"</optgroup>")
-                                        }
-                                        lastLanguage = translation.Language ?? "Other";
-                                        @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
+                                        @((MarkupString)"</optgroup>")
                                     }
-
-                                    <option value="@translation.Code">@translation.Name</option>
+                                    lastLanguage = translation.Language ?? "Other";
+                                    @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
                                 }
-                            }
-                        </InputSelect>
-                    </div>
-                </EditForm>
-                <ul class="navbar-nav ml-lg-auto">
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
-                            <span class="oi oi-code" aria-hidden="true"></span> Contribute
-                        </NavLink>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </div>
 
-    <div class="content px-4">
-        <h1>Hello, world!</h1>
-        Welcome to your new app.
-    </div>
+                                <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+                <div class="input-group mt-2 mt-lg-0 mr-lg-2">
+                    @if (translations.Any())
+                    {
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="secondary-translation">Secondary</label>
+                        </div>
+                    }
+                <InputSelect class="custom-select" id="secondary-translation" @bind-Value="renderingParametersModel.SecondaryTranslation">
+                    @if (!translations.Any())
+                    {
+                        <option value="" selected>Loading...</option>
+                    }
+                    else
+                    {
+                        <option value="" selected>None</option>
+                        string lastLanguage = string.Empty;
+                        foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language).ThenBy(t => t.Name))
+                        {
+                            if (translation.Language != lastLanguage)
+                            {
+                                if (!string.IsNullOrWhiteSpace(lastLanguage))
+                                {
+                                    @((MarkupString)"</optgroup>")
+                                }
+                                lastLanguage = translation.Language ?? "Other";
+                                @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
+                            }
+
+                            <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
+                        }
+                    }
+                </InputSelect>
+                </div>
+            </EditForm>
+            <ul class="navbar-nav ml-lg-auto">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
+                        <span class="oi oi-code" aria-hidden="true"></span> Contribute
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="content px-4">
+    @((MarkupString)this.passage.Content)
+</div>
 @code {
+    private RenderedPassage passage = new RenderedPassage();
+    private RenderingParameters parameters = new RenderingParameters();
     private RenderingParametersModel renderingParametersModel = new RenderingParametersModel();
     private Translation[] translations = Array.Empty<Translation>();
 
@@ -71,7 +106,59 @@
         this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations") ?? Array.Empty<Translation>();
     }
 
-    private void ShowPassage()
+    private async void ShowPassage()
     {
+        this.UpdateParameters();
+        HttpResponseMessage response = await this.Http.PostAsJsonAsync("RenderPassage", this.parameters);
+        if (response.IsSuccessStatusCode)
+        {
+            this.passage = await response.Content.ReadFromJsonAsync<RenderedPassage>() ?? new RenderedPassage();
+        }
+        else
+        {
+            this.passage = new RenderedPassage();
+        }
+    }
+
+    /// <summary>
+    /// Updates the <see cref="RenderingParameters"/> from the <see cref="RenderingParametersModel"/>.
+    /// </summary>
+    private void UpdateParameters()
+    {
+        this.parameters.PassageReference = new PassageReference(this.renderingParametersModel.Passage);
+        this.parameters.PrimaryProvider = string.Empty;
+        this.parameters.PrimaryTranslation = string.Empty;
+        this.parameters.SecondaryProvider = null;
+        this.parameters.SecondaryTranslation = null;
+        foreach (Translation translation in this.translations)
+        {
+            // See if both passages have been rendered
+            if (!string.IsNullOrWhiteSpace(this.parameters.PrimaryTranslation) && !string.IsNullOrWhiteSpace(this.parameters.SecondaryTranslation))
+            {
+                break;
+            }
+            else if (translation.Code == this.renderingParametersModel.PrimaryTranslation)
+            {
+                this.parameters.PrimaryProvider = translation.Provider;
+                this.parameters.PrimaryTranslation = translation.Code;
+
+                // No secondary translation specified, or it has already been rendered
+                if (string.IsNullOrWhiteSpace(this.renderingParametersModel.SecondaryTranslation) || !string.IsNullOrWhiteSpace(this.parameters.SecondaryTranslation))
+                {
+                    break;
+                }
+            }
+            else if (translation.Code == this.renderingParametersModel.SecondaryTranslation)
+            {
+                this.parameters.SecondaryProvider = translation.Provider;
+                this.parameters.SecondaryTranslation = translation.Code;
+
+                // No primary translation specified, or it has already been rendered
+                if (string.IsNullOrWhiteSpace(this.renderingParametersModel.PrimaryTranslation) || !string.IsNullOrWhiteSpace(this.parameters.PrimaryTranslation))
+                {
+                    break;
+                }
+            }
+        }
     }
 }

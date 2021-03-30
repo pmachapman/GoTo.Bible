@@ -44,7 +44,7 @@ namespace GoToBible.Model
         /// <value>
         /// The next chapter reference.
         /// </value>
-        public ChapterReference? NextChapterReference { get; set; }
+        public ChapterReference NextChapterReference { get; set; } = new ChapterReference();
 
         /// <summary>
         /// Gets or sets the previous chapter reference.
@@ -52,7 +52,7 @@ namespace GoToBible.Model
         /// <value>
         /// The previous chapter reference.
         /// </value>
-        public ChapterReference? PreviousChapterReference { get; set; }
+        public ChapterReference PreviousChapterReference { get; set; } = new ChapterReference();
 
         /// <summary>
         /// Gets or sets the text.

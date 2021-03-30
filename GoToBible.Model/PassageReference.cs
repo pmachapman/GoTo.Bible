@@ -19,6 +19,8 @@ namespace GoToBible.Model
     /// </summary>
     public class PassageReference
     {
+        // TODO: Rewrite this class to be a POCO and support JSON serialisation and deserialisation
+
         /// <summary>
         /// The lengths of each chapter in each book.
         /// </summary>
@@ -219,16 +221,6 @@ namespace GoToBible.Model
         private readonly int chapter = 0;
 
         /// <summary>
-        /// The next chapter.
-        /// </summary>
-        private PassageReference? nextChapter;
-
-        /// <summary>
-        /// The previous chapter.
-        /// </summary>
-        private PassageReference? previousChapter;
-
-        /// <summary>
         /// Initialises a new instance of the <see cref="PassageReference" /> class.
         /// </summary>
         /// <remarks>
@@ -305,32 +297,6 @@ namespace GoToBible.Model
         public bool IsValid => !string.IsNullOrWhiteSpace(this.book);
 
         /// <summary>
-        /// Gets the next chapter's passage reference.
-        /// </summary>
-        /// <value>
-        /// The next chapter's passage reference.
-        /// </value>
-        public PassageReference NextChapter
-        {
-            get
-            {
-                if (this.nextChapter is null)
-                {
-                    if (this.IsValid)
-                    {
-                        this.nextChapter = GetNextChapter(this.book, this.chapter);
-                    }
-                    else
-                    {
-                        this.nextChapter = new PassageReference();
-                    }
-                }
-
-                return this.nextChapter;
-            }
-        }
-
-        /// <summary>
         /// Gets the normalised passage reference.
         /// </summary>
         /// <value>
@@ -345,32 +311,6 @@ namespace GoToBible.Model
         /// The original passage reference.
         /// </value>
         public string Original { get; private set; } = string.Empty;
-
-        /// <summary>
-        /// Gets the previous chapter's passage reference.
-        /// </summary>
-        /// <value>
-        /// The previous chapter's passage reference.
-        /// </value>
-        public PassageReference PreviousChapter
-        {
-            get
-            {
-                if (this.previousChapter is null)
-                {
-                    if (this.IsValid)
-                    {
-                        this.previousChapter = GetPreviousChapter(this.book, this.chapter);
-                    }
-                    else
-                    {
-                        this.previousChapter = new PassageReference();
-                    }
-                }
-
-                return this.previousChapter;
-            }
-        }
 
         /// <summary>
         /// Gets the book.
@@ -410,72 +350,6 @@ namespace GoToBible.Model
 
             // Default to blank
             return string.Empty;
-        }
-
-        /// <summary>
-        /// Gets the next chapter in sequence.
-        /// </summary>
-        /// <param name="book">The book name in lower case.</param>
-        /// <param name="chapter">The chapter.</param>
-        /// <returns>
-        /// The passage reference to the next chapter in sequence.
-        /// </returns>
-        private static PassageReference GetNextChapter(string book, int chapter)
-        {
-            if (BookLengths.Contains(book) && BookLengths[book] is int[] chapters)
-            {
-                if (chapters.Length > chapter)
-                {
-                    return new PassageReference($"{book} {++chapter}:1");
-                }
-                else if (book == BookNames.Last())
-                {
-                    return new PassageReference($"{BookNames.First()} 1:1");
-                }
-                else
-                {
-                    return new PassageReference($"{BookNames[BookNames.IndexOf(book) + 1]} 1:1");
-                }
-            }
-            else
-            {
-                return new PassageReference();
-            }
-        }
-
-        /// <summary>
-        /// Gets the previous chapter.
-        /// </summary>
-        /// <param name="book">The book name in lower case.</param>
-        /// <param name="chapter">The chapter.</param>
-        /// <returns>
-        /// The passage reference to the previous chapter in sequence.
-        /// </returns>
-        private static PassageReference GetPreviousChapter(string book, int chapter)
-        {
-            if (BookLengths.Contains(book))
-            {
-                if (chapter > 1)
-                {
-                    return new PassageReference($"{book} {--chapter}:1");
-                }
-                else if (book == BookNames.First())
-                {
-                    string previousBook = BookNames.Last();
-                    chapter = ((int[])BookLengths[previousBook]!).Length;
-                    return new PassageReference($"{previousBook} {chapter}:1");
-                }
-                else
-                {
-                    string previousBook = BookNames[BookNames.IndexOf(book) - 1];
-                    chapter = ((int[])BookLengths[previousBook]!).Length;
-                    return new PassageReference($"{previousBook} {chapter}:1");
-                }
-            }
-            else
-            {
-                return new PassageReference();
-            }
         }
 
         /// <summary>

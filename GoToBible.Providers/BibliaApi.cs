@@ -166,13 +166,11 @@ namespace GoToBible.Providers
                 chapter.Text = output.NormaliseLineEndings().Replace("\n", string.Empty).Replace("\\n", "\r\n", StringComparison.OrdinalIgnoreCase).Trim();
 
                 // Get the next/previous chapters
-                chapter.NextChapterReference = null;
-                chapter.PreviousChapterReference = null;
                 string previousChapter = string.Empty;
                 string thisChapter = $"{book} {chapterNumber}";
                 await foreach (string nextChapter in this.GetChaptersAsync(translation))
                 {
-                    if (chapter.PreviousChapterReference != null)
+                    if (chapter.PreviousChapterReference.IsValid)
                     {
                         chapter.NextChapterReference = new ChapterReference(nextChapter);
                         break;
@@ -185,18 +183,6 @@ namespace GoToBible.Providers
 
                     // Set the previous chapter for the next iteration (if it needs it)
                     previousChapter = nextChapter;
-                }
-
-                // Ensure that there are references
-                if (chapter.NextChapterReference == null)
-                {
-                    chapter.NextChapterReference = new ChapterReference();
-                }
-
-                // Ensure that there are references
-                if (chapter.PreviousChapterReference == null)
-                {
-                    chapter.PreviousChapterReference = new ChapterReference();
                 }
 
                 // Return the chapter
