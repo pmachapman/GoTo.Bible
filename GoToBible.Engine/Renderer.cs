@@ -83,7 +83,8 @@ namespace GoToBible.Engine
         public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage)
         {
             // Break up the normalised passage
-            string[] passageParts = parameters.PassageReference.Normalised.Split(':');
+            // TODO: Use the passage reference end
+            string[] passageParts = parameters.PassageReference.Start.Split(':');
             string[] bookParts = passageParts.First().Split(' ');
             string book = string.Join(" ", bookParts.Take(bookParts.Length - 1));
             if (!int.TryParse(bookParts.Last(), out int chapter))
@@ -107,7 +108,7 @@ namespace GoToBible.Engine
             // Setup the previous chapter reference
             if (firstChapter.PreviousChapterReference.IsValid)
             {
-                renderedPassage.PreviousPassage = new PassageReference(firstChapter.PreviousChapterReference.ToString());
+                renderedPassage.PreviousPassage = firstChapter.PreviousChapterReference.AsPassageReference();
             }
             else
             {
@@ -117,7 +118,7 @@ namespace GoToBible.Engine
             // Setup the next chapter reference
             if (firstChapter.NextChapterReference.IsValid)
             {
-                renderedPassage.NextPassage = new PassageReference(firstChapter.NextChapterReference.ToString());
+                renderedPassage.NextPassage = firstChapter.NextChapterReference.AsPassageReference();
             }
             else
             {
@@ -200,13 +201,13 @@ namespace GoToBible.Engine
                     // If the next chapter reference is invalid, see if this chapter has a valid reference
                     if (!renderedPassage.NextPassage.IsValid && secondChapter.NextChapterReference.IsValid)
                     {
-                        renderedPassage.NextPassage = new PassageReference(secondChapter.NextChapterReference.ToString());
+                        renderedPassage.NextPassage = secondChapter.NextChapterReference.AsPassageReference();
                     }
 
                     // If the previous chapter reference is invalid, see if this chapter has a valid reference
                     if (!renderedPassage.PreviousPassage.IsValid && secondChapter.PreviousChapterReference.IsValid)
                     {
-                        renderedPassage.PreviousPassage = new PassageReference(secondChapter.PreviousChapterReference.ToString());
+                        renderedPassage.PreviousPassage = secondChapter.PreviousChapterReference.AsPassageReference();
                     }
 
                     // Render both interlinear

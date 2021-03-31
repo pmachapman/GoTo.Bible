@@ -1,13 +1,13 @@
 ﻿@page "/"
 @inject HttpClient Http
-<style type="text/css">@parameters.RenderCss()</style>
+<style type="text/css">@(parameters.RenderCss() + Html.LoadingCodeCss)</style>
 <div class="top-row">
     <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassage">
+            <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassageAsync">
                 <DataAnnotationsValidator />
                 <div class="input-group mt-2 mt-lg-0 mr-lg-2">
                     <InputText class="form-control" placeholder="Passage" aria-label="Passage" aria-describedby="button-go" @bind-Value="renderingParametersModel.Passage" />
@@ -22,7 +22,7 @@
                             <label class="input-group-text" for="primary-translation">Primary</label>
                         </div>
                     }
-                    <InputSelect class="custom-select" id="primary-translation" @bind-Value="renderingParametersModel.PrimaryTranslation">
+                    <InputSelect class="custom-select" id="primary-translation" @oninput="PrimaryTranslation_OnInput" @bind-Value="renderingParametersModel.PrimaryTranslation">
                         @if (!translations.Any())
                         {
                             <option value="" selected>Loading...</option>
@@ -54,7 +54,7 @@
                             <label class="input-group-text" for="secondary-translation">Secondary</label>
                         </div>
                     }
-                <InputSelect class="custom-select" id="secondary-translation" @bind-Value="renderingParametersModel.SecondaryTranslation">
+                <InputSelect class="custom-select" id="secondary-translation" @oninput="SecondaryTranslation_OnInput" @bind-Value="renderingParametersModel.SecondaryTranslation">
                     @if (!translations.Any())
                     {
                         <option value="" selected>Loading...</option>
@@ -93,7 +93,7 @@
 </div>
 
 <div class="content px-4">
-    @((MarkupString)this.passage.Content)
+    @((MarkupString)(!string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody))
 </div>
 @code {
     private RenderedPassage passage = new RenderedPassage();
@@ -104,11 +104,18 @@
     protected override async Task OnInitializedAsync()
     {
         this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations") ?? Array.Empty<Translation>();
+
+        // Set defaults
+        this.renderingParametersModel.Passage = Default.Passage;
+        this.parameters.PassageReference = Default.Passage.AsPassageReference();
+        this.renderingParametersModel.PrimaryTranslation = "ESV";
+        this.parameters.PrimaryTranslation = "ESV";
+        this.parameters.PrimaryProvider = "EsvBible";
+        await this.GetPassageAsync();
     }
 
-    private async void ShowPassage()
+    private async Task GetPassageAsync()
     {
-        this.UpdateParameters();
         HttpResponseMessage response = await this.Http.PostAsJsonAsync("RenderPassage", this.parameters);
         if (response.IsSuccessStatusCode)
         {
@@ -120,12 +127,31 @@
         }
     }
 
+    private async Task PrimaryTranslation_OnInput(ChangeEventArgs e)
+    {
+        this.renderingParametersModel.PrimaryTranslation = e.Value?.ToString() ?? string.Empty;
+        await this.ShowPassageAsync();
+    }
+
+    private async Task SecondaryTranslation_OnInput(ChangeEventArgs e)
+    {
+        this.renderingParametersModel.SecondaryTranslation = e.Value?.ToString() ?? string.Empty;
+        await this.ShowPassageAsync();
+    }
+
+    private async Task ShowPassageAsync()
+    {
+        this.UpdateParameters();
+        await this.GetPassageAsync();
+    }
+
     /// <summary>
     /// Updates the <see cref="RenderingParameters"/> from the <see cref="RenderingParametersModel"/>.
     /// </summary>
     private void UpdateParameters()
     {
-        this.parameters.PassageReference = new PassageReference(this.renderingParametersModel.Passage);
+        this.passage.Content = string.Empty;
+        this.parameters.PassageReference = this.renderingParametersModel.Passage.AsPassageReference();
         this.parameters.PrimaryProvider = string.Empty;
         this.parameters.PrimaryTranslation = string.Empty;
         this.parameters.SecondaryProvider = null;

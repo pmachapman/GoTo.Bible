@@ -85,6 +85,6 @@ namespace GoToBible.Model
         public bool IsValid => !string.IsNullOrWhiteSpace(this.Book);
 
         /// <inheritdoc/>
-        public override string ToString() => $"{this.Book} {this.ChapterNumber}";
+        public override string ToString() => this.IsValid ? $"{this.Book} {this.ChapterNumber}" : string.Empty;
     }
 }

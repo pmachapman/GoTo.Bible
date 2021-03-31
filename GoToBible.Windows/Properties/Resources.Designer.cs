@@ -151,15 +151,6 @@ namespace GoToBible.Windows.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to John 3:16.
-        /// </summary>
-        internal static string DefaultPassage {
-            get {
-                return ResourceManager.GetString("DefaultPassage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Esv {

@@ -36,16 +36,6 @@ namespace GoToBible.Windows
     public partial class FormMain : Form
     {
         /// <summary>
-        /// The loading HTML code.
-        /// </summary>
-        private const string LoadingCodeBody = "<div class=\"lds-roller\"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>";
-
-        /// <summary>
-        /// The loading CSS code.
-        /// </summary>
-        private const string LoadingCodeCss = ".lds-roller{display:inline-block;width:80px;height:80px;position:fixed;top:50%;left:50%;margin-top:-40px;margin-left:-40px;}.lds-roller div{animation:lds-roller 1.2s cubic-bezier(.5,0,.5,1) infinite;transform-origin:40px 40px}.lds-roller div:after{content:\" \";display:block;position:absolute;width:7px;height:7px;border-radius:50%;background:#000;margin:-4px 0 0 -4px}.lds-roller div:nth-child(1){animation-delay:-36ms}.lds-roller div:nth-child(1):after{top:63px;left:63px}.lds-roller div:nth-child(2){animation-delay:-72ms}.lds-roller div:nth-child(2):after{top:68px;left:56px}.lds-roller div:nth-child(3){animation-delay:-108ms}.lds-roller div:nth-child(3):after{top:71px;left:48px}.lds-roller div:nth-child(4){animation-delay:-144ms}.lds-roller div:nth-child(4):after{top:72px;left:40px}.lds-roller div:nth-child(5){animation-delay:-.18s}.lds-roller div:nth-child(5):after{top:71px;left:32px}.lds-roller div:nth-child(6){animation-delay:-216ms}.lds-roller div:nth-child(6):after{top:68px;left:24px}.lds-roller div:nth-child(7){animation-delay:-252ms}.lds-roller div:nth-child(7):after{top:63px;left:17px}.lds-roller div:nth-child(8){animation-delay:-288ms}.lds-roller div:nth-child(8):after{top:56px;left:12px}@keyframes lds-roller{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}";
-
-        /// <summary>
         /// The commentaries.
         /// </summary>
         private readonly List<Translation> commentaries = new List<Translation>();
@@ -241,7 +231,7 @@ namespace GoToBible.Windows
             string passage = Properties.Settings.Default.Passage;
             if (string.IsNullOrWhiteSpace(passage))
             {
-                passage = Properties.Resources.DefaultPassage;
+                passage = Default.Passage;
             }
 
             // Setup the toolstrip controls
@@ -286,8 +276,8 @@ namespace GoToBible.Windows
         {
             if (this.webViewInitialised && !string.IsNullOrWhiteSpace(this.renderedPassage.Content))
             {
-                await this.WebViewMain.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(LoadingCodeBody)}\";");
-                await this.WebViewResource.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(LoadingCodeBody)}\";");
+                await this.WebViewMain.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(Html.LoadingCodeBody)}\";");
+                await this.WebViewResource.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(Html.LoadingCodeBody)}\";");
             }
         }
 
@@ -618,10 +608,10 @@ namespace GoToBible.Windows
                 }
                 else
                 {
-                    body = LoadingCodeBody;
+                    body = Html.LoadingCodeBody;
                 }
 
-                webView.NavigateToString($"<!DOCTYPE html>\n<html><head><style type=\"text/css\">{this.parameters.RenderCss()}{LoadingCodeCss}</style></head><body>{body}</body></html>");
+                webView.NavigateToString($"<!DOCTYPE html>\n<html><head><style type=\"text/css\">{this.parameters.RenderCss()}{Html.LoadingCodeCss}</style></head><body>{body}</body></html>");
             }
             catch (InvalidOperationException)
             {
@@ -636,7 +626,7 @@ namespace GoToBible.Windows
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private async void ToolStripButtonExport_Click(object sender, EventArgs e)
         {
-            this.SaveFileDialogMain.FileName = this.parameters.PassageReference.Normalised.Split(':').First() + ".txt";
+            this.SaveFileDialogMain.FileName = this.parameters.PassageReference.Start.Split(':').First() + ".txt";
             if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
             {
                 // Render for export to Accordance
@@ -654,7 +644,7 @@ namespace GoToBible.Windows
         {
             if (this.renderedPassage.PreviousPassage.IsValid)
             {
-                this.ToolStripTextBoxPassage.Text = this.renderedPassage.PreviousPassage.Normalised;
+                this.ToolStripTextBoxPassage.Text = this.renderedPassage.PreviousPassage.Start;
                 await this.ShowPassage(true, true);
             }
         }
@@ -668,7 +658,7 @@ namespace GoToBible.Windows
         {
             if (this.renderedPassage.NextPassage.IsValid)
             {
-                this.ToolStripTextBoxPassage.Text = this.renderedPassage.NextPassage.Normalised;
+                this.ToolStripTextBoxPassage.Text = this.renderedPassage.NextPassage.Start;
                 await this.ShowPassage(true, true);
             }
         }
@@ -739,12 +729,12 @@ namespace GoToBible.Windows
             {
                 if (updateMain)
                 {
-                    await this.WebViewMain.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(LoadingCodeBody)}\";");
+                    await this.WebViewMain.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(Html.LoadingCodeBody)}\";");
                 }
 
                 if (updateResource)
                 {
-                    await this.WebViewResource.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(LoadingCodeBody)}\";");
+                    await this.WebViewResource.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(Html.LoadingCodeBody)}\";");
                 }
             }
             catch (InvalidOperationException)
@@ -787,7 +777,7 @@ namespace GoToBible.Windows
                 InterlinearIgnoresDiacritics = this.ToolStripMenuItemIgnoreDiacritics.Checked,
                 InterlinearIgnoresPunctuation = this.ToolStripMenuItemIgnorePunctuation.Checked,
                 IsDebug = this.ToolStripMenuItemDebugMode.Checked,
-                PassageReference = new PassageReference(this.ToolStripTextBoxPassage.Text),
+                PassageReference = this.ToolStripTextBoxPassage.Text.AsPassageReference(),
                 PrimaryProvider = primaryProvider,
                 PrimaryTranslation = primaryTranslation,
                 RenderItalics = this.ToolStripMenuItemShowItalics.Checked,
@@ -815,7 +805,7 @@ namespace GoToBible.Windows
                     Properties.Settings.Default.InterlinearIgnoresPunctuation = this.parameters.InterlinearIgnoresPunctuation;
                     Properties.Settings.Default.IsDebug = this.parameters.IsDebug;
                     Properties.Settings.Default.RenderItalics = this.parameters.RenderItalics;
-                    Properties.Settings.Default.Passage = this.parameters.PassageReference.Normalised;
+                    Properties.Settings.Default.Passage = this.parameters.PassageReference.Start;
                     Properties.Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
                     Properties.Settings.Default.SecondaryTranslation = this.parameters.SecondaryTranslation;
                     Properties.Settings.Default.Resource = resource;
