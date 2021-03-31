@@ -9,17 +9,17 @@
         <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassageAsync">
             <DataAnnotationsValidator />
             <div class="mt-2 mt-lg-0 mr-lg-2">
-                <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.PreviousPassage.IsValid)" @onclick="PreviousChapter_OnClick">
+                <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.PreviousPassage.IsValid)" @onclick="PreviousChapter_OnClick" title="Previous Chapter">
                     <span class="fa fa-play fa-flip-horizontal"></span> <span class="d-lg-none">Previous Chapter</span>
                 </button>
-                <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.NextPassage.IsValid)" @onclick="NextChapter_OnClick">
+                <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.NextPassage.IsValid)" @onclick="NextChapter_OnClick" title="Next Chapter">
                     <span class="fa fa-play"></span> <span class="d-lg-none">Next Chapter</span>
                 </button>
             </div>
             <div class="input-group mt-2 mt-lg-0 mr-lg-2">
                 <InputText class="form-control" placeholder="Passage" aria-label="Passage" aria-describedby="button-go" @bind-Value="renderingParametersModel.Passage" />
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="button-go"><span class="fa fa-share"></span></button>
+                    <button class="btn btn-outline-secondary" type="submit" title="Go"><span class="fa fa-share"></span></button>
                 </div>
             </div>
             <div class="input-group mt-2 mt-lg-0 mr-lg-2">
@@ -87,13 +87,13 @@
                     }
                 </InputSelect>
             </div>
-            <div class="mt-2 mt-lg-0 mr-lg-2" hidden="@string.IsNullOrWhiteSpace(this.renderingParametersModel.SecondaryTranslation)">
+            <div class="mt-2 mt-lg-0 mr-lg-2" hidden="@string.IsNullOrWhiteSpace(this.renderingParametersModel.SecondaryTranslation)" title="Swap Primary and Secondary Translations">
                 <button type="button" class="btn btn-outline-secondary" @onclick="SwapTranslations_OnClick">
                     <span class="fa fa-retweet"></span> <span class="d-lg-none">Swap Primary and Secondary Translations</span>
                 </button>
             </div>
         </EditForm>
-        <NavLink class="btn btn-secondary ml-lg-auto d-lg-none d-xl-block" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
+        <NavLink class="btn btn-secondary ml-lg-auto d-lg-none d-xl-block mt-2 mt-lg-0" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
             <span class="fa fa-github" aria-hidden="true"></span> Contribute
         </NavLink>
     </div>
@@ -103,6 +103,8 @@
     @((MarkupString)(!string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody))
 </div>
 @code {
+    // TODO: Store the model locally
+    // TODO: Display a passage/translation based on the URL paramters
     private LanguageComparer languageComparer = new LanguageComparer();
     private RenderedPassage passage = new RenderedPassage();
     private RenderingParameters parameters = new RenderingParameters();

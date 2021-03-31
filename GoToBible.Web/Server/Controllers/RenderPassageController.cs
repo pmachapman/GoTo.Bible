@@ -31,6 +31,7 @@ namespace GoToBible.Web.Server.Controllers
         /// <param name="providers">The providers.</param>
         public RenderPassageController(IEnumerable<IProvider> providers)
         {
+            // TODO: Store statistics for each translations and provider
             this.renderer = new Renderer(providers);
         }
 
