@@ -9,10 +9,18 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassageAsync">
                 <DataAnnotationsValidator />
+                <div class="mt-2 mt-lg-0 mr-lg-2">
+                    <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.PreviousPassage.IsValid)" @onclick="PreviousChapter_OnClick">
+                        <span class="fa fa-play fa-flip-horizontal"></span> <span class="d-lg-none">Previous Chapter</span>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.NextPassage.IsValid)" @onclick="NextChapter_OnClick">
+                        <span class="fa fa-play"></span> <span class="d-lg-none">Next Chapter</span>
+                    </button>
+                </div>
                 <div class="input-group mt-2 mt-lg-0 mr-lg-2">
                     <InputText class="form-control" placeholder="Passage" aria-label="Passage" aria-describedby="button-go" @bind-Value="renderingParametersModel.Passage" />
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit" id="button-go"><span class="oi oi-media-play"></span></button>
+                        <button class="btn btn-outline-secondary" type="submit" id="button-go"><span class="fa fa-share"></span></button>
                     </div>
                 </div>
                 <div class="input-group mt-2 mt-lg-0 mr-lg-2">
@@ -54,40 +62,41 @@
                             <label class="input-group-text" for="secondary-translation">Secondary</label>
                         </div>
                     }
-                <InputSelect class="custom-select" id="secondary-translation" @oninput="SecondaryTranslation_OnInput" @bind-Value="renderingParametersModel.SecondaryTranslation">
-                    @if (!translations.Any())
-                    {
-                        <option value="" selected>Loading...</option>
-                    }
-                    else
-                    {
-                        <option value="" selected>None</option>
-                        string lastLanguage = string.Empty;
-                        foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language).ThenBy(t => t.Name))
+                    <InputSelect class="custom-select" id="secondary-translation" @oninput="SecondaryTranslation_OnInput" @bind-Value="renderingParametersModel.SecondaryTranslation">
+                        @if (!translations.Any())
                         {
-                            if (translation.Language != lastLanguage)
-                            {
-                                if (!string.IsNullOrWhiteSpace(lastLanguage))
-                                {
-                                    @((MarkupString)"</optgroup>")
-                                }
-                                lastLanguage = translation.Language ?? "Other";
-                                @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
-                            }
-
-                            <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
+                            <option value="" selected>Loading...</option>
                         }
-                    }
-                </InputSelect>
+                        else
+                        {
+                            <option value="" selected>None</option>
+                            string lastLanguage = string.Empty;
+                            foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language).ThenBy(t => t.Name))
+                            {
+                                if (translation.Language != lastLanguage)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(lastLanguage))
+                                    {
+                                        @((MarkupString)"</optgroup>")
+                                    }
+                                    lastLanguage = translation.Language ?? "Other";
+                                    @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
+                                }
+
+                                <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+                <div class="mt-2 mt-lg-0 mr-lg-2" hidden="@string.IsNullOrWhiteSpace(this.renderingParametersModel.SecondaryTranslation)">
+                    <button type="button" class="btn btn-outline-secondary" @onclick="SwapTranslations_OnClick">
+                        <span class="fa fa-retweet"></span> <span class="d-lg-none">Swap Primary and Secondary Translations</span>
+                    </button>
                 </div>
             </EditForm>
-            <ul class="navbar-nav ml-lg-auto">
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
-                        <span class="oi oi-code" aria-hidden="true"></span> Contribute
-                    </NavLink>
-                </li>
-            </ul>
+            <NavLink class="btn btn-secondary ml-lg-auto d-lg-none d-xl-block" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
+                <span class="fa fa-github" aria-hidden="true"></span> Contribute
+            </NavLink>
         </div>
     </nav>
 </div>
@@ -127,6 +136,24 @@
         }
     }
 
+    private async Task NextChapter_OnClick()
+    {
+        if (this.passage.NextPassage.IsValid)
+        {
+            this.renderingParametersModel.Passage = this.passage.NextPassage.Start;
+            await this.ShowPassageAsync();
+        }
+    }
+
+    private async Task PreviousChapter_OnClick()
+    {
+        if (this.passage.PreviousPassage.IsValid)
+        {
+            this.renderingParametersModel.Passage = this.passage.PreviousPassage.Start;
+            await this.ShowPassageAsync();
+        }
+    }
+
     private async Task PrimaryTranslation_OnInput(ChangeEventArgs e)
     {
         this.renderingParametersModel.PrimaryTranslation = e.Value?.ToString() ?? string.Empty;
@@ -137,6 +164,17 @@
     {
         this.renderingParametersModel.SecondaryTranslation = e.Value?.ToString() ?? string.Empty;
         await this.ShowPassageAsync();
+    }
+
+    private async Task SwapTranslations_OnClick()
+    {
+        string? secondaryTranslation = this.renderingParametersModel.SecondaryTranslation;
+        if (!string.IsNullOrWhiteSpace(secondaryTranslation))
+        {
+            this.renderingParametersModel.SecondaryTranslation = this.renderingParametersModel.PrimaryTranslation;
+            this.renderingParametersModel.PrimaryTranslation = secondaryTranslation;
+            await this.ShowPassageAsync();
+        }
     }
 
     private async Task ShowPassageAsync()

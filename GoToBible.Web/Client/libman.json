@@ -13,26 +13,17 @@
       ]
     },
     {
-      "library": "open-iconic@1.1.1",
-      "destination": "wwwroot/css/open-iconic",
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/js/",
       "files": [
-        "font/css/open-iconic-bootstrap.min.css",
-        "font/fonts/open-iconic.eot",
-        "font/fonts/open-iconic.otf",
-        "font/fonts/open-iconic.svg",
-        "font/fonts/open-iconic.ttf",
-        "font/fonts/open-iconic.woff"
+        "jquery.min.js",
+        "jquery.min.map",
+        "jquery.js"
       ]
+    },
+    {
+      "library": "font-awesome@4.7.0",
+      "destination": "wwwroot/css/font-awesome/"
     }
-  ,
-{
-  "library": "jquery@3.6.0",
-  "destination": "wwwroot/js/",
-  "files": [
-    "jquery.min.js",
-    "jquery.min.map",
-    "jquery.js"
   ]
-}
-]
 }

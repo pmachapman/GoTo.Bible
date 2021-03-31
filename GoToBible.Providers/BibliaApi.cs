@@ -287,7 +287,7 @@ namespace GoToBible.Providers
         /// </returns>
         private async IAsyncEnumerable<string> GetChaptersAsync(string translation)
         {
-            await foreach (Book book in this.GetBooksAsync(translation, false))
+            await foreach (Book book in this.GetBooksAsync(translation, true))
             {
                 foreach (ChapterReference chapter in book.Chapters)
                 {
