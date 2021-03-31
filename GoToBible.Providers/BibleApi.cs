@@ -462,10 +462,21 @@ namespace GoToBible.Providers
                         name += $" ({translation.description})";
                     }
 
+                    // Standardise the language
+                    string language = translation.language.name;
+                    if (language == "Greek, Ancient")
+                    {
+                        language = "Greek";
+                    }
+                    else if (language == "German, Standard")
+                    {
+                        language = "German";
+                    }
+
                     yield return new Translation
                     {
                         Code = translation.id,
-                        Language = translation.language.name,
+                        Language = language,
                         Name = name,
                         Provider = this.Id,
                     };

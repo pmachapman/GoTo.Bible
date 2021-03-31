@@ -1,8 +1,4 @@
-﻿.top-row {
-    height: 3.5rem;
-}
-
-@media (max-width: 991.98px) { /* Medium and Below */
+﻿@media (max-width: 991.98px) { /* Medium and Below */
     .navbar .input-group {
         width: 100%;
     }

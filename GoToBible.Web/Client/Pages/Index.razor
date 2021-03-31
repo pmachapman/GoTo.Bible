@@ -1,110 +1,109 @@
 ﻿@page "/"
 @inject HttpClient Http
 <style type="text/css">@(parameters.RenderCss() + Html.LoadingCodeCss)</style>
-<div class="top-row">
-    <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassageAsync">
-                <DataAnnotationsValidator />
-                <div class="mt-2 mt-lg-0 mr-lg-2">
-                    <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.PreviousPassage.IsValid)" @onclick="PreviousChapter_OnClick">
-                        <span class="fa fa-play fa-flip-horizontal"></span> <span class="d-lg-none">Previous Chapter</span>
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.NextPassage.IsValid)" @onclick="NextChapter_OnClick">
-                        <span class="fa fa-play"></span> <span class="d-lg-none">Next Chapter</span>
-                    </button>
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassageAsync">
+            <DataAnnotationsValidator />
+            <div class="mt-2 mt-lg-0 mr-lg-2">
+                <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.PreviousPassage.IsValid)" @onclick="PreviousChapter_OnClick">
+                    <span class="fa fa-play fa-flip-horizontal"></span> <span class="d-lg-none">Previous Chapter</span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.NextPassage.IsValid)" @onclick="NextChapter_OnClick">
+                    <span class="fa fa-play"></span> <span class="d-lg-none">Next Chapter</span>
+                </button>
+            </div>
+            <div class="input-group mt-2 mt-lg-0 mr-lg-2">
+                <InputText class="form-control" placeholder="Passage" aria-label="Passage" aria-describedby="button-go" @bind-Value="renderingParametersModel.Passage" />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-go"><span class="fa fa-share"></span></button>
                 </div>
-                <div class="input-group mt-2 mt-lg-0 mr-lg-2">
-                    <InputText class="form-control" placeholder="Passage" aria-label="Passage" aria-describedby="button-go" @bind-Value="renderingParametersModel.Passage" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit" id="button-go"><span class="fa fa-share"></span></button>
+            </div>
+            <div class="input-group mt-2 mt-lg-0 mr-lg-2">
+                @if (translations.Any())
+                {
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="primary-translation">Primary</label>
                     </div>
-                </div>
-                <div class="input-group mt-2 mt-lg-0 mr-lg-2">
-                    @if (translations.Any())
+                }
+                <InputSelect class="custom-select" id="primary-translation" @oninput="PrimaryTranslation_OnInput" @bind-Value="renderingParametersModel.PrimaryTranslation">
+                    @if (!translations.Any())
                     {
-                        <div class="input-group-prepend">
-                            <label class="input-group-text" for="primary-translation">Primary</label>
-                        </div>
+                        <option value="" selected>Loading...</option>
                     }
-                    <InputSelect class="custom-select" id="primary-translation" @oninput="PrimaryTranslation_OnInput" @bind-Value="renderingParametersModel.PrimaryTranslation">
-                        @if (!translations.Any())
-                        {
-                            <option value="" selected>Loading...</option>
-                        }
-                        else
-                        {
-                            string lastLanguage = string.Empty;
-                            foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language).ThenBy(t => t.Name))
-                            {
-                                if (translation.Language != lastLanguage)
-                                {
-                                    if (!string.IsNullOrWhiteSpace(lastLanguage))
-                                    {
-                                        @((MarkupString)"</optgroup>")
-                                    }
-                                    lastLanguage = translation.Language ?? "Other";
-                                    @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
-                                }
-
-                                <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
-                            }
-                        }
-                    </InputSelect>
-                </div>
-                <div class="input-group mt-2 mt-lg-0 mr-lg-2">
-                    @if (translations.Any())
+                    else
                     {
-                        <div class="input-group-prepend">
-                            <label class="input-group-text" for="secondary-translation">Secondary</label>
-                        </div>
-                    }
-                    <InputSelect class="custom-select" id="secondary-translation" @oninput="SecondaryTranslation_OnInput" @bind-Value="renderingParametersModel.SecondaryTranslation">
-                        @if (!translations.Any())
+                        string lastLanguage = string.Empty;
+                        foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language, languageComparer).ThenBy(t => t.Name))
                         {
-                            <option value="" selected>Loading...</option>
-                        }
-                        else
-                        {
-                            <option value="" selected>None</option>
-                            string lastLanguage = string.Empty;
-                            foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language).ThenBy(t => t.Name))
+                            if (translation.Language != lastLanguage)
                             {
-                                if (translation.Language != lastLanguage)
+                                if (!string.IsNullOrWhiteSpace(lastLanguage))
                                 {
-                                    if (!string.IsNullOrWhiteSpace(lastLanguage))
-                                    {
-                                        @((MarkupString)"</optgroup>")
-                                    }
-                                    lastLanguage = translation.Language ?? "Other";
-                                    @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
+                                    @((MarkupString)"</optgroup>")
                                 }
-
-                                <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
+                                lastLanguage = translation.Language ?? "Other";
+                                @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
                             }
+
+                            <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
                         }
-                    </InputSelect>
-                </div>
-                <div class="mt-2 mt-lg-0 mr-lg-2" hidden="@string.IsNullOrWhiteSpace(this.renderingParametersModel.SecondaryTranslation)">
-                    <button type="button" class="btn btn-outline-secondary" @onclick="SwapTranslations_OnClick">
-                        <span class="fa fa-retweet"></span> <span class="d-lg-none">Swap Primary and Secondary Translations</span>
-                    </button>
-                </div>
-            </EditForm>
-            <NavLink class="btn btn-secondary ml-lg-auto d-lg-none d-xl-block" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
-                <span class="fa fa-github" aria-hidden="true"></span> Contribute
-            </NavLink>
-        </div>
-    </nav>
-</div>
+                    }
+                </InputSelect>
+            </div>
+            <div class="input-group mt-2 mt-lg-0 mr-lg-2">
+                @if (translations.Any())
+                {
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="secondary-translation">Secondary</label>
+                    </div>
+                }
+                <InputSelect class="custom-select" id="secondary-translation" @oninput="SecondaryTranslation_OnInput" @bind-Value="renderingParametersModel.SecondaryTranslation">
+                    @if (!translations.Any())
+                    {
+                        <option value="" selected>Loading...</option>
+                    }
+                    else
+                    {
+                        <option value="" selected>None</option>
+                        string lastLanguage = string.Empty;
+                        foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language, languageComparer).ThenBy(t => t.Name))
+                        {
+                            if (translation.Language != lastLanguage)
+                            {
+                                if (!string.IsNullOrWhiteSpace(lastLanguage))
+                                {
+                                    @((MarkupString)"</optgroup>")
+                                }
+                                lastLanguage = translation.Language ?? "Other";
+                                @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
+                            }
+
+                            <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+            <div class="mt-2 mt-lg-0 mr-lg-2" hidden="@string.IsNullOrWhiteSpace(this.renderingParametersModel.SecondaryTranslation)">
+                <button type="button" class="btn btn-outline-secondary" @onclick="SwapTranslations_OnClick">
+                    <span class="fa fa-retweet"></span> <span class="d-lg-none">Swap Primary and Secondary Translations</span>
+                </button>
+            </div>
+        </EditForm>
+        <NavLink class="btn btn-secondary ml-lg-auto d-lg-none d-xl-block" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
+            <span class="fa fa-github" aria-hidden="true"></span> Contribute
+        </NavLink>
+    </div>
+</nav>
 
 <div class="content px-4">
     @((MarkupString)(!string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody))
 </div>
 @code {
+    private LanguageComparer languageComparer = new LanguageComparer();
     private RenderedPassage passage = new RenderedPassage();
     private RenderingParameters parameters = new RenderingParameters();
     private RenderingParametersModel renderingParametersModel = new RenderingParametersModel();

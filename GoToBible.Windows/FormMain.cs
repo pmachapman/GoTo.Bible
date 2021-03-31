@@ -463,7 +463,7 @@ namespace GoToBible.Windows
 
             // Store the translations for use by other methods
             this.translations.Clear();
-            this.translations.AddRange(translations.OrderBy(t => t.Language).ThenBy(t => t.Name));
+            this.translations.AddRange(translations.OrderBy(t => t.Language, new LanguageComparer()).ThenBy(t => t.Name));
             this.commentaries.Clear();
             this.commentaries.AddRange(commentaries.OrderBy(t => t.Name));
             this.ToolStripMenuItemConfigure.Enabled = true;
