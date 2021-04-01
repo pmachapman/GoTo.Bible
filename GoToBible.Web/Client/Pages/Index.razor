@@ -1,5 +1,10 @@
 ﻿@page "/"
+@page "/{passage}"
+@page "/{passage}/{primaryTranslation}"
+@page "/{passage}/{primaryTranslation}/{secondaryTranslation}"
+@using System.Text
 @inject HttpClient Http
+@inject IJSRuntime JsRuntime
 <style type="text/css">@(parameters.RenderCss() + Html.LoadingCodeCss)</style>
 <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,24 +109,56 @@
 </div>
 @code {
     // TODO: Store the model locally
-    // TODO: Display a passage/translation based on the URL paramters
+    private const string DefaultTranslation = "ESV";
     private LanguageComparer languageComparer = new LanguageComparer();
     private RenderedPassage passage = new RenderedPassage();
     private RenderingParameters parameters = new RenderingParameters();
     private RenderingParametersModel renderingParametersModel = new RenderingParametersModel();
     private Translation[] translations = Array.Empty<Translation>();
 
+    [Parameter]
+    public string? Passage { get; set; }
+
+    [Parameter]
+    public string? PrimaryTranslation { get; set; }
+
+    [Parameter]
+    public string? SecondaryTranslation { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations") ?? Array.Empty<Translation>();
 
-        // Set defaults
-        this.renderingParametersModel.Passage = Default.Passage;
-        this.parameters.PassageReference = Default.Passage.AsPassageReference();
-        this.renderingParametersModel.PrimaryTranslation = "ESV";
-        this.parameters.PrimaryTranslation = "ESV";
-        this.parameters.PrimaryProvider = "EsvBible";
-        await this.GetPassageAsync();
+        // Get the passage and translation
+        if (!string.IsNullOrWhiteSpace(this.Passage))
+        {
+            this.renderingParametersModel.Passage = this.Passage.DecodePassageFromUrl();
+        }
+        else
+        {
+            this.renderingParametersModel.Passage = Default.Passage;
+        }
+
+        if (!string.IsNullOrWhiteSpace(this.PrimaryTranslation))
+        {
+            this.renderingParametersModel.PrimaryTranslation = this.PrimaryTranslation.DecodePassageFromUrl();
+        }
+        else
+        {
+            this.renderingParametersModel.PrimaryTranslation = DefaultTranslation;
+        }
+
+        if (!string.IsNullOrWhiteSpace(this.SecondaryTranslation))
+        {
+            this.renderingParametersModel.SecondaryTranslation = this.SecondaryTranslation.DecodePassageFromUrl();
+        }
+        else
+        {
+            this.renderingParametersModel.SecondaryTranslation = null;
+        }
+
+        // Set load parameters
+        await this.ShowPassageAsync();
     }
 
     private async Task GetPassageAsync()
@@ -181,6 +218,15 @@
     private async Task ShowPassageAsync()
     {
         this.UpdateParameters();
+
+        // Ensure we have a primary translation
+        if (string.IsNullOrWhiteSpace(this.parameters.PrimaryTranslation))
+        {
+            this.renderingParametersModel.PrimaryTranslation = DefaultTranslation;
+            this.UpdateParameters();
+        }
+
+        await this.UpdateUrlAsync();
         await this.GetPassageAsync();
     }
 
@@ -202,10 +248,11 @@
             {
                 break;
             }
-            else if (translation.Code == this.renderingParametersModel.PrimaryTranslation)
+            else if (string.Equals(translation.Code, this.renderingParametersModel.PrimaryTranslation, StringComparison.OrdinalIgnoreCase))
             {
                 this.parameters.PrimaryProvider = translation.Provider;
                 this.parameters.PrimaryTranslation = translation.Code;
+                this.renderingParametersModel.PrimaryTranslation = translation.Code;
 
                 // No secondary translation specified, or it has already been rendered
                 if (string.IsNullOrWhiteSpace(this.renderingParametersModel.SecondaryTranslation) || !string.IsNullOrWhiteSpace(this.parameters.SecondaryTranslation))
@@ -213,10 +260,11 @@
                     break;
                 }
             }
-            else if (translation.Code == this.renderingParametersModel.SecondaryTranslation)
+            else if (string.Equals(translation.Code, this.renderingParametersModel.SecondaryTranslation, StringComparison.OrdinalIgnoreCase))
             {
                 this.parameters.SecondaryProvider = translation.Provider;
                 this.parameters.SecondaryTranslation = translation.Code;
+                this.renderingParametersModel.SecondaryTranslation = translation.Code;
 
                 // No primary translation specified, or it has already been rendered
                 if (string.IsNullOrWhiteSpace(this.renderingParametersModel.PrimaryTranslation) || !string.IsNullOrWhiteSpace(this.parameters.PrimaryTranslation))
@@ -225,5 +273,30 @@
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Updates the web browser URL to reflect the current passage.
+    /// </summary>
+    /// <returns>The asynchronous task.</returns>
+    private async Task UpdateUrlAsync()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("/");
+        string passage = this.parameters.PassageReference.Start.EncodePassageForUrl();
+        if (!string.IsNullOrWhiteSpace(passage))
+        {
+            sb.Append(passage);
+
+            sb.Append("/");
+            sb.Append(Uri.EscapeDataString(this.parameters.PrimaryTranslation));
+            if (!string.IsNullOrWhiteSpace(this.parameters.SecondaryTranslation))
+            {
+                sb.Append("/");
+                sb.Append(Uri.EscapeDataString(this.parameters.SecondaryTranslation));
+            }
+        }
+
+        await this.JsRuntime.InvokeAsync<string>("changeUrl", sb.ToString());
     }
 }
