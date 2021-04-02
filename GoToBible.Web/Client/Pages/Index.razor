@@ -3,8 +3,10 @@
 @page "/{passage}/{primaryTranslation}"
 @page "/{passage}/{primaryTranslation}/{secondaryTranslation}"
 @using System.Text
+@using Blazored.LocalStorage
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
+@inject ILocalStorageService LocalStorage
 <style type="text/css">@(parameters.RenderCss() + Html.LoadingCodeCss)</style>
 <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,8 +110,8 @@
     @((MarkupString)(!string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody))
 </div>
 @code {
-    // TODO: Store the model locally
     private const string DefaultTranslation = "ESV";
+    private const string RenderingParametersModelId = "RenderingParametersModel";
     private LanguageComparer languageComparer = new LanguageComparer();
     private RenderedPassage passage = new RenderedPassage();
     private RenderingParameters parameters = new RenderingParameters();
@@ -127,12 +129,20 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Load the list of translations
         this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations") ?? Array.Empty<Translation>();
+
+        // Get the local copy of the rendering parameters
+        RenderingParametersModel? localRenderingParameters = await this.LocalStorage.GetItemAsync<RenderingParametersModel?>(RenderingParametersModelId);
 
         // Get the passage and translation
         if (!string.IsNullOrWhiteSpace(this.Passage))
         {
             this.renderingParametersModel.Passage = this.Passage.DecodePassageFromUrl();
+        }
+        else if (!string.IsNullOrWhiteSpace(localRenderingParameters?.Passage))
+        {
+            this.renderingParametersModel.Passage = localRenderingParameters.Passage;
         }
         else
         {
@@ -143,6 +153,16 @@
         {
             this.renderingParametersModel.PrimaryTranslation = this.PrimaryTranslation.DecodePassageFromUrl();
         }
+        else if (!string.IsNullOrWhiteSpace(localRenderingParameters?.PrimaryTranslation))
+        {
+            this.renderingParametersModel.PrimaryTranslation = localRenderingParameters.PrimaryTranslation;
+
+            // If we are loading the primary translation from local, we should load the secondary translation too
+            if (!string.IsNullOrWhiteSpace(localRenderingParameters.SecondaryTranslation))
+            {
+                this.renderingParametersModel.SecondaryTranslation = localRenderingParameters.SecondaryTranslation;
+            }
+        }
         else
         {
             this.renderingParametersModel.PrimaryTranslation = DefaultTranslation;
@@ -151,10 +171,6 @@
         if (!string.IsNullOrWhiteSpace(this.SecondaryTranslation))
         {
             this.renderingParametersModel.SecondaryTranslation = this.SecondaryTranslation.DecodePassageFromUrl();
-        }
-        else
-        {
-            this.renderingParametersModel.SecondaryTranslation = null;
         }
 
         // Set load parameters
@@ -228,6 +244,7 @@
 
         await this.UpdateUrlAsync();
         await this.GetPassageAsync();
+        await this.LocalStorage.SetItemAsync<RenderingParametersModel>(RenderingParametersModelId, this.renderingParametersModel);
     }
 
     /// <summary>
