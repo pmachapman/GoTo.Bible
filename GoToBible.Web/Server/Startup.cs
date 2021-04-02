@@ -11,6 +11,7 @@ namespace GoToBible.Web.Server
     using GoToBible.Web.Server.Models;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Caching.Distributed;
     using Microsoft.Extensions.Caching.SqlServer;
     using Microsoft.Extensions.Configuration;
@@ -84,6 +85,40 @@ namespace GoToBible.Web.Server
                 case "MEMORY":
                 default:
                     services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
+                    break;
+            }
+
+            // Load the statistics context
+            StatisticsSettings? statisticsConfig = this.Configuration.GetSection("Providers:Statistics").Get<StatisticsSettings>();
+            ServerVersion serverVersion;
+            switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
+            {
+                case "MARIADB":
+                    if (string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion))
+                    {
+                        serverVersion = MariaDbServerVersion.LatestSupportedServerVersion;
+                    }
+                    else
+                    {
+                        serverVersion = new MariaDbServerVersion(statisticsConfig.DatabaseVersion);
+                    }
+
+                    services.AddDbContext<StatisticsContext>(options => options.UseMySql(statisticsConfig.ConnectionString, serverVersion));
+                    break;
+                case "MSSQL":
+                    services.AddDbContext<StatisticsContext>(options => options.UseSqlServer(statisticsConfig.ConnectionString));
+                    break;
+                case "MYSQL":
+                    if (string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion))
+                    {
+                        serverVersion = MySqlServerVersion.LatestSupportedServerVersion;
+                    }
+                    else
+                    {
+                        serverVersion = new MySqlServerVersion(statisticsConfig.DatabaseVersion);
+                    }
+
+                    services.AddDbContext<StatisticsContext>(options => options.UseMySql(statisticsConfig.ConnectionString, serverVersion));
                     break;
             }
         }
