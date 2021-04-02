@@ -110,7 +110,7 @@
     @((MarkupString)(!string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody))
 </div>
 @code {
-    private const string DefaultTranslation = "ESV";
+    private string DefaultTranslation = "ESV";
     private const string RenderingParametersModelId = "RenderingParametersModel";
     private LanguageComparer languageComparer = new LanguageComparer();
     private RenderedPassage passage = new RenderedPassage();
@@ -131,6 +131,12 @@
     {
         // Load the list of translations
         this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations") ?? Array.Empty<Translation>();
+
+        // If we don't have the ESV, default to the NET
+        if (!this.translations.Any(t => t.Code == "ESV"))
+        {
+            this.DefaultTranslation = "NET";
+        }
 
         // Get the local copy of the rendering parameters
         RenderingParametersModel? localRenderingParameters = await this.LocalStorage.GetItemAsync<RenderingParametersModel?>(RenderingParametersModelId);

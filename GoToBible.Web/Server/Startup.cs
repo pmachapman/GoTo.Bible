@@ -11,6 +11,7 @@ namespace GoToBible.Web.Server
     using GoToBible.Web.Server.Models;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Caching.Distributed;
     using Microsoft.Extensions.Caching.SqlServer;
@@ -71,13 +72,14 @@ namespace GoToBible.Web.Server
             services.Configure<NltBibleOptions>(this.Configuration.GetSection("Providers:NltBible"));
 
             // Load the caching provider
-            CacheSettings cacheConfig = this.Configuration.GetSection("Providers:Cache").Get<CacheSettings>();
-            switch (cacheConfig.DatabaseProvider.ToUpperInvariant())
+            CacheSettings? cacheConfig = this.Configuration.GetSection("Providers:Cache").Get<CacheSettings>();
+            switch (cacheConfig?.DatabaseProvider?.ToUpperInvariant())
             {
                 case "MSSQL":
                     services.Configure<SqlServerCacheOptions>(this.Configuration.GetSection("Providers:Cache"));
                     services.AddSingleton<IDistributedCache, SqlServerCache>();
                     break;
+                case "MARIADB":
                 case "MYSQL":
                     services.Configure<MySqlCacheOptions>(this.Configuration.GetSection("Providers:Cache"));
                     services.AddSingleton<IDistributedCache, MySqlCache>();
@@ -149,6 +151,11 @@ namespace GoToBible.Web.Server
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+            });
 
             app.UseRouting();
 

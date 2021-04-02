@@ -1,9 +1,9 @@
 # GoTo.Bible
-View and compare Bible Translations in an innovative interlinear format. Run on Windows or Web (coming soon).
+View and compare Bible Translations in an innovative interlinear format. Run on Windows or Web at https://goto.bible/.
 
-## Requirements
+## Windows Requirements
 
-This app requires the following:
+The Windows App requires the following:
  * [Visual Studio 2019 Community](https://visualstudio.microsoft.com/downloads/)
  * [Microsoft .NET 5.0 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
  * [Microsoft Edge WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
