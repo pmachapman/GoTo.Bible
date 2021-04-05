@@ -13,7 +13,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@ShowPassageAsync">
+        <EditForm Model="@renderingParametersModel" class="form-inline" OnValidSubmit="@EditForm_OnValidSubmit">
             <DataAnnotationsValidator />
             <div class="mt-2 mt-lg-0 mr-lg-2">
                 <button type="button" class="btn btn-outline-secondary" disabled="@(!this.passage.PreviousPassage.IsValid)" @onclick="PreviousChapter_OnClick" title="Previous Chapter">
@@ -132,8 +132,9 @@
     </div>
 </div>
 @code {
-    private string DefaultTranslation = "ESV";
     private const string RenderingParametersModelId = "RenderingParametersModel";
+    private string defaultTranslation = "ESV";
+    private bool firstLoad = true;
     private LanguageComparer languageComparer = new LanguageComparer();
     private RenderedPassage passage = new RenderedPassage();
     private RenderingParameters parameters = new RenderingParameters();
@@ -157,7 +158,7 @@
         // If we don't have the ESV, default to the NET
         if (!this.translations.Any(t => t.Code == "ESV"))
         {
-            this.DefaultTranslation = "NET";
+            this.defaultTranslation = "NET";
         }
 
         // Get the local copy of the rendering parameters
@@ -193,7 +194,7 @@
         }
         else
         {
-            this.renderingParametersModel.PrimaryTranslation = DefaultTranslation;
+            this.renderingParametersModel.PrimaryTranslation = this.defaultTranslation;
         }
 
         if (!string.IsNullOrWhiteSpace(this.SecondaryTranslation))
@@ -201,8 +202,45 @@
             this.renderingParametersModel.SecondaryTranslation = this.SecondaryTranslation.DecodePassageFromUrl();
         }
 
-        // Set load parameters
-        await this.ShowPassageAsync();
+        // Call the base implementation
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Get the passage and translation
+        bool parametersAreEmpty = true;
+        if (!string.IsNullOrWhiteSpace(this.Passage))
+        {
+            this.renderingParametersModel.Passage = this.Passage.DecodePassageFromUrl();
+            parametersAreEmpty = false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(this.PrimaryTranslation))
+        {
+            this.renderingParametersModel.PrimaryTranslation = this.PrimaryTranslation.DecodePassageFromUrl();
+            parametersAreEmpty = false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(this.SecondaryTranslation))
+        {
+            this.renderingParametersModel.SecondaryTranslation = this.SecondaryTranslation.DecodePassageFromUrl();
+            parametersAreEmpty = false;
+        }
+
+        // Show the passage - only update the URL if this is the first load, and the parameters are empty
+        await this.ShowPassageAsync(firstLoad && parametersAreEmpty);
+
+        // Page has first loaded
+        this.firstLoad = false;
+
+        // Call the base implementation
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task EditForm_OnValidSubmit(EditContext editContext)
+    {
+        await this.ShowPassageAsync(true);
     }
 
     private async Task GetPassageAsync()
@@ -224,7 +262,7 @@
         if (this.passage.NextPassage.IsValid)
         {
             this.renderingParametersModel.Passage = this.passage.NextPassage.Start;
-            await this.ShowPassageAsync();
+            await this.ShowPassageAsync(true);
         }
     }
 
@@ -233,20 +271,20 @@
         if (this.passage.PreviousPassage.IsValid)
         {
             this.renderingParametersModel.Passage = this.passage.PreviousPassage.Start;
-            await this.ShowPassageAsync();
+            await this.ShowPassageAsync(true);
         }
     }
 
     private async Task PrimaryTranslation_OnInput(ChangeEventArgs e)
     {
         this.renderingParametersModel.PrimaryTranslation = e.Value?.ToString() ?? string.Empty;
-        await this.ShowPassageAsync();
+        await this.ShowPassageAsync(true);
     }
 
     private async Task SecondaryTranslation_OnInput(ChangeEventArgs e)
     {
         this.renderingParametersModel.SecondaryTranslation = e.Value?.ToString() ?? string.Empty;
-        await this.ShowPassageAsync();
+        await this.ShowPassageAsync(true);
     }
 
     private async Task SwapTranslations_OnClick()
@@ -256,22 +294,26 @@
         {
             this.renderingParametersModel.SecondaryTranslation = this.renderingParametersModel.PrimaryTranslation;
             this.renderingParametersModel.PrimaryTranslation = secondaryTranslation;
-            await this.ShowPassageAsync();
+            await this.ShowPassageAsync(true);
         }
     }
 
-    private async Task ShowPassageAsync()
+    private async Task ShowPassageAsync(bool updateUrl)
     {
         this.UpdateParameters();
 
         // Ensure we have a primary translation
         if (string.IsNullOrWhiteSpace(this.parameters.PrimaryTranslation))
         {
-            this.renderingParametersModel.PrimaryTranslation = DefaultTranslation;
+            this.renderingParametersModel.PrimaryTranslation = this.defaultTranslation;
             this.UpdateParameters();
         }
 
-        await this.UpdateUrlAsync();
+        if (updateUrl)
+        {
+            await this.UpdateUrlAsync();
+        }
+
         await this.GetPassageAsync();
         await this.LocalStorage.SetItemAsync<RenderingParametersModel>(RenderingParametersModelId, this.renderingParametersModel);
     }

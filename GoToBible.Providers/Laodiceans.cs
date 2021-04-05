@@ -17,6 +17,11 @@ namespace GoToBible.Providers
     /// <seealso cref="IProvider" />
     public class Laodiceans : IProvider
     {
+        /// <summary>
+        /// The copyright message.
+        /// </summary>
+        private const string Copyright = "Public Domain";
+
         /// <inheritdoc/>
         public string Id => nameof(Laodiceans);
 
@@ -65,6 +70,7 @@ namespace GoToBible.Providers
             {
                 Book = book,
                 ChapterNumber = chapterNumber,
+                Copyright = Copyright,
                 NextChapterReference = new ChapterReference(),
                 PreviousChapterReference = new ChapterReference(),
                 Translation = translation,
@@ -184,7 +190,7 @@ namespace GoToBible.Providers
                 Author = "John Wycliffe",
                 CanBeExported = true,
                 Code = "LAO-ANG",
-                Copyright = "Public Domain",
+                Copyright = Copyright,
                 Language = "Old English",
                 Name = "Epistle to the Laodiceans (Old English)",
                 Provider = this.Id,
@@ -195,7 +201,7 @@ namespace GoToBible.Providers
                 Author = "Peter Chapman",
                 CanBeExported = true,
                 Code = "LAO-ENG",
-                Copyright = "Public Domain",
+                Copyright = Copyright,
                 Language = "English",
                 Name = "Epistle to the Laodiceans (English)",
                 Provider = this.Id,
@@ -206,7 +212,7 @@ namespace GoToBible.Providers
                 Author = "Joseph Barber Lightfoot",
                 CanBeExported = true,
                 Code = "LAO-GRK",
-                Copyright = "Public Domain",
+                Copyright = Copyright,
                 Language = "Greek",
                 Name = "Epistle to the Laodiceans (Greek)",
                 Provider = this.Id,
@@ -217,7 +223,7 @@ namespace GoToBible.Providers
                 Author = "Pseudepigraphical",
                 CanBeExported = true,
                 Code = "LAO-LAT",
-                Copyright = "Public Domain",
+                Copyright = Copyright,
                 Language = "Latin",
                 Name = "Epistle to the Laodiceans (Latin)",
                 Provider = this.Id,

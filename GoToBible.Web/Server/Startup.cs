@@ -164,6 +164,7 @@ namespace GoToBible.Web.Server
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
+                endpoints.MapFallbackToFile("/{param?}", "index.html"); // Allow urls like https://localhost/John.1
             });
         }
     }
