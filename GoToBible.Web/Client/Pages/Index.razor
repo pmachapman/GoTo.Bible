@@ -109,6 +109,28 @@
 <div class="content px-4">
     @((MarkupString)(!string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody))
 </div>
+
+<div class="modal" tabindex="-1" role="dialog" id="error-dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">An error has occurred</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    This error has been logged on our server. Please log a ticket on our <a href="https://github.com/pmachapman/GoTo.Bible/issues" target="_blank">GitHub Issue Tracker</a>
+                    detailing the URL in the address bar, and what you were doing at the time, so we can try and resolve this issue for you.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
 @code {
     private string DefaultTranslation = "ESV";
     private const string RenderingParametersModelId = "RenderingParametersModel";
@@ -192,6 +214,7 @@
         }
         else
         {
+            await this.JsRuntime.InvokeAsync<string>("showDialog", "error-dialog");
             this.passage = new RenderedPassage();
         }
     }
