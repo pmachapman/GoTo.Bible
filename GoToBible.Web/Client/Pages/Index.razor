@@ -100,9 +100,12 @@
                 </button>
             </div>
         </EditForm>
-        <NavLink class="btn btn-secondary ml-lg-auto d-lg-none d-xl-block mt-2 mt-lg-0" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
+        <button class="btn btn-outline-secondary ml-lg-auto d-lg-none d-xl-block mt-2 mt-lg-0" data-toggle="modal" data-target="#settings-dialog">
+            <span class="fa fa-cog" aria-hidden="true"></span> Settings
+        </button>
+        <a class="btn btn-secondary ml-lg-2 d-lg-none d-xl-block mt-2 mt-lg-0" href="https://github.com/pmachapman/GoTo.Bible" target="_blank">
             <span class="fa fa-github" aria-hidden="true"></span> Contribute
-        </NavLink>
+        </a>
     </div>
 </nav>
 
@@ -124,6 +127,38 @@
                     This error has been logged on our server. Please log a ticket on our <a href="https://github.com/pmachapman/GoTo.Bible/issues" target="_blank">GitHub Issue Tracker</a>
                     detailing the URL in the address bar, and what you were doing at the time, so we can try and resolve this issue for you.
                 </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="settings-dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@renderingParametersModel">
+                    <div class="custom-control custom-checkbox">
+                        <InputCheckbox class="custom-control-input" id="interlinear-ignores-case" @oninput="InterlinearIgnoresCase_OnInput" @bind-Value="renderingParametersModel.InterlinearIgnoresCase" />
+                        <label class="custom-control-label" for="interlinear-ignores-case">Ignore Case for Interlinear Comparisons</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <InputCheckbox class="custom-control-input" id="interlinear-ignores-diacritics" @oninput="InterlinearIgnoresDiacritics_OnInput" @bind-Value="renderingParametersModel.InterlinearIgnoresDiacritics" />
+                        <label class="custom-control-label" for="interlinear-ignores-diacritics">Ignore Diacritics for Interlinear Comparisons</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <InputCheckbox class="custom-control-input" id="interlinear-ignores-punctation" @oninput="InterlinearIgnoresPunctuation_OnInput" @bind-Value="renderingParametersModel.InterlinearIgnoresPunctuation" />
+                        <label class="custom-control-label" for="interlinear-ignores-punctation">Ignore Punctuation for Interlinear Comparisons</label>
+                    </div>
+                </EditForm>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
@@ -257,6 +292,24 @@
         }
     }
 
+    private async Task InterlinearIgnoresCase_OnInput(ChangeEventArgs e)
+    {
+        this.renderingParametersModel.InterlinearIgnoresCase = e.Value as bool? ?? false;
+        await this.ShowPassageAsync(true);
+    }
+
+    private async Task InterlinearIgnoresDiacritics_OnInput(ChangeEventArgs e)
+    {
+        this.renderingParametersModel.InterlinearIgnoresDiacritics = e.Value as bool? ?? false;
+        await this.ShowPassageAsync(true);
+    }
+
+    private async Task InterlinearIgnoresPunctuation_OnInput(ChangeEventArgs e)
+    {
+        this.renderingParametersModel.InterlinearIgnoresPunctuation = e.Value as bool? ?? false;
+        await this.ShowPassageAsync(true);
+    }
+
     private async Task NextChapter_OnClick()
     {
         if (this.passage.NextPassage.IsValid)
@@ -324,6 +377,9 @@
     private void UpdateParameters()
     {
         this.passage.Content = string.Empty;
+        this.parameters.InterlinearIgnoresCase = this.renderingParametersModel.InterlinearIgnoresCase;
+        this.parameters.InterlinearIgnoresDiacritics = this.renderingParametersModel.InterlinearIgnoresDiacritics;
+        this.parameters.InterlinearIgnoresPunctuation = this.renderingParametersModel.InterlinearIgnoresPunctuation;
         this.parameters.PassageReference = this.renderingParametersModel.Passage.AsPassageReference();
         this.parameters.PrimaryProvider = string.Empty;
         this.parameters.PrimaryTranslation = string.Empty;

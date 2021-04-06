@@ -14,6 +14,30 @@ namespace GoToBible.Web.Client.Models
     public class RenderingParametersModel
     {
         /// <summary>
+        /// Gets or sets a value indicating whether the interlinear ignores case.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the interlinear ignores case; otherwise, <c>false</c>.
+        /// </value>
+        public bool InterlinearIgnoresCase { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the interlinear ignores diacritics.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the interlinear ignores diacritics; otherwise, <c>false</c>.
+        /// </value>
+        public bool InterlinearIgnoresDiacritics { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the interlinear ignores punctuation.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the interlinear ignores punctuation; otherwise, <c>false</c>.
+        /// </value>
+        public bool InterlinearIgnoresPunctuation { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the passage reference.
         /// </summary>
         /// <value>
