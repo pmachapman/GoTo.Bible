@@ -163,7 +163,7 @@ namespace GoToBible.Providers
             if (!string.IsNullOrWhiteSpace(output))
             {
                 // Get the text
-                chapter.Text = output.NormaliseLineEndings().Replace("\n", string.Empty).Replace("\\n", "\r\n", StringComparison.OrdinalIgnoreCase).Trim();
+                chapter.Text = output.NormaliseLineEndings().Replace("\n", string.Empty).Replace("\\n", Environment.NewLine, StringComparison.OrdinalIgnoreCase).Trim();
 
                 // Get the next/previous chapters
                 string previousChapter = string.Empty;

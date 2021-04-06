@@ -107,7 +107,7 @@ namespace GoToBible.Web.Server.Controllers
                 // Log the URL, with details to help us debug
                 RequestHeaders header = this.Request.GetTypedHeaders();
                 string renderingParameters = JsonSerializer.Serialize(parameters);
-                this.logger.LogError(ex, $"URL: {UriHelper.GetDisplayUrl(this.Request)}\r\nReferer: {header.Referer}\r\nRenderingParameters: {renderingParameters}");
+                this.logger.LogError(ex, $"URL: {UriHelper.GetDisplayUrl(this.Request)}{Environment.NewLine}Referer: {header.Referer}{Environment.NewLine}RenderingParameters: {renderingParameters}");
                 return this.Problem();
             }
         }

@@ -44,7 +44,7 @@ namespace GoToBible.Windows
             }
             catch (TargetInvocationException)
             {
-                if (MessageBox.Show("The Microsoft Edge WebView2 Runtime could not be found.\r\n\r\nWould you like to download and install it now?", "Cannot Start GoToBible", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (MessageBox.Show($"The Microsoft Edge WebView2 Runtime could not be found.{Environment.NewLine}{Environment.NewLine}Would you like to download and install it now?", "Cannot Start GoToBible", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 {
                     Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
                     {

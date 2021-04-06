@@ -132,7 +132,7 @@ namespace GoToBible.Engine
                 if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
                 {
                     StringBuilder sb = new StringBuilder();
-                    string[] lines = firstChapter.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] lines = firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string line in lines)
                     {
                         sb.AppendLine(line.StripItalics());
@@ -152,7 +152,7 @@ namespace GoToBible.Engine
                 if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
                 {
                     StringBuilder sb = new StringBuilder();
-                    string[] lines = firstChapter.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] lines = firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string line in lines)
                     {
                         sb.AppendLine($"{book} {chapter}:" + line.RenderItalics("i").TrimStart());
@@ -212,8 +212,8 @@ namespace GoToBible.Engine
 
                     // Render both interlinear
                     bool hasContent = false;
-                    List<string> lines1 = firstChapter.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    List<string> lines2 = secondChapter.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> lines1 = firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> lines2 = secondChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                     // Add any missing verses
                     for (int i = 0; i < lines1.Count; i++)
@@ -368,7 +368,7 @@ namespace GoToBible.Engine
                 else
                 {
                     // Just render the first translation
-                    foreach (string line in firstChapter.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    foreach (string line in firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         sb.Append(this.RenderLineAsHtml(line, parameters));
                     }
@@ -490,7 +490,7 @@ namespace GoToBible.Engine
                 }
 
                 // Add a HTML and text new line
-                return $"{line} <br>\r\n";
+                return $"{line} <br>{Environment.NewLine}";
             }
             else
             {
@@ -808,7 +808,7 @@ namespace GoToBible.Engine
                 }
 
                 // Add a HTML and text new line
-                renderedVerse.Content = $"{sb} <br>\r\n";
+                renderedVerse.Content = $"{sb} <br>{Environment.NewLine}";
                 return renderedVerse;
             }
             else if (!string.IsNullOrWhiteSpace(line1))
@@ -830,7 +830,7 @@ namespace GoToBible.Engine
                 }
 
                 // Add a HTML and text new line
-                renderedVerse.Content = $"{line1} <br>\r\n";
+                renderedVerse.Content = $"{line1} <br>{Environment.NewLine}";
                 return renderedVerse;
             }
             else if (!string.IsNullOrWhiteSpace(line2))
@@ -852,7 +852,7 @@ namespace GoToBible.Engine
                 }
 
                 // Add a HTML and text new line
-                renderedVerse.Content = $"{line2} <br>\r\n";
+                renderedVerse.Content = $"{line2} <br>{Environment.NewLine}";
                 return renderedVerse;
             }
             else

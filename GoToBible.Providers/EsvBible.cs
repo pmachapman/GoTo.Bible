@@ -248,7 +248,7 @@ namespace GoToBible.Providers
                 }
 
                 output = DuplicateSpacesRegex.Replace(output, " ");
-                output = VerseNumberRegex.Replace(output, "\r\n$1  ");
+                output = VerseNumberRegex.Replace(output, $"{Environment.NewLine}$1  ");
                 chapter.Text = output;
 
                 // Get the previous and next chapter references

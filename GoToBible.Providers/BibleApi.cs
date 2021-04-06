@@ -139,7 +139,7 @@ namespace GoToBible.Providers
         /// <summary>
         /// The regular expression to clean up verse numbers.
         /// </summary>
-        private static readonly Regex VerseNumberRegex = new Regex("\\r\\n(\\d+|\\d+\\-\\d+)\\]", RegexOptions.Compiled);
+        private static readonly Regex VerseNumberRegex = new Regex($"{Regex.Escape(Environment.NewLine)}(\\d+|\\d+\\-\\d+)\\]", RegexOptions.Compiled);
 
         /// <summary>
         /// Initialises a new instance of the <see cref="BibleApi" /> class.
@@ -372,12 +372,12 @@ namespace GoToBible.Providers
             {
                 // Get the text
                 string output = chapterJson.data.content.Trim().Replace("\n", " ");
-                output = VerseLinesRegex.Replace(output, "\r\n");
-                output = VerseNumberRegex.Replace(output, "\r\n$1 ");
+                output = VerseLinesRegex.Replace(output, Environment.NewLine);
+                output = VerseNumberRegex.Replace(output, $"{Environment.NewLine}$1 ");
                 chapter.Copyright = chapterJson.data.copyright.Trim().Replace("\n", " ") + chapterJson.meta.fumsNoScript;
                 if (chapterNumber > 0
                     && output[..1] != "1"
-                    && !(output.Contains("\r\n1 ", StringComparison.OrdinalIgnoreCase) || output.StartsWith("\r\n1", StringComparison.OrdinalIgnoreCase)))
+                    && !(output.Contains($"{Environment.NewLine}1 ", StringComparison.OrdinalIgnoreCase) || output.StartsWith($"{Environment.NewLine}1", StringComparison.OrdinalIgnoreCase)))
                 {
                     output = $"1 {output}";
                 }

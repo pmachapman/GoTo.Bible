@@ -124,7 +124,7 @@ namespace GoToBible.Providers
                 }));
             if (data is not null && data.Any())
             {
-                chapter.Text = string.Join("\r\n", data.Select(d => $"{d.verse}  {d.text}"));
+                chapter.Text = string.Join(Environment.NewLine, data.Select(d => $"{d.verse}  {d.text}"));
                 chapter.PreviousChapterReference = Canon.GetPreviousChapter(book, chapterNumber);
                 chapter.NextChapterReference = Canon.GetNextChapter(book, chapterNumber);
                 return chapter;
