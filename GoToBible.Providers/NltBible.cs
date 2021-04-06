@@ -131,15 +131,28 @@ namespace GoToBible.Providers
 
                 // Strip out content we do not want
                 bool endItalics = false;
-                foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//span[@class='vn']|//span[@class='tn']|//p[@class='psa-hebrew']|//hr[@class='text-critical']|//p[@class='text-critical']|//p[@class='psa-title']|//p[@class='chapter-number']|//p[@class='subhead']|//a[@class='a-tn']").ToArray())
+                foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//span[@class='vn']|//span[@class='tn']|//p[@class='psa-hebrew']|//hr[@class='text-critical']|//p[@class='text-critical']|//p[@class='psa-title']|//p[@class='chapter-number']|//p[@class='subhead']|//a[@class='a-tn']|//p[@class='poet1']|//p[@class='poet2']|//p[@class='sos-speaker']").ToArray())
                 {
                     string text = string.Empty;
 
-                    // This is for the shorter ending in Mark
-                    if (node.Name == "hr" && book == "mark")
+                    // Fix any unusual nodes
+                    if (node.Name == "hr" && book.ToUpperInvariant() == "MARK")
                     {
+                        // This is for the shorter ending in Mark
                         endItalics = true;
                         text = " [";
+                    }
+                    else if (node.HasClass("poet1") || node.HasClass("poet2"))
+                    {
+                        // This is for the Song of Solomon poetry lines
+                        foreach (HtmlNode innerNode in node.ChildNodes)
+                        {
+                            // Strip any HTML nodes (i.e. footnotes)
+                            if (innerNode.NodeType == HtmlNodeType.Text)
+                            {
+                                text += " " + innerNode.InnerText.Trim() + " ";
+                            }
+                        }
                     }
 
                     HtmlTextNode replacement = doc.CreateTextNode(text);

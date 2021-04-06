@@ -233,7 +233,13 @@ namespace GoToBible.Providers
             if (data is not null && data.passages.Any())
             {
                 // Get the text
-                string output = data.passages.First().Trim().Replace("\n", " ").Replace("  ", " ");
+                string output = data.passages.First();
+
+                // Clean up the Song of Solomon
+                output = output.Replace("\n\nHe\n\n", "\n").Replace("\n\nShe\n\n", "\n").Replace("\n\nOthers\n\n", "\n");
+
+                // Final clean up
+                output = output.Trim().Replace("\n", " ").Replace("  ", " ");
 
                 // Strip Psalm sub heading
                 if (output[..3] != "[1]")
