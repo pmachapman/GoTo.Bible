@@ -166,7 +166,7 @@ namespace GoToBible.Providers
                 chapter.Text = output.NormaliseLineEndings().Replace("\n", string.Empty).Replace("\\n", Environment.NewLine, StringComparison.OrdinalIgnoreCase).Trim();
 
                 // Clean up Stephanus' Textus Receptus
-                if (chapter.Text.StartsWith("1  \r\n1", StringComparison.OrdinalIgnoreCase))
+                if (chapter.Text.StartsWith($"1  {Environment.NewLine}1", StringComparison.OrdinalIgnoreCase))
                 {
                     chapter.Text = chapter.Text[5..];
                 }
