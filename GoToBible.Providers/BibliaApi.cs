@@ -165,6 +165,12 @@ namespace GoToBible.Providers
                 // Get the text
                 chapter.Text = output.NormaliseLineEndings().Replace("\n", string.Empty).Replace("\\n", Environment.NewLine, StringComparison.OrdinalIgnoreCase).Trim();
 
+                // Clean up Stephanus' Textus Receptus
+                if (chapter.Text.StartsWith("1  \r\n1", StringComparison.OrdinalIgnoreCase))
+                {
+                    chapter.Text = chapter.Text[5..];
+                }
+
                 // Get the next/previous chapters
                 string previousChapter = string.Empty;
                 string thisChapter = $"{book} {chapterNumber}";
