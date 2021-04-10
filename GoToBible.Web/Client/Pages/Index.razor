@@ -237,6 +237,11 @@
             this.renderingParametersModel.SecondaryTranslation = this.SecondaryTranslation.DecodePassageFromUrl();
         }
 
+        // Load the settings
+        this.renderingParametersModel.InterlinearIgnoresCase = localRenderingParameters?.InterlinearIgnoresCase ?? false;
+        this.renderingParametersModel.InterlinearIgnoresDiacritics = localRenderingParameters?.InterlinearIgnoresDiacritics ?? false;
+        this.renderingParametersModel.InterlinearIgnoresPunctuation = localRenderingParameters?.InterlinearIgnoresPunctuation ?? false;
+
         // Call the base implementation
         await base.OnInitializedAsync();
     }
