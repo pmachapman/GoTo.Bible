@@ -276,6 +276,7 @@
     private async Task EditForm_OnValidSubmit(EditContext editContext)
     {
         await this.ShowPassageAsync(true);
+        await this.JsRuntime.InvokeAsync<string>("closeMenu", "navbarNav");
     }
 
     private async Task GetPassageAsync()
@@ -316,6 +317,7 @@
         {
             this.renderingParametersModel.Passage = this.passage.NextPassage.Start;
             await this.ShowPassageAsync(true);
+            await this.JsRuntime.InvokeAsync<string>("closeMenu", "navbarNav");
         }
     }
 
@@ -325,6 +327,7 @@
         {
             this.renderingParametersModel.Passage = this.passage.PreviousPassage.Start;
             await this.ShowPassageAsync(true);
+            await this.JsRuntime.InvokeAsync<string>("closeMenu", "navbarNav");
         }
     }
 
