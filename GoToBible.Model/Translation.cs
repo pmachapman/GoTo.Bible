@@ -52,6 +52,14 @@ namespace GoToBible.Model
         public string? Copyright { get; set; }
 
         /// <summary>
+        /// Gets or sets the translation's dialect.
+        /// </summary>
+        /// <value>
+        /// The translation dialect.
+        /// </value>
+        public string? Dialect { get; set; }
+
+        /// <summary>
         /// Gets or sets the translation's language.
         /// </summary>
         /// <value>

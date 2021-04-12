@@ -85,7 +85,7 @@ namespace GoToBible.Engine
             // Break up the normalised passage
             // TODO: Use the passage reference end
             string[] passageParts = parameters.PassageReference.Start.Split(':');
-            string[] bookParts = passageParts.First().Split(' ');
+            string[] bookParts = passageParts.First().Split();
             string book = string.Join(" ", bookParts.Take(bookParts.Length - 1));
             if (!int.TryParse(bookParts.Last(), out int chapter))
             {
@@ -242,6 +242,13 @@ namespace GoToBible.Engine
                         {
                             RenderedVerse firstAttempt = this.RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, false);
                             RenderedVerse secondAttempt = this.RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, true);
+
+                            // If there are no words in any, skip
+                            if (firstAttempt.TotalWordsLine1 == 0 && firstAttempt.TotalWordsLine2 == 0 && firstAttempt.DivergentPhrases == 0 && firstAttempt.WordsInCommon == 0
+                                && secondAttempt.TotalWordsLine1 == 0 && secondAttempt.TotalWordsLine2 == 0 && secondAttempt.DivergentPhrases == 0 && secondAttempt.WordsInCommon == 0)
+                            {
+                                continue;
+                            }
 
                             // Calculate which rendering to use, based on verse statistics
                             bool useFirstAttempt;
@@ -475,6 +482,11 @@ namespace GoToBible.Engine
                         line = $"<sup>{verseNumber}</sup>  " + line[(line.IndexOf(' ') + 1)..].Trim();
                     }
                 }
+                else if (int.TryParse(line, out int verseNum))
+                {
+                    // There is only a verse number, so do not render
+                    return string.Empty;
+                }
 
                 // Render additional words in italics
                 if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
@@ -524,7 +536,7 @@ namespace GoToBible.Engine
                         line1 = line1.RenderItalics();
 
                         // Only run a maximum for the number of spaces in the line
-                        for (int i = 0; i < line1.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).Length; i++)
+                        for (int i = 0; i < line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).Length; i++)
                         {
                             string updatedLine1 = ItaliciseWordsRegex.Replace(line1, "$1</em>$2<em>$3");
                             if (updatedLine1 == line1)
@@ -553,7 +565,7 @@ namespace GoToBible.Engine
                         line2 = line2.RenderItalics();
 
                         // Only run a maximum for the number of spaces in the line
-                        for (int i = 0; i < line2.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).Length; i++)
+                        for (int i = 0; i < line2.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).Length; i++)
                         {
                             string updatedLine2 = ItaliciseWordsRegex.Replace(line2, "$1</em>$2<em>$3");
                             if (updatedLine2 == line2)
@@ -601,8 +613,8 @@ namespace GoToBible.Engine
                     line2 = line2[(line2.IndexOf(' ') + 1)..].Trim();
 
                     // Split the words
-                    List<string> words1 = line1.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    List<string> words2 = line2.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> words1 = line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> words2 = line2.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList();
 
                     // Get the word counts
                     renderedVerse.TotalWordsLine1 = words1.Count;

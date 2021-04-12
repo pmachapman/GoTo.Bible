@@ -7,7 +7,9 @@
 namespace GoToBible.Engine
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using GoToBible.Model;
 
     /// <summary>
@@ -80,6 +82,39 @@ namespace GoToBible.Engine
             else
             {
                 return line.Replace("[", string.Empty).Replace("]", string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Gets a unique name for the translation.
+        /// </summary>
+        /// <param name="translation">The translation.</param>
+        /// <param name="translations">The translations.</param>
+        /// <returns>
+        /// The unique name.
+        /// </returns>
+        public static string UniqueName(this Translation translation, IEnumerable<Translation> translations)
+        {
+            if (translations.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)) <= 1)
+            {
+                return translation.Name;
+            }
+            else if (translations.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Year == translation.Year && t.Year > 0) == 1)
+            {
+                return $"{translation.Name} ({translation.Year})";
+            }
+            else if (translations.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Language == translation.Language) == 1)
+            {
+                return $"{translation.Language} {translation.Name}";
+            }
+            else if (translations.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
+                && t.Dialect == translation.Dialect && !string.IsNullOrWhiteSpace(t.Dialect)) == 1)
+            {
+                return $"{translation.Name} ({translation.Dialect})";
+            }
+            else
+            {
+                return $"{translation.Name} ({translation.Provider})";
             }
         }
     }

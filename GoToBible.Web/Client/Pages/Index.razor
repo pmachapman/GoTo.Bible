@@ -44,7 +44,7 @@
                     else
                     {
                         string lastLanguage = string.Empty;
-                        foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language, languageComparer).ThenBy(t => t.Name))
+                        foreach (Translation translation in translations)
                         {
                             if (translation.Language != lastLanguage)
                             {
@@ -56,7 +56,7 @@
                                 @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
                             }
 
-                            <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
+                            <option value="@translation.Code">@translation.Name</option>
                         }
                     }
                 </InputSelect>
@@ -77,7 +77,7 @@
                     {
                         <option value="" selected>None</option>
                         string lastLanguage = string.Empty;
-                        foreach (Translation translation in translations.Where(t => !t.Commentary).OrderBy(t => t.Language, languageComparer).ThenBy(t => t.Name))
+                        foreach (Translation translation in translations)
                         {
                             if (translation.Language != lastLanguage)
                             {
@@ -89,7 +89,7 @@
                                 @((MarkupString)$"<optgroup label=\"{lastLanguage}\">")
                             }
 
-                            <option value="@translation.Code">@translation.UniqueName(this.translations)</option>
+                            <option value="@translation.Code">@translation.Name</option>
                         }
                     }
                 </InputSelect>
@@ -188,7 +188,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Load the list of translations
-        this.translations = await this.Http.GetFromJsonAsync<Translation[]>("Translations") ?? Array.Empty<Translation>();
+        this.translations = (await this.Http.GetFromJsonAsync<Translation[]>("Translations"))?.Where(t => !t.Commentary)?.OrderBy(t => t.Language, languageComparer)?.ThenBy(t => t.Name)?.ToArray() ?? Array.Empty<Translation>();
 
         // If we don't have the ESV, default to the NET
         if (!this.translations.Any(t => t.Code == "ESV"))

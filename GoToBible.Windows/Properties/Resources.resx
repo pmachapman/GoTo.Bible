@@ -145,6 +145,15 @@
   <data name="Debug" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Debug.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="DefaultPassage" xml:space="preserve">
+    <value>John 3:16</value>
+  </data>
+  <data name="DigitalBiblePlatform" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DigitalBiblePlatform.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DigitalBiblePlatformIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DigitalBiblePlatformIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Esv" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\esv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

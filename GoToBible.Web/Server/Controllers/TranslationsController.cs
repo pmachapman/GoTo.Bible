@@ -7,6 +7,7 @@
 namespace GoToBible.Web.Server.Controllers
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using GoToBible.Model;
     using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,41 @@ namespace GoToBible.Web.Server.Controllers
     [Route("[controller]")]
     public class TranslationsController : ControllerBase
     {
+        /// <summary>
+        /// A list of blocked translations that cause unnecessary duplicates.
+        /// </summary>
+        private static readonly ReadOnlyCollection<string> BlockedTranslations = new List<string>
+        {
+            "BibleApi-6bab4d6c61b31b80-01",
+            "BibleApi-7142879509583d59-02",
+            "BibleApi-7142879509583d59-03",
+            "BibleApi-7142879509583d59-04",
+            "BibleApi-9879dbb7cfe39e4d-02",
+            "BibleApi-9879dbb7cfe39e4d-03",
+            "BibleApi-9879dbb7cfe39e4d-04",
+            "BibleApi-de4e12af7f28f599-02",
+            "BibliaApi-asv",
+            "BibliaApi-kjv",
+            "BibliaApi-kjv1900",
+            "BibliaApi-kjvapoc",
+            "DigitalBiblePlatformApi-AAHWBTN2ET",
+            "DigitalBiblePlatformApi-ENGASV",
+            "DigitalBiblePlatformApi-ENGKJV",
+            "DigitalBiblePlatformApi-ENGREV",
+            "DigitalBiblePlatformApi-ENGWEB",
+        }.AsReadOnly();
+
+        /// <summary>
+        /// Name substitutions to help users of the web application.
+        /// </summary>
+        private static readonly ReadOnlyDictionary<string, string> NameSubstitutions = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
+        {
+            { "The Holy Bible, American Standard Version", "American Standard Version" },
+            { "English Standard Version - FCBH Audio", "English Standard Version (2007)" },
+            { "NAS New American Standard Bible", "New American Standard Bible (1995)" },
+            { "King James (Authorised) Version (Ecumenical)", "King James Version" },
+        });
+
         /// <summary>
         /// The providers.
         /// </summary>
@@ -45,7 +81,17 @@ namespace GoToBible.Web.Server.Controllers
             {
                 await foreach (Translation translation in provider.GetTranslationsAsync())
                 {
-                    yield return translation;
+                    // Clean up any names we are displaying
+                    if (NameSubstitutions.ContainsKey(translation.Name))
+                    {
+                        translation.Name = NameSubstitutions[translation.Name];
+                    }
+
+                    // Make sure this isn't a blocked translation
+                    if (!BlockedTranslations.Contains($"{translation.Provider}-{translation.Code}"))
+                    {
+                        yield return translation;
+                    }
                 }
             }
         }

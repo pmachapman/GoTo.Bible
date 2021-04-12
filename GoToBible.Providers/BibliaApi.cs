@@ -283,23 +283,5 @@ namespace GoToBible.Providers
                 }
             }
         }
-
-        /// <summary>
-        /// Gets all of the books and chapters in a translation asynchronously.
-        /// </summary>
-        /// <param name="translation">The translation.</param>
-        /// <returns>
-        /// The list of chapters.
-        /// </returns>
-        private async IAsyncEnumerable<string> GetChaptersAsync(string translation)
-        {
-            await foreach (Book book in this.GetBooksAsync(translation, true))
-            {
-                foreach (ChapterReference chapter in book.Chapters)
-                {
-                    yield return chapter.ToString();
-                }
-            }
-        }
     }
 }

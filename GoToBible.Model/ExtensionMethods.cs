@@ -344,30 +344,6 @@ namespace GoToBible.Model
         }
 
         /// <summary>
-        /// Gets a unique name for the translation.
-        /// </summary>
-        /// <param name="translation">The translation.</param>
-        /// <param name="translations">The translations.</param>
-        /// <returns>
-        /// The unique name.
-        /// </returns>
-        public static string UniqueName(this Translation translation, IEnumerable<Translation> translations)
-        {
-            if (translations.Count(t => t.Name == translation.Name) <= 1)
-            {
-                return translation.Name;
-            }
-            else if (translations.Count(t => t.Name == translation.Name && t.Year == translation.Year && t.Year > 0) == 1)
-            {
-                return $"{translation.Name} ({translation.Year})";
-            }
-            else
-            {
-                return $"{translation.Name} ({translation.Provider})";
-            }
-        }
-
-        /// <summary>
         /// Gets the book.
         /// </summary>
         /// <param name="passage">The passage.</param>
