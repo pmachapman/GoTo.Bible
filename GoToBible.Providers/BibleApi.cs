@@ -139,7 +139,7 @@ namespace GoToBible.Providers
         /// <summary>
         /// The regular expression to clean up verse numbers.
         /// </summary>
-        private static readonly Regex VerseNumberRegex = new Regex($"{Regex.Escape(Environment.NewLine)}(\\d+|\\d+\\-\\d+)\\]", RegexOptions.Compiled);
+        private static readonly Regex VerseNumberRegex = new Regex($"{Regex.Escape(Environment.NewLine)}(\\d+|\\d+\\-\\d+|\\d+[a-z])\\]", RegexOptions.Compiled);
 
         /// <summary>
         /// Initialises a new instance of the <see cref="BibleApi" /> class.
