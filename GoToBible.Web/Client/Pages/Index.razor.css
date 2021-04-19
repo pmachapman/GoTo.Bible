@@ -1,11 +1,27 @@
-﻿@media (max-width: 991.98px) { /* Medium and Below */
+﻿@media (max-width: 991.98px) {
+    /* Medium and Below */
     .navbar .input-group {
         width: 100%;
     }
 }
 
-@media (min-width: 992px) { /* Large and Above */
+@media (min-width: 992px) {
+    /* Large and Above */
     .navbar .input-group {
         width: 245px;
+    }
+}
+
+@media (max-width: 320px) {
+    /* Hide Book and Chapter when it won't fit */
+    .navbar #navbar-text {
+        display: none !important;
+    }
+}
+
+@media (max-width: 175px) {
+    /* Hide Next and Previous when it won't fit */
+    .navbar #navbar-buttons {
+        display: none !important;
     }
 }
