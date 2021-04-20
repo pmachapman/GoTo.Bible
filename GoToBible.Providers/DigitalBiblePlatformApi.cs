@@ -203,7 +203,7 @@ namespace GoToBible.Providers
             {
                 foreach (var book in books)
                 {
-                    string bookName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(ReverseBookCodeMap[book.book_id]);
+                    string bookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(ReverseBookCodeMap[book.book_id]);
                     List<ChapterReference> chapterReferences = new List<ChapterReference>();
                     if (includeChapters)
                     {
@@ -338,18 +338,20 @@ namespace GoToBible.Providers
                 string translationDamId = damId.EndsWith("P1ET") || damId.EndsWith("P2ET") ? damId : translation;
 
                 // Get the next/previous chapters
+                bool getNextChapter = false;
                 string previousChapter = string.Empty;
                 string thisChapter = $"{book} {chapterNumber}";
                 await foreach (string nextChapter in this.GetChaptersAsync(translationDamId))
                 {
-                    if (chapter.PreviousChapterReference.IsValid)
+                    if (getNextChapter)
                     {
                         chapter.NextChapterReference = new ChapterReference(nextChapter);
                         break;
                     }
-                    else if (nextChapter == thisChapter)
+                    else if (string.Compare(nextChapter, thisChapter, true) == 0)
                     {
                         chapter.PreviousChapterReference = new ChapterReference(previousChapter);
+                        getNextChapter = true;
                         continue;
                     }
 

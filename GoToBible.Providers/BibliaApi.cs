@@ -172,18 +172,20 @@ namespace GoToBible.Providers
                 }
 
                 // Get the next/previous chapters
+                bool getNextChapter = false;
                 string previousChapter = string.Empty;
                 string thisChapter = $"{book} {chapterNumber}";
                 await foreach (string nextChapter in this.GetChaptersAsync(translation))
                 {
-                    if (chapter.PreviousChapterReference.IsValid)
+                    if (getNextChapter)
                     {
                         chapter.NextChapterReference = new ChapterReference(nextChapter);
                         break;
                     }
-                    else if (nextChapter == thisChapter)
+                    else if (string.Compare(nextChapter, thisChapter, true) == 0)
                     {
                         chapter.PreviousChapterReference = new ChapterReference(previousChapter);
+                        getNextChapter = true;
                         continue;
                     }
 
