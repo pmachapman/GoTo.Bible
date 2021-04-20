@@ -260,12 +260,22 @@ namespace GoToBible.Providers
             {
                 if (NewTestamentCanon.HasBook(bookName))
                 {
-                    damId = digitalBiblePlatformTranslation.DamIds.First(d => d.EndsWith("N1ET") || d.EndsWith("N2ET") || d.EndsWith("C1ET") || d.EndsWith("C2ET"));
+                    damId = digitalBiblePlatformTranslation.DamIds.FirstOrDefault(d => d.EndsWith("N1ET") || d.EndsWith("N2ET")
+                        || d.EndsWith("C1ET") || d.EndsWith("C2ET")
+                        || d.EndsWith("P1ET") || d.EndsWith("P2ET")) ?? string.Empty;
                 }
                 else
                 {
-                    damId = digitalBiblePlatformTranslation.DamIds.First(d => d.EndsWith("O1ET") || d.EndsWith("O2ET") || d.EndsWith("C1ET") || d.EndsWith("C2ET"));
+                    damId = digitalBiblePlatformTranslation.DamIds.FirstOrDefault(d => d.EndsWith("O1ET") || d.EndsWith("O2ET")
+                        || d.EndsWith("C1ET") || d.EndsWith("C2ET")
+                        || d.EndsWith("P1ET") || d.EndsWith("P2ET")) ?? string.Empty;
                 }
+            }
+
+            // Make sure we have a DAM id
+            if (string.IsNullOrWhiteSpace(damId))
+            {
+                return chapter;
             }
 
             // Load the book
@@ -324,10 +334,13 @@ namespace GoToBible.Providers
                 // Get the copyright information
                 chapter.Copyright = await this.GetCopyright(damId);
 
+                // See if we are only dealing with a partial translation
+                string translationDamId = damId.EndsWith("P1ET") || damId.EndsWith("P2ET") ? damId : translation;
+
                 // Get the next/previous chapters
                 string previousChapter = string.Empty;
                 string thisChapter = $"{book} {chapterNumber}";
-                await foreach (string nextChapter in this.GetChaptersAsync(translation))
+                await foreach (string nextChapter in this.GetChaptersAsync(translationDamId))
                 {
                     if (chapter.PreviousChapterReference.IsValid)
                     {
