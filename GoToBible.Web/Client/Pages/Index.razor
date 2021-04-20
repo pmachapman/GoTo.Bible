@@ -406,6 +406,8 @@
         this.parameters.PrimaryTranslation = string.Empty;
         this.parameters.SecondaryProvider = null;
         this.parameters.SecondaryTranslation = null;
+        string? primaryLanguage = null;
+        string? secondaryLanguage = null;
         foreach (Translation translation in this.translations)
         {
             // See if both passages have been rendered
@@ -417,6 +419,7 @@
             {
                 this.parameters.PrimaryProvider = translation.Provider;
                 this.parameters.PrimaryTranslation = translation.Code;
+                primaryLanguage = translation.Language;
                 this.renderingParametersModel.PrimaryTranslation = translation.Code;
 
                 // No secondary translation specified, or it has already been rendered
@@ -429,6 +432,7 @@
             {
                 this.parameters.SecondaryProvider = translation.Provider;
                 this.parameters.SecondaryTranslation = translation.Code;
+                secondaryLanguage = translation.Language;
                 this.renderingParametersModel.SecondaryTranslation = translation.Code;
 
                 // No primary translation specified, or it has already been rendered
@@ -437,6 +441,17 @@
                     break;
                 }
             }
+        }
+
+        // Make sure we are not showing an interlinear with the original language
+        if ((primaryLanguage == "Greek" && secondaryLanguage != "Greek" && !string.IsNullOrWhiteSpace(secondaryLanguage))
+            || (primaryLanguage == "Hebrew" && secondaryLanguage != "Hebrew" && !string.IsNullOrWhiteSpace(secondaryLanguage))
+            || (secondaryLanguage == "Greek" && primaryLanguage != "Greek" && !string.IsNullOrWhiteSpace(primaryLanguage))
+            || (secondaryLanguage == "Hebrew" && primaryLanguage != "Hebrew" && !string.IsNullOrWhiteSpace(primaryLanguage)))
+        {
+            this.renderingParametersModel.SecondaryTranslation = null;
+            this.parameters.SecondaryProvider = null;
+            this.parameters.SecondaryTranslation = null;
         }
     }
 

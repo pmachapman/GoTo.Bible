@@ -29,6 +29,14 @@ namespace GoToBible.Windows
         public string Code { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets the translation language.
+        /// </summary>
+        /// <value>
+        /// The translation language.
+        /// </value>
+        public string? Language { get; set; }
+
+        /// <summary>
         /// Gets or sets the translation provider.
         /// </summary>
         /// <value>

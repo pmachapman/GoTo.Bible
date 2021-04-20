@@ -511,6 +511,7 @@ namespace GoToBible.Windows
                         Text = commentary.UniqueName(this.translations),
                         CanBeExported = commentary.CanBeExported,
                         Code = commentary.Code,
+                        Language = commentary.Language,
                         Provider = commentary.Provider,
                     };
                     this.ToolStripComboBoxResource.Items.Add(comboBoxItem);
@@ -553,6 +554,7 @@ namespace GoToBible.Windows
                         Text = translation.UniqueName(this.translations),
                         CanBeExported = translation.CanBeExported,
                         Code = translation.Code,
+                        Language = translation.Language,
                         Provider = translation.Provider,
                     };
                     this.ToolStripComboBoxPrimaryTranslation.Items.Add(comboBoxItem);
@@ -975,6 +977,21 @@ namespace GoToBible.Windows
             }
             else
             {
+                // Make sure we are not showing an interlinear with the original language
+                if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
+                    && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
+                {
+                    if ((primaryItem.Language == "Greek" && secondaryItem.Language != "Greek")
+                        || (primaryItem.Language == "Hebrew" && secondaryItem.Language != "Hebrew")
+                        || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
+                        || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
+                    {
+                        MessageBox.Show("Sorry, you cannot show this translation interlinear with an original language", "GoTo.Bible", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
+                    }
+                }
+
+                // Show the passage
                 await this.SetupAutoCompleteAsync();
                 if (!string.IsNullOrWhiteSpace(this.ToolStripTextBoxPassage.Text))
                 {
@@ -1008,6 +1025,21 @@ namespace GoToBible.Windows
             }
             else
             {
+                // Make sure we are not showing an interlinear with the original language
+                if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
+                    && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
+                {
+                    if ((primaryItem.Language == "Greek" && secondaryItem.Language != "Greek")
+                        || (primaryItem.Language == "Hebrew" && secondaryItem.Language != "Hebrew")
+                        || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
+                        || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
+                    {
+                        MessageBox.Show("Sorry, you cannot show this translation interlinear with an original language", "GoTo.Bible", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
+                    }
+                }
+
+                // Show the passage
                 await this.SetupAutoCompleteAsync();
                 if (!string.IsNullOrWhiteSpace(this.ToolStripTextBoxPassage.Text))
                 {
