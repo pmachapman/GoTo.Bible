@@ -80,7 +80,7 @@ namespace GoToBible.Web.Server.Controllers
                         AccessedAt = DateTime.UtcNow,
                         ForwardedFor = this.Request.Headers["HTTP_X_FORWARDED_FOR"].FirstOrDefault(),
                         IpAddress = this.Request.HttpContext.Connection.RemoteIpAddress?.ToString(),
-                        Passage = parameters.PassageReference.Start,
+                        Passage = parameters.PassageReference.ChapterReference.ToString(),
                         PrimaryProvider = parameters.PrimaryProvider,
                         PrimaryTranslation = parameters.PrimaryTranslation,
                         SecondaryProvider = parameters.SecondaryProvider,

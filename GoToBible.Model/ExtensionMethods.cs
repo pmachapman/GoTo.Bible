@@ -202,7 +202,7 @@ namespace GoToBible.Model
             ["2 maccabees"] = new string[] { "2ma", "2maccabees", "2mac", "2macc", "iima", "iimaccabees", "iimac", "iimacc" },
             ["3 maccabees"] = new string[] { "3ma", "3maccabees", "3mac", "3macc", "iiima", "iiimaccabees", "iiimac", "iiimacc" },
             ["4 maccabees"] = new string[] { "4ma", "4maccabees", "4mac", "4macc", "ivma", "ivmaccabees", "ivmac", "icmacc" },
-            ["laodiceans"] = new string[] { "lao", "laodiceans", "laodiceans" },
+            ["laodiceans"] = new string[] { "lao", "laodiceans" },
         });
 
         /// <summary>
@@ -252,27 +252,79 @@ namespace GoToBible.Model
                 string[] ranges = GetRanges(sanitisedPassage);
                 foreach (string range in ranges)
                 {
-                    // TODO: Calculate passage reference end for ranges, i.e. 1 John 1:1-2
-                    bool setEnd = false;
                     if (!int.TryParse(range.Split(':')[0], out int chapter))
                     {
                         chapter = 1;
-                        setEnd = true;
                     }
 
                     if (!int.TryParse(range.Split(':')[1], out int verse))
                     {
                         verse = 1;
-                        setEnd = true;
                     }
 
-                    // Get the first reference
-                    passageReference.Original = passage;
-                    passageReference.Start = CultureInfo.CurrentCulture.TextInfo.ToTitleCase($"{book} {chapter}:{verse}");
-                    if (setEnd)
+                    // Set the chapter reference
+                    book = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(book);
+                    passageReference.ChapterReference = new ChapterReference(book, chapter);
+                    if (passage.Contains(':', StringComparison.OrdinalIgnoreCase))
                     {
-                        int lastVerse = chapters[chapter - 1];
-                        passageReference.End = CultureInfo.CurrentCulture.TextInfo.ToTitleCase($"{book} {chapter}:{lastVerse}");
+                        List<int> highlightedVerses = new List<int>();
+                        StringBuilder sb = new StringBuilder();
+                        foreach (string displayRange in ranges)
+                        {
+                            int displayRangeVerse;
+                            if (displayRange == "...")
+                            {
+                                highlightedVerses.Add(int.MaxValue);
+                                sb.Append('-');
+                                continue;
+                            }
+                            else if (displayRange.Contains(":", StringComparison.OrdinalIgnoreCase))
+                            {
+                                string[] displayRangeParts = displayRange.Split(":", StringSplitOptions.RemoveEmptyEntries);
+                                if (!int.TryParse(displayRangeParts.First(), out int displayRangeChapter) || displayRangeChapter != chapter || !int.TryParse(displayRangeParts.Last(), out displayRangeVerse))
+                                {
+                                    continue;
+                                }
+                            }
+                            else if (!int.TryParse(displayRange, out displayRangeVerse))
+                            {
+                                continue;
+                            }
+
+                            if (sb.Length > 0 && sb[^1] != '-')
+                            {
+                                sb.Append(',');
+                            }
+
+                            highlightedVerses.Add(displayRangeVerse);
+                            sb.Append(displayRangeVerse);
+                        }
+
+                        // Fill in verses for highlighting
+                        for (int i = 0; i < highlightedVerses.Count; i++)
+                        {
+                            if (highlightedVerses[i] == int.MaxValue)
+                            {
+                                highlightedVerses.RemoveAt(i);
+                                if (i > 0 && i < highlightedVerses.Count)
+                                {
+                                    int start = highlightedVerses[i - 1];
+                                    int end = highlightedVerses[i];
+                                    for (int j = ++start; j < end; j++)
+                                    {
+                                        highlightedVerses.Add(j);
+                                    }
+                                }
+                            }
+                        }
+
+                        // Set the disply and highlighted verses
+                        passageReference.Display = $"{book} {chapter}:{sb}";
+                        passageReference.HighlightedVerses = highlightedVerses.OrderBy(v => v).ToArray();
+                    }
+                    else
+                    {
+                        passageReference.Display = $"{book} {chapter}";
                     }
 
                     break;
@@ -368,7 +420,7 @@ namespace GoToBible.Model
                 index += 1;
             }
 
-            string bookPart = passage[0..index];
+            string bookPart = passage[..index];
 
             // Get the book matching the user's input
             foreach ((string book, string[] aliases) in BookNameMap)
@@ -416,6 +468,8 @@ namespace GoToBible.Model
                 string[] endParts = dashParts[1].Split(':');
                 bool hasVerse = endParts.Length == 2;
 
+                // Mark that we are to fill in this range
+                ranges.Add("...");
                 if (startParts.Length == 2)
                 {
                     ranges.Add((hasVerse ? string.Empty : startParts[0] + ":") + dashParts[1]);
@@ -490,7 +544,7 @@ namespace GoToBible.Model
             {
                 Regex numberStartRegex = new Regex(@"[\w\s]\d", RegexOptions.Compiled);
                 int numberStart = numberStartRegex.Match(semiParts[0]).Index + 1;
-                string before = semiParts[0][0..numberStart];
+                string before = semiParts[0][..numberStart];
                 string after = semiParts[0][numberStart..];
                 semiParts[0] = $"{before}1:{after}";
             }

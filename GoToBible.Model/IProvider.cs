@@ -64,6 +64,16 @@ namespace GoToBible.Model
         Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber);
 
         /// <summary>
+        /// Gets a chapter from the bible.
+        /// </summary>
+        /// <param name="translation">The translation code.</param>
+        /// <param name="chapterReference">The chapter reference.</param>
+        /// <returns>
+        /// The chapter for rendering.
+        /// </returns>
+        Task<Chapter> GetChapterAsync(string translation, ChapterReference chapterReference) => this.GetChapterAsync(translation, chapterReference.Book, chapterReference.ChapterNumber);
+
+        /// <summary>
         /// Gets the translations available from the provider asynchronously.
         /// </summary>
         /// <returns>

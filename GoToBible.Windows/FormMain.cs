@@ -636,7 +636,7 @@ namespace GoToBible.Windows
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private async void ToolStripButtonExport_Click(object sender, EventArgs e)
         {
-            this.SaveFileDialogMain.FileName = this.parameters.PassageReference.Start.Split(':').First() + ".txt";
+            this.SaveFileDialogMain.FileName = this.parameters.PassageReference.ChapterReference + ".txt";
             if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
             {
                 // Render for export to Accordance
@@ -654,7 +654,7 @@ namespace GoToBible.Windows
         {
             if (this.renderedPassage.PreviousPassage.IsValid)
             {
-                this.ToolStripTextBoxPassage.Text = this.renderedPassage.PreviousPassage.Start;
+                this.ToolStripTextBoxPassage.Text = this.renderedPassage.PreviousPassage.ChapterReference.ToString();
                 await this.ShowPassage(true, true);
             }
         }
@@ -668,7 +668,7 @@ namespace GoToBible.Windows
         {
             if (this.renderedPassage.NextPassage.IsValid)
             {
-                this.ToolStripTextBoxPassage.Text = this.renderedPassage.NextPassage.Start;
+                this.ToolStripTextBoxPassage.Text = this.renderedPassage.NextPassage.ChapterReference.ToString();
                 await this.ShowPassage(true, true);
             }
         }
@@ -815,7 +815,7 @@ namespace GoToBible.Windows
                     Properties.Settings.Default.InterlinearIgnoresPunctuation = this.parameters.InterlinearIgnoresPunctuation;
                     Properties.Settings.Default.IsDebug = this.parameters.IsDebug;
                     Properties.Settings.Default.RenderItalics = this.parameters.RenderItalics;
-                    Properties.Settings.Default.Passage = this.parameters.PassageReference.Start;
+                    Properties.Settings.Default.Passage = this.parameters.PassageReference.Display;
                     Properties.Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
                     Properties.Settings.Default.SecondaryTranslation = this.parameters.SecondaryTranslation;
                     Properties.Settings.Default.Resource = resource;

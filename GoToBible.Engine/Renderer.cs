@@ -82,16 +82,6 @@ namespace GoToBible.Engine
         /// </returns>
         public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage)
         {
-            // Break up the normalised passage
-            // TODO: Use the passage reference end
-            string[] passageParts = parameters.PassageReference.Start.Split(':');
-            string[] bookParts = passageParts.First().Split();
-            string book = string.Join(" ", bookParts.Take(bookParts.Length - 1));
-            if (!int.TryParse(bookParts.Last(), out int chapter))
-            {
-                chapter = 1;
-            }
-
             // Set up the rendered passage
             RenderedPassage renderedPassage = new RenderedPassage();
 
@@ -103,7 +93,7 @@ namespace GoToBible.Engine
             }
 
             // Get the first translation
-            Chapter firstChapter = await firstProvider.GetChapterAsync(parameters.PrimaryTranslation, book, chapter);
+            Chapter firstChapter = await firstProvider.GetChapterAsync(parameters.PrimaryTranslation, parameters.PassageReference.ChapterReference);
 
             // Setup the previous chapter reference
             if (firstChapter.PreviousChapterReference.IsValid)
@@ -155,7 +145,9 @@ namespace GoToBible.Engine
                     string[] lines = firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string line in lines)
                     {
-                        sb.AppendLine($"{book} {chapter}:" + line.RenderItalics("i").TrimStart());
+                        sb.Append(parameters.PassageReference.ChapterReference);
+                        sb.Append(':');
+                        sb.AppendLine(line.RenderItalics("i").TrimStart());
                     }
 
                     renderedPassage.Content = sb.ToString();
@@ -196,7 +188,7 @@ namespace GoToBible.Engine
                     }
 
                     // Get the second translation, if specified
-                    Chapter secondChapter = await secondProvider.GetChapterAsync(parameters.SecondaryTranslation, book, chapter);
+                    Chapter secondChapter = await secondProvider.GetChapterAsync(parameters.SecondaryTranslation, parameters.PassageReference.ChapterReference);
 
                     // If the next chapter reference is invalid, see if this chapter has a valid reference
                     if (!renderedPassage.NextPassage.IsValid && secondChapter.NextChapterReference.IsValid)
@@ -479,7 +471,14 @@ namespace GoToBible.Engine
                     if ((verseNumber.Length > 0 && char.IsDigit(verseNumber[0]))
                         || (verseNumber.Length > 1 && char.IsDigit(verseNumber[1])))
                     {
-                        line = $"<sup>{verseNumber}</sup>  " + line[(line.IndexOf(' ') + 1)..].Trim();
+                        if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
+                        {
+                            line = $"<sup>{verseNumber}</sup>  <mark>" + line[(line.IndexOf(' ') + 1)..].Trim() + "</mark>";
+                        }
+                        else
+                        {
+                            line = $"<sup>{verseNumber}</sup>  " + line[(line.IndexOf(' ') + 1)..].Trim();
+                        }
                     }
                 }
                 else if (int.TryParse(line, out int verseNum))
@@ -808,14 +807,33 @@ namespace GoToBible.Engine
                     // Finish
                     sb.Append("</span>");
 
-                    // Add the verse number
-                    if (verseNumber1 == verseNumber2)
+                    // Add any highlighting
+                    if ((int.TryParse(verseNumber1, out int verseNumber1Value) && parameters.PassageReference.HighlightedVerses.Contains(verseNumber1Value))
+                    || (int.TryParse(verseNumber2, out int verseNumber2Value) && parameters.PassageReference.HighlightedVerses.Contains(verseNumber2Value)))
                     {
-                        sb.Insert(0, $"<sup>{verseNumber1}</sup>  <span>");
+                        // Add the verse number
+                        if (verseNumber1 == verseNumber2)
+                        {
+                            sb.Insert(0, $"<sup>{verseNumber1}</sup>  <mark><span>");
+                        }
+                        else
+                        {
+                            sb.Insert(0, $"<span class=\"supsub\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <mark><span> ");
+                        }
+
+                        sb.Append("</mark>");
                     }
                     else
                     {
-                        sb.Insert(0, $"<span class=\"supsub\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <span> ");
+                        // Add the verse number without highlighting
+                        if (verseNumber1 == verseNumber2)
+                        {
+                            sb.Insert(0, $"<sup>{verseNumber1}</sup>  <span>");
+                        }
+                        else
+                        {
+                            sb.Insert(0, $"<span class=\"supsub\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <span> ");
+                        }
                     }
                 }
 
@@ -833,7 +851,14 @@ namespace GoToBible.Engine
                     if ((verseNumber.Length > 0 && char.IsDigit(verseNumber[0]))
                         || (verseNumber.Length > 1 && char.IsDigit(verseNumber[1])))
                     {
-                        line1 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</span><span>&nbsp;</span></span>";
+                        if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
+                        {
+                            line1 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\"><mark>" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</mark></span><span>&nbsp;</span></span>";
+                        }
+                        else
+                        {
+                            line1 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</span><span>&nbsp;</span></span>";
+                        }
                     }
                     else
                     {
@@ -855,7 +880,14 @@ namespace GoToBible.Engine
                     if ((verseNumber.Length > 0 && char.IsDigit(verseNumber[0]))
                         || (verseNumber.Length > 1 && char.IsDigit(verseNumber[1])))
                     {
-                        line2 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\">" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</span></span>";
+                        if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
+                        {
+                            line2 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\"><mark>" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</mark></span></span>";
+                        }
+                        else
+                        {
+                            line2 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\">" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</span></span>";
+                        }
                     }
                     else
                     {

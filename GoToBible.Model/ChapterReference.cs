@@ -6,6 +6,8 @@
 
 namespace GoToBible.Model
 {
+    using System;
+
     /// <summary>
     /// A chapter reference.
     /// </summary>
@@ -19,7 +21,6 @@ namespace GoToBible.Model
         /// </remarks>
         public ChapterReference()
         {
-            this.Book = string.Empty;
         }
 
         /// <summary>
@@ -41,13 +42,19 @@ namespace GoToBible.Model
         {
             if (!string.IsNullOrWhiteSpace(bookAndChapter))
             {
-                int lastSpaceIndex = bookAndChapter.LastIndexOf(' ');
+                int lastSpaceIndex = bookAndChapter.LastIndexOf(" ", StringComparison.OrdinalIgnoreCase);
                 if (lastSpaceIndex > -1)
                 {
-                    this.Book = bookAndChapter.Substring(0, lastSpaceIndex);
-                    if (int.TryParse(bookAndChapter[(lastSpaceIndex + 1)..], out int chapter))
+                    this.Book = bookAndChapter[..lastSpaceIndex];
+                    string chapter = bookAndChapter[(lastSpaceIndex + 1)..];
+                    if (chapter.Contains(":", StringComparison.OrdinalIgnoreCase))
                     {
-                        this.ChapterNumber = chapter;
+                        chapter = chapter[..chapter.IndexOf(":", StringComparison.OrdinalIgnoreCase)];
+                    }
+
+                    if (int.TryParse(chapter, out int chapterNumber))
+                    {
+                        this.ChapterNumber = chapterNumber;
                     }
 
                     return;
@@ -58,20 +65,20 @@ namespace GoToBible.Model
         }
 
         /// <summary>
-        /// Gets the book.
+        /// Gets or sets the book.
         /// </summary>
         /// <value>
         /// The book.
         /// </value>
-        public string Book { get; }
+        public string Book { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets the chapter number.
+        /// Gets or sets the chapter number.
         /// </summary>
         /// <value>
         /// The chapter number.
         /// </value>
-        public int ChapterNumber { get; }
+        public int ChapterNumber { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is valid.

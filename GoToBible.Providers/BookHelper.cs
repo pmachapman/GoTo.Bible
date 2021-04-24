@@ -39,7 +39,7 @@ namespace GoToBible.Providers
         {
             foreach (string bookName in this.BookNames)
             {
-                string capitalisedBookName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(bookName);
+                string capitalisedBookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(bookName);
                 if (!includeChapters)
                 {
                     // Create and return the book

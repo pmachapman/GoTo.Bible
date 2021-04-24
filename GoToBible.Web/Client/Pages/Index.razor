@@ -109,7 +109,7 @@
     </div>
     <div class="d-flex flex-grow-1 d-lg-none" id="navbar-text">
         <span class="w-100 d-lg-none d-block"></span>
-        <span class="navbar-brand">@(!string.IsNullOrWhiteSpace(this.parameters.PassageReference.Start) ? this.parameters.PassageReference.Start : "GoTo.Bible")</span>
+        <span class="navbar-brand">@(!string.IsNullOrWhiteSpace(this.parameters.PassageReference.Display) ? this.parameters.PassageReference.Display : "GoTo.Bible")</span>
         <span class="w-100 d-lg-none d-block"></span>
     </div>
     <div class="d-lg-none" id="navbar-buttons">
@@ -333,7 +333,7 @@
     {
         if (this.passage.NextPassage.IsValid)
         {
-            this.renderingParametersModel.Passage = this.passage.NextPassage.Start;
+            this.renderingParametersModel.Passage = this.passage.NextPassage.ChapterReference.ToString();
             await this.ShowPassageAsync(true);
             await this.JsRuntime.InvokeAsync<string>("closeMenu", "navbarNav");
         }
@@ -343,7 +343,7 @@
     {
         if (this.passage.PreviousPassage.IsValid)
         {
-            this.renderingParametersModel.Passage = this.passage.PreviousPassage.Start;
+            this.renderingParametersModel.Passage = this.passage.PreviousPassage.ChapterReference.ToString();
             await this.ShowPassageAsync(true);
             await this.JsRuntime.InvokeAsync<string>("closeMenu", "navbarNav");
         }
@@ -463,7 +463,7 @@
     {
         StringBuilder sb = new StringBuilder();
         sb.Append("/");
-        string passage = this.parameters.PassageReference.Start.EncodePassageForUrl();
+        string passage = this.parameters.PassageReference.Display.EncodePassageForUrl();
         if (!string.IsNullOrWhiteSpace(passage))
         {
             sb.Append(passage);

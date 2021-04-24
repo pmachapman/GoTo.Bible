@@ -202,7 +202,7 @@ namespace GoToBible.Providers
             {
                 foreach (var bookData in books.data)
                 {
-                    string bookName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(ReverseBookCodeMap[bookData.id]);
+                    string bookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(ReverseBookCodeMap[bookData.id]);
                     if (!includeChapters)
                     {
                         // Return the book
