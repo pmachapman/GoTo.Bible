@@ -2,7 +2,7 @@
 @page "/{passage}"
 @page "/{passage}/{primaryTranslation}"
 @page "/{passage}/{primaryTranslation}/{secondaryTranslation}"
-@using System.Text
+@using System.Text 
 @using Blazored.LocalStorage
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
@@ -122,8 +122,8 @@
     </div>
 </nav>
 
-<div class="content px-4">
-    @((MarkupString)(!string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody))
+<div class="content px-4" id="passage-content">
+    @((MarkupString)Html.LoadingCodeBody)
 </div>
 
 <div class="modal" tabindex="-1" role="dialog" id="error-dialog">
@@ -374,6 +374,10 @@
 
     private async Task ShowPassageAsync(bool updateUrl)
     {
+        // Show the loading spinner
+        await this.JsRuntime.InvokeVoidAsync("setContent", "passage-content", Html.LoadingCodeBody);
+
+        // Update the parameters object from the model
         this.UpdateParameters();
 
         // Ensure we have a primary translation
@@ -390,6 +394,15 @@
 
         await this.GetPassageAsync();
         await this.LocalStorage.SetItemAsync<RenderingParametersModel>(RenderingParametersModelId, this.renderingParametersModel);
+
+        // We set the content manually, so we can do things after it has loaded
+        await this.JsRuntime.InvokeVoidAsync("setContent", "passage-content", !string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody);
+
+        // If we have a verse highlighted, scroll to it
+        if (this.parameters.PassageReference.HighlightedVerses.Any())
+        {
+            await this.JsRuntime.InvokeAsync<string>("scrollToElement", $"{this.parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{this.parameters.PassageReference.HighlightedVerses.First()}");
+        }
     }
 
     /// <summary>

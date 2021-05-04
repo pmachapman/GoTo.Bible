@@ -198,8 +198,13 @@ namespace GoToBible.Windows
             this.SplitContainerMain.SplitterDistance = splitterDistance;
 
             // Get the colours and font
-            this.ColourDialogMain.Color = ColorTranslator.FromOle(Properties.Settings.Default.BackgroundColour);
-            this.ColourDialogMain.CustomColors = Properties.Settings.Default.CustomColours
+            this.ColourDialogBackground.Color = ColorTranslator.FromOle(Properties.Settings.Default.BackgroundColour);
+            this.ColourDialogBackground.CustomColors = Properties.Settings.Default.BackgroundCustomColours
+                .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(c => int.TryParse(c, out int i) ? i : 16777215)
+                .ToArray();
+            this.ColourDialogHighlight.Color = ColorTranslator.FromOle(Properties.Settings.Default.HighlightColour);
+            this.ColourDialogHighlight.CustomColors = Properties.Settings.Default.HighlightCustomColours
                 .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(c => int.TryParse(c, out int i) ? i : 16777215)
                 .ToArray();
@@ -217,9 +222,10 @@ namespace GoToBible.Windows
             // Setup the rendering parameters for CSS
             this.parameters = new RenderingParameters
             {
-                BackgroundColour = this.ColourDialogMain.Color,
+                BackgroundColour = this.ColourDialogBackground.Color,
                 Font = this.FontDialogMain.Font.AsRenderFont(),
                 ForegroundColour = this.FontDialogMain.Color,
+                HighlightColour = this.ColourDialogHighlight.Color,
             };
 
             // Initialise the WebView2
@@ -779,10 +785,11 @@ namespace GoToBible.Windows
             this.ToolStripButtonSwap.Enabled = !string.IsNullOrWhiteSpace(secondaryTranslation);
             this.parameters = new RenderingParameters
             {
-                BackgroundColour = this.ColourDialogMain.Color,
+                BackgroundColour = this.ColourDialogBackground.Color,
                 Font = this.FontDialogMain.Font.AsRenderFont(),
                 ForegroundColour = this.FontDialogMain.Color,
                 Format = RenderFormat.Html,
+                HighlightColour = this.ColourDialogHighlight.Color,
                 InterlinearIgnoresCase = this.ToolStripMenuItemIgnoreCase.Checked,
                 InterlinearIgnoresDiacritics = this.ToolStripMenuItemIgnoreDiacritics.Checked,
                 InterlinearIgnoresPunctuation = this.ToolStripMenuItemIgnorePunctuation.Checked,
@@ -819,8 +826,10 @@ namespace GoToBible.Windows
                     Properties.Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
                     Properties.Settings.Default.SecondaryTranslation = this.parameters.SecondaryTranslation;
                     Properties.Settings.Default.Resource = resource;
-                    Properties.Settings.Default.CustomColours = string.Join(',', this.ColourDialogMain.CustomColors.Select(c => c.ToString()));
-                    Properties.Settings.Default.BackgroundColour = ColorTranslator.ToOle(this.ColourDialogMain.Color);
+                    Properties.Settings.Default.BackgroundCustomColours = string.Join(',', this.ColourDialogBackground.CustomColors.Select(c => c.ToString()));
+                    Properties.Settings.Default.BackgroundColour = ColorTranslator.ToOle(this.ColourDialogBackground.Color);
+                    Properties.Settings.Default.HighlightCustomColours = string.Join(',', this.ColourDialogHighlight.CustomColors.Select(c => c.ToString()));
+                    Properties.Settings.Default.HighlightColour = ColorTranslator.ToOle(this.ColourDialogHighlight.Color);
                     Properties.Settings.Default.ForegroundColour = ColorTranslator.ToOle(this.FontDialogMain.Color);
                     TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
                     Properties.Settings.Default.Font = converter.ConvertToString(this.FontDialogMain.Font);
@@ -1121,11 +1130,11 @@ namespace GoToBible.Windows
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private async void ToolStripMenuItemBackgroundColour_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = this.ColourDialogMain.ShowDialog();
+            DialogResult dialogResult = this.ColourDialogBackground.ShowDialog();
             if (dialogResult == DialogResult.OK)
             {
                 // Update the rendering parameters
-                this.parameters.BackgroundColour = this.ColourDialogMain.Color;
+                this.parameters.BackgroundColour = this.ColourDialogBackground.Color;
 
                 // Update the CSS
                 this.SetupWebPage(this.WebViewMain);
@@ -1291,6 +1300,28 @@ namespace GoToBible.Windows
                 // Update the rendering parameters
                 this.parameters.Font = this.FontDialogMain.Font.AsRenderFont();
                 this.parameters.ForegroundColour = this.FontDialogMain.Color;
+
+                // Update the CSS
+                this.SetupWebPage(this.WebViewMain);
+                this.SetupWebPage(this.WebViewResource);
+
+                // Render the passage
+                await this.ShowPassage(true, true);
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the Highlight Colour ToolStripMenuItem.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private async void ToolStripMenuItemHighlightColour_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = this.ColourDialogHighlight.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+            {
+                // Update the rendering parameters
+                this.parameters.HighlightColour = this.ColourDialogHighlight.Color;
 
                 // Update the CSS
                 this.SetupWebPage(this.WebViewMain);

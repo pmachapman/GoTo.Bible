@@ -22,17 +22,6 @@ namespace GoToBible.Model
         public Color BackgroundColour { get; set; } = Default.BackgroundColour;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="RenderingParameters" /> is in debugging mode.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if we are debugging; otherwise, <c>false</c>.
-        /// </value>
-        /// <remarks>
-        /// Debug mode will display extra developer information. It is not suitable for general use.
-        /// </remarks>
-        public bool IsDebug { get; set; } = false;
-
-        /// <summary>
         /// Gets or sets the font.
         /// </summary>
         /// <value>
@@ -57,6 +46,14 @@ namespace GoToBible.Model
         public RenderFormat Format { get; set; } = RenderFormat.Html;
 
         /// <summary>
+        /// Gets or sets the highlight colour.
+        /// </summary>
+        /// <value>
+        /// The highlight colour.
+        /// </value>
+        public Color HighlightColour { get; set; } = Default.HighlightColour;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the interlinear ignores case.
         /// </summary>
         /// <value>
@@ -79,6 +76,17 @@ namespace GoToBible.Model
         ///   <c>true</c> if the interlinear ignores punctuation; otherwise, <c>false</c>.
         /// </value>
         public bool InterlinearIgnoresPunctuation { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="RenderingParameters" /> is in debugging mode.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if we are debugging; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>
+        /// Debug mode will display extra developer information. It is not suitable for general use.
+        /// </remarks>
+        public bool IsDebug { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the passage reference.

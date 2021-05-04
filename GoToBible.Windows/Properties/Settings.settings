@@ -32,7 +32,7 @@
     <Setting Name="ForegroundColour" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="CustomColours" Type="System.String" Scope="User">
+    <Setting Name="BackgroundCustomColours" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="InterlinearIgnoresCase" Type="System.Boolean" Scope="User">
@@ -79,6 +79,12 @@
     </Setting>
     <Setting Name="IsDebug" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="HighlightCustomColours" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="HighlightColour" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">65535</Value>
     </Setting>
   </Settings>
 </SettingsFile>

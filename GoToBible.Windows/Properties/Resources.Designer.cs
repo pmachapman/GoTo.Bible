@@ -151,6 +151,15 @@ namespace GoToBible.Windows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to John 3:16.
+        /// </summary>
+        internal static string DefaultPassage {
+            get {
+                return ResourceManager.GetString("DefaultPassage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap DigitalBiblePlatform {
@@ -216,6 +225,16 @@ namespace GoToBible.Windows.Properties {
         internal static System.Drawing.Bitmap Go {
             get {
                 object obj = ResourceManager.GetObject("Go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Highlight {
+            get {
+                object obj = ResourceManager.GetObject("Highlight", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

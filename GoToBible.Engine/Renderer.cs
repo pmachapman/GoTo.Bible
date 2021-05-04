@@ -473,11 +473,11 @@ namespace GoToBible.Engine
                     {
                         if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
                         {
-                            line = $"<sup>{verseNumber}</sup>  <mark>" + line[(line.IndexOf(' ') + 1)..].Trim() + "</mark>";
+                            line = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <mark>" + line[(line.IndexOf(' ') + 1)..].Trim() + "</mark>";
                         }
                         else
                         {
-                            line = $"<sup>{verseNumber}</sup>  " + line[(line.IndexOf(' ') + 1)..].Trim();
+                            line = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  " + line[(line.IndexOf(' ') + 1)..].Trim();
                         }
                     }
                 }
@@ -814,11 +814,11 @@ namespace GoToBible.Engine
                         // Add the verse number
                         if (verseNumber1 == verseNumber2)
                         {
-                            sb.Insert(0, $"<sup>{verseNumber1}</sup>  <mark><span>");
+                            sb.Insert(0, $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <mark><span>");
                         }
                         else
                         {
-                            sb.Insert(0, $"<span class=\"supsub\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <mark><span> ");
+                            sb.Insert(0, $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <mark><span> ");
                         }
 
                         sb.Append("</mark>");
@@ -828,11 +828,11 @@ namespace GoToBible.Engine
                         // Add the verse number without highlighting
                         if (verseNumber1 == verseNumber2)
                         {
-                            sb.Insert(0, $"<sup>{verseNumber1}</sup>  <span>");
+                            sb.Insert(0, $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <span>");
                         }
                         else
                         {
-                            sb.Insert(0, $"<span class=\"supsub\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <span> ");
+                            sb.Insert(0, $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <span> ");
                         }
                     }
                 }
@@ -853,11 +853,11 @@ namespace GoToBible.Engine
                     {
                         if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
                         {
-                            line1 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\"><mark>" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</mark></span><span>&nbsp;</span></span>";
+                            line1 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\"><mark>" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</mark></span><span>&nbsp;</span></span>";
                         }
                         else
                         {
-                            line1 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</span><span>&nbsp;</span></span>";
+                            line1 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</span><span>&nbsp;</span></span>";
                         }
                     }
                     else
@@ -882,11 +882,11 @@ namespace GoToBible.Engine
                     {
                         if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
                         {
-                            line2 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\"><mark>" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</mark></span></span>";
+                            line2 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\"><mark>" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</mark></span></span>";
                         }
                         else
                         {
-                            line2 = $"<sup>{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\">" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</span></span>";
+                            line2 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\">" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</span></span>";
                         }
                     }
                     else

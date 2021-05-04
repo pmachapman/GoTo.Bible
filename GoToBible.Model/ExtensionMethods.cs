@@ -211,6 +211,11 @@ namespace GoToBible.Model
         private static readonly ReadOnlyCollection<string> BookNames = BookLengths.Keys.Cast<string>().ToList().AsReadOnly();
 
         /// <summary>
+        /// The strip invalid characters regular expression.
+        /// </summary>
+        private static readonly Regex StripInvalidCharactersRegex = new Regex(@"[^a-zA-Z0-9\. _~:,-]", RegexOptions.Compiled);
+
+        /// <summary>
         /// Builds a <see cref="PassageReference" /> from a <see cref="string" />.
         /// </summary>
         /// <param name="chapterReference">The chapter reference.</param>
@@ -335,6 +340,56 @@ namespace GoToBible.Model
         }
 
         /// <summary>
+        /// Decodes the passage from a URL.
+        /// </summary>
+        /// <param name="segment">The URL segment.</param>
+        /// <returns>
+        /// A string suitable for passing to the <c>RenderPassage</c> API.
+        /// </returns>
+        /// <remarks>
+        /// For example: "1.John.1_3~6-7" will be decoded to "1 John 1:3,6-7".
+        /// </remarks>
+        public static string DecodePassageFromUrl(this string segment)
+        {
+            if (string.IsNullOrWhiteSpace(segment))
+            {
+                return string.Empty;
+            }
+
+            // Strip invalid characters
+            string passage = StripInvalidCharactersRegex.Replace(segment, string.Empty);
+            passage = passage.Replace(".", " ", StringComparison.OrdinalIgnoreCase);
+            passage = passage.Replace("_", ":", StringComparison.OrdinalIgnoreCase);
+            passage = passage.Replace("~", ",", StringComparison.OrdinalIgnoreCase);
+            return passage;
+        }
+
+        /// <summary>
+        /// Encodes the passage for a URL.
+        /// </summary>
+        /// <param name="passage">The passage.</param>
+        /// <returns>
+        /// A string suitable for including in a page URL.
+        /// </returns>
+        /// <remarks>
+        /// For example: "1 John 1:3,6-7" will be encoded as "1.John.1_3~6-7".
+        /// </remarks>
+        public static string EncodePassageForUrl(this string passage)
+        {
+            if (string.IsNullOrWhiteSpace(passage))
+            {
+                return string.Empty;
+            }
+
+            // Strip invalid characters
+            string segment = StripInvalidCharactersRegex.Replace(passage, string.Empty);
+            segment = segment.Replace(" ", ".", StringComparison.OrdinalIgnoreCase);
+            segment = segment.Replace(":", "_", StringComparison.OrdinalIgnoreCase);
+            segment = segment.Replace(",", "~", StringComparison.OrdinalIgnoreCase);
+            return segment;
+        }
+
+        /// <summary>
         /// Renders the CSS.
         /// </summary>
         /// <param name="parameters">The parameters.</param>
@@ -392,6 +447,7 @@ namespace GoToBible.Model
             sb.Append($"sup{{font-size:{parameters.Font.SizeInPoints * 0.75f}pt;font-weight:bold}}.sup{{font-weight:bold}}");
             sb.Append($".copyright{{border-top:1px solid {ColorTranslator.ToHtml(parameters.ForegroundColour)};font-size:{Math.Round(parameters.Font.SizeInPoints * 0.75, 2)}pt}}");
             sb.Append(".supsub{display:inline-flex;flex-direction:column;justify-content:space-between;vertical-align:middle;font-size:50%}");
+            sb.Append($"mark{{background-color:{ColorTranslator.ToHtml(parameters.HighlightColour)}}}");
             return sb.ToString();
         }
 

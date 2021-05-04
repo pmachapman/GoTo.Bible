@@ -146,12 +146,12 @@ namespace GoToBible.Windows.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CustomColours {
+        public string BackgroundCustomColours {
             get {
-                return ((string)(this["CustomColours"]));
+                return ((string)(this["BackgroundCustomColours"]));
             }
             set {
-                this["CustomColours"] = value;
+                this["BackgroundCustomColours"] = value;
             }
         }
         
@@ -329,6 +329,30 @@ namespace GoToBible.Windows.Properties {
             }
             set {
                 this["IsDebug"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HighlightCustomColours {
+            get {
+                return ((string)(this["HighlightCustomColours"]));
+            }
+            set {
+                this["HighlightCustomColours"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("65535")]
+        public int HighlightColour {
+            get {
+                return ((int)(this["HighlightColour"]));
+            }
+            set {
+                this["HighlightColour"] = value;
             }
         }
     }

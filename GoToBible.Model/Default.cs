@@ -47,6 +47,14 @@ namespace GoToBible.Model
         public static Color ForegroundColour => Color.Black;
 
         /// <summary>
+        /// Gets the default highlight colour.
+        /// </summary>
+        /// <value>
+        /// The default highlight colour.
+        /// </value>
+        public static Color HighlightColour => Color.Yellow;
+
+        /// <summary>
         /// Gets the default passage reference.
         /// </summary>
         /// <value>
