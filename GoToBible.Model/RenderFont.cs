@@ -12,7 +12,7 @@ namespace GoToBible.Model
     /// <remarks>
     /// This is used instead of <c>System.Drawing.Font</c>, as that class is not supported by Blazor. It only includes font properties used by the <c>GoToBible.Renderer</c>.
     /// </remarks>
-    public class RenderFont
+    public record RenderFont
     {
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="RenderFont"/> is bold.

@@ -191,7 +191,10 @@
     private bool firstLoad = true;
     private readonly LanguageComparer languageComparer = new LanguageComparer();
     private RenderedPassage passage = new RenderedPassage();
-    private readonly RenderingParameters parameters = new RenderingParameters();
+    private readonly RenderingParameters parameters = new RenderingParameters
+    {
+        Font = Default.Font with { FamilyName = "Calibri,\"Helvetica Neue\",Arial,sans-serif" }
+    };
     private readonly RenderingParametersModel renderingParametersModel = new RenderingParametersModel();
     private Translation[] translations = Array.Empty<Translation>();
 
