@@ -14,7 +14,7 @@ namespace GoToBible.Model
     public static class Default
     {
         /// <summary>
-        /// The default to passage to dispaly if none is specified.
+        /// The default to passage to display if none is specified.
         /// </summary>
         public const string Passage = "John 3:16";
 

@@ -2,11 +2,17 @@
 @page "/{passage}"
 @page "/{passage}/{primaryTranslation}"
 @page "/{passage}/{primaryTranslation}/{secondaryTranslation}"
-@using System.Text 
+@using System.Text
 @using Blazored.LocalStorage
+@{
+    // ReSharper disable InconsistentNaming
+}
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
 @inject ILocalStorageService LocalStorage
+@{
+    // ReSharper restore InconsistentNaming
+}
 <style type="text/css">@(parameters.RenderCss() + Html.LoadingCodeCss)</style>
 <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -183,28 +189,38 @@
     private const string RenderingParametersModelId = "RenderingParametersModel";
     private string defaultTranslation = "ESV";
     private bool firstLoad = true;
-    private LanguageComparer languageComparer = new LanguageComparer();
+    private readonly LanguageComparer languageComparer = new LanguageComparer();
     private RenderedPassage passage = new RenderedPassage();
-    private RenderingParameters parameters = new RenderingParameters();
-    private RenderingParametersModel renderingParametersModel = new RenderingParametersModel();
+    private readonly RenderingParameters parameters = new RenderingParameters();
+    private readonly RenderingParametersModel renderingParametersModel = new RenderingParametersModel();
     private Translation[] translations = Array.Empty<Translation>();
 
+    /// <summary>
+    /// The passage specified by the user.
+    /// </summary>
     [Parameter]
     public string? Passage { get; set; }
 
+    /// <summary>
+    /// The primary translation specified by the user.
+    /// </summary>
     [Parameter]
     public string? PrimaryTranslation { get; set; }
 
+    /// <summary>
+    /// The secondary translation specified by the user.
+    /// </summary>
     [Parameter]
     public string? SecondaryTranslation { get; set; }
 
+    /// <inheritdoc />
     protected override async Task OnInitializedAsync()
     {
         // Load the list of translations
-        this.translations = (await this.Http.GetFromJsonAsync<Translation[]>("Translations"))?.Where(t => !t.Commentary)?.OrderBy(t => t.Language, languageComparer)?.ThenBy(t => t.Name)?.ToArray() ?? Array.Empty<Translation>();
+        this.translations = (await this.Http.GetFromJsonAsync<Translation[]>("Translations"))?.Where(t => !t.Commentary).OrderBy(t => t.Language, languageComparer).ThenBy(t => t.Name).ToArray() ?? Array.Empty<Translation>();
 
         // If we don't have the ESV, default to the NET
-        if (!this.translations.Any(t => t.Code == "ESV"))
+        if (this.translations.All(t => t.Code != "ESV"))
         {
             this.defaultTranslation = "NET";
         }
@@ -259,6 +275,7 @@
         await base.OnInitializedAsync();
     }
 
+    /// <inheritdoc />
     protected override async Task OnParametersSetAsync()
     {
         // Get the passage and translation
@@ -393,7 +410,7 @@
         }
 
         await this.GetPassageAsync();
-        await this.LocalStorage.SetItemAsync<RenderingParametersModel>(RenderingParametersModelId, this.renderingParametersModel);
+        await this.LocalStorage.SetItemAsync(RenderingParametersModelId, this.renderingParametersModel);
 
         // We set the content manually, so we can do things after it has loaded
         await this.JsRuntime.InvokeVoidAsync("setContent", "passage-content", !string.IsNullOrWhiteSpace(this.passage.Content) ? this.passage.Content : Html.LoadingCodeBody);

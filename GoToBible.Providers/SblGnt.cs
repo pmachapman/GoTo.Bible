@@ -70,7 +70,7 @@ namespace GoToBible.Providers
             if (Canon.IsValidChapter(book, chapterNumber))
             {
                 // Get the text
-                using Stream? stream = this.GetType().Assembly.GetManifestResourceStream($"GoToBible.Providers.Texts.{translation}.txt");
+                await using Stream? stream = this.GetType().Assembly.GetManifestResourceStream($"GoToBible.Providers.Texts.{translation}.txt");
                 if (stream != null)
                 {
                     using StreamReader reader = new StreamReader(stream);

@@ -15,7 +15,6 @@ namespace GoToBible.Windows
     using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Windows.Forms;
@@ -23,6 +22,7 @@ namespace GoToBible.Windows
     using GoToBible.Model;
     using GoToBible.Providers;
     using GoToBible.Windows.AutoComplete;
+    using GoToBible.Windows.Properties;
     using Microsoft.Extensions.Caching.Distributed;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Caching.SqlServer;
@@ -98,7 +98,7 @@ namespace GoToBible.Windows
             // Setup the GUI via the designer file
             this.InitializeComponent();
 
-            // Clean up the toolstrips
+            // Clean up the tool strips
             this.ToolStripContainerMain.SuspendLayout();
             this.ToolStripNavigate.Dock = DockStyle.None;
             this.ToolStripNavigate.Location = new Point(0, 0);
@@ -164,7 +164,10 @@ namespace GoToBible.Windows
             Program.Forms.Remove(this);
 
             // Disable autocomplete
-            AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
+            if (this.ToolStripTextBoxPassage.TextBox != null)
+            {
+                AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
+            }
 
             // If there are no forms left, exit
             if (!Program.Forms.Any())
@@ -200,12 +203,12 @@ namespace GoToBible.Windows
             // Get the colours and font
             this.ColourDialogBackground.Color = ColorTranslator.FromOle(Properties.Settings.Default.BackgroundColour);
             this.ColourDialogBackground.CustomColors = Properties.Settings.Default.BackgroundCustomColours
-                .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(c => int.TryParse(c, out int i) ? i : 16777215)
                 .ToArray();
             this.ColourDialogHighlight.Color = ColorTranslator.FromOle(Properties.Settings.Default.HighlightColour);
             this.ColourDialogHighlight.CustomColors = Properties.Settings.Default.HighlightCustomColours
-                .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(c => int.TryParse(c, out int i) ? i : 16777215)
                 .ToArray();
             this.FontDialogMain.Color = ColorTranslator.FromOle(Properties.Settings.Default.ForegroundColour);
@@ -241,16 +244,28 @@ namespace GoToBible.Windows
                 passage = Default.Passage;
             }
 
-            // Setup the toolstrip controls
-            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawItem += new DrawItemEventHandler(this.ToolStripComboBox_DrawItem);
-            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DropDownClosed += new EventHandler(this.ToolStripComboBox_DropDownClosed);
-            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawItem += new DrawItemEventHandler(this.ToolStripComboBox_DrawItem);
-            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DropDownClosed += new EventHandler(this.ToolStripComboBox_DropDownClosed);
-            this.ToolStripComboBoxResource.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ToolStripComboBoxResource.ComboBox.DrawItem += new DrawItemEventHandler(this.ToolStripComboBox_DrawItem);
-            this.ToolStripComboBoxResource.ComboBox.DropDownClosed += new EventHandler(this.ToolStripComboBox_DropDownClosed);
+            // Setup the tool strip controls
+            if (this.ToolStripComboBoxPrimaryTranslation.ComboBox != null)
+            {
+                this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+                this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
+                this.ToolStripComboBoxPrimaryTranslation.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
+            }
+
+            if (this.ToolStripComboBoxSecondaryTranslation.ComboBox != null)
+            {
+                this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+                this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
+                this.ToolStripComboBoxSecondaryTranslation.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
+            }
+
+            if (this.ToolStripComboBoxResource.ComboBox != null)
+            {
+                this.ToolStripComboBoxResource.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+                this.ToolStripComboBoxResource.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
+                this.ToolStripComboBoxResource.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
+            }
+
             this.ToolStripMenuItemIgnoreCase.Checked = Properties.Settings.Default.InterlinearIgnoresCase;
             this.ToolStripMenuItemIgnoreDiacritics.Checked = Properties.Settings.Default.InterlinearIgnoresDiacritics;
             this.ToolStripMenuItemIgnorePunctuation.Checked = Properties.Settings.Default.InterlinearIgnoresPunctuation;
@@ -359,7 +374,7 @@ namespace GoToBible.Windows
             this.providers.Add(new SblGnt());
 
             // Get the list of blocked providers
-            List<string> blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>()?.ToList() ?? new List<string>();
+            List<string> blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
 
             // Create a list of enabled providers
             List<IProvider> enabledProviders = new List<IProvider>();
@@ -410,11 +425,11 @@ namespace GoToBible.Windows
         /// <summary>
         /// Loads the translation combo boxes.
         /// </summary>
-        /// <param name="providers">The providers.</param>
+        /// <param name="translationProviders">The translation providers.</param>
         /// <param name="primaryTranslation">The primary translation.</param>
         /// <param name="secondaryTranslation">The secondary translation.</param>
         /// <param name="resource">The open resource.</param>
-        private async Task LoadTranslationComboBoxes(IList<IProvider> providers, string primaryTranslation, string secondaryTranslation, string resource)
+        private async Task LoadTranslationComboBoxes(IList<IProvider> translationProviders, string primaryTranslation, string secondaryTranslation, string resource)
         {
             // If we do not have a primary translation, secondary translation, or resource, see if we can get them
             if (string.IsNullOrWhiteSpace(primaryTranslation)
@@ -456,11 +471,11 @@ namespace GoToBible.Windows
             });
 
             // Get the full list of translations
-            List<string> blockedTranslations = Properties.Settings.Default.BlockedTranslations?.Cast<string>()?.ToList() ?? new List<string>();
-            List<string> blockedCommentaries = Properties.Settings.Default.BlockedCommentaries?.Cast<string>()?.ToList() ?? new List<string>();
+            List<string> blockedTranslations = Properties.Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
+            List<string> blockedCommentaries = Properties.Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
             List<Translation> commentaries = new List<Translation>();
             List<Translation> translations = new List<Translation>();
-            foreach (IProvider provider in providers)
+            foreach (IProvider provider in translationProviders)
             {
                 await foreach (Translation translation in provider.GetTranslationsAsync())
                 {
@@ -631,7 +646,6 @@ namespace GoToBible.Windows
             }
             catch (InvalidOperationException)
             {
-                return;
             }
         }
 
@@ -721,8 +735,11 @@ namespace GoToBible.Windows
             }
 
             // Enable autocomplete
-            AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
-            AutoSuggest.Enable(this.ToolStripTextBoxPassage.TextBox, suggestions.ToArray());
+            if (this.ToolStripTextBoxPassage.TextBox != null)
+            {
+                AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
+                AutoSuggest.Enable(this.ToolStripTextBoxPassage.TextBox, suggestions.ToArray());
+            }
         }
 
         /// <summary>
@@ -864,9 +881,6 @@ namespace GoToBible.Windows
             this.ToolStripButtonNavigateForward.Enabled = this.renderedPassage.NextPassage.IsValid;
             this.ToolStripButtonNavigateBack.Enabled = this.renderedPassage.PreviousPassage.IsValid;
 
-            // Build the list of suggestions
-            List<string> suggestions = new List<string>();
-
             // If we have a translation in the primary combo box
             if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem translationItem)
             {
@@ -934,7 +948,7 @@ namespace GoToBible.Windows
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private async void ToolStripComboBoxResource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.ToolStripComboBoxResource.SelectedItem is ComboBoxItem item && !item.Selectable)
+            if (this.ToolStripComboBoxResource.SelectedItem is ComboBoxItem { Selectable: false })
             {
                 // Handle the non-selectable items
                 if (this.ToolStripComboBoxResource.Items.Count - 1 > this.ToolStripComboBoxResource.SelectedIndex)
@@ -968,7 +982,7 @@ namespace GoToBible.Windows
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private async void ToolStripComboBoxPrimaryTranslation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is ComboBoxItem item && !item.Selectable)
+            if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is ComboBoxItem { Selectable: false })
             {
                 // Handle the non-selectable items
                 if (this.ToolStripComboBoxPrimaryTranslation.Items.Count - 1 > this.ToolStripComboBoxPrimaryTranslation.SelectedIndex)
@@ -995,7 +1009,7 @@ namespace GoToBible.Windows
                         || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
                         || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
                     {
-                        MessageBox.Show("Sorry, you cannot show this translation interlinear with an original language", "GoTo.Bible", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
                     }
                 }
@@ -1016,7 +1030,7 @@ namespace GoToBible.Windows
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private async void ToolStripComboBoxSecondaryTranslation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.ToolStripComboBoxSecondaryTranslation.SelectedItem is ComboBoxItem item && !item.Selectable)
+            if (this.ToolStripComboBoxSecondaryTranslation.SelectedItem is ComboBoxItem { Selectable: false })
             {
                 // Handle the non-selectable items
                 if (this.ToolStripComboBoxSecondaryTranslation.Items.Count - 1 > this.ToolStripComboBoxSecondaryTranslation.SelectedIndex)
@@ -1043,7 +1057,7 @@ namespace GoToBible.Windows
                         || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
                         || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
                     {
-                        MessageBox.Show("Sorry, you cannot show this translation interlinear with an original language", "GoTo.Bible", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
                     }
                 }
@@ -1201,7 +1215,7 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemCommentaries_Click(object sender, EventArgs e)
         {
             // Show the show/hide commentaries dialog
-            List<string> blockedCommentaries = Properties.Settings.Default.BlockedCommentaries?.Cast<string>()?.ToList() ?? new List<string>();
+            List<string> blockedCommentaries = Properties.Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
             Dictionary<string, string> items = this.commentaries.ToDictionary(k => k.UniqueKey(), v => v.UniqueName(this.commentaries));
             using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedCommentaries, "Configure Commentaries", Properties.Resources.CommentariesIcon);
             DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
@@ -1209,10 +1223,7 @@ namespace GoToBible.Windows
             {
                 // Save the blocked commentaries
                 Properties.Settings.Default.BlockedCommentaries?.Clear();
-                if (Properties.Settings.Default.BlockedCommentaries == null)
-                {
-                    Properties.Settings.Default.BlockedCommentaries = new StringCollection();
-                }
+                Properties.Settings.Default.BlockedCommentaries ??= new StringCollection();
 
                 Properties.Settings.Default.BlockedCommentaries.AddRange(formCheckBoxList.UncheckedItems.ToArray());
                 Properties.Settings.Default.Save();
@@ -1385,7 +1396,7 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemProviders_Click(object sender, EventArgs e)
         {
             // Show the show/hide providers dialog
-            List<string> blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>()?.ToList() ?? new List<string>();
+            List<string> blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
             Dictionary<string, string> items = this.providers.ToDictionary(k => k.Id, v => v.Name);
             using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedProviders, "Configure Providers", Properties.Resources.ProviderIcon);
             DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
@@ -1393,10 +1404,7 @@ namespace GoToBible.Windows
             {
                 // Save the blocked providers
                 Properties.Settings.Default.BlockedProviders?.Clear();
-                if (Properties.Settings.Default.BlockedProviders == null)
-                {
-                    Properties.Settings.Default.BlockedProviders = new StringCollection();
-                }
+                Properties.Settings.Default.BlockedProviders ??= new StringCollection();
 
                 Properties.Settings.Default.BlockedProviders.AddRange(formCheckBoxList.UncheckedItems.ToArray());
                 Properties.Settings.Default.Save();
@@ -1452,7 +1460,7 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemTranslations_Click(object sender, EventArgs e)
         {
             // Show the show/hide translations dialog
-            List<string> blockedTranslations = Properties.Settings.Default.BlockedTranslations?.Cast<string>()?.ToList() ?? new List<string>();
+            List<string> blockedTranslations = Properties.Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
             Dictionary<string, string> items = this.translations.ToDictionary(k => k.UniqueKey(), v => v.UniqueName(this.translations));
             using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedTranslations, "Configure Translations", Properties.Resources.TranslationsIcon);
             DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
@@ -1460,10 +1468,7 @@ namespace GoToBible.Windows
             {
                 // Save the blocked translations
                 Properties.Settings.Default.BlockedTranslations?.Clear();
-                if (Properties.Settings.Default.BlockedTranslations == null)
-                {
-                    Properties.Settings.Default.BlockedTranslations = new StringCollection();
-                }
+                Properties.Settings.Default.BlockedTranslations ??= new StringCollection();
 
                 Properties.Settings.Default.BlockedTranslations.AddRange(formCheckBoxList.UncheckedItems.ToArray());
                 Properties.Settings.Default.Save();

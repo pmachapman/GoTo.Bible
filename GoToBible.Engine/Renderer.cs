@@ -122,7 +122,7 @@ namespace GoToBible.Engine
                 if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
                 {
                     StringBuilder sb = new StringBuilder();
-                    string[] lines = firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] lines = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string line in lines)
                     {
                         sb.AppendLine(line.StripItalics());
@@ -142,7 +142,7 @@ namespace GoToBible.Engine
                 if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
                 {
                     StringBuilder sb = new StringBuilder();
-                    string[] lines = firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] lines = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string line in lines)
                     {
                         sb.Append(parameters.PassageReference.ChapterReference);
@@ -204,8 +204,8 @@ namespace GoToBible.Engine
 
                     // Render both interlinear
                     bool hasContent = false;
-                    List<string> lines1 = firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    List<string> lines2 = secondChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> lines1 = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> lines2 = secondChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                     // Add any missing verses
                     for (int i = 0; i < lines1.Count; i++)
@@ -324,9 +324,9 @@ namespace GoToBible.Engine
 
                         // Fix up the tooltips
                         Translation? primaryTranslation = translations.FirstOrDefault(t => t.Code == parameters.PrimaryTranslation);
-                        string? primaryTranslationName = primaryTranslation?.UniqueName(translations) ?? "Primary Translation";
+                        string primaryTranslationName = primaryTranslation?.UniqueName(translations) ?? "Primary Translation";
                         Translation? secondaryTranslation = translations.FirstOrDefault(t => t.Code == parameters.SecondaryTranslation);
-                        string? secondaryTranslationName = secondaryTranslation?.UniqueName(translations) ?? "Secondary Translation";
+                        string secondaryTranslationName = secondaryTranslation?.UniqueName(translations) ?? "Secondary Translation";
                         sb.Replace($"<span title=\"{parameters.PrimaryTranslation}\">", $"<span title=\"{primaryTranslationName}\">");
                         sb.Replace($"<span title=\"{parameters.SecondaryTranslation}\">", $"<span title=\"{secondaryTranslationName}\">");
 
@@ -344,7 +344,7 @@ namespace GoToBible.Engine
                         // Display copyright
                         if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) || !string.IsNullOrWhiteSpace(secondChapter.Copyright))
                         {
-                            sb.Append($"<p class=\"copyright\">");
+                            sb.Append("<p class=\"copyright\">");
                             if (!string.IsNullOrWhiteSpace(firstChapter.Copyright))
                             {
                                 sb.Append($"<strong>{primaryTranslationName}: </strong> {firstChapter.Copyright}");
@@ -360,14 +360,14 @@ namespace GoToBible.Engine
                                 sb.Append($"<strong>{secondaryTranslationName}: </strong> {secondChapter.Copyright}");
                             }
 
-                            sb.AppendLine($"</p>");
+                            sb.AppendLine("</p>");
                         }
                     }
                 }
                 else
                 {
                     // Just render the first translation
-                    foreach (string line in firstChapter.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                    foreach (string line in firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         sb.Append(this.RenderLineAsHtml(line, parameters));
                     }
@@ -481,7 +481,7 @@ namespace GoToBible.Engine
                         }
                     }
                 }
-                else if (int.TryParse(line, out int verseNum))
+                else if (int.TryParse(line, out int _))
                 {
                     // There is only a verse number, so do not render
                     return string.Empty;

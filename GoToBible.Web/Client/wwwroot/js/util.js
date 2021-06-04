@@ -2,6 +2,7 @@
     history.pushState(null, '', url);
 }
 window.closeMenu = function (id) {
+    // ReSharper disable once UseOfImplicitGlobalInFunctionScope
     $('#' + id).collapse('hide');
 }
 window.scrollToElement = function (id) {
@@ -9,15 +10,17 @@ window.scrollToElement = function (id) {
     if (element != null) {
         try {
             element.scrollIntoView({ behavior: 'smooth' });
-        } catch {
+        } catch (e) {
             // Safari support
-            elmnt.scrollIntoView(true);
+            element.scrollIntoView(true);
         }
     }
 }
 window.setContent = function (id, content) {
+    // ReSharper disable once UseOfImplicitGlobalInFunctionScope
     $('#' + id).html(content);
 }
 window.showDialog = function (id) {
+    // ReSharper disable once UseOfImplicitGlobalInFunctionScope
     $('#' + id).modal();
 }

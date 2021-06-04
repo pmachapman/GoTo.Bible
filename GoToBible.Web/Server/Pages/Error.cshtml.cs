@@ -54,6 +54,7 @@ namespace GoToBible.Web.Server.Pages
         /// <summary>
         /// GET: <c>/Error</c>.
         /// </summary>
+        /// ReSharper disable once UnusedMember.Global
         public void OnGet()
         {
             this.RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier;

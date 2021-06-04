@@ -155,7 +155,7 @@
     <value>..\Resources\DigitalBiblePlatformIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Esv" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\esv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\esv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="EsvIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\EsvIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -216,5 +216,13 @@
   </data>
   <data name="UnknownLanguage" xml:space="preserve">
     <value>Other</value>
+  </data>
+  <data name="WebViewNotFound" xml:space="preserve">
+    <value>The Microsoft Edge WebView2 Runtime could not be found.
+
+Would you like to download and install it now?</value>
+  </data>
+  <data name="CannotShowInterlinear" xml:space="preserve">
+    <value>Sorry, you cannot show this translation interlinear with an original language</value>
   </data>
 </root>

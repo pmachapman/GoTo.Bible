@@ -348,7 +348,7 @@ namespace GoToBible.Providers
                         chapter.NextChapterReference = new ChapterReference(nextChapter);
                         break;
                     }
-                    else if (string.Compare(nextChapter, thisChapter, true) == 0)
+                    else if (string.Compare(nextChapter, thisChapter, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         chapter.PreviousChapterReference = new ChapterReference(previousChapter);
                         getNextChapter = true;

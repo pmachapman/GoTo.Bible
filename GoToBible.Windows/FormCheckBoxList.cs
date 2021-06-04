@@ -49,6 +49,13 @@ namespace GoToBible.Windows
             this.UncheckedItems = uncheckedItems.AsReadOnly();
         }
 
+        /// <inheritdoc />
+        public sealed override string Text
+        {
+            get => base.Text;
+            set => base.Text = value;
+        }
+
         /// <summary>
         /// Gets the unchecked items.
         /// </summary>
@@ -102,7 +109,7 @@ namespace GoToBible.Windows
                 this.checkBoxListIsUpdating = true;
                 for (int i = 0; i < this.CheckedListBoxItems.Items.Count; i++)
                 {
-                    this.CheckedListBoxItems.SetItemChecked(i, this.CheckBoxSelectAll.Text == "&Select All");
+                    this.CheckedListBoxItems.SetItemChecked(i, this.CheckBoxSelectAll.Text == @"&Select All");
                 }
 
                 this.CheckedListBoxItems.EndUpdate();
@@ -126,7 +133,7 @@ namespace GoToBible.Windows
         private void FormTranslations_Load(object sender, EventArgs e)
         {
             this.CheckedListBoxItems.FormattingEnabled = true;
-            this.CheckedListBoxItems.Format += (_, e) => e.Value = ((KeyValuePair<string, string>)e.ListItem).Value;
+            this.CheckedListBoxItems.Format += (_, eventArgs) => eventArgs.Value = ((KeyValuePair<string, string>)eventArgs.ListItem).Value;
             this.CheckedListBoxItems.BeginUpdate();
             this.checkBoxListIsUpdating = true;
             foreach (KeyValuePair<string, string> item in this.items)
@@ -159,12 +166,12 @@ namespace GoToBible.Windows
 
                 if (checkedCount == this.CheckedListBoxItems.Items.Count)
                 {
-                    this.CheckBoxSelectAll.Text = "De&select All";
+                    this.CheckBoxSelectAll.Text = @"De&select All";
                     this.CheckBoxSelectAll.CheckState = CheckState.Checked;
                 }
                 else
                 {
-                    this.CheckBoxSelectAll.Text = "&Select All";
+                    this.CheckBoxSelectAll.Text = @"&Select All";
                     if (checkedCount == 0)
                     {
                         this.CheckBoxSelectAll.CheckState = CheckState.Unchecked;

@@ -12,6 +12,7 @@ namespace GoToBible.Windows
     using System.Reflection;
     using System.Runtime.Versioning;
     using System.Windows.Forms;
+    using GoToBible.Windows.Properties;
 
     /// <summary>
     /// The GoToBible program.
@@ -25,6 +26,14 @@ namespace GoToBible.Windows
         /// The forms.
         /// </value>
         public static List<FormMain> Forms { get; } = new List<FormMain>();
+
+        /// <summary>
+        /// Gets the program title.
+        /// </summary>
+        /// <value>
+        /// The program title.
+        /// </value>
+        public static string Title => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? @"GoTo.Bible";
 
         /// <summary>
         /// The main entry point for the application.
@@ -44,7 +53,7 @@ namespace GoToBible.Windows
             }
             catch (TargetInvocationException)
             {
-                if (MessageBox.Show($"The Microsoft Edge WebView2 Runtime could not be found.{Environment.NewLine}{Environment.NewLine}Would you like to download and install it now?", "Cannot Start GoToBible", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (MessageBox.Show(string.Format(Resources.WebViewNotFound), $@"Cannot Start {Title}", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 {
                     Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
                     {

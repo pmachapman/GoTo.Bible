@@ -39,7 +39,7 @@ namespace GoToBible.Providers
         /// Initialises a new instance of the <see cref="ApiProvider" /> class.
         /// </summary>
         /// <param name="cache">The cache.</param>
-        public ApiProvider(IDistributedCache cache)
+        protected ApiProvider(IDistributedCache cache)
         {
             this.Cache = cache;
             this.HttpClient.DefaultRequestHeaders.Accept.Clear();

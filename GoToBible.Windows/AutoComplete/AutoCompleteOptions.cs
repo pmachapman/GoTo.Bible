@@ -4,6 +4,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+// The following ReSharper disable comments are so that
+// the enum in this file can match the COM type:
+//
+// ReSharper disable CommentTypo
+// ReSharper disable IdentifierTypo
+// ReSharper disable InconsistentNaming
+// ReSharper disable UnusedMember.Global
 namespace GoToBible.Windows.AutoComplete
 {
     using System;

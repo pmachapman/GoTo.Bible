@@ -89,27 +89,27 @@ namespace GoToBible.Windows
         {
             if (this.Provider.Contains("SQL", StringComparison.InvariantCulture))
             {
-                this.Text = $"Enter {this.Provider} Connection String";
-                this.LabelEnterKey.Text = $"Enter your {this.Provider} connection string below.";
-                this.LinkLabelSignup.Text = $"&Download {this.Provider}";
+                this.Text = $@"Enter {this.Provider} Connection String";
+                this.LabelEnterKey.Text = $@"Enter your {this.Provider} connection string below.";
+                this.LinkLabelSignup.Text = $@"&Download {this.Provider}";
             }
             else
             {
-                this.Text = $"Enter {this.Provider} Key";
+                this.Text = $@"Enter {this.Provider} Key";
                 if (this.Provider.Length > 15)
                 {
-                    this.LabelEnterKey.Text = $"Enter your {this.Provider} key below to use your resources.";
+                    this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your resources.";
                 }
                 else if (this.Provider.Length > 10)
                 {
-                    this.LabelEnterKey.Text = $"Enter your {this.Provider} key below to use your resources with GoToBible.";
+                    this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your resources with GoToBible.";
                 }
                 else
                 {
-                    this.LabelEnterKey.Text = $"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.";
+                    this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.";
                 }
 
-                this.LinkLabelSignup.Text = "&Sign up for an API key";
+                this.LinkLabelSignup.Text = @"&Sign up for an API key";
             }
 
             this.TextBoxKey.Text = this.Key;

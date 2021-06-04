@@ -20,7 +20,7 @@ namespace GoToBible.Engine
         /// <summary>
         /// Returns the <see cref="CompareOptions"/> matching the <see cref="RenderingParameters"/>.
         /// </summary>
-        /// <param name="parameters">The renderign parameters.</param>
+        /// <param name="parameters">The rendering parameters.</param>
         /// <returns>The compare options.</returns>
         public static CompareOptions AsCompareOptions(this RenderingParameters parameters)
         {
@@ -95,20 +95,21 @@ namespace GoToBible.Engine
         /// </returns>
         public static string UniqueName(this Translation translation, IEnumerable<Translation> translations)
         {
-            if (translations.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)) <= 1)
+            IEnumerable<Translation> enumerable = translations as Translation[] ?? translations.ToArray();
+            if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)) <= 1)
             {
                 return translation.Name;
             }
-            else if (translations.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Year == translation.Year && t.Year > 0) == 1)
+            else if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Year == translation.Year && t.Year > 0) == 1)
             {
                 return $"{translation.Name} ({translation.Year})";
             }
-            else if (translations.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Language == translation.Language) == 1)
+            else if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Language == translation.Language) == 1)
             {
                 return $"{translation.Language} {translation.Name}";
             }
-            else if (translations.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
-                && t.Dialect == translation.Dialect && !string.IsNullOrWhiteSpace(t.Dialect)) == 1)
+            else if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
+                                           && t.Dialect == translation.Dialect && !string.IsNullOrWhiteSpace(t.Dialect)) == 1)
             {
                 return $"{translation.Name} ({translation.Dialect})";
             }

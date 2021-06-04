@@ -19,9 +19,9 @@ namespace GoToBible.Windows.AutoComplete
     public static class AutoSuggest
     {
         /// <summary>
-        /// Gets the automatic complete CLSID.
+        /// Gets the automatic complete class ID.
         /// </summary>
-        private static Guid AutoCompleteCLSID => new Guid("{00BB2763-6A77-11D0-A535-00C04FD7D062}");
+        private static Guid AutoCompleteClsId => new Guid("{00BB2763-6A77-11D0-A535-00C04FD7D062}");
 
         /// <summary>
         /// Disables auto suggest for the specified text box.
@@ -70,7 +70,7 @@ namespace GoToBible.Windows.AutoComplete
         /// </returns>
         private static object? GetAutoComplete()
         {
-            Type? autocompleteType = Type.GetTypeFromCLSID(AutoCompleteCLSID);
+            Type? autocompleteType = Type.GetTypeFromCLSID(AutoCompleteClsId);
             if (autocompleteType != null)
             {
                 return Activator.CreateInstance(autocompleteType);

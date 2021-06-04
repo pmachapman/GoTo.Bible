@@ -75,7 +75,7 @@ namespace GoToBible.Web.Server
 
             // Load the caching provider
             CacheSettings? cacheConfig = this.Configuration.GetSection("Providers:Cache").Get<CacheSettings>();
-            switch (cacheConfig?.DatabaseProvider?.ToUpperInvariant())
+            switch (cacheConfig?.DatabaseProvider.ToUpperInvariant())
             {
                 case "MSSQL":
                     services.Configure<SqlServerCacheOptions>(this.Configuration.GetSection("Providers:Cache"));
@@ -86,7 +86,6 @@ namespace GoToBible.Web.Server
                     services.Configure<MySqlCacheOptions>(this.Configuration.GetSection("Providers:Cache"));
                     services.AddSingleton<IDistributedCache, MySqlCache>();
                     break;
-                case "MEMORY":
                 default:
                     services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
                     break;
@@ -107,10 +106,20 @@ namespace GoToBible.Web.Server
                         serverVersion = new MariaDbServerVersion(statisticsConfig.DatabaseVersion);
                     }
 
-                    services.AddDbContext<StatisticsContext>(options => options.UseMySql(statisticsConfig.ConnectionString, serverVersion));
+                    if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
+                    {
+                        services.AddDbContext<StatisticsContext>(options =>
+                            options.UseMySql(statisticsConfig.ConnectionString, serverVersion));
+                    }
+
                     break;
                 case "MSSQL":
-                    services.AddDbContext<StatisticsContext>(options => options.UseSqlServer(statisticsConfig.ConnectionString));
+                    if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
+                    {
+                        services.AddDbContext<StatisticsContext>(options =>
+                            options.UseSqlServer(statisticsConfig.ConnectionString));
+                    }
+
                     break;
                 case "MYSQL":
                     if (string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion))
@@ -122,7 +131,12 @@ namespace GoToBible.Web.Server
                         serverVersion = new MySqlServerVersion(statisticsConfig.DatabaseVersion);
                     }
 
-                    services.AddDbContext<StatisticsContext>(options => options.UseMySql(statisticsConfig.ConnectionString, serverVersion));
+                    if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
+                    {
+                        services.AddDbContext<StatisticsContext>(options =>
+                            options.UseMySql(statisticsConfig.ConnectionString, serverVersion));
+                    }
+
                     break;
             }
         }

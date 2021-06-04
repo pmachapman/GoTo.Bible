@@ -111,6 +111,15 @@ namespace GoToBible.Windows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sorry, you cannot show this translation interlinear with an original language.
+        /// </summary>
+        internal static string CannotShowInterlinear {
+            get {
+                return ResourceManager.GetString("CannotShowInterlinear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Commentaries {
@@ -384,6 +393,17 @@ namespace GoToBible.Windows.Properties {
         internal static string UnknownLanguage {
             get {
                 return ResourceManager.GetString("UnknownLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Microsoft Edge WebView2 Runtime could not be found.
+        ///
+        ///Would you like to download and install it now?.
+        /// </summary>
+        internal static string WebViewNotFound {
+            get {
+                return ResourceManager.GetString("WebViewNotFound", resourceCulture);
             }
         }
     }

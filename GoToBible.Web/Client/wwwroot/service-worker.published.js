@@ -11,7 +11,7 @@ const cacheName = `${cacheNamePrefix}${self.assetsManifest.version}`;
 const offlineAssetsInclude = [ /\.dll$/, /\.pdb$/, /\.wasm/, /\.html/, /\.js$/, /\.json$/, /\.css$/, /\.woff$/, /\.png$/, /\.jpe?g$/, /\.gif$/, /\.ico$/, /\.blat$/, /\.dat$/ ];
 const offlineAssetsExclude = [ /^service-worker\.js$/ ];
 
-async function onInstall(event) {
+async function onInstall() {
     console.info('Service worker: Install');
 
     // Fetch and cache all matching items from the assets manifest
@@ -22,7 +22,7 @@ async function onInstall(event) {
     await caches.open(cacheName).then(cache => cache.addAll(assetsRequests));
 }
 
-async function onActivate(event) {
+async function onActivate() {
     console.info('Service worker: Activate');
 
     // Delete unused caches
