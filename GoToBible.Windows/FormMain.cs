@@ -22,7 +22,6 @@ namespace GoToBible.Windows
     using GoToBible.Model;
     using GoToBible.Providers;
     using GoToBible.Windows.AutoComplete;
-    using GoToBible.Windows.Properties;
     using Microsoft.Extensions.Caching.Distributed;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Caching.SqlServer;
@@ -471,6 +470,7 @@ namespace GoToBible.Windows
             });
 
             // Get the full list of translations
+            List<string> blockedLanguages = Properties.Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
             List<string> blockedTranslations = Properties.Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
             List<string> blockedCommentaries = Properties.Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
             List<Translation> commentaries = new List<Translation>();
@@ -548,7 +548,8 @@ namespace GoToBible.Windows
             foreach (Translation translation in this.translations)
             {
                 // If this translation is not blocked
-                if (!blockedTranslations.Contains(translation.UniqueKey()))
+                string translationLanguage = translation.Language ?? Properties.Resources.UnknownLanguage;
+                if (!blockedTranslations.Contains(translation.UniqueKey()) && !blockedLanguages.Contains(translationLanguage))
                 {
                     // Add a heading, if required
                     if (translation.Language != lastLanguage)
@@ -557,12 +558,12 @@ namespace GoToBible.Windows
                         {
                             Bold = true,
                             Selectable = false,
-                            Text = translation.Language ?? Properties.Resources.UnknownLanguage,
+                            Text = translationLanguage,
                         };
                         this.ToolStripComboBoxPrimaryTranslation.Items.Add(headingComboBoxItem);
                         this.ToolStripComboBoxSecondaryTranslation.Items.Add(headingComboBoxItem);
                         this.ToolStripComboBoxResource.Items.Add(headingComboBoxItem);
-                        lastLanguage = translation.Language ?? Properties.Resources.UnknownLanguage;
+                        lastLanguage = translationLanguage;
                         resourceIndex++;
                         translationIndex++;
                     }
@@ -1009,7 +1010,7 @@ namespace GoToBible.Windows
                         || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
                         || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
                     {
-                        MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(Properties.Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
                     }
                 }
@@ -1057,7 +1058,7 @@ namespace GoToBible.Windows
                         || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
                         || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
                     {
-                        MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(Properties.Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
                     }
                 }
@@ -1363,6 +1364,35 @@ namespace GoToBible.Windows
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private async void ToolStripMenuItemIgnorePunctuation_Click(object sender, EventArgs e) => await this.ShowPassage(true, false);
+
+        /// <summary>
+        /// Handles the Click event of the Languages ToolStripMenuItem.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private async void ToolStripMenuItemLanguages_Click(object sender, EventArgs e)
+        {
+            // Show the show/hide languages dialog
+            List<string> blockedLanguages = Properties.Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
+            Dictionary<string, string> items = this.translations
+                .Select(t => t.Language ?? Properties.Resources.UnknownLanguage)
+                .Distinct()
+                .ToDictionary(k => k, v => v);
+            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedLanguages, "Configure Languages", Properties.Resources.LanguagesIcon);
+            DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
+            if (dialogResult == DialogResult.OK)
+            {
+                // Save the blocked providers
+                Properties.Settings.Default.BlockedLanguages?.Clear();
+                Properties.Settings.Default.BlockedLanguages ??= new StringCollection();
+
+                Properties.Settings.Default.BlockedLanguages.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+                Properties.Settings.Default.Save();
+
+                // Reload the providers and translations
+                await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            }
+        }
 
         /// <summary>
         /// Handles the Click event of the NLT ToolStripMenuItem.

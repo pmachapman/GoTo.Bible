@@ -16,35 +16,21 @@ namespace GoToBible.Model
     {
         /// <inheritdoc/>
         public int Compare(string? x, string? y)
-        {
-            if (x?.ToUpperInvariant() == "ENGLISH" && y?.ToUpperInvariant() == "ENGLISH")
+            => string.Compare(GetCustomSortValue(x), GetCustomSortValue(y), StringComparison.InvariantCultureIgnoreCase);
+
+        /// <summary>
+        /// Gets the custom sort value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The custom sort value.</returns>
+        private static string? GetCustomSortValue(string? value)
+            => value?.ToUpperInvariant() switch
             {
-                return 0;
-            }
-            else if (x?.ToUpperInvariant() == "ENGLISH" && y?.ToUpperInvariant() != "ENGLISH")
-            {
-                return -1;
-            }
-            else if (x?.ToUpperInvariant() != "ENGLISH" && y?.ToUpperInvariant() == "ENGLISH")
-            {
-                return 1;
-            }
-            else if (x?.ToUpperInvariant() == "GREEK" && y?.ToUpperInvariant() == "GREEK")
-            {
-                return 0;
-            }
-            else if (x?.ToUpperInvariant() == "GREEK" && y?.ToUpperInvariant() != "ENGLISH")
-            {
-                return -1;
-            }
-            else if (x?.ToUpperInvariant() != "ENGLISH" && y?.ToUpperInvariant() == "GREEK")
-            {
-                return 1;
-            }
-            else
-            {
-                return string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase);
-            }
-        }
+                "ENGLISH" => $"!1-{value}",
+                "GREEK" => $"!2-{value}",
+                "HEBREW" => $"!3-{value}",
+                "LATIN" => $"!4-{value}",
+                _ => value,
+            };
     }
 }

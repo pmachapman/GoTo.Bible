@@ -225,4 +225,10 @@ Would you like to download and install it now?</value>
   <data name="CannotShowInterlinear" xml:space="preserve">
     <value>Sorry, you cannot show this translation interlinear with an original language</value>
   </data>
+  <data name="Languages" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Languages.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LanguagesIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LanguagesIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

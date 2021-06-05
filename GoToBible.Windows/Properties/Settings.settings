@@ -86,5 +86,8 @@
     <Setting Name="HighlightColour" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">65535</Value>
     </Setting>
+    <Setting Name="BlockedLanguages" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
