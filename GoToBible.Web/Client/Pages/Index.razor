@@ -185,6 +185,51 @@
         </div>
     </div>
 </div>
+
+<div class="modal" tabindex="-1" role="dialog" id="cannot-show-interlinear-dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">GoTo.Bible</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Sorry, you cannot show this translation interlinear with an original language.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="ignore-case-diacritics-punctuation-dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">GoTo.Bible</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Would you like to improve your interlinear by ignoring case, diacritics, and punctuation?
+                </p>
+                <p>
+                    This will affect future interlinear comparisons, however you can customise this in
+                    <a href="javascript:;" data-dismiss="modal" data-toggle="modal" data-target="#settings-dialog">Settings</a>.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="IgnoreCaseDiacriticsAndPunctuation_OnClick">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
 @code {
     private const string RenderingParametersModelId = "RenderingParametersModel";
     private string defaultTranslation = "ESV";
@@ -331,6 +376,14 @@
         }
     }
 
+    private async Task IgnoreCaseDiacriticsAndPunctuation_OnClick()
+    {
+        this.renderingParametersModel.InterlinearIgnoresCase = true;
+        this.renderingParametersModel.InterlinearIgnoresDiacritics = true;
+        this.renderingParametersModel.InterlinearIgnoresPunctuation = true;
+        await this.ShowPassageAsync(true);
+    }
+
     private async Task InterlinearIgnoresCase_OnInput(ChangeEventArgs e)
     {
         this.renderingParametersModel.InterlinearIgnoresCase = e.Value as bool? ?? false;
@@ -373,12 +426,24 @@
     {
         this.renderingParametersModel.PrimaryTranslation = e.Value?.ToString() ?? string.Empty;
         await this.ShowPassageAsync(true);
+
+        // Process suggestions
+        if (this.passage.Suggestions.IgnoreCaseDiacriticsAndPunctuation)
+        {
+            await this.JsRuntime.InvokeAsync<string>("showDialog", "ignore-case-diacritics-punctuation-dialog");
+        }
     }
 
     private async Task SecondaryTranslation_OnInput(ChangeEventArgs e)
     {
         this.renderingParametersModel.SecondaryTranslation = e.Value?.ToString() ?? string.Empty;
         await this.ShowPassageAsync(true);
+
+        // Process suggestions
+        if (this.passage.Suggestions.IgnoreCaseDiacriticsAndPunctuation)
+        {
+            await this.JsRuntime.InvokeAsync<string>("showDialog", "ignore-case-diacritics-punctuation-dialog");
+        }
     }
 
     private async Task SwapTranslations_OnClick()
@@ -398,13 +463,13 @@
         await this.JsRuntime.InvokeVoidAsync("setContent", "passage-content", Html.LoadingCodeBody);
 
         // Update the parameters object from the model
-        this.UpdateParameters();
+        await this.UpdateParametersAsync();
 
         // Ensure we have a primary translation
         if (string.IsNullOrWhiteSpace(this.parameters.PrimaryTranslation))
         {
             this.renderingParametersModel.PrimaryTranslation = this.defaultTranslation;
-            this.UpdateParameters();
+            await this.UpdateParametersAsync();
         }
 
         if (updateUrl)
@@ -428,7 +493,7 @@
     /// <summary>
     /// Updates the <see cref="RenderingParameters"/> from the <see cref="RenderingParametersModel"/>.
     /// </summary>
-    private void UpdateParameters()
+    private async Task UpdateParametersAsync()
     {
         this.passage.Content = string.Empty;
         this.parameters.InterlinearIgnoresCase = this.renderingParametersModel.InterlinearIgnoresCase;
@@ -485,6 +550,9 @@
             this.renderingParametersModel.SecondaryTranslation = null;
             this.parameters.SecondaryProvider = null;
             this.parameters.SecondaryTranslation = null;
+
+            // Show the error to the user
+            await this.JsRuntime.InvokeAsync<string>("showDialog", "cannot-show-interlinear-dialog");
         }
     }
 

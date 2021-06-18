@@ -626,6 +626,25 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
+        /// Processes the suggestions from the renderer.
+        /// </summary>
+        private async Task ProcessSuggestions()
+        {
+            if (this.renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation
+                && MessageBox.Show(
+                    Properties.Resources.IgnoreCaseDiacriticsAndPunctuation,
+                    Program.Title,
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                this.ToolStripMenuItemIgnoreCase.Checked = true;
+                this.ToolStripMenuItemIgnoreDiacritics.Checked = true;
+                this.ToolStripMenuItemIgnorePunctuation.Checked = true;
+                await this.ShowPassage(true, false);
+            }
+        }
+
+        /// <summary>
         /// Sets up the web page.
         /// </summary>
         /// <param name="webView">The web view.</param>
@@ -1020,6 +1039,7 @@ namespace GoToBible.Windows
                 if (!string.IsNullOrWhiteSpace(this.ToolStripTextBoxPassage.Text))
                 {
                     await this.ShowPassage(true, false);
+                    await this.ProcessSuggestions();
                 }
             }
         }
@@ -1068,6 +1088,7 @@ namespace GoToBible.Windows
                 if (!string.IsNullOrWhiteSpace(this.ToolStripTextBoxPassage.Text))
                 {
                     await this.ShowPassage(true, false);
+                    await this.ProcessSuggestions();
                 }
             }
         }

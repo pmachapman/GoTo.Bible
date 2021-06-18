@@ -34,5 +34,13 @@ namespace GoToBible.Model
         /// The previous passage.
         /// </value>
         public PassageReference PreviousPassage { get; set; } = new PassageReference();
+
+        /// <summary>
+        /// Gets or sets the rendering suggestions.
+        /// </summary>
+        /// <value>
+        /// The rendering suggestions.
+        /// </value>
+        public RenderingSuggestions Suggestions { get; set; } = new RenderingSuggestions();
     }
 }

@@ -21,6 +21,11 @@ namespace GoToBible.Engine
     public class Renderer : IDisposable
     {
         /// <summary>
+        /// A horizontal line.
+        /// </summary>
+        private const string HorizontalLine = "<hr style=\"padding:0;border:none;width:100%;height:1px;color:#000;background-color:#000\">";
+
+        /// <summary>
         /// The regular expression to italicise words.
         /// </summary>
         private static readonly Regex ItaliciseWordsRegex = new Regex("(<em>[^<]+)([ ])([^<]+</em>)", RegexOptions.Compiled);
@@ -226,6 +231,10 @@ namespace GoToBible.Engine
                         }
                     }
 
+                    // The following is used to calculate rendering suggestions
+                    int linesWithLessThanThreeWordsInCommon = 0;
+                    int totalInterlinearLines = lines1.Count < lines2.Count ? lines1.Count : lines2.Count;
+
                     // Render each line
                     for (int i = 0; i < lines1.Count; i++)
                     {
@@ -260,7 +269,7 @@ namespace GoToBible.Engine
                                 // This does not have to be user-friendly output
                                 if (i > 0)
                                 {
-                                    sb.Append("<hr style=\"padding:0;border:none;width:100%;height:1px;color:#000;background-color:#000\">");
+                                    sb.Append(HorizontalLine);
                                 }
 
                                 // Build the verse statistics output
@@ -272,20 +281,46 @@ namespace GoToBible.Engine
                                 {
                                     sb.Append($"<strong style=\"font-family:consolas,courier\"{bestNote}>Reverse Scan*</strong>{verseStatistics1} {firstAttempt.Content}");
                                     sb.Append($"<strong style=\"font-family:consolas,courier\">Forward Scan&nbsp;</strong>{verseStatistics2} {secondAttempt.Content}");
+
+                                    // Store information for calculating suggestions
+                                    if (firstAttempt.WordsInCommon < 3)
+                                    {
+                                        linesWithLessThanThreeWordsInCommon++;
+                                    }
                                 }
                                 else
                                 {
                                     sb.Append($"<strong style=\"font-family:consolas,courier\"{bestNote}>Reverse Scan&nbsp;</strong>{verseStatistics1} {firstAttempt.Content}");
                                     sb.Append($"<strong style=\"font-family:consolas,courier\"{bestNote}>Forward Scan*</strong>{verseStatistics2} {secondAttempt.Content}");
+
+                                    // Store information for calculating suggestions
+                                    if (secondAttempt.WordsInCommon < 3)
+                                    {
+                                        linesWithLessThanThreeWordsInCommon++;
+                                    }
                                 }
                             }
                             else if (useFirstAttempt)
                             {
+                                // Render the first attempt
                                 sb.Append(firstAttempt.Content);
+
+                                // Store information for calculating suggestions
+                                if (firstAttempt.WordsInCommon < 3)
+                                {
+                                    linesWithLessThanThreeWordsInCommon++;
+                                }
                             }
                             else
                             {
+                                // Render the second attempt
                                 sb.Append(secondAttempt.Content);
+
+                                // Store information for calculating suggestions
+                                if (secondAttempt.WordsInCommon < 3)
+                                {
+                                    linesWithLessThanThreeWordsInCommon++;
+                                }
                             }
                         }
                         else
@@ -361,6 +396,30 @@ namespace GoToBible.Engine
                             }
 
                             sb.AppendLine("</p>");
+                        }
+
+                        // Generate the rendering suggestions
+                        if ((!parameters.InterlinearIgnoresCase
+                            || !parameters.InterlinearIgnoresDiacritics
+                            || !parameters.InterlinearIgnoresPunctuation)
+                            && linesWithLessThanThreeWordsInCommon > (totalInterlinearLines / 2)
+                            && primaryTranslation?.Language == secondaryTranslation?.Language)
+                        {
+                            // If at least one of "Ignore Case", "Ignore Diacritics", and "Ignore Punctuation" is false, and
+                            // more than half of the rendered passage has less than three words in common, and the two
+                            // translations are the same language, then suggest to ignore case, diacritics, and punctuation.
+                            renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation = true;
+                        }
+
+                        // Display the rendering suggestions, if we are debugging
+                        if (parameters.IsDebug)
+                        {
+                            sb.Append("<p>");
+                            sb.Append(HorizontalLine);
+                            sb.Append("<strong>Rendering Suggestions</strong><br>");
+                            sb.Append("Ignore Case, Diacritics and Punctuation: <em>");
+                            sb.Append(renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation ? "Yes" : "No");
+                            sb.AppendLine("</em></p>");
                         }
                     }
                 }

@@ -231,4 +231,9 @@ Would you like to download and install it now?</value>
   <data name="LanguagesIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LanguagesIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="IgnoreCaseDiacriticsAndPunctuation" xml:space="preserve">
+    <value>Would you like to improve your interlinear by ignoring case, diacritics, and punctuation?
+
+This will affect future interlinear comparisons, however you can customise this in Settings.</value>
+  </data>
 </root>

@@ -249,6 +249,17 @@ namespace GoToBible.Windows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Would you like to improve your interlinear by ignoring case, diacritics, and punctuation?
+        ///
+        ///This will affect future interlinear comparisons, however you can customise this in Settings..
+        /// </summary>
+        internal static string IgnoreCaseDiacriticsAndPunctuation {
+            get {
+                return ResourceManager.GetString("IgnoreCaseDiacriticsAndPunctuation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Italic {
