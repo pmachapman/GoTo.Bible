@@ -7,6 +7,25 @@
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <Authors>Peter Chapman</Authors>
+    <Company>Conglomo Limited</Company>
+    <Product>GoTo.Bible Model</Product>
+    <Description>The model for use with the GoTo.Bible API, with Bible verse parsing support.</Description>
+    <Copyright>Copyright 2020-2021 Conglomo Limited. Please see LICENSE for license details.</Copyright>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageProjectUrl>https://goto.bible/</PackageProjectUrl>
+    <PackageIcon>App.png</PackageIcon>
+    <PackageIconUrl />
+    <IncludeSymbols>true</IncludeSymbols>
+    <RepositoryUrl>https://github.com/pmachapman/GoTo.Bible.git</RepositoryUrl>
+    <NeutralLanguage>en-NZ</NeutralLanguage>
+    <PackageTags>bible api parsing scripture</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,7 +33,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="App.png" />
+    <None Remove="LICENSE.md" />
+    <None Remove="LICENSE.md" />
+    <None Include="App.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="App.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

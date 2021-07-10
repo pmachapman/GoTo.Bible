@@ -9,6 +9,11 @@ The Windows App requires the following:
  * [Microsoft Edge WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
  * Windows 10
 
+## NuGet Package Requirements
+
+The [NuGet Package](https://www.nuget.org/packages/GoToBible.Model/) requires the following:
+ * [Microsoft .NET 5.0 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+
 ## Notes
  * This app is Copyright 2020-2021 Conglomo Limited. Please see LICENSE for license details.
  * The app is still under development, so if you wish to add features, feel free to make a pull request.
