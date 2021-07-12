@@ -276,7 +276,9 @@ namespace GoToBible.Model
                             else if (displayRange.Contains(":", StringComparison.OrdinalIgnoreCase))
                             {
                                 string[] displayRangeParts = displayRange.Split(":", StringSplitOptions.RemoveEmptyEntries);
-                                if (!int.TryParse(displayRangeParts.First(), out int displayRangeChapter) || displayRangeChapter != chapter || !int.TryParse(displayRangeParts.Last(), out displayRangeVerse))
+                                if (!int.TryParse(displayRangeParts.First(), out int displayRangeChapter)
+                                    || displayRangeChapter != chapter
+                                    || !int.TryParse(new string(displayRangeParts.Last().Trim().TakeWhile(c => char.IsDigit(c) || c == '.').ToArray()), out displayRangeVerse))
                                 {
                                     continue;
                                 }

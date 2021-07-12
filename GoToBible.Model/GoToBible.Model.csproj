@@ -25,7 +25,8 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageReleaseNotes>Verse parsing now supports letters, e.g. "1:12b", and the package icon is no longer added to your project.</PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -39,18 +40,13 @@
     <None Include="App.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="stylecop.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="App.png">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
