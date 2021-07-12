@@ -10,6 +10,7 @@ namespace GoToBible.Providers
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using GoToBible.Model;
 
@@ -84,7 +85,15 @@ namespace GoToBible.Providers
                         {
                             // Read each verse of the chapter
                             readingChapter = true;
-                            sb.AppendLine(line[lineStart.Length..].Replace("\t", "  "));
+                            string lineToAppend = line[lineStart.Length..].Replace("\t", "  ");
+                            Match hasVerse = Regex.Match(lineToAppend, @"\[\d+\]");
+                            if (hasVerse.Success)
+                            {
+                                // See Acts 19:40 for an example of a verse like this
+                                lineToAppend = lineToAppend.Replace(hasVerse.Value, $"\r\n{hasVerse.Value}", StringComparison.OrdinalIgnoreCase);
+                            }
+
+                            sb.AppendLine(lineToAppend);
                         }
                         else if (readingChapter)
                         {
