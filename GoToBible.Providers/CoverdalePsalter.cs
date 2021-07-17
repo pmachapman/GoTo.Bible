@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SblGnt.cs" company="Conglomo">
+// <copyright file="CoverdalePsalter.cs" company="Conglomo">
 // Copyright 2020-2021 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -10,31 +10,30 @@ namespace GoToBible.Providers
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using GoToBible.Model;
 
     /// <summary>
-    /// The SBL Greek New Testament Bible Provider.
+    /// The Coverdale Psalter Bible Provider.
     /// </summary>
     /// <seealso cref="IProvider" />
-    public class SblGnt : IProvider
+    public class CoverdalePsalter : IProvider
     {
         /// <summary>
         /// The copyright message.
         /// </summary>
-        private const string Copyright = "Scripture quotations marked <a href=\"http://sblgnt.com/\" target=\"_blank\">SBLGNT</a> are from the <a href=\"http://sblgnt.com/\" target=\"_blank\">SBL Greek New Testament</a>. Copyright &copy; 2010 <a href=\"http://www.sbl-site.org/\" target=\"_blank\">Society of Biblical Literature</a> and <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>.";
+        private const string Copyright = "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See http://www.cambridge.org/about-us/who-we-are/queens-printers-patent";
 
         /// <summary>
         /// The canon.
         /// </summary>
-        private static readonly BookHelper Canon = new NewTestamentCanon();
+        private static readonly BookHelper Canon = new OneBookHelper("Psalm", 150);
 
         /// <inheritdoc/>
-        public string Id => nameof(SblGnt);
+        public string Id => nameof(CoverdalePsalter);
 
         /// <inheritdoc/>
-        public string Name => "SBL Greek New Testament";
+        public string Name => "Coverdale Psalter";
 
         /// <inheritdoc/>
         public bool SupportsItalics => false;
@@ -67,7 +66,7 @@ namespace GoToBible.Providers
                 Translation = translation,
             };
 
-            // Make sure we are in the new testament canon
+            // Make sure we are in the canon
             if (Canon.IsValidChapter(book, chapterNumber))
             {
                 // Get the text
@@ -85,15 +84,7 @@ namespace GoToBible.Providers
                         {
                             // Read each verse of the chapter
                             readingChapter = true;
-                            string lineToAppend = line[lineStart.Length..].Replace("\t", "  ");
-                            Match hasVerse = Regex.Match(lineToAppend, @"\[\d+\]");
-                            if (hasVerse.Success)
-                            {
-                                // See Acts 19:40 for an example of a verse like this
-                                lineToAppend = lineToAppend.Replace(hasVerse.Value, $"\r\n{hasVerse.Value}", StringComparison.OrdinalIgnoreCase);
-                            }
-
-                            sb.AppendLine(lineToAppend);
+                            sb.AppendLine(line[lineStart.Length..]);
                         }
                         else if (readingChapter)
                         {
@@ -125,22 +116,21 @@ namespace GoToBible.Providers
         {
             yield return new Translation
             {
-                Code = "SBLGNT",
+                Code = "BCPPSALMS",
                 Copyright = Copyright,
-                Language = "Greek",
-                Name = "SBL Greek New Testament",
-                Provider = nameof(SblGnt),
-                Year = 2010,
+                Language = "English",
+                Name = "Coverdale Psalter",
+                Provider = nameof(CoverdalePsalter),
+                Year = 1539,
             };
             yield return new Translation
             {
-                Code = "SBLGNTAPP",
-                Commentary = true,
+                Code = "BCPPSALMSALT",
                 Copyright = Copyright,
-                Language = "Greek",
-                Name = "SBL Greek New Testament Apparatus",
-                Provider = nameof(SblGnt),
-                Year = 2010,
+                Language = "English",
+                Name = "Coverdale Psalter (Alternate Versification)",
+                Provider = nameof(CoverdalePsalter),
+                Year = 1539,
             };
         }
     }

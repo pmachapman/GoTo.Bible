@@ -22,6 +22,11 @@ namespace GoToBible.Providers
         /// </summary>
         private const string Copyright = "Public Domain";
 
+        /// <summary>
+        /// The canon.
+        /// </summary>
+        private static readonly BookHelper Canon = new OneBookHelper("Laodiceans", 1);
+
         /// <inheritdoc/>
         public string Id => nameof(Laodiceans);
 
@@ -39,24 +44,9 @@ namespace GoToBible.Providers
         public async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            if (!includeChapters)
+            foreach (Book book in Canon.GetBooks(includeChapters))
             {
-                yield return new Book
-                {
-                    Name = "Laodiceans",
-                };
-            }
-            else
-            {
-                yield return new Book
-                {
-                    Chapters = new List<ChapterReference>
-                    {
-                        new ChapterReference("Laodiceans", 1),
-                    }
-                    .AsReadOnly(),
-                    Name = "Laodiceans",
-                };
+                yield return book;
             }
         }
 

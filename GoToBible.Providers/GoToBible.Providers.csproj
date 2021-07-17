@@ -14,6 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Texts\BCPPSALMS.txt" />
+    <None Remove="Texts\BCPPSALMSALT.txt" />
     <None Remove="Texts\SBLGNT.txt" />
     <None Remove="Texts\SBLGNTAPP.txt" />
   </ItemGroup>
@@ -23,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Texts\BCPPSALMSALT.txt" />
+    <EmbeddedResource Include="Texts\BCPPSALMS.txt" />
     <EmbeddedResource Include="Texts\SBLGNT.txt" />
     <EmbeddedResource Include="Texts\SBLGNTAPP.txt" />
   </ItemGroup>

@@ -342,6 +342,9 @@ namespace GoToBible.Windows
                 this.providers.Add(new BibliaApi(Options.Create(new BibliaApiOptions { ApiKey = bibliaApiKey }), this.cache));
             }
 
+            // Load the Coverdale Psalter Provider
+            this.providers.Add(new CoverdalePsalter());
+
             // Load the Digital Bible Platform Provider
             string digitalBiblePlatformApiKey = Properties.Settings.Default.DigitalBiblePlatformApiKey;
             if (!string.IsNullOrWhiteSpace(digitalBiblePlatformApiKey))

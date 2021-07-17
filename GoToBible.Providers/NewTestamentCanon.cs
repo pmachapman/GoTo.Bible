@@ -14,7 +14,7 @@ namespace GoToBible.Providers
     internal class NewTestamentCanon : BookHelper
     {
         /// <inheritdoc />
-        protected override OrderedDictionary BookChapters => new OrderedDictionary()
+        protected override OrderedDictionary BookChapters => new OrderedDictionary
         {
             ["matthew"] = 28,
             ["mark"] = 16,
