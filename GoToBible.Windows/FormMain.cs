@@ -15,6 +15,7 @@ namespace GoToBible.Windows
     using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Web;
     using System.Windows.Forms;
@@ -965,6 +966,14 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
+        /// Handles the Click event of the Web Browser ToolStripButton.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void ToolStripButtonWebBrowser_Click(object sender, EventArgs e)
+            => Process.Start(new ProcessStartInfo(this.parameters.AsUrl().ToString()) { UseShellExecute = true, Verb = "open" });
+
+            /// <summary>
         /// Handles the SelectedIndexChanged event of the Resource ToolStripComboBox.
         /// </summary>
         /// <param name="sender">The source of the event.</param>

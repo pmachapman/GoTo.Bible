@@ -2,7 +2,6 @@
 @page "/{passage}"
 @page "/{passage}/{primaryTranslation}"
 @page "/{passage}/{primaryTranslation}/{secondaryTranslation}"
-@using System.Text
 @using Blazored.LocalStorage
 @{
     // ReSharper disable InconsistentNaming
@@ -561,23 +560,5 @@
     /// </summary>
     /// <returns>The asynchronous task.</returns>
     private async Task UpdateUrlAsync()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.Append("/");
-        string passage = this.parameters.PassageReference.Display.EncodePassageForUrl();
-        if (!string.IsNullOrWhiteSpace(passage))
-        {
-            sb.Append(passage);
-
-            sb.Append("/");
-            sb.Append(Uri.EscapeDataString(this.parameters.PrimaryTranslation));
-            if (!string.IsNullOrWhiteSpace(this.parameters.SecondaryTranslation))
-            {
-                sb.Append("/");
-                sb.Append(Uri.EscapeDataString(this.parameters.SecondaryTranslation));
-            }
-        }
-
-        await this.JsRuntime.InvokeAsync<string>("changeUrl", sb.ToString());
+        => await this.JsRuntime.InvokeAsync<string>("changeUrl", this.parameters.AsUrl(UriKind.Relative).ToString());
     }
-}

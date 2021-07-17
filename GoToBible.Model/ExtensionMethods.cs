@@ -332,6 +332,42 @@ namespace GoToBible.Model
         }
 
         /// <summary>
+        /// Generates a url for the Rendering Parameters.
+        /// </summary>
+        /// <param name="parameters">The rendering parameters.</param>
+        /// <param name="uriKind">Kind of the URI.</param>
+        /// <returns>
+        /// The url.
+        /// </returns>
+        public static Uri AsUrl(this RenderingParameters parameters, UriKind uriKind = UriKind.Absolute)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (uriKind == UriKind.Relative)
+            {
+                sb.Append('/');
+            }
+            else
+            {
+                sb.Append("https://goto.bible/");
+            }
+
+            string passage = parameters.PassageReference.Display.EncodePassageForUrl();
+            if (!string.IsNullOrWhiteSpace(passage))
+            {
+                sb.Append(passage);
+                sb.Append('/');
+                sb.Append(Uri.EscapeDataString(parameters.PrimaryTranslation));
+                if (!string.IsNullOrWhiteSpace(parameters.SecondaryTranslation))
+                {
+                    sb.Append('/');
+                    sb.Append(Uri.EscapeDataString(parameters.SecondaryTranslation));
+                }
+            }
+
+            return new Uri(sb.ToString(), uriKind);
+        }
+
+        /// <summary>
         /// Decodes the passage from a URL.
         /// </summary>
         /// <param name="segment">The URL segment.</param>
