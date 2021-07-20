@@ -58,9 +58,6 @@ namespace GoToBible.Providers
         public override string Name => "Biblia API";
 
         /// <inheritdoc/>
-        public override bool SupportsItalics { get; } = false;
-
-        /// <inheritdoc/>
         public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
         {
             string url = $"contents/{translation}.txt?key={this.options.ApiKey}";

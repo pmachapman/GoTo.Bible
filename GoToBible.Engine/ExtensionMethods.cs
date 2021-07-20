@@ -51,20 +51,14 @@ namespace GoToBible.Engine
         /// <returns>
         /// The line with the supplied words rendered in italics.
         /// </returns>
+        /// <remarks>
+        /// Full-width square brakets are replaced with regular square brackets.
+        /// </remarks>
         public static string RenderItalics(this string line, string italicsTag = "em")
-        {
-            if (line.Contains("{cf15i ", StringComparison.InvariantCulture))
-            {
-                return line.Replace("{cf15i ", $"<{italicsTag}>").Replace("}", $"</{italicsTag}>");
-            }
-            else
-            {
-                line = line.Replace("[[", "<pre>").Replace("]]", "</pre>");
-                line = line.Replace("[", $"<{italicsTag}>").Replace("]", $"</{italicsTag}>");
-                line = line.Replace("<pre>", "[[").Replace("</pre>", "]]");
-                return line;
-            }
-        }
+            => line.Replace("[[", "<pre>").Replace("]]", "</pre>")
+            .Replace("[", $"<{italicsTag}>").Replace("]", $"</{italicsTag}>")
+            .Replace("<pre>", "[[").Replace("</pre>", "]]")
+            .Replace("［", "[").Replace("］", "]");
 
         /// <summary>
         /// Renders the supplied words in normal type.
@@ -73,17 +67,12 @@ namespace GoToBible.Engine
         /// <returns>
         /// The line with the supplied words rendered in normal type.
         /// </returns>
+        /// <remarks>
+        /// Full-width square brakets are replaced with regular square brackets.
+        /// </remarks>
         public static string StripItalics(this string line)
-        {
-            if (line.Contains("{cf15i ", StringComparison.InvariantCulture))
-            {
-                return line.Replace("{cf15i ", string.Empty).Replace("}", string.Empty);
-            }
-            else
-            {
-                return line.Replace("[", string.Empty).Replace("]", string.Empty);
-            }
-        }
+            => line.Replace("[", string.Empty).Replace("]", string.Empty)
+            .Replace("［", "[").Replace("］", "]");
 
         /// <summary>
         /// Gets a unique name for the translation.

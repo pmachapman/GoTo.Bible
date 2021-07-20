@@ -55,6 +55,14 @@ namespace GoToBible.Model
         public ChapterReference PreviousChapterReference { get; set; } = new ChapterReference();
 
         /// <summary>
+        /// Gets or sets a value indicating whether this chapter supports italics.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this chapter supports italics; otherwise, <c>false</c>.
+        /// </value>
+        public bool SupportsItalics { get; set; }
+
+        /// <summary>
         /// Gets or sets the text.
         /// </summary>
         /// <value>

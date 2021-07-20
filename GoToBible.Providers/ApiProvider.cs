@@ -61,9 +61,6 @@ namespace GoToBible.Providers
         /// <inheritdoc/>
         public abstract string Name { get; }
 
-        /// <inheritdoc/>
-        public abstract bool SupportsItalics { get; }
-
         /// <summary>
         /// Gets the request cache.
         /// </summary>

@@ -16,6 +16,12 @@
   <ItemGroup>
     <None Remove="Texts\BCPPSALMS.txt" />
     <None Remove="Texts\BCPPSALMSALT.txt" />
+    <None Remove="Texts\BSB.txt" />
+    <None Remove="Texts\LAOANG.txt" />
+    <None Remove="Texts\LAOGRK.txt" />
+    <None Remove="Texts\LAOLAT.txt" />
+    <None Remove="Texts\NTA.txt" />
+    <None Remove="Texts\NTANOTES.txt" />
     <None Remove="Texts\SBLGNT.txt" />
     <None Remove="Texts\SBLGNTAPP.txt" />
   </ItemGroup>
@@ -27,6 +33,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Texts\BCPPSALMSALT.txt" />
     <EmbeddedResource Include="Texts\BCPPSALMS.txt" />
+    <EmbeddedResource Include="Texts\BSB.txt" />
+    <EmbeddedResource Include="Texts\LAOANG.txt" />
+    <EmbeddedResource Include="Texts\LAOGRK.txt" />
+    <EmbeddedResource Include="Texts\LAOLAT.txt" />
+    <EmbeddedResource Include="Texts\NTA.txt" />
+    <EmbeddedResource Include="Texts\NTANOTES.txt" />
     <EmbeddedResource Include="Texts\SBLGNT.txt" />
     <EmbeddedResource Include="Texts\SBLGNTAPP.txt" />
   </ItemGroup>

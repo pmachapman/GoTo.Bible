@@ -124,7 +124,7 @@ namespace GoToBible.Engine
             if (parameters.Format == RenderFormat.Text)
             {
                 // Strip italics
-                if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
+                if (firstChapter.SupportsItalics)
                 {
                     StringBuilder sb = new StringBuilder();
                     string[] lines = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -144,7 +144,7 @@ namespace GoToBible.Engine
             else if (parameters.Format == RenderFormat.Accordance)
             {
                 // Strip italics
-                if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
+                if (firstChapter.SupportsItalics)
                 {
                     StringBuilder sb = new StringBuilder();
                     string[] lines = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -241,8 +241,8 @@ namespace GoToBible.Engine
                         hasContent = true;
                         if (i < lines2.Count)
                         {
-                            RenderedVerse firstAttempt = this.RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, false);
-                            RenderedVerse secondAttempt = this.RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, true);
+                            RenderedVerse firstAttempt = RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, false, firstChapter.SupportsItalics);
+                            RenderedVerse secondAttempt = RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, true, firstChapter.SupportsItalics);
 
                             // If there are no words in any, skip
                             if (firstAttempt.TotalWordsLine1 == 0 && firstAttempt.TotalWordsLine2 == 0 && firstAttempt.DivergentPhrases == 0 && firstAttempt.WordsInCommon == 0
@@ -325,7 +325,7 @@ namespace GoToBible.Engine
                         }
                         else
                         {
-                            sb.Append(this.RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false).Content);
+                            sb.Append(RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false, firstChapter.SupportsItalics).Content);
                         }
                     }
 
@@ -335,7 +335,7 @@ namespace GoToBible.Engine
                         sb.AppendLine("</head><body>");
                         for (int i = lines1.Count; i < lines2.Count; i++)
                         {
-                            sb.Append(this.RenderInterlinearLinesAsHtml(string.Empty, lines2[i], parameters, false).Content);
+                            sb.Append(RenderInterlinearLinesAsHtml(string.Empty, lines2[i], parameters, false, secondChapter.SupportsItalics).Content);
                         }
                     }
 
@@ -428,7 +428,7 @@ namespace GoToBible.Engine
                     // Just render the first translation
                     foreach (string line in firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        sb.Append(this.RenderLineAsHtml(line, parameters));
+                        sb.Append(RenderLineAsHtml(line, parameters, firstChapter.SupportsItalics));
                     }
 
                     // Display copyright
@@ -512,10 +512,11 @@ namespace GoToBible.Engine
         /// </summary>
         /// <param name="line">The line.</param>
         /// <param name="parameters">The rendering parameters.</param>
+        /// <param name="supportsItalics">If set to <c>true</c>, we are to support italics.</param>
         /// <returns>
         /// The line as HTML.
         /// </returns>
-        private string RenderLineAsHtml(string line, RenderingParameters parameters)
+        private static string RenderLineAsHtml(string line, RenderingParameters parameters, bool supportsItalics)
         {
             if (!string.IsNullOrWhiteSpace(line))
             {
@@ -547,7 +548,7 @@ namespace GoToBible.Engine
                 }
 
                 // Render additional words in italics
-                if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
+                if (supportsItalics)
                 {
                     if (parameters.RenderItalics)
                     {
@@ -575,10 +576,11 @@ namespace GoToBible.Engine
         /// <param name="line2">The second line.</param>
         /// <param name="parameters">The rendering parameters.</param>
         /// <param name="reverseScan">If set to <c>true</c>, scan in reverse order.</param>
+        /// <param name="supportsItalics">If set to <c>true</c>, we are to support italics.</param>
         /// <returns>
         /// The lines as HTML content, with the verse statistics calculated for the rendering (if interlinear).
         /// </returns>
-        private RenderedVerse RenderInterlinearLinesAsHtml(string line1, string line2, RenderingParameters parameters, bool reverseScan)
+        private static RenderedVerse RenderInterlinearLinesAsHtml(string line1, string line2, RenderingParameters parameters, bool reverseScan, bool supportsItalics)
         {
             // Declare variables
             RenderedVerse renderedVerse = new RenderedVerse();
@@ -587,7 +589,7 @@ namespace GoToBible.Engine
             if (!string.IsNullOrWhiteSpace(line1) && !string.IsNullOrWhiteSpace(line2))
             {
                 // Render additional words in italics
-                if (this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider)?.SupportsItalics ?? false)
+                if (supportsItalics)
                 {
                     if (parameters.RenderItalics)
                     {
@@ -616,7 +618,7 @@ namespace GoToBible.Engine
                     }
                 }
 
-                if (this.Providers.FirstOrDefault(p => p.Id == parameters.SecondaryProvider)?.SupportsItalics ?? false)
+                if (supportsItalics)
                 {
                     if (parameters.RenderItalics)
                     {

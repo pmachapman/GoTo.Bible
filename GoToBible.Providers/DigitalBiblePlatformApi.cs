@@ -169,9 +169,6 @@ namespace GoToBible.Providers
         public override string Name => "Digital Bible Platform API";
 
         /// <inheritdoc/>
-        public override bool SupportsItalics { get; } = false;
-
-        /// <inheritdoc/>
         public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
         {
             string url = $"library/book?key={this.options.ApiKey}&dam_id={translation}&v=2";

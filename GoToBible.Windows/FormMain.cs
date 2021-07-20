@@ -343,8 +343,8 @@ namespace GoToBible.Windows
                 this.providers.Add(new BibliaApi(Options.Create(new BibliaApiOptions { ApiKey = bibliaApiKey }), this.cache));
             }
 
-            // Load the Coverdale Psalter Provider
-            this.providers.Add(new CoverdalePsalter());
+            // Load the Bundled Translations Provider
+            this.providers.Add(new BundledTranslations());
 
             // Load the Digital Bible Platform Provider
             string digitalBiblePlatformApiKey = Properties.Settings.Default.DigitalBiblePlatformApiKey;
@@ -360,9 +360,6 @@ namespace GoToBible.Windows
                 this.providers.Add(new EsvBible(Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }), this.cache));
             }
 
-            // Load the Laodiceans Provider
-            this.providers.Add(new Laodiceans());
-
             // Load the NET Provider
             this.providers.Add(new NetBible(this.cache));
 
@@ -372,9 +369,6 @@ namespace GoToBible.Windows
             {
                 this.providers.Add(new NltBible(Options.Create(new NltBibleOptions { ApiKey = nltApiKey }), this.cache));
             }
-
-            // Load the SBL Greek New Testament Provider
-            this.providers.Add(new SblGnt());
 
             // Get the list of blocked providers
             List<string> blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();

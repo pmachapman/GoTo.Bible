@@ -61,9 +61,6 @@ namespace GoToBible.Providers
         public override string Name => "NET Bible API";
 
         /// <inheritdoc/>
-        public override bool SupportsItalics { get; } = false;
-
-        /// <inheritdoc/>
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously

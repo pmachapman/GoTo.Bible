@@ -32,14 +32,6 @@ namespace GoToBible.Model
         public string Name { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this provider supports italics.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this provider supports italics; otherwise, <c>false</c>.
-        /// </value>
-        public bool SupportsItalics { get; }
-
-        /// <summary>
         /// Gets the books for a translation.
         /// </summary>
         /// <param name="translation">The translation.</param>

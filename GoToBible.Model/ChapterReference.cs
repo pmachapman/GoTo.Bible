@@ -30,8 +30,17 @@ namespace GoToBible.Model
         /// <param name="chapter">The chapter.</param>
         public ChapterReference(string book, int chapter)
         {
-            this.Book = book;
-            this.ChapterNumber = chapter;
+            // Special case for Psalm 151, as it is often a separate book
+            if (book.Replace(" ", string.Empty).ToLowerInvariant() == "psalm151")
+            {
+                this.Book = "Psalm";
+                this.ChapterNumber = 151;
+            }
+            else
+            {
+                this.Book = book;
+                this.ChapterNumber = chapter;
+            }
         }
 
         /// <summary>

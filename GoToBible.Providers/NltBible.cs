@@ -63,9 +63,6 @@ namespace GoToBible.Providers
         public override string Name => "NLT API";
 
         /// <inheritdoc/>
-        public override bool SupportsItalics { get; } = true;
-
-        /// <inheritdoc/>
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -86,6 +83,7 @@ namespace GoToBible.Providers
                 ChapterNumber = chapterNumber,
                 NextChapterReference = new ChapterReference(),
                 PreviousChapterReference = new ChapterReference(),
+                SupportsItalics = true,
                 Translation = translation,
             };
 

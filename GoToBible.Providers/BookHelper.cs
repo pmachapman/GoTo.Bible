@@ -16,12 +16,38 @@ namespace GoToBible.Providers
     /// <summary>
     /// Bible Book helper functions.
     /// </summary>
-    internal abstract class BookHelper
+    internal class BookHelper
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="BookHelper"/> class.
+        /// </summary>
+        public BookHelper()
+        {
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="BookHelper"/> class.
+        /// </summary>
+        /// <param name="bookChapters">The book chapters.</param>
+        public BookHelper(OrderedDictionary bookChapters)
+        {
+            this.BookChapters = bookChapters;
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="BookHelper"/> class.
+        /// </summary>
+        /// <param name="bookName">Name of the book.</param>
+        /// <param name="chapters">The chapters.</param>
+        public BookHelper(string bookName, int chapters)
+        {
+            this.BookChapters = new OrderedDictionary { [bookName.ToLowerInvariant()] = chapters };
+        }
+
         /// <summary>
         /// Gets the numbers of chapters in each book.
         /// </summary>
-        protected abstract OrderedDictionary BookChapters { get; }
+        protected virtual OrderedDictionary BookChapters { get; } = new OrderedDictionary();
 
         /// <summary>
         /// Gets the book names.
@@ -78,6 +104,14 @@ namespace GoToBible.Providers
         public ChapterReference GetNextChapter(string book, int chapter)
         {
             string bookLower = book.ToLowerInvariant();
+
+            // Psalm 151 clean up
+            if (bookLower == "psalm" && chapter == 151)
+            {
+                bookLower = "psalm 151";
+                chapter = 1;
+            }
+
             if (this.BookChapters.Contains(bookLower) && this.BookChapters[bookLower] is int chapters)
             {
                 if (chapters > chapter)
@@ -130,6 +164,14 @@ namespace GoToBible.Providers
         public ChapterReference GetPreviousChapter(string book, int chapter)
         {
             string bookLower = book.ToLowerInvariant();
+
+            // Psalm 151 clean up
+            if (bookLower == "psalm" && chapter == 151)
+            {
+                bookLower = "psalm 151";
+                chapter = 1;
+            }
+
             if (this.BookChapters.Contains(bookLower))
             {
                 if (chapter > 1)
@@ -174,6 +216,14 @@ namespace GoToBible.Providers
         public bool IsValidChapter(string book, int chapter)
         {
             string bookLower = book.ToLowerInvariant();
+
+            // Psalm 151 clean up
+            if (bookLower == "psalm" && chapter == 151)
+            {
+                bookLower = "psalm 151";
+                chapter = 1;
+            }
+
             return this.BookChapters.Contains(bookLower) && this.BookChapters[bookLower] is int chapters && chapter <= chapters && chapter > 0;
         }
     }
