@@ -231,6 +231,22 @@ namespace GoToBible.Engine
                         }
                     }
 
+                    // Add a superscription, if missing
+                    if (lines1.Count > lines2.Count
+                        && lines2.Count > 0
+                        && int.TryParse(lines2[0].Substring(0, lines2[0].IndexOf(' ')), out int _)
+                        && !int.TryParse(lines1[0].Substring(0, lines1[0].IndexOf(' ')), out int _))
+                    {
+                        lines2.Insert(0, string.Empty);
+                    }
+                    else if (lines2.Count > lines1.Count
+                        && lines1.Count > 0
+                        && int.TryParse(lines1[0].Substring(0, lines1[0].IndexOf(' ')), out int _)
+                        && !int.TryParse(lines2[0].Substring(0, lines2[0].IndexOf(' ')), out int _))
+                    {
+                        lines1.Insert(0, string.Empty);
+                    }
+
                     // The following is used to calculate rendering suggestions
                     int linesWithLessThanThreeWordsInCommon = 0;
                     int totalInterlinearLines = lines1.Count < lines2.Count ? lines1.Count : lines2.Count;
@@ -669,8 +685,15 @@ namespace GoToBible.Engine
                     }
 
                     // Prepare the lines
-                    line1 = line1[(line1.IndexOf(' ') + 1)..].Trim();
-                    line2 = line2[(line2.IndexOf(' ') + 1)..].Trim();
+                    if (!string.IsNullOrWhiteSpace(verseNumber1))
+                    {
+                        line1 = line1[(line1.IndexOf(' ') + 1)..].Trim();
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(verseNumber2))
+                    {
+                        line2 = line2[(line2.IndexOf(' ') + 1)..].Trim();
+                    }
 
                     // Split the words
                     List<string> words1 = line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -927,6 +950,9 @@ namespace GoToBible.Engine
                     }
                 }
 
+                // Set the statistics
+                renderedVerse.DivergentPhrases = 1;
+
                 // Add a HTML and text new line
                 renderedVerse.Content = $"{line1} <br>{Environment.NewLine}";
                 return renderedVerse;
@@ -955,6 +981,9 @@ namespace GoToBible.Engine
                         line2 = $"<span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line2.Trim() + "</span><span>&nbsp;</span></span>";
                     }
                 }
+
+                // Set the statistics
+                renderedVerse.DivergentPhrases = 1;
 
                 // Add a HTML and text new line
                 renderedVerse.Content = $"{line2} <br>{Environment.NewLine}";
