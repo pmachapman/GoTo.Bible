@@ -120,6 +120,9 @@ namespace GoToBible.Engine
                 renderedPassage.NextPassage = new PassageReference();
             }
 
+            // If we do not have content, we will suggest another passage
+            bool hasContent = false;
+
             // Render appropriately
             if (parameters.Format == RenderFormat.Text)
             {
@@ -130,6 +133,7 @@ namespace GoToBible.Engine
                     string[] lines = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string line in lines)
                     {
+                        hasContent = true;
                         sb.AppendLine(line.StripItalics());
                     }
 
@@ -150,6 +154,7 @@ namespace GoToBible.Engine
                     string[] lines = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string line in lines)
                     {
+                        hasContent = true;
                         sb.Append(parameters.PassageReference.ChapterReference);
                         sb.Append(':');
                         sb.AppendLine(line.RenderItalics("i").TrimStart());
@@ -160,6 +165,7 @@ namespace GoToBible.Engine
                 else
                 {
                     // We cannot do interlinear in text mode
+                    hasContent = !string.IsNullOrWhiteSpace(firstChapter.Text);
                     renderedPassage.Content = firstChapter.Text;
                 }
             }
@@ -208,7 +214,6 @@ namespace GoToBible.Engine
                     }
 
                     // Render both interlinear
-                    bool hasContent = false;
                     List<string> lines1 = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     List<string> lines2 = secondChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -348,9 +353,9 @@ namespace GoToBible.Engine
                     // If lines 2 was longer, add its remaining entries
                     if (lines2.Count > lines1.Count)
                     {
-                        sb.AppendLine("</head><body>");
                         for (int i = lines1.Count; i < lines2.Count; i++)
                         {
+                            hasContent = true;
                             sb.Append(RenderInterlinearLinesAsHtml(string.Empty, lines2[i], parameters, false, secondChapter.SupportsItalics).Content);
                         }
                     }
@@ -444,6 +449,7 @@ namespace GoToBible.Engine
                     // Just render the first translation
                     foreach (string line in firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
+                        hasContent = true;
                         sb.Append(RenderLineAsHtml(line, parameters, firstChapter.SupportsItalics));
                     }
 
@@ -461,6 +467,16 @@ namespace GoToBible.Engine
                 }
 
                 renderedPassage.Content = sb.ToString();
+            }
+
+            // If we do not have content, make a suggestion
+            if (!hasContent)
+            {
+                await foreach (Book book in firstProvider.GetBooksAsync(parameters.PrimaryTranslation, true))
+                {
+                    renderedPassage.Suggestions.NavigateToChapter = book.Chapters.First();
+                    break;
+                }
             }
 
             // Return the rendered passage

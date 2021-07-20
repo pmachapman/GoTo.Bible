@@ -21,5 +21,16 @@ namespace GoToBible.Model
         ///   <c>true</c> if the client should ignore case diacritics and punctuation; otherwise, <c>false</c>.
         /// </value>
         public bool IgnoreCaseDiacriticsAndPunctuation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the suggested chapter to navigate to.
+        /// </summary>
+        /// <value>
+        /// The suggested chapter to navigate to, or null if no suggestions.
+        /// </value>
+        /// <remarks>
+        /// This is specified if the chapter does not exist.
+        /// </remarks>
+        public ChapterReference? NavigateToChapter { get; set; }
     }
 }

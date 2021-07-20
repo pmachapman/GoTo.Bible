@@ -487,6 +487,13 @@
         {
             await this.JsRuntime.InvokeAsync<string>("scrollToElement", $"{this.parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{this.parameters.PassageReference.HighlightedVerses.First()}");
         }
+
+        // If this book is not present, go to the suggested book
+        if (this.passage.Suggestions.NavigateToChapter != null)
+        {
+            this.renderingParametersModel.Passage = this.passage.Suggestions.NavigateToChapter.ToString();
+            await this.ShowPassageAsync(true);
+        }
     }
 
     /// <summary>

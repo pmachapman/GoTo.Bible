@@ -59,13 +59,11 @@ namespace GoToBible.Web.Server
             // Add supported translation providers
             services.AddSingleton<IProvider, BibleApi>();
             services.AddSingleton<IProvider, BibliaApi>();
-            services.AddSingleton<IProvider, CoverdalePsalter>();
+            services.AddSingleton<IProvider, BundledTranslations>();
             services.AddSingleton<IProvider, DigitalBiblePlatformApi>();
             services.AddSingleton<IProvider, EsvBible>();
-            services.AddSingleton<IProvider, Laodiceans>();
             services.AddSingleton<IProvider, NetBible>();
             services.AddSingleton<IProvider, NltBible>();
-            services.AddSingleton<IProvider, SblGnt>();
 
             // Add options for providers that require them
             services.Configure<BibleApiOptions>(this.Configuration.GetSection("Providers:BibleApi"));
