@@ -44,7 +44,7 @@ namespace GoToBible.Model
         ///   <c>true</c> if this instance is valid; otherwise, <c>false</c>.
         /// </value>
         /// <remarks>
-        /// We only require the start reference. This method assumes you used <c>AsPassageReference()</c> to generate this object.
+        /// We only require the chapter reference. This method assumes you used <c>AsPassageReference()</c> to generate this object.
         /// </remarks>
         public bool IsValid => this.ChapterReference.IsValid;
     }

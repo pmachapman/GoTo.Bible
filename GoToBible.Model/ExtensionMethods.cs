@@ -108,7 +108,7 @@ namespace GoToBible.Model
             ["manasseh"] = new[] { 15 },
             ["1 maccabees"] = new[] { 63, 70, 59, 61, 68, 63, 50, 32, 73, 89, 74, 53, 53, 49, 41, 24 },
             ["2 maccabees"] = new[] { 36, 32, 40, 50, 27, 31, 42, 36, 29, 38, 38, 46, 26, 46, 39 },
-            ["3 maccabees"] = new[] { 29, 33, 30, 21, 51, 41, 23, },
+            ["3 maccabees"] = new[] { 29, 33, 30, 21, 51, 41, 23 },
             ["4 maccabees"] = new[] { 35, 24, 21, 26, 38, 35, 23, 29, 32, 21, 27, 19, 27, 20, 32, 25, 24, 24 },
             ["laodiceans"] = new[] { 20 },
         };
@@ -211,7 +211,7 @@ namespace GoToBible.Model
         private static readonly Regex StripInvalidCharactersRegex = new Regex(@"[^a-zA-Z0-9\. _~:,-]", RegexOptions.Compiled);
 
         /// <summary>
-        /// Builds a <see cref="PassageReference" /> from a <see cref="string" />.
+        /// Builds a <see cref="PassageReference" /> from a <see cref="ChapterReference" />.
         /// </summary>
         /// <param name="chapterReference">The chapter reference.</param>
         /// <returns>
@@ -315,7 +315,7 @@ namespace GoToBible.Model
                             }
                         }
 
-                        // Set the disply and highlighted verses
+                        // Set the display and highlighted verses
                         passageReference.Display = $"{book} {chapter}:{sb}";
                         passageReference.HighlightedVerses = highlightedVerses.OrderBy(v => v).ToArray();
                     }
@@ -379,6 +379,7 @@ namespace GoToBible.Model
         /// </remarks>
         public static string DecodePassageFromUrl(this string segment)
         {
+            // Check input
             if (string.IsNullOrWhiteSpace(segment))
             {
                 return string.Empty;
@@ -404,6 +405,7 @@ namespace GoToBible.Model
         /// </remarks>
         public static string EncodePassageForUrl(this string passage)
         {
+            // Check input
             if (string.IsNullOrWhiteSpace(passage))
             {
                 return string.Empty;
@@ -482,7 +484,7 @@ namespace GoToBible.Model
         /// <summary>
         /// Gets the book.
         /// </summary>
-        /// <param name="passage">The passage.</param>
+        /// <param name="passage">The passage. This must be lower case and without spaces.</param>
         /// <returns>
         /// The book from the passage reference.
         /// </returns>
@@ -501,7 +503,7 @@ namespace GoToBible.Model
             }
             else
             {
-                index += 1;
+                index++;
             }
 
             string bookPart = passage[..index];
@@ -617,7 +619,7 @@ namespace GoToBible.Model
         /// <summary>
         /// Normalises a single chapter reference.
         /// </summary>
-        /// <param name="passage">The passage.</param>
+        /// <param name="passage">The passage. This must be lower case and without spaces.</param>
         /// <returns>
         /// The single chapter reference normalised.
         /// </returns>
