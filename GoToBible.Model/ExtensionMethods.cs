@@ -223,10 +223,11 @@ namespace GoToBible.Model
         /// Builds a <see cref="PassageReference" /> from a <see cref="string" />.
         /// </summary>
         /// <param name="passage">The passage.</param>
+        /// <param name="defaultChapter">The default chapter if none is specified in the passage.</param>
         /// <returns>
         /// The passage reference.
         /// </returns>
-        public static PassageReference AsPassageReference(this string passage)
+        public static PassageReference AsPassageReference(this string passage, int defaultChapter = 1)
         {
             // Declare variables
             PassageReference passageReference = new PassageReference();
@@ -254,7 +255,7 @@ namespace GoToBible.Model
                 {
                     if (!int.TryParse(range.Split(':')[0], out int chapter))
                     {
-                        chapter = 1;
+                        chapter = defaultChapter;
                     }
 
                     // Set the chapter reference
