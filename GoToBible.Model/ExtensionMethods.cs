@@ -10,7 +10,6 @@ namespace GoToBible.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.Drawing;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -431,8 +430,8 @@ namespace GoToBible.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("body{");
-            sb.Append($"background-color:{ColorTranslator.ToHtml(parameters.BackgroundColour)};");
-            sb.Append($"color:{ColorTranslator.ToHtml(parameters.ForegroundColour)};");
+            sb.Append($"background-color:{parameters.BackgroundColour.ToHtml()};");
+            sb.Append($"color:{parameters.ForegroundColour.ToHtml()};");
             if (parameters.Font.Bold)
             {
                 sb.Append("font-weight:bold;");
@@ -476,11 +475,20 @@ namespace GoToBible.Model
             }
 
             sb.Append($"sup{{font-size:{parameters.Font.SizeInPoints * 0.75f}pt;font-weight:bold}}.sup{{font-weight:bold}}");
-            sb.Append($".copyright{{border-top:1px solid {ColorTranslator.ToHtml(parameters.ForegroundColour)};font-size:{Math.Round(parameters.Font.SizeInPoints * 0.75, 2)}pt}}");
+            sb.Append($".copyright{{border-top:1px solid {parameters.ForegroundColour.ToHtml()};font-size:{Math.Round(parameters.Font.SizeInPoints * 0.75, 2)}pt}}");
             sb.Append(".supsub{display:inline-flex;flex-direction:column;justify-content:space-between;vertical-align:middle;font-size:50%}");
-            sb.Append($"mark{{background-color:{ColorTranslator.ToHtml(parameters.HighlightColour)}}}");
+            sb.Append($"mark{{background-color:{parameters.HighlightColour.ToHtml()}}}");
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Converts to <see cref="RenderColour" /> to an HTML string.
+        /// </summary>
+        /// <param name="colour">The colour.</param>
+        /// <returns>
+        /// The HTML colour value.
+        /// </returns>
+        public static string ToHtml(this RenderColour colour) => "#" + colour.R.ToString("X2") + colour.G.ToString("X2") + colour.B.ToString("X2");
 
         /// <summary>
         /// Gets the book.

@@ -6,8 +6,6 @@
 
 namespace GoToBible.Model
 {
-    using System.Drawing;
-
     /// <summary>
     /// The rendering parameters.
     /// </summary>
@@ -19,7 +17,7 @@ namespace GoToBible.Model
         /// <value>
         /// The background colour.
         /// </value>
-        public Color BackgroundColour { get; set; } = Default.BackgroundColour;
+        public RenderColour BackgroundColour { get; set; } = Default.BackgroundColour;
 
         /// <summary>
         /// Gets or sets the font.
@@ -35,7 +33,7 @@ namespace GoToBible.Model
         /// <value>
         /// The foreground colour.
         /// </value>
-        public Color ForegroundColour { get; set; } = Default.ForegroundColour;
+        public RenderColour ForegroundColour { get; set; } = Default.ForegroundColour;
 
         /// <summary>
         /// Gets or sets the format to render in.
@@ -51,7 +49,7 @@ namespace GoToBible.Model
         /// <value>
         /// The highlight colour.
         /// </value>
-        public Color HighlightColour { get; set; } = Default.HighlightColour;
+        public RenderColour HighlightColour { get; set; } = Default.HighlightColour;
 
         /// <summary>
         /// Gets or sets a value indicating whether the interlinear ignores case.

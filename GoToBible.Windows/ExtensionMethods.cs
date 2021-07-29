@@ -15,6 +15,16 @@ namespace GoToBible.Windows
     public static class ExtensionMethods
     {
         /// <summary>
+        /// Returns a <see cref="RenderColour" /> as a <see cref="Color" />.
+        /// </summary>
+        /// <param name="renderColour">The render colour.</param>
+        /// <returns>
+        /// The <see cref="Color" /> corresponding to the <see cref="RenderColour" />.
+        /// </returns>
+        public static Color AsColor(this RenderColour renderColour)
+            => Color.FromArgb(renderColour.R, renderColour.G, renderColour.B);
+
+        /// <summary>
         /// Returns a <see cref="RenderFont" /> as a <see cref="Font" />.
         /// </summary>
         /// <param name="renderFont">The render font.</param>
@@ -27,6 +37,16 @@ namespace GoToBible.Windows
                 renderFont.SizeInPoints,
                 (renderFont.Bold ? FontStyle.Bold : FontStyle.Regular) & (renderFont.Italic ? FontStyle.Italic : FontStyle.Regular) & (renderFont.Strikeout ? FontStyle.Strikeout : FontStyle.Regular) & (renderFont.Underline ? FontStyle.Underline : FontStyle.Regular),
                 GraphicsUnit.Point);
+
+        /// <summary>
+        /// Returns a <see cref="Color" /> as a <see cref="RenderColour" />.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        /// <returns>
+        /// The <see cref="RenderColour" /> corresponding to the <see cref="Color" />.
+        /// </returns>
+        public static RenderColour AsRenderColour(this Color color)
+            => new RenderColour { R = color.R, G = color.G, B = color.B };
 
         /// <summary>
         /// Returns a <see cref="Font" /> as a <see cref="RenderFont" />.

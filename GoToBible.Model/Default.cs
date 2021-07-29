@@ -6,8 +6,6 @@
 
 namespace GoToBible.Model
 {
-    using System.Drawing;
-
     /// <summary>
     /// The renderer defaults.
     /// </summary>
@@ -24,7 +22,10 @@ namespace GoToBible.Model
         /// <value>
         /// The default background colour.
         /// </value>
-        public static Color BackgroundColour => Color.White;
+        /// <remarks>
+        /// This is white by default.
+        /// </remarks>
+        public static RenderColour BackgroundColour => new RenderColour { R = 255, G = 255, B = 255 };
 
         /// <summary>
         /// Gets the default font.
@@ -44,7 +45,10 @@ namespace GoToBible.Model
         /// <value>
         /// The default foreground colour.
         /// </value>
-        public static Color ForegroundColour => Color.Black;
+        /// <remarks>
+        /// This is black by default.
+        /// </remarks>
+        public static RenderColour ForegroundColour => new RenderColour { R = 0, G = 0, B = 0 };
 
         /// <summary>
         /// Gets the default highlight colour.
@@ -52,7 +56,10 @@ namespace GoToBible.Model
         /// <value>
         /// The default highlight colour.
         /// </value>
-        public static Color HighlightColour => Color.Yellow;
+        /// <remarks>
+        /// This is yellow by default.
+        /// </remarks>
+        public static RenderColour HighlightColour => new RenderColour { R = 255, G = 255, B = 0 };
 
         /// <summary>
         /// Gets the default passage reference.

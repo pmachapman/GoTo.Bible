@@ -225,10 +225,10 @@ namespace GoToBible.Windows
             // Setup the rendering parameters for CSS
             this.parameters = new RenderingParameters
             {
-                BackgroundColour = this.ColourDialogBackground.Color,
+                BackgroundColour = this.ColourDialogBackground.Color.AsRenderColour(),
                 Font = this.FontDialogMain.Font.AsRenderFont(),
-                ForegroundColour = this.FontDialogMain.Color,
-                HighlightColour = this.ColourDialogHighlight.Color,
+                ForegroundColour = this.FontDialogMain.Color.AsRenderColour(),
+                HighlightColour = this.ColourDialogHighlight.Color.AsRenderColour(),
             };
 
             // Initialise the WebView2
@@ -820,11 +820,11 @@ namespace GoToBible.Windows
             this.ToolStripButtonSwap.Enabled = !string.IsNullOrWhiteSpace(secondaryTranslation);
             this.parameters = new RenderingParameters
             {
-                BackgroundColour = this.ColourDialogBackground.Color,
+                BackgroundColour = this.ColourDialogBackground.Color.AsRenderColour(),
                 Font = this.FontDialogMain.Font.AsRenderFont(),
-                ForegroundColour = this.FontDialogMain.Color,
+                ForegroundColour = this.FontDialogMain.Color.AsRenderColour(),
                 Format = RenderFormat.Html,
-                HighlightColour = this.ColourDialogHighlight.Color,
+                HighlightColour = this.ColourDialogHighlight.Color.AsRenderColour(),
                 InterlinearIgnoresCase = this.ToolStripMenuItemIgnoreCase.Checked,
                 InterlinearIgnoresDiacritics = this.ToolStripMenuItemIgnoreDiacritics.Checked,
                 InterlinearIgnoresPunctuation = this.ToolStripMenuItemIgnorePunctuation.Checked,
@@ -1183,7 +1183,7 @@ namespace GoToBible.Windows
             if (dialogResult == DialogResult.OK)
             {
                 // Update the rendering parameters
-                this.parameters.BackgroundColour = this.ColourDialogBackground.Color;
+                this.parameters.BackgroundColour = this.ColourDialogBackground.Color.AsRenderColour();
 
                 // Update the CSS
                 this.SetupWebPage(this.WebViewMain);
@@ -1345,7 +1345,7 @@ namespace GoToBible.Windows
             {
                 // Update the rendering parameters
                 this.parameters.Font = this.FontDialogMain.Font.AsRenderFont();
-                this.parameters.ForegroundColour = this.FontDialogMain.Color;
+                this.parameters.ForegroundColour = this.FontDialogMain.Color.AsRenderColour();
 
                 // Update the CSS
                 this.SetupWebPage(this.WebViewMain);
@@ -1367,7 +1367,7 @@ namespace GoToBible.Windows
             if (dialogResult == DialogResult.OK)
             {
                 // Update the rendering parameters
-                this.parameters.HighlightColour = this.ColourDialogHighlight.Color;
+                this.parameters.HighlightColour = this.ColourDialogHighlight.Color.AsRenderColour();
 
                 // Update the CSS
                 this.SetupWebPage(this.WebViewMain);

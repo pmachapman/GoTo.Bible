@@ -25,8 +25,8 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Italics support is now specified by chapters not providers, Psalm 151 is now supported, and navigate to chapter suggestions have been added.</PackageReleaseNotes>
-    <Version>1.0.3</Version>
+    <PackageReleaseNotes>The RenderColour class is now used instead of Color, and AsPassageReference now has a default chapter parameter.</PackageReleaseNotes>
+    <Version>1.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -54,7 +54,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
 </Project>
