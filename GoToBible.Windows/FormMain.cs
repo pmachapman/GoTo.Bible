@@ -699,6 +699,12 @@ namespace GoToBible.Windows
                 this.ToolStripMenuItemIgnorePunctuation.Checked = true;
                 await this.ShowPassage(true, false);
             }
+            else if (this.renderedPassage.Suggestions.NavigateToChapter != null)
+            {
+                // If this book is not present, go to the suggested book
+                this.ToolStripTextBoxPassage.Text = this.renderedPassage.Suggestions.NavigateToChapter.ToString();
+                await this.ShowPassage(true, true);
+            }
         }
 
         /// <summary>
@@ -972,13 +978,6 @@ namespace GoToBible.Windows
             {
                 // Show/hide the export button
                 this.ToolStripButtonExport.Enabled = translationItem.CanBeExported;
-            }
-
-            // If this book is not present, go to the suggested book
-            if (updateMain && this.renderedPassage.Suggestions.NavigateToChapter != null)
-            {
-                this.ToolStripTextBoxPassage.Text = this.renderedPassage.Suggestions.NavigateToChapter.ToString();
-                await this.ShowPassage(updateMain, updateResource);
             }
         }
 
