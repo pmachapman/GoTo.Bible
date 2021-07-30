@@ -51,11 +51,6 @@ namespace GoToBible.Windows
         private readonly List<IProvider> providers = new List<IProvider>();
 
         /// <summary>
-        /// The bible data renderer.
-        /// </summary>
-        private readonly Renderer renderer = new Renderer();
-
-        /// <summary>
         /// The translations.
         /// </summary>
         private readonly List<Translation> translations = new List<Translation>();
@@ -69,6 +64,11 @@ namespace GoToBible.Windows
         /// The rendered passage.
         /// </summary>
         private RenderedPassage renderedPassage = new RenderedPassage();
+
+        /// <summary>
+        /// The bible data renderer.
+        /// </summary>
+        private IRenderer renderer = new Renderer();
 
         /// <summary>
         /// The rendering parameters.
@@ -413,24 +413,38 @@ namespace GoToBible.Windows
 
                 // Get the list of blocked providers
                 blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
+
+                // Set the renderer
+                if (!(this.renderer is Renderer))
+                {
+                    this.renderer.Dispose();
+                    this.renderer = new Renderer();
+                }
             }
             else
             {
-                // TODO: Implement GotoBibleApiRenderer and IRenderer
                 // Only one provider is allowed if not developer
                 this.providers.Add(new GoToBibleApi(this.cache));
+
+                // Set the renderer
+                if (!(this.renderer is GotoBibleApiRenderer))
+                {
+                    this.renderer.Dispose();
+                    this.renderer = new GotoBibleApiRenderer();
+                }
             }
 
             // Set the providers for the renderer
-            this.renderer.Providers.Clear();
             foreach (IProvider provider in this.providers)
             {
                 if (!blockedProviders.Contains(provider.Id))
                 {
-                    this.renderer.Providers.Add(provider);
                     enabledProviders.Add(provider);
                 }
             }
+
+            // Set the renderer providers
+            this.renderer.Providers = enabledProviders.AsReadOnly();
 
             // We return (and use this) to stop collection modified crashes
             return enabledProviders;
@@ -775,11 +789,15 @@ namespace GoToBible.Windows
             if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryComboBoxItem)
             {
                 // Add the book names to the suggestions list
-                await foreach (Book book in this.providers.First(p => p.Id == primaryComboBoxItem.Provider).GetBooksAsync(primaryComboBoxItem.Code, false))
+                IProvider? provider = this.providers.FirstOrDefault(p => p.Id == primaryComboBoxItem.Provider) ?? this.providers.FirstOrDefault();
+                if (provider != null)
                 {
-                    if (!suggestions.Contains(book.Name))
+                    await foreach (Book book in provider.GetBooksAsync(primaryComboBoxItem.Code, false))
                     {
-                        suggestions.Add(book.Name);
+                        if (!suggestions.Contains(book.Name))
+                        {
+                            suggestions.Add(book.Name);
+                        }
                     }
                 }
             }
@@ -788,11 +806,15 @@ namespace GoToBible.Windows
             if (this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryComboBoxItem)
             {
                 // Add the book names to the suggestions list
-                await foreach (Book book in this.providers.First(p => p.Id == secondaryComboBoxItem.Provider).GetBooksAsync(secondaryComboBoxItem.Code, false))
+                IProvider? provider = this.providers.FirstOrDefault(p => p.Id == secondaryComboBoxItem.Provider) ?? this.providers.FirstOrDefault();
+                if (provider != null)
                 {
-                    if (!suggestions.Contains(book.Name))
+                    await foreach (Book book in provider.GetBooksAsync(secondaryComboBoxItem.Code, false))
                     {
-                        suggestions.Add(book.Name);
+                        if (!suggestions.Contains(book.Name))
+                        {
+                            suggestions.Add(book.Name);
+                        }
                     }
                 }
             }

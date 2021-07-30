@@ -39,15 +39,18 @@ namespace GoToBible.Providers
         /// <inheritdoc/>
         public override string Name => "GoTo.Bible API";
 
-        // TODO: Implement this for autocorrect (must be fast!)
+        /// <inheritdoc/>
+        /// <remarks>This method is not implemented, and only for use with the GotoBibleApiRenderer.</remarks>
+        public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
+        {
+            // TODO: Implement this for auto-correct
+            await Task.CompletedTask;
+            yield break;
+        }
 
         /// <inheritdoc/>
         /// <remarks>This method is not implemented, and only for use with the GotoBibleApiRenderer.</remarks>
-        public override IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        /// <remarks>This method is not implemented, and only for use with the GotoBibleApiRenderer.</remarks>
-        public override Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber) => throw new NotImplementedException();
+        public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber) => await Task.FromResult(new Chapter());
 
         /// <inheritdoc/>
         public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
@@ -74,7 +77,6 @@ namespace GoToBible.Providers
             JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             foreach (Translation translation in JsonSerializer.Deserialize<Translation[]>(json, options) ?? Array.Empty<Translation>())
             {
-                translation.Provider = this.Id;
                 yield return translation;
             }
         }
