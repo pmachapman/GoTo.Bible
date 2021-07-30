@@ -15,7 +15,6 @@ namespace GoToBible.Windows
     using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Web;
     using System.Windows.Forms;
@@ -116,6 +115,34 @@ namespace GoToBible.Windows
             this.ToolStripButtonNavigateBack.Enabled = false;
             this.ToolStripButtonNavigateForward.Enabled = false;
             this.ToolStripMenuItemConfigure.Enabled = false;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is compiled in debug mode.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance compiled debug mode; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>
+        /// This value has no effect on the rendering parameter <see cref="RenderingParameters.IsDebug"/>.
+        /// </remarks>
+        private static bool IsDebug =>
+#if DEBUG
+            true;
+#else
+            false;
+#endif
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is in developer mode.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is in developer mode; otherwise, <c>false</c>.
+        /// </value>
+        private bool IsDeveloper
+        {
+            get => this.ToolStripMenuItemDeveloperMode.Checked;
+            set => this.ToolStripMenuItemDeveloperMode.Checked = value;
         }
 
         /// <summary>
@@ -271,6 +298,14 @@ namespace GoToBible.Windows
             this.ToolStripMenuItemIgnorePunctuation.Checked = Properties.Settings.Default.InterlinearIgnoresPunctuation;
             this.ToolStripMenuItemShowItalics.Checked = Properties.Settings.Default.RenderItalics;
             this.ToolStripMenuItemDebugMode.Checked = Properties.Settings.Default.IsDebug;
+            this.IsDeveloper = Properties.Settings.Default.IsDeveloper;
+            this.ToolStripMenuItemDeveloperMode.Visible = IsDebug || this.IsDeveloper;
+            this.ToolStripSeparatorDebugMode.Visible = IsDebug || this.IsDeveloper;
+            if (!this.IsDeveloper)
+            {
+                // As the default is false, this would not have been triggered if not in developer mode
+                await this.UpdateDeveloperMode();
+            }
 
             // Setup the cache
             this.LoadSqlCache(Properties.Settings.Default.SqlConnectionString);
@@ -329,52 +364,62 @@ namespace GoToBible.Windows
             // Clear the providers
             this.providers.Clear();
 
-            // Load the API.Bible Provider
-            string bibleApiKey = Properties.Settings.Default.BibleApiKey;
-            if (!string.IsNullOrWhiteSpace(bibleApiKey))
-            {
-                this.providers.Add(new BibleApi(Options.Create(new BibleApiOptions { ApiKey = bibleApiKey }), this.cache));
-            }
-
-            // Load the Biblia Provider
-            string bibliaApiKey = Properties.Settings.Default.BibliaApiKey;
-            if (!string.IsNullOrWhiteSpace(bibliaApiKey))
-            {
-                this.providers.Add(new BibliaApi(Options.Create(new BibliaApiOptions { ApiKey = bibliaApiKey }), this.cache));
-            }
-
-            // Load the Bundled Translations Provider
-            this.providers.Add(new BundledTranslations());
-
-            // Load the Digital Bible Platform Provider
-            string digitalBiblePlatformApiKey = Properties.Settings.Default.DigitalBiblePlatformApiKey;
-            if (!string.IsNullOrWhiteSpace(digitalBiblePlatformApiKey))
-            {
-                this.providers.Add(new DigitalBiblePlatformApi(Options.Create(new DigitalBiblePlatformApiOptions { ApiKey = digitalBiblePlatformApiKey }), this.cache));
-            }
-
-            // Load the ESV Provider
-            string esvApiKey = Properties.Settings.Default.EsvApiKey;
-            if (!string.IsNullOrWhiteSpace(esvApiKey))
-            {
-                this.providers.Add(new EsvBible(Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }), this.cache));
-            }
-
-            // Load the NET Provider
-            this.providers.Add(new NetBible(this.cache));
-
-            // Load the NLT Provider
-            string nltApiKey = Properties.Settings.Default.NltApiKey;
-            if (!string.IsNullOrWhiteSpace(nltApiKey))
-            {
-                this.providers.Add(new NltBible(Options.Create(new NltBibleOptions { ApiKey = nltApiKey }), this.cache));
-            }
-
-            // Get the list of blocked providers
-            List<string> blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
-
-            // Create a list of enabled providers
+            // Create a list of blocked and enabled providers
+            List<string> blockedProviders = new List<string>();
             List<IProvider> enabledProviders = new List<IProvider>();
+
+            if (this.IsDeveloper)
+            {
+                // Load the API.Bible Provider
+                string bibleApiKey = Properties.Settings.Default.BibleApiKey;
+                if (!string.IsNullOrWhiteSpace(bibleApiKey))
+                {
+                    this.providers.Add(new BibleApi(Options.Create(new BibleApiOptions { ApiKey = bibleApiKey }), this.cache));
+                }
+
+                // Load the Biblia Provider
+                string bibliaApiKey = Properties.Settings.Default.BibliaApiKey;
+                if (!string.IsNullOrWhiteSpace(bibliaApiKey))
+                {
+                    this.providers.Add(new BibliaApi(Options.Create(new BibliaApiOptions { ApiKey = bibliaApiKey }), this.cache));
+                }
+
+                // Load the Bundled Translations Provider
+                this.providers.Add(new BundledTranslations());
+
+                // Load the Digital Bible Platform Provider
+                string digitalBiblePlatformApiKey = Properties.Settings.Default.DigitalBiblePlatformApiKey;
+                if (!string.IsNullOrWhiteSpace(digitalBiblePlatformApiKey))
+                {
+                    this.providers.Add(new DigitalBiblePlatformApi(Options.Create(new DigitalBiblePlatformApiOptions { ApiKey = digitalBiblePlatformApiKey }), this.cache));
+                }
+
+                // Load the ESV Provider
+                string esvApiKey = Properties.Settings.Default.EsvApiKey;
+                if (!string.IsNullOrWhiteSpace(esvApiKey))
+                {
+                    this.providers.Add(new EsvBible(Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }), this.cache));
+                }
+
+                // Load the NET Provider
+                this.providers.Add(new NetBible(this.cache));
+
+                // Load the NLT Provider
+                string nltApiKey = Properties.Settings.Default.NltApiKey;
+                if (!string.IsNullOrWhiteSpace(nltApiKey))
+                {
+                    this.providers.Add(new NltBible(Options.Create(new NltBibleOptions { ApiKey = nltApiKey }), this.cache));
+                }
+
+                // Get the list of blocked providers
+                blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
+            }
+            else
+            {
+                // TODO: Implement GotoBibleApiRenderer and IRenderer
+                // Only one provider is allowed if not developer
+                this.providers.Add(new GoToBibleApi(this.cache));
+            }
 
             // Set the providers for the renderer
             this.renderer.Providers.Clear();
@@ -856,6 +901,7 @@ namespace GoToBible.Windows
                     Properties.Settings.Default.InterlinearIgnoresDiacritics = this.parameters.InterlinearIgnoresDiacritics;
                     Properties.Settings.Default.InterlinearIgnoresPunctuation = this.parameters.InterlinearIgnoresPunctuation;
                     Properties.Settings.Default.IsDebug = this.parameters.IsDebug;
+                    Properties.Settings.Default.IsDeveloper = this.IsDeveloper;
                     Properties.Settings.Default.RenderItalics = this.parameters.RenderItalics;
                     Properties.Settings.Default.Passage = this.parameters.PassageReference.Display;
                     Properties.Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
@@ -1286,6 +1332,13 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
+        /// Handles the Click event of the ToolStripMenuItemDeveloperMode control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private async void ToolStripMenuItemDeveloperMode_Click(object sender, EventArgs e) => await this.UpdateDeveloperMode();
+
+        /// <summary>
         /// Handles the Click event of the Digital Bible Platform ToolStripMenuItem.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -1561,6 +1614,21 @@ namespace GoToBible.Windows
                 await this.ShowPassage(true, true);
                 e.Handled = e.SuppressKeyPress = true;
             }
+        }
+
+        /// <summary>
+        /// Updates the app based on the <see cref="IsDeveloper" /> value.
+        /// </summary>
+        /// <returns>The task.</returns>
+        private async Task UpdateDeveloperMode()
+        {
+            // Update the menus
+            this.ToolStripMenuItemEnterApiKeys.Visible = this.IsDeveloper;
+            this.ToolStripMenuItemProviders.Visible = this.IsDeveloper;
+            this.ToolStripMenuItemDebugMode.Visible = this.IsDeveloper;
+
+            // Reload the providers and translations
+            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
         }
     }
 }
