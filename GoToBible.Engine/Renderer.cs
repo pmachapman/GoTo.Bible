@@ -18,7 +18,7 @@ namespace GoToBible.Engine
     /// <summary>
     /// The renderer.
     /// </summary>
-    public class Renderer : IDisposable
+    public class Renderer : IRenderer
     {
         /// <summary>
         /// A horizontal line.
@@ -61,13 +61,8 @@ namespace GoToBible.Engine
             this.Dispose(false);
         }
 
-        /// <summary>
-        /// Gets the provides.
-        /// </summary>
-        /// <value>
-        /// The providers.
-        /// </value>
-        public List<IProvider> Providers { get; }
+        /// <inheritdoc/>
+        public IReadOnlyCollection<IProvider> Providers { get; set; }
 
         /// <inheritdoc/>
         public void Dispose()
@@ -77,14 +72,7 @@ namespace GoToBible.Engine
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Renders the specified parameters.
-        /// </summary>
-        /// <param name="parameters">The parameters.</param>
-        /// <param name="renderCompleteHtmlPage">If set to <c>true</c>, render the complete HTML page.</param>
-        /// <returns>
-        /// The output of the rendering.
-        /// </returns>
+        /// <inheritdoc/>
         public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage)
         {
             // Set up the rendered passage

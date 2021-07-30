@@ -63,13 +63,11 @@ namespace GoToBible.Providers
         public override string Name => "NLT API";
 
         /// <inheritdoc/>
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             foreach (Book book in Canon.GetBooks(includeChapters))
             {
-                yield return book;
+                yield return await Task.FromResult(book);
             }
         }
 
@@ -182,13 +180,11 @@ namespace GoToBible.Providers
         }
 
         /// <inheritdoc/>
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (!string.IsNullOrWhiteSpace(this.options.ApiKey))
             {
-                yield return new Translation
+                yield return await Task.FromResult(new Translation
                 {
                     Code = "NLT",
                     Copyright = NltCopyright,
@@ -196,11 +192,11 @@ namespace GoToBible.Providers
                     Name = "New Living Translation", // (American English)
                     Provider = this.Id,
                     Year = 2015,
-                };
+                });
 
                 // The next two translations do not have the verse_export tags
                 /*
-                yield return new Translation
+                yield return await Task.FromResult(new Translation
                 {
                     Code = "NLTUK",
                     Copyright = NltCopyright,
@@ -208,8 +204,8 @@ namespace GoToBible.Providers
                     Name = "New Living Translation (British English)",
                     Provider = this.Id,
                     Year = 2015,
-                };
-                yield return new Translation
+                });
+                yield return await Task.FromResult(new Translation
                 {
                     Code = "KJV",
                     Copyright = "Public Domain",
@@ -217,8 +213,8 @@ namespace GoToBible.Providers
                     Name = "King James Version",
                     Provider = this.Id,
                     Year = 1769,
-                };*/
-                yield return new Translation
+                });*/
+                yield return await Task.FromResult(new Translation
                 {
                     Code = "NTV",
                     Copyright = NtvCopyright,
@@ -226,7 +222,7 @@ namespace GoToBible.Providers
                     Name = "Nueva Traducción Viviente",
                     Provider = this.Id,
                     Year = 2010,
-                };
+                });
             }
         }
     }

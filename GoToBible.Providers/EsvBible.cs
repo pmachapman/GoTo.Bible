@@ -163,13 +163,11 @@ namespace GoToBible.Providers
         public override string Name => "ESV API";
 
         /// <inheritdoc/>
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             foreach (Book book in Canon.GetBooks(includeChapters))
             {
-                yield return book;
+                yield return await Task.FromResult(book);
             }
         }
 
@@ -272,13 +270,11 @@ namespace GoToBible.Providers
         }
 
         /// <inheritdoc/>
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (!string.IsNullOrWhiteSpace(this.options.ApiKey))
             {
-                yield return Translation;
+                yield return await Task.FromResult(Translation);
             }
         }
 

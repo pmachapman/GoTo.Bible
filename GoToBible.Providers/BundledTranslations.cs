@@ -93,13 +93,11 @@ namespace GoToBible.Providers
         public void Dispose() => GC.SuppressFinalize(this);
 
         /// <inheritdoc/>
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             foreach (Book book in Canon[translation].GetBooks(includeChapters))
             {
-                yield return book;
+                yield return await Task.FromResult(book);
             }
         }
 
@@ -176,11 +174,9 @@ namespace GoToBible.Providers
         }
 
         /// <inheritdoc/>
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async IAsyncEnumerable<Translation> GetTranslationsAsync()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            yield return new Translation
+            yield return await Task.FromResult(new Translation
             {
                 CanBeExported = true,
                 Code = "BCPPSALMS",
@@ -189,8 +185,8 @@ namespace GoToBible.Providers
                 Name = "Coverdale Psalter",
                 Provider = this.Id,
                 Year = 1539,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 CanBeExported = true,
                 Code = "BCPPSALMSALT",
@@ -199,8 +195,8 @@ namespace GoToBible.Providers
                 Name = "Coverdale Psalter (Alternate Versification)",
                 Provider = this.Id,
                 Year = 1539,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 CanBeExported = true,
                 Code = "BSB",
@@ -209,8 +205,8 @@ namespace GoToBible.Providers
                 Name = "Berean Study Bible",
                 Provider = this.Id,
                 Year = 2020,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 Author = "Joseph Barber Lightfoot; Updated by Peter Chapman",
                 CanBeExported = true,
@@ -220,8 +216,8 @@ namespace GoToBible.Providers
                 Name = "Epistle to the Laodiceans (Greek)",
                 Provider = this.Id,
                 Year = 2021,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 Author = "Joseph Barber Lightfoot; Updated by Peter Chapman",
                 CanBeExported = true,
@@ -231,8 +227,8 @@ namespace GoToBible.Providers
                 Name = "Epistle to the Laodiceans (Latin)",
                 Provider = this.Id,
                 Year = 2021,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 Author = "John Wycliffe",
                 CanBeExported = true,
@@ -242,8 +238,8 @@ namespace GoToBible.Providers
                 Name = "Epistle to the Laodiceans (Old English)",
                 Provider = this.Id,
                 Year = 2021,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 CanBeExported = true,
                 Code = "NTA",
@@ -252,8 +248,8 @@ namespace GoToBible.Providers
                 Name = "New Translation of the Apocrypha",
                 Provider = this.Id,
                 Year = 2021,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 CanBeExported = true,
                 Commentary = true,
@@ -263,8 +259,8 @@ namespace GoToBible.Providers
                 Name = "New Translation of the Apocrypha Notes",
                 Provider = this.Id,
                 Year = 2021,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 Author = "Michael W. Holmes",
                 Code = "SBLGNT",
@@ -273,8 +269,8 @@ namespace GoToBible.Providers
                 Name = "SBL Greek New Testament",
                 Provider = this.Id,
                 Year = 2010,
-            };
-            yield return new Translation
+            });
+            yield return await Task.FromResult(new Translation
             {
                 Author = "Michael W. Holmes",
                 Code = "SBLGNTAPP",
@@ -284,7 +280,7 @@ namespace GoToBible.Providers
                 Name = "SBL Greek New Testament Apparatus",
                 Provider = this.Id,
                 Year = 2010,
-            };
+            });
         }
     }
 }

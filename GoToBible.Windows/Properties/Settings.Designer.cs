@@ -366,5 +366,17 @@ namespace GoToBible.Windows.Properties {
                 this["BlockedLanguages"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsDeveloper {
+            get {
+                return ((bool)(this["IsDeveloper"]));
+            }
+            set {
+                this["IsDeveloper"] = value;
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace GoToBible.Windows
     using System.Runtime.Versioning;
     using System.Windows.Forms;
     using GoToBible.Windows.Properties;
+    using Microsoft.Web.WebView2.Core;
 
     /// <summary>
     /// The GoToBible program.
@@ -51,9 +52,10 @@ namespace GoToBible.Windows
             {
                 Application.Run();
             }
-            catch (TargetInvocationException)
+            catch (TargetInvocationException ex)
             {
-                if (MessageBox.Show(string.Format(Resources.WebViewNotFound), $@"Cannot Start {Title}", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (ex?.InnerException is WebView2RuntimeNotFoundException
+                    && MessageBox.Show(string.Format(Resources.WebViewNotFound), $@"Cannot Start {Title}", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 {
                     Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
                     {
