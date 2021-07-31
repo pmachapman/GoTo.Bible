@@ -10,11 +10,13 @@ namespace GoToBible.Windows
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Configuration;
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
+    using System.Security;
     using System.Threading.Tasks;
     using System.Web;
     using System.Windows.Forms;
@@ -26,6 +28,7 @@ namespace GoToBible.Windows
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Caching.SqlServer;
     using Microsoft.Extensions.Options;
+    using Microsoft.Web.WebView2.Core;
     using Microsoft.Web.WebView2.WinForms;
 
     /// <summary>
@@ -115,6 +118,39 @@ namespace GoToBible.Windows
             this.ToolStripButtonNavigateBack.Enabled = false;
             this.ToolStripButtonNavigateForward.Enabled = false;
             this.ToolStripMenuItemConfigure.Enabled = false;
+        }
+
+        /// <summary>
+        /// Gets the path to the settings directory.
+        /// </summary>
+        /// <value>
+        /// The settings directory path.
+        /// </value>
+        private static string SettingsDirectory
+        {
+            get
+            {
+                try
+                {
+                    Configuration userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+                    return Path.GetDirectoryName(userConfig.FilePath) ?? Path.GetTempPath();
+                }
+                catch (Exception ex)
+                {
+                    if (ex is ArgumentException
+                        || ex is ConfigurationErrorsException
+                        || ex is ConfigurationException
+                        || ex is PathTooLongException
+                        || ex is SecurityException)
+                    {
+                        return Path.GetTempPath();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -343,10 +379,11 @@ namespace GoToBible.Windows
         /// </summary>
         private async Task InitialiseAsync()
         {
-            await this.WebViewMain.EnsureCoreWebView2Async();
+            CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(SettingsDirectory, "WebView2"));
+            await this.WebViewMain.EnsureCoreWebView2Async(environment);
             this.WebViewMain.CoreWebView2.Settings.AreDevToolsEnabled = Properties.Settings.Default.IsDebug;
             this.SetupWebPage(this.WebViewMain);
-            await this.WebViewResource.EnsureCoreWebView2Async();
+            await this.WebViewResource.EnsureCoreWebView2Async(environment);
             this.WebViewResource.CoreWebView2.Settings.AreDevToolsEnabled = Properties.Settings.Default.IsDebug;
             this.SetupWebPage(this.WebViewResource);
 
