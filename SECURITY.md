@@ -4,10 +4,10 @@
 
 We only support the latest release of each published library. No effort will be made by the developer to back port fixes to previous versions or branches.
 
-| Version | Supported                     |
-| ------- | ----------------------------- |
-| 1.0.x   | :negative_squared_cross_mark: |
-| 1.1.x   | :white_check_mark:            |
+| Version | Supported          |
+| ------- | ------------------ |
+| 1.1.x   | :white_check_mark: |
+| 1.0.x   | :x:                |
 
 ## Reporting a Vulnerability
 
