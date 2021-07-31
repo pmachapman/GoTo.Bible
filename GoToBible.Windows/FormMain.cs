@@ -1233,13 +1233,13 @@ namespace GoToBible.Windows
                 if (item.Bold)
                 {
                     using Font font = new Font(comboBox.Font, FontStyle.Bold);
-                    e.Graphics.DrawString(item.Text, font, SystemBrushes.ControlText, e.Bounds);
+                    e.Graphics.DrawString(item.Text, font, SystemBrushes.ControlText, e.Bounds, StringFormat.GenericTypographic);
                     size = e.Graphics.MeasureString(item.Text, font);
                 }
                 else
                 {
                     using Font font = new Font(comboBox.Font, FontStyle.Regular);
-                    e.Graphics.DrawString(item.Text, font, SystemBrushes.ControlText, e.Bounds);
+                    e.Graphics.DrawString(item.Text, font, SystemBrushes.ControlText, e.Bounds, StringFormat.GenericTypographic);
                     size = e.Graphics.MeasureString(item.Text, font);
                 }
 

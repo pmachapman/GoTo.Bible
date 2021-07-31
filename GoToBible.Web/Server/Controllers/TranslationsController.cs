@@ -24,6 +24,7 @@ namespace GoToBible.Web.Server.Controllers
         /// </summary>
         private static readonly ReadOnlyCollection<string> BlockedTranslations = new List<string>
         {
+            "BibleApi-685d1470fe4d5c3b-01",
             "BibleApi-6bab4d6c61b31b80-01",
             "BibleApi-7142879509583d59-02",
             "BibleApi-7142879509583d59-03",
