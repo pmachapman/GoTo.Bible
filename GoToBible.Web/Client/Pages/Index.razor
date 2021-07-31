@@ -348,6 +348,20 @@
         // Show the passage - only update the URL if this is the first load, and the parameters are empty
         await this.ShowPassageAsync(firstLoad && parametersAreEmpty);
 
+        // Process suggestions on first load
+        if (firstLoad)
+        {
+            if (this.passage.Suggestions.IgnoreCaseDiacriticsAndPunctuation)
+            {
+                await this.JsRuntime.InvokeAsync<string>("showDialog", "ignore-case-diacritics-punctuation-dialog");
+            }
+            else if (this.passage.Suggestions.NavigateToChapter != null)
+            {
+                this.renderingParametersModel.Passage = this.passage.Suggestions.NavigateToChapter.ToString();
+                await this.ShowPassageAsync(true);
+            }
+        }
+
         // Page has first loaded
         this.firstLoad = false;
 
@@ -568,4 +582,4 @@
     /// <returns>The asynchronous task.</returns>
     private async Task UpdateUrlAsync()
         => await this.JsRuntime.InvokeAsync<string>("changeUrl", this.parameters.AsUrl(UriKind.Relative).ToString());
-    }
+}
