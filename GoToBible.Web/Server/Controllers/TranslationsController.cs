@@ -16,6 +16,7 @@ namespace GoToBible.Web.Server.Controllers
     /// </summary>
     /// <seealso cref="ControllerBase" />
     [ApiController]
+    [Route("v1/[controller]")]
     [Route("[controller]")]
     public class TranslationsController : ControllerBase
     {
@@ -47,13 +48,13 @@ namespace GoToBible.Web.Server.Controllers
         /// <summary>
         /// Name substitutions to help users of the web application.
         /// </summary>
-        private static readonly ReadOnlyDictionary<string, string> NameSubstitutions = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
+        private static readonly IReadOnlyDictionary<string, string> NameSubstitutions = new Dictionary<string, string>
         {
             { "The Holy Bible, American Standard Version", "American Standard Version" },
             { "English Standard Version - FCBH Audio", "English Standard Version (2007)" },
             { "NAS New American Standard Bible", "New American Standard Bible (1995)" },
             { "King James (Authorised) Version (Ecumenical)", "King James Version" },
-        });
+        };
 
         /// <summary>
         /// The providers.
@@ -70,7 +71,7 @@ namespace GoToBible.Web.Server.Controllers
         }
 
         /// <summary>
-        /// GET: <c>/Translations</c>.
+        /// GET: <c>/v1/Translations</c>.
         /// </summary>
         /// <returns>
         /// The list of available translations.

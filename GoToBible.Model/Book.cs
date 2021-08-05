@@ -7,7 +7,6 @@
 namespace GoToBible.Model
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
     /// <summary>
     /// A book in a translation.
@@ -20,7 +19,7 @@ namespace GoToBible.Model
         /// <value>
         /// The chapters.
         /// </value>
-        public ReadOnlyCollection<ChapterReference> Chapters { get; init; } = new List<ChapterReference>().AsReadOnly();
+        public IReadOnlyCollection<ChapterReference> Chapters { get; init; } = new List<ChapterReference>();
 
         /// <summary>
         /// Gets or sets the name of the book.

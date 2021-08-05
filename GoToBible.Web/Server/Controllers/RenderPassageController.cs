@@ -26,6 +26,7 @@ namespace GoToBible.Web.Server.Controllers
     /// </summary>
     /// <seealso cref="ControllerBase" />
     [ApiController]
+    [Route("v1/[controller]")]
     [Route("[controller]")]
     public class RenderPassageController : ControllerBase
     {
@@ -58,7 +59,7 @@ namespace GoToBible.Web.Server.Controllers
         }
 
         /// <summary>
-        /// POST: <c>/RenderPassage</c>.
+        /// POST: <c>/v1/RenderPassage</c>.
         /// </summary>
         /// <param name="parameters">The parameters.</param>
         /// <param name="renderCompleteHtmlPage">If set to <c>true</c>, render the complete HTML page.</param>

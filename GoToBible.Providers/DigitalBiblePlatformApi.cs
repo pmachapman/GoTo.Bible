@@ -8,7 +8,6 @@ namespace GoToBible.Providers
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
@@ -32,7 +31,7 @@ namespace GoToBible.Providers
         /// Retrieved from <c>https://dbt.io/library/bookname?key={key}&amp;language_code=ENG&amp;v=2</c>.
         /// This contains the codes for all books supported by GoTo.Bible, but in reality the DBP API only returns the Old and New Testaments.
         /// </remarks>
-        private static readonly ReadOnlyDictionary<string, string> BookCodeMap = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
+        private static readonly IReadOnlyDictionary<string, string> BookCodeMap = new Dictionary<string, string>
         {
             // Old Testament
             ["genesis"] = "Gen",
@@ -127,13 +126,12 @@ namespace GoToBible.Providers
 
             // New Testament Apocrypha
             ["laodiceans"] = "EpLao",
-        });
+        };
 
         /// <summary>
         /// The reverse book code map.
         /// </summary>
-        private static readonly ReadOnlyDictionary<string, string> ReverseBookCodeMap
-            = new ReadOnlyDictionary<string, string>(BookCodeMap.ToDictionary(x => x.Value, x => x.Key));
+        private static readonly IReadOnlyDictionary<string, string> ReverseBookCodeMap = BookCodeMap.ToDictionary(x => x.Value, x => x.Key);
 
         /// <summary>
         /// The new testament canon.
@@ -410,7 +408,7 @@ namespace GoToBible.Providers
                     }
 
                     string code = translation.Key;
-                    ReadOnlyCollection<string> damIds = translation.Select(t => t.dam_id).ToList().AsReadOnly();
+                    List<string> damIds = translation.Select(t => t.dam_id).ToList();
                     if (damIds.Count == 1)
                     {
                         code = damIds.First();

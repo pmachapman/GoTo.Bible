@@ -8,7 +8,6 @@ namespace GoToBible.Model
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.Globalization;
     using System.Linq;
@@ -115,7 +114,7 @@ namespace GoToBible.Model
         /// <summary>
         /// The book name map.
         /// </summary>
-        private static readonly ReadOnlyDictionary<string, string[]> BookNameMap = new ReadOnlyDictionary<string, string[]>(new Dictionary<string, string[]>
+        private static readonly IReadOnlyDictionary<string, string[]> BookNameMap = new Dictionary<string, string[]>
         {
             ["genesis"] = new[] { "ge", "gn", "gen", "genesis" },
             ["exodus"] = new[] { "ex", "exo", "exd", "exod", "exodus" },
@@ -202,7 +201,7 @@ namespace GoToBible.Model
             ["3 maccabees"] = new[] { "3ma", "3maccabees", "3mac", "3macc", "iiima", "iiimaccabees", "iiimac", "iiimacc" },
             ["4 maccabees"] = new[] { "4ma", "4maccabees", "4mac", "4macc", "ivma", "ivmaccabees", "ivmac", "icmacc" },
             ["laodiceans"] = new[] { "lao", "laodiceans" },
-        });
+        };
 
         /// <summary>
         /// The strip invalid characters regular expression.

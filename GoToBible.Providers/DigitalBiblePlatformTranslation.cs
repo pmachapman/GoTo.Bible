@@ -7,7 +7,6 @@
 namespace GoToBible.Providers
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using GoToBible.Model;
 
     /// <summary>
@@ -22,6 +21,6 @@ namespace GoToBible.Providers
         /// <value>
         /// The DAM Ids.
         /// </value>
-        public ReadOnlyCollection<string> DamIds { get; set; } = new List<string>().AsReadOnly();
+        public IReadOnlyCollection<string> DamIds { get; set; } = new List<string>();
     }
 }

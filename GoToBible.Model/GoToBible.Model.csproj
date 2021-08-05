@@ -25,8 +25,8 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Added IRenderer Interface</PackageReleaseNotes>
-    <Version>1.1.1</Version>
+    <PackageReleaseNotes>IReadOnlyCollection is now used instead of ReadOnlyCollection to allow JSON deserialisation.</PackageReleaseNotes>
+    <Version>1.1.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

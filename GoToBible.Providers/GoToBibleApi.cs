@@ -10,9 +10,9 @@ namespace GoToBible.Providers
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Net.Http;
-    using System.Net.Http.Json;
     using System.Text.Json;
     using System.Threading.Tasks;
+    using System.Web;
     using GoToBible.Model;
     using Microsoft.Extensions.Caching.Distributed;
 
@@ -30,7 +30,7 @@ namespace GoToBible.Providers
         public GoToBibleApi(IDistributedCache cache)
             : base(cache)
         {
-            this.HttpClient.BaseAddress = new Uri("https://goto.bible/", UriKind.Absolute);
+            this.HttpClient.BaseAddress = new Uri("https://api.goto.bible/v1/", UriKind.Absolute);
         }
 
         /// <inheritdoc/>
@@ -40,12 +40,42 @@ namespace GoToBible.Providers
         public override string Name => "GoTo.Bible API";
 
         /// <inheritdoc/>
-        /// <remarks>This method is not implemented, and only for use with the GotoBibleApiRenderer.</remarks>
         public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
         {
-            // TODO: Implement this for auto-correct
-            await Task.CompletedTask;
-            yield break;
+            await foreach (Translation providerTranslation in this.GetTranslationsAsync())
+            {
+                if (providerTranslation.Code == translation)
+                {
+                    string urlProvider = HttpUtility.UrlEncode(providerTranslation.Provider);
+                    string urlTranslation = HttpUtility.UrlEncode(providerTranslation.Code);
+                    string url = $"Books?provider={urlProvider}&translation={urlTranslation}&includeChapters=false";
+                    string cacheKey = this.GetCacheKey(url);
+                    string json = await this.Cache.GetStringAsync(cacheKey);
+
+                    if (string.IsNullOrWhiteSpace(json))
+                    {
+                        using HttpResponseMessage response = await this.HttpClient.GetAsync(url);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            json = await response.Content.ReadAsStringAsync();
+                            await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions);
+                        }
+                        else
+                        {
+                            Debug.Print($"{response.StatusCode} error in GoToBibleApi.GetBooksAsync()");
+                            yield break;
+                        }
+                    }
+
+                    JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    foreach (Book book in JsonSerializer.Deserialize<Book[]>(json, options) ?? Array.Empty<Book>())
+                    {
+                        yield return book;
+                    }
+
+                    yield break;
+                }
+            }
         }
 
         /// <inheritdoc/>

@@ -8,7 +8,6 @@ namespace GoToBible.Providers
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
@@ -28,7 +27,7 @@ namespace GoToBible.Providers
         /// <summary>
         /// A map of the Bible API book codes to the Passage Reference book names.
         /// </summary>
-        private static readonly ReadOnlyDictionary<string, string> BookCodeMap = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
+        private static readonly IReadOnlyDictionary<string, string> BookCodeMap = new Dictionary<string, string>
         {
             // Old Testament
             ["genesis"] = "GEN",
@@ -123,13 +122,12 @@ namespace GoToBible.Providers
 
             // New Testament Apocrypha
             ["laodiceans"] = "LAO",
-        });
+        };
 
         /// <summary>
         /// The reverse book code map.
         /// </summary>
-        private static readonly ReadOnlyDictionary<string, string> ReverseBookCodeMap
-            = new ReadOnlyDictionary<string, string>(BookCodeMap.ToDictionary(x => x.Value, x => x.Key));
+        private static readonly IReadOnlyDictionary<string, string> ReverseBookCodeMap = BookCodeMap.ToDictionary(x => x.Value, x => x.Key);
 
         /// <summary>
         /// The regular expression to split verse lines.
