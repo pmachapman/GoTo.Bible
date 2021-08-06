@@ -378,5 +378,17 @@ namespace GoToBible.Windows.Properties {
                 this["IsDeveloper"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsLegacyBrowser {
+            get {
+                return ((bool)(this["IsLegacyBrowser"]));
+            }
+            set {
+                this["IsLegacyBrowser"] = value;
+            }
+        }
     }
 }

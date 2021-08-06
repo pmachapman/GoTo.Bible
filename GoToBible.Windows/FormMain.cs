@@ -18,12 +18,13 @@ namespace GoToBible.Windows
     using System.Runtime.Versioning;
     using System.Security;
     using System.Threading.Tasks;
-    using System.Web;
     using System.Windows.Forms;
     using GoToBible.Engine;
     using GoToBible.Model;
     using GoToBible.Providers;
     using GoToBible.Windows.AutoComplete;
+    using GoToBible.Windows.Properties;
+    using GoToBible.Windows.WebBrowser;
     using Microsoft.Extensions.Caching.Distributed;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Caching.SqlServer;
@@ -182,6 +183,34 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is in legacy browser mode.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is in legacy browser mode; otherwise, <c>false</c>.
+        /// </value>
+        private bool IsLegacyBrowser
+        {
+            get => this.ToolStripMenuItemLegacyBrowser.Checked;
+            set => this.ToolStripMenuItemLegacyBrowser.Checked = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the main web view.
+        /// </summary>
+        /// <value>
+        /// The main web view.
+        /// </value>
+        private IWebBrowser WebViewMain { get; set; } = new EmptyWebBrowser();
+
+        /// <summary>
+        /// Gets or sets the resource web view.
+        /// </summary>
+        /// <value>
+        /// The resource web view.
+        /// </value>
+        private IWebBrowser WebViewResource { get; set; } = new EmptyWebBrowser();
+
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing"><c>true</c> if managed resources should be disposed; otherwise, <c>false</c>.</param>
@@ -207,20 +236,20 @@ namespace GoToBible.Windows
             if (this.primaryWindow || Program.Forms.Count == 1)
             {
                 // Save the window state
-                Properties.Settings.Default.SplitterDistance = this.SplitContainerMain.SplitterDistance;
-                Properties.Settings.Default.WindowState = (int)this.WindowState;
+                Settings.Default.SplitterDistance = this.SplitContainerMain.SplitterDistance;
+                Settings.Default.WindowState = (int)this.WindowState;
                 if (this.WindowState == FormWindowState.Normal)
                 {
-                    Properties.Settings.Default.WindowLocation = this.Location;
-                    Properties.Settings.Default.WindowSize = this.Size;
+                    Settings.Default.WindowLocation = this.Location;
+                    Settings.Default.WindowSize = this.Size;
                 }
                 else
                 {
-                    Properties.Settings.Default.WindowLocation = this.RestoreBounds.Location;
-                    Properties.Settings.Default.WindowSize = this.RestoreBounds.Size;
+                    Settings.Default.WindowLocation = this.RestoreBounds.Location;
+                    Settings.Default.WindowSize = this.RestoreBounds.Size;
                 }
 
-                Properties.Settings.Default.Save();
+                Settings.Default.Save();
             }
 
             // Remove this form from the program list
@@ -249,13 +278,13 @@ namespace GoToBible.Windows
             // Restore the window state, size, and location if this is the primary
             if (this.primaryWindow)
             {
-                this.WindowState = (FormWindowState)Properties.Settings.Default.WindowState;
-                this.Location = Properties.Settings.Default.WindowLocation;
-                this.Size = Properties.Settings.Default.WindowSize;
+                this.WindowState = (FormWindowState)Settings.Default.WindowState;
+                this.Location = Settings.Default.WindowLocation;
+                this.Size = Settings.Default.WindowSize;
             }
 
             // Set up the splitter
-            int splitterDistance = Properties.Settings.Default.SplitterDistance;
+            int splitterDistance = Settings.Default.SplitterDistance;
             if (splitterDistance == 0)
             {
                 splitterDistance = this.Width - (this.Width / 3);
@@ -264,19 +293,19 @@ namespace GoToBible.Windows
             this.SplitContainerMain.SplitterDistance = splitterDistance;
 
             // Get the colours and font
-            this.ColourDialogBackground.Color = ColorTranslator.FromOle(Properties.Settings.Default.BackgroundColour);
-            this.ColourDialogBackground.CustomColors = Properties.Settings.Default.BackgroundCustomColours
+            this.ColourDialogBackground.Color = ColorTranslator.FromOle(Settings.Default.BackgroundColour);
+            this.ColourDialogBackground.CustomColors = Settings.Default.BackgroundCustomColours
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(c => int.TryParse(c, out int i) ? i : 16777215)
                 .ToArray();
-            this.ColourDialogHighlight.Color = ColorTranslator.FromOle(Properties.Settings.Default.HighlightColour);
-            this.ColourDialogHighlight.CustomColors = Properties.Settings.Default.HighlightCustomColours
+            this.ColourDialogHighlight.Color = ColorTranslator.FromOle(Settings.Default.HighlightColour);
+            this.ColourDialogHighlight.CustomColors = Settings.Default.HighlightCustomColours
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(c => int.TryParse(c, out int i) ? i : 16777215)
                 .ToArray();
-            this.FontDialogMain.Color = ColorTranslator.FromOle(Properties.Settings.Default.ForegroundColour);
+            this.FontDialogMain.Color = ColorTranslator.FromOle(Settings.Default.ForegroundColour);
             TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
-            if (converter.ConvertFromString(Properties.Settings.Default.Font) is Font font)
+            if (converter.ConvertFromString(Settings.Default.Font) is Font font)
             {
                 this.FontDialogMain.Font = font;
             }
@@ -294,14 +323,11 @@ namespace GoToBible.Windows
                 HighlightColour = this.ColourDialogHighlight.Color.AsRenderColour(),
             };
 
-            // Initialise the WebView2
-            await this.InitialiseAsync();
-
             // Get the translation and passage settings
-            string primaryTranslation = Properties.Settings.Default.PrimaryTranslation;
-            string secondaryTranslation = Properties.Settings.Default.SecondaryTranslation;
-            string resource = Properties.Settings.Default.Resource;
-            string passage = Properties.Settings.Default.Passage;
+            string primaryTranslation = Settings.Default.PrimaryTranslation;
+            string secondaryTranslation = Settings.Default.SecondaryTranslation;
+            string resource = Settings.Default.Resource;
+            string passage = Settings.Default.Passage;
             if (string.IsNullOrWhiteSpace(passage))
             {
                 passage = Default.Passage;
@@ -329,12 +355,13 @@ namespace GoToBible.Windows
                 this.ToolStripComboBoxResource.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
             }
 
-            this.ToolStripMenuItemIgnoreCase.Checked = Properties.Settings.Default.InterlinearIgnoresCase;
-            this.ToolStripMenuItemIgnoreDiacritics.Checked = Properties.Settings.Default.InterlinearIgnoresDiacritics;
-            this.ToolStripMenuItemIgnorePunctuation.Checked = Properties.Settings.Default.InterlinearIgnoresPunctuation;
-            this.ToolStripMenuItemShowItalics.Checked = Properties.Settings.Default.RenderItalics;
-            this.ToolStripMenuItemDebugMode.Checked = Properties.Settings.Default.IsDebug;
-            this.IsDeveloper = Properties.Settings.Default.IsDeveloper;
+            this.ToolStripMenuItemIgnoreCase.Checked = Settings.Default.InterlinearIgnoresCase;
+            this.ToolStripMenuItemIgnoreDiacritics.Checked = Settings.Default.InterlinearIgnoresDiacritics;
+            this.ToolStripMenuItemIgnorePunctuation.Checked = Settings.Default.InterlinearIgnoresPunctuation;
+            this.ToolStripMenuItemShowItalics.Checked = Settings.Default.RenderItalics;
+            this.ToolStripMenuItemDebugMode.Checked = Settings.Default.IsDebug;
+            this.ToolStripMenuItemLegacyBrowser.Checked = Settings.Default.IsLegacyBrowser;
+            this.IsDeveloper = Settings.Default.IsDeveloper;
             this.ToolStripMenuItemDeveloperMode.Visible = IsDebug || this.IsDeveloper;
             this.ToolStripSeparatorDebugMode.Visible = IsDebug || this.IsDeveloper;
             if (!this.IsDeveloper)
@@ -343,8 +370,11 @@ namespace GoToBible.Windows
                 await this.UpdateDeveloperMode();
             }
 
+            // Initialise the web browser
+            await this.InitialiseWebBrowser(false);
+
             // Setup the cache
-            this.LoadSqlCache(Properties.Settings.Default.SqlConnectionString);
+            this.LoadSqlCache(Settings.Default.SqlConnectionString);
 
             // Set up the translation combo boxes
             await this.LoadTranslationComboBoxes(this.LoadProviders(), primaryTranslation, secondaryTranslation, resource);
@@ -369,8 +399,8 @@ namespace GoToBible.Windows
         {
             if (this.webViewInitialised && !string.IsNullOrWhiteSpace(this.renderedPassage.Content))
             {
-                await this.WebViewMain.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(Html.LoadingCodeBody)}\";");
-                await this.WebViewResource.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(Html.LoadingCodeBody)}\";");
+                await this.WebViewMain.SetInnerHtmlAsync(Html.LoadingCodeBody);
+                await this.WebViewResource.SetInnerHtmlAsync(Html.LoadingCodeBody);
             }
         }
 
@@ -379,15 +409,109 @@ namespace GoToBible.Windows
         /// </summary>
         private async Task InitialiseAsync()
         {
-            CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(SettingsDirectory, "WebView2"));
-            await this.WebViewMain.EnsureCoreWebView2Async(environment);
-            this.WebViewMain.CoreWebView2.Settings.AreDevToolsEnabled = Properties.Settings.Default.IsDebug;
+            // Edge specific configuration
+            if (this.WebViewMain is WebView2 webViewMain && this.WebViewResource is WebView2 webViewResource)
+            {
+                CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(SettingsDirectory, "WebView2"));
+                await webViewMain.EnsureCoreWebView2Async(environment);
+                await webViewResource.EnsureCoreWebView2Async(environment);
+            }
+
+            // General configuration
+            this.WebViewMain.DeveloperMode = Settings.Default.IsDebug;
             this.SetupWebPage(this.WebViewMain);
-            await this.WebViewResource.EnsureCoreWebView2Async(environment);
-            this.WebViewResource.CoreWebView2.Settings.AreDevToolsEnabled = Properties.Settings.Default.IsDebug;
+            this.WebViewResource.DeveloperMode = Settings.Default.IsDebug;
             this.SetupWebPage(this.WebViewResource);
 
             this.webViewInitialised = true;
+        }
+
+        /// <summary>
+        /// Initialises the Web Browser.
+        /// </summary>
+        /// <param name="removeExisting">if set to <c>true</c>, remove the existing web browser control.</param>
+        private async Task InitialiseWebBrowser(bool removeExisting)
+        {
+            // Suspend the layouts
+            this.SplitContainerMain.Panel1.SuspendLayout();
+            this.SplitContainerMain.Panel2.SuspendLayout();
+
+            // Remove the existing controls
+            if (removeExisting)
+            {
+                this.SplitContainerMain.Panel1.Controls.Clear();
+                this.SplitContainerMain.Panel2.Controls.Clear();
+                this.WebViewMain.Dispose();
+                this.WebViewResource.Dispose();
+            }
+
+            // Get the correct web browser controls
+            IWebBrowser webViewMain;
+            IWebBrowser webViewResource;
+            if (this.IsLegacyBrowser)
+            {
+                webViewMain = new LegacyWebBrowser();
+                webViewResource = new LegacyWebBrowser();
+            }
+            else
+            {
+                webViewMain = new EdgeWebBrowser();
+                webViewResource = new EdgeWebBrowser();
+            }
+
+            // Setup the main web browser
+            webViewMain.Initialise("WebViewMain", 1);
+            this.SplitContainerMain.Panel1.Controls.Add(webViewMain as Control);
+            this.WebViewMain = webViewMain;
+
+            // Setup the resource web browser
+            webViewResource.Initialise("WebViewResource", 2);
+            this.SplitContainerMain.Panel2.Controls.Add(webViewResource as Control);
+            this.WebViewResource = webViewResource;
+
+            // Resume the layouts
+            this.SplitContainerMain.Panel1.ResumeLayout();
+            this.SplitContainerMain.Panel2.ResumeLayout();
+
+            // Initialise the WebView2
+            if (this.IsLegacyBrowser)
+            {
+                this.SetupWebPage(this.WebViewMain);
+                this.SetupWebPage(this.WebViewResource);
+            }
+            else
+            {
+                try
+                {
+                    await this.InitialiseAsync();
+                }
+                catch (Exception)
+                {
+                    if (MessageBox.Show(string.Format(Resources.WebViewNotFound), $@"Cannot Start {Program.Title}", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    {
+                        // Download WebView2
+                        Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
+                        {
+                            UseShellExecute = true,
+                            Verb = "open",
+                        });
+                        Application.Exit();
+                    }
+                    else
+                    {
+                        // Run in Legacy Mode
+                        this.IsLegacyBrowser = true;
+                        await this.InitialiseWebBrowser(removeExisting);
+                        return;
+                    }
+                }
+            }
+
+            // Render the passage, if we are changing web browsers
+            if (removeExisting)
+            {
+                await this.ShowPassage(true, true);
+            }
         }
 
         /// <summary>
@@ -408,14 +532,14 @@ namespace GoToBible.Windows
             if (this.IsDeveloper)
             {
                 // Load the API.Bible Provider
-                string bibleApiKey = Properties.Settings.Default.BibleApiKey;
+                string bibleApiKey = Settings.Default.BibleApiKey;
                 if (!string.IsNullOrWhiteSpace(bibleApiKey))
                 {
                     this.providers.Add(new BibleApi(Options.Create(new BibleApiOptions { ApiKey = bibleApiKey }), this.cache));
                 }
 
                 // Load the Biblia Provider
-                string bibliaApiKey = Properties.Settings.Default.BibliaApiKey;
+                string bibliaApiKey = Settings.Default.BibliaApiKey;
                 if (!string.IsNullOrWhiteSpace(bibliaApiKey))
                 {
                     this.providers.Add(new BibliaApi(Options.Create(new BibliaApiOptions { ApiKey = bibliaApiKey }), this.cache));
@@ -425,14 +549,14 @@ namespace GoToBible.Windows
                 this.providers.Add(new BundledTranslations());
 
                 // Load the Digital Bible Platform Provider
-                string digitalBiblePlatformApiKey = Properties.Settings.Default.DigitalBiblePlatformApiKey;
+                string digitalBiblePlatformApiKey = Settings.Default.DigitalBiblePlatformApiKey;
                 if (!string.IsNullOrWhiteSpace(digitalBiblePlatformApiKey))
                 {
                     this.providers.Add(new DigitalBiblePlatformApi(Options.Create(new DigitalBiblePlatformApiOptions { ApiKey = digitalBiblePlatformApiKey }), this.cache));
                 }
 
                 // Load the ESV Provider
-                string esvApiKey = Properties.Settings.Default.EsvApiKey;
+                string esvApiKey = Settings.Default.EsvApiKey;
                 if (!string.IsNullOrWhiteSpace(esvApiKey))
                 {
                     this.providers.Add(new EsvBible(Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }), this.cache));
@@ -442,14 +566,14 @@ namespace GoToBible.Windows
                 this.providers.Add(new NetBible(this.cache));
 
                 // Load the NLT Provider
-                string nltApiKey = Properties.Settings.Default.NltApiKey;
+                string nltApiKey = Settings.Default.NltApiKey;
                 if (!string.IsNullOrWhiteSpace(nltApiKey))
                 {
                     this.providers.Add(new NltBible(Options.Create(new NltBibleOptions { ApiKey = nltApiKey }), this.cache));
                 }
 
                 // Get the list of blocked providers
-                blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
+                blockedProviders = Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
 
                 // Set the renderer
                 if (!(this.renderer is Renderer))
@@ -556,17 +680,17 @@ namespace GoToBible.Windows
             // Add the No Translation item
             this.ToolStripComboBoxSecondaryTranslation.Items.Add(new ComboBoxItem
             {
-                Text = Properties.Resources.NoTranslation,
+                Text = Resources.NoTranslation,
             });
             this.ToolStripComboBoxResource.Items.Add(new ComboBoxItem
             {
-                Text = Properties.Resources.NoTranslation,
+                Text = Resources.NoTranslation,
             });
 
             // Get the full list of translations
-            List<string> blockedLanguages = Properties.Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
-            List<string> blockedTranslations = Properties.Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
-            List<string> blockedCommentaries = Properties.Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
+            List<string> blockedLanguages = Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
+            List<string> blockedTranslations = Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
+            List<string> blockedCommentaries = Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
             List<Translation> commentaries = new List<Translation>();
             List<Translation> translations = new List<Translation>();
             foreach (IProvider provider in translationProviders)
@@ -642,7 +766,7 @@ namespace GoToBible.Windows
             foreach (Translation translation in this.translations)
             {
                 // If this translation is not blocked
-                string translationLanguage = translation.Language ?? Properties.Resources.UnknownLanguage;
+                string translationLanguage = translation.Language ?? Resources.UnknownLanguage;
                 if (!blockedTranslations.Contains(translation.UniqueKey()) && !blockedLanguages.Contains(translationLanguage))
                 {
                     // Add a heading, if required
@@ -706,7 +830,7 @@ namespace GoToBible.Windows
             {
                 this.ToolStripComboBoxPrimaryTranslation.Items.Add(new ComboBoxItem
                 {
-                    Text = Properties.Resources.NoTranslation,
+                    Text = Resources.NoTranslation,
                 });
             }
 
@@ -726,7 +850,7 @@ namespace GoToBible.Windows
         {
             if (this.renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation
                 && MessageBox.Show(
-                    Properties.Resources.IgnoreCaseDiacriticsAndPunctuation,
+                    Resources.IgnoreCaseDiacriticsAndPunctuation,
                     Program.Title,
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Information) == DialogResult.Yes)
@@ -748,7 +872,7 @@ namespace GoToBible.Windows
         /// Sets up the web page.
         /// </summary>
         /// <param name="webView">The web view.</param>
-        private void SetupWebPage(WebView2 webView)
+        private void SetupWebPage(IWebBrowser webView)
         {
             try
             {
@@ -762,7 +886,7 @@ namespace GoToBible.Windows
                     body = Html.LoadingCodeBody;
                 }
 
-                webView.NavigateToString($"<!DOCTYPE html>\n<html><head><style type=\"text/css\">{this.parameters.RenderCss()}{Html.LoadingCodeCss}</style></head><body>{body}</body></html>");
+                webView.NavigateToString($"<!DOCTYPE html>\n<html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><style type=\"text/css\">{this.parameters.RenderCss()}{Html.LoadingCodeCss}</style></head><body>{body}</body></html>");
             }
             catch (InvalidOperationException)
             {
@@ -890,12 +1014,12 @@ namespace GoToBible.Windows
             {
                 if (updateMain)
                 {
-                    await this.WebViewMain.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(Html.LoadingCodeBody)}\";");
+                    await this.WebViewMain.SetInnerHtmlAsync(Html.LoadingCodeBody);
                 }
 
                 if (updateResource)
                 {
-                    await this.WebViewResource.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(Html.LoadingCodeBody)}\";");
+                    await this.WebViewResource.SetInnerHtmlAsync(Html.LoadingCodeBody);
                 }
             }
             catch (InvalidOperationException)
@@ -962,24 +1086,25 @@ namespace GoToBible.Windows
                 // Save settings
                 if (this.primaryWindow || Program.Forms.Count == 1)
                 {
-                    Properties.Settings.Default.InterlinearIgnoresCase = this.parameters.InterlinearIgnoresCase;
-                    Properties.Settings.Default.InterlinearIgnoresDiacritics = this.parameters.InterlinearIgnoresDiacritics;
-                    Properties.Settings.Default.InterlinearIgnoresPunctuation = this.parameters.InterlinearIgnoresPunctuation;
-                    Properties.Settings.Default.IsDebug = this.parameters.IsDebug;
-                    Properties.Settings.Default.IsDeveloper = this.IsDeveloper;
-                    Properties.Settings.Default.RenderItalics = this.parameters.RenderItalics;
-                    Properties.Settings.Default.Passage = this.parameters.PassageReference.Display;
-                    Properties.Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
-                    Properties.Settings.Default.SecondaryTranslation = this.parameters.SecondaryTranslation;
-                    Properties.Settings.Default.Resource = resource;
-                    Properties.Settings.Default.BackgroundCustomColours = string.Join(',', this.ColourDialogBackground.CustomColors.Select(c => c.ToString()));
-                    Properties.Settings.Default.BackgroundColour = ColorTranslator.ToOle(this.ColourDialogBackground.Color);
-                    Properties.Settings.Default.HighlightCustomColours = string.Join(',', this.ColourDialogHighlight.CustomColors.Select(c => c.ToString()));
-                    Properties.Settings.Default.HighlightColour = ColorTranslator.ToOle(this.ColourDialogHighlight.Color);
-                    Properties.Settings.Default.ForegroundColour = ColorTranslator.ToOle(this.FontDialogMain.Color);
+                    Settings.Default.InterlinearIgnoresCase = this.parameters.InterlinearIgnoresCase;
+                    Settings.Default.InterlinearIgnoresDiacritics = this.parameters.InterlinearIgnoresDiacritics;
+                    Settings.Default.InterlinearIgnoresPunctuation = this.parameters.InterlinearIgnoresPunctuation;
+                    Settings.Default.IsDebug = this.parameters.IsDebug;
+                    Settings.Default.IsDeveloper = this.IsDeveloper;
+                    Settings.Default.IsLegacyBrowser = this.IsLegacyBrowser;
+                    Settings.Default.RenderItalics = this.parameters.RenderItalics;
+                    Settings.Default.Passage = this.parameters.PassageReference.Display;
+                    Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
+                    Settings.Default.SecondaryTranslation = this.parameters.SecondaryTranslation;
+                    Settings.Default.Resource = resource;
+                    Settings.Default.BackgroundCustomColours = string.Join(',', this.ColourDialogBackground.CustomColors.Select(c => c.ToString()));
+                    Settings.Default.BackgroundColour = ColorTranslator.ToOle(this.ColourDialogBackground.Color);
+                    Settings.Default.HighlightCustomColours = string.Join(',', this.ColourDialogHighlight.CustomColors.Select(c => c.ToString()));
+                    Settings.Default.HighlightColour = ColorTranslator.ToOle(this.ColourDialogHighlight.Color);
+                    Settings.Default.ForegroundColour = ColorTranslator.ToOle(this.FontDialogMain.Color);
                     TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
-                    Properties.Settings.Default.Font = converter.ConvertToString(this.FontDialogMain.Font);
-                    Properties.Settings.Default.Save();
+                    Settings.Default.Font = converter.ConvertToString(this.FontDialogMain.Font);
+                    Settings.Default.Save();
                 }
             }
 
@@ -988,12 +1113,12 @@ namespace GoToBible.Windows
             {
                 if (updateMain)
                 {
-                    await this.WebViewMain.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(this.renderedPassage.Content)}\";");
+                    await this.WebViewMain.SetInnerHtmlAsync(this.renderedPassage.Content);
                 }
 
                 if (updateResource)
                 {
-                    await this.WebViewResource.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(renderedResource.Content)}\";");
+                    await this.WebViewResource.SetInnerHtmlAsync(renderedResource.Content);
                 }
             }
             catch (InvalidOperationException)
@@ -1045,7 +1170,7 @@ namespace GoToBible.Windows
                         if (screen.Bounds != thisScreen.Bounds)
                         {
                             formMain.Location = screen.WorkingArea.Location;
-                            formMain.Size = Properties.Settings.Default.WindowSize;
+                            formMain.Size = Settings.Default.WindowSize;
                             formMain.WindowState = FormWindowState.Maximized;
                             break;
                         }
@@ -1061,7 +1186,7 @@ namespace GoToBible.Windows
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private async void ToolStripButtonSwap_Click(object sender, EventArgs e)
         {
-            if (this.ToolStripComboBoxSecondaryTranslation.Text != Properties.Resources.NoTranslation)
+            if (this.ToolStripComboBoxSecondaryTranslation.Text != Resources.NoTranslation)
             {
                 int secondaryIndex = this.ToolStripComboBoxSecondaryTranslation.SelectedIndex;
                 this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = this.ToolStripComboBoxPrimaryTranslation.SelectedIndex + 1;
@@ -1146,7 +1271,7 @@ namespace GoToBible.Windows
                         || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
                         || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
                     {
-                        MessageBox.Show(Properties.Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
                     }
                 }
@@ -1195,7 +1320,7 @@ namespace GoToBible.Windows
                         || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
                         || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
                     {
-                        MessageBox.Show(Properties.Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
                     }
                 }
@@ -1306,16 +1431,16 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemBibleApi_Click(object sender, EventArgs e)
         {
             // Show the API.Bible Key Dialog
-            string key = Properties.Settings.Default.BibleApiKey;
-            using FormApiKey formApiKey = new FormApiKey(key, "API.Bible", new Uri("https://scripture.api.bible/", UriKind.Absolute), Properties.Resources.BibleApiIcon);
+            string key = Settings.Default.BibleApiKey;
+            using FormApiKey formApiKey = new FormApiKey(key, "API.Bible", new Uri("https://scripture.api.bible/", UriKind.Absolute), Resources.BibleApiIcon);
             formApiKey.ShowDialog(this);
 
             // Only load the provider if the key has changed
             if (key != formApiKey.Key)
             {
                 // Save the key
-                Properties.Settings.Default.BibleApiKey = formApiKey.Key;
-                Properties.Settings.Default.Save();
+                Settings.Default.BibleApiKey = formApiKey.Key;
+                Settings.Default.Save();
 
                 // Reload the providers and translations
                 await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
@@ -1330,16 +1455,16 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemBiblia_Click(object sender, EventArgs e)
         {
             // Show the Biblia API Key Dialog
-            string key = Properties.Settings.Default.BibliaApiKey;
-            using FormApiKey formApiKey = new FormApiKey(key, "Biblia API", new Uri("https://api.biblia.com/v1/Users/SignIn", UriKind.Absolute), Properties.Resources.BibliaIcon);
+            string key = Settings.Default.BibliaApiKey;
+            using FormApiKey formApiKey = new FormApiKey(key, "Biblia API", new Uri("https://api.biblia.com/v1/Users/SignIn", UriKind.Absolute), Resources.BibliaIcon);
             formApiKey.ShowDialog(this);
 
             // Only load the provider if the key has changed
             if (key != formApiKey.Key)
             {
                 // Save the key
-                Properties.Settings.Default.BibliaApiKey = formApiKey.Key;
-                Properties.Settings.Default.Save();
+                Settings.Default.BibliaApiKey = formApiKey.Key;
+                Settings.Default.Save();
 
                 // Reload the providers and translations
                 await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
@@ -1354,18 +1479,18 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemCommentaries_Click(object sender, EventArgs e)
         {
             // Show the show/hide commentaries dialog
-            List<string> blockedCommentaries = Properties.Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
+            List<string> blockedCommentaries = Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
             Dictionary<string, string> items = this.commentaries.ToDictionary(k => k.UniqueKey(), v => v.UniqueName(this.commentaries));
-            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedCommentaries, "Configure Commentaries", Properties.Resources.CommentariesIcon);
+            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedCommentaries, "Configure Commentaries", Resources.CommentariesIcon);
             DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
             if (dialogResult == DialogResult.OK)
             {
                 // Save the blocked commentaries
-                Properties.Settings.Default.BlockedCommentaries?.Clear();
-                Properties.Settings.Default.BlockedCommentaries ??= new StringCollection();
+                Settings.Default.BlockedCommentaries?.Clear();
+                Settings.Default.BlockedCommentaries ??= new StringCollection();
 
-                Properties.Settings.Default.BlockedCommentaries.AddRange(formCheckBoxList.UncheckedItems.ToArray());
-                Properties.Settings.Default.Save();
+                Settings.Default.BlockedCommentaries.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+                Settings.Default.Save();
 
                 // Reload the commentaries
                 await this.LoadTranslationComboBoxes(this.renderer.Providers.ToList(), string.Empty, string.Empty, string.Empty);
@@ -1380,9 +1505,9 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemDebugMode_Click(object sender, EventArgs e)
         {
             // Enable debug tools
-            this.WebViewMain.CoreWebView2.Settings.AreDevToolsEnabled = this.ToolStripMenuItemDebugMode.Checked;
+            this.WebViewMain.DeveloperMode = this.ToolStripMenuItemDebugMode.Checked;
             this.SetupWebPage(this.WebViewMain);
-            this.WebViewResource.CoreWebView2.Settings.AreDevToolsEnabled = this.ToolStripMenuItemDebugMode.Checked;
+            this.WebViewResource.DeveloperMode = this.ToolStripMenuItemDebugMode.Checked;
             this.SetupWebPage(this.WebViewResource);
 
             // Debug the passage renderer
@@ -1404,16 +1529,16 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemDigitalBiblePlatform_Click(object sender, EventArgs e)
         {
             // Show the Digital Bible Platform API Key Dialog
-            string key = Properties.Settings.Default.DigitalBiblePlatformApiKey;
-            using FormApiKey formApiKey = new FormApiKey(key, "Digital Bible Platform API", new Uri("https://www.digitalbibleplatform.com/", UriKind.Absolute), Properties.Resources.DigitalBiblePlatformIcon);
+            string key = Settings.Default.DigitalBiblePlatformApiKey;
+            using FormApiKey formApiKey = new FormApiKey(key, "Digital Bible Platform API", new Uri("https://www.digitalbibleplatform.com/", UriKind.Absolute), Resources.DigitalBiblePlatformIcon);
             formApiKey.ShowDialog(this);
 
             // Only load the provider if the key has changed
             if (key != formApiKey.Key)
             {
                 // Save the key
-                Properties.Settings.Default.DigitalBiblePlatformApiKey = formApiKey.Key;
-                Properties.Settings.Default.Save();
+                Settings.Default.DigitalBiblePlatformApiKey = formApiKey.Key;
+                Settings.Default.Save();
 
                 // Reload the providers and translations
                 await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
@@ -1428,16 +1553,16 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemEsv_Click(object sender, EventArgs e)
         {
             // Show the ESV API Key Dialog
-            string key = Properties.Settings.Default.EsvApiKey;
-            using FormApiKey formApiKey = new FormApiKey(key, "ESV API", new Uri("https://api.esv.org/", UriKind.Absolute), Properties.Resources.EsvIcon);
+            string key = Settings.Default.EsvApiKey;
+            using FormApiKey formApiKey = new FormApiKey(key, "ESV API", new Uri("https://api.esv.org/", UriKind.Absolute), Resources.EsvIcon);
             formApiKey.ShowDialog(this);
 
             // Only load the provider if the key has changed
             if (key != formApiKey.Key)
             {
                 // Save the key
-                Properties.Settings.Default.EsvApiKey = formApiKey.Key;
-                Properties.Settings.Default.Save();
+                Settings.Default.EsvApiKey = formApiKey.Key;
+                Settings.Default.Save();
 
                 // Reload the providers and translations
                 await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
@@ -1518,26 +1643,33 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemLanguages_Click(object sender, EventArgs e)
         {
             // Show the show/hide languages dialog
-            List<string> blockedLanguages = Properties.Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
+            List<string> blockedLanguages = Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
             Dictionary<string, string> items = this.translations
-                .Select(t => t.Language ?? Properties.Resources.UnknownLanguage)
+                .Select(t => t.Language ?? Resources.UnknownLanguage)
                 .Distinct()
                 .ToDictionary(k => k, v => v);
-            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedLanguages, "Configure Languages", Properties.Resources.LanguagesIcon);
+            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedLanguages, "Configure Languages", Resources.LanguagesIcon);
             DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
             if (dialogResult == DialogResult.OK)
             {
                 // Save the blocked providers
-                Properties.Settings.Default.BlockedLanguages?.Clear();
-                Properties.Settings.Default.BlockedLanguages ??= new StringCollection();
+                Settings.Default.BlockedLanguages?.Clear();
+                Settings.Default.BlockedLanguages ??= new StringCollection();
 
-                Properties.Settings.Default.BlockedLanguages.AddRange(formCheckBoxList.UncheckedItems.ToArray());
-                Properties.Settings.Default.Save();
+                Settings.Default.BlockedLanguages.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+                Settings.Default.Save();
 
                 // Reload the providers and translations
                 await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
             }
         }
+
+        /// <summary>
+        /// Handles the Click event of the Legacy Browser ToolStripMenuItem.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private async void ToolStripMenuItemLegacyBrowser_Click(object sender, EventArgs e) => await this.InitialiseWebBrowser(true);
 
         /// <summary>
         /// Handles the Click event of the NLT ToolStripMenuItem.
@@ -1547,16 +1679,16 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemNlt_Click(object sender, EventArgs e)
         {
             // Show the NLT API Key Dialog
-            string key = Properties.Settings.Default.NltApiKey;
-            using FormApiKey formApiKey = new FormApiKey(key, "NLT API", new Uri("https://api.nlt.to/", UriKind.Absolute), Properties.Resources.NltIcon);
+            string key = Settings.Default.NltApiKey;
+            using FormApiKey formApiKey = new FormApiKey(key, "NLT API", new Uri("https://api.nlt.to/", UriKind.Absolute), Resources.NltIcon);
             formApiKey.ShowDialog(this);
 
             // Only load the provider if the key has changed
             if (key != formApiKey.Key)
             {
                 // Save the key
-                Properties.Settings.Default.NltApiKey = formApiKey.Key;
-                Properties.Settings.Default.Save();
+                Settings.Default.NltApiKey = formApiKey.Key;
+                Settings.Default.Save();
 
                 // Reload the providers and translations
                 await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
@@ -1571,18 +1703,18 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemProviders_Click(object sender, EventArgs e)
         {
             // Show the show/hide providers dialog
-            List<string> blockedProviders = Properties.Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
+            List<string> blockedProviders = Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
             Dictionary<string, string> items = this.providers.ToDictionary(k => k.Id, v => v.Name);
-            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedProviders, "Configure Providers", Properties.Resources.ProviderIcon);
+            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedProviders, "Configure Providers", Resources.ProviderIcon);
             DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
             if (dialogResult == DialogResult.OK)
             {
                 // Save the blocked providers
-                Properties.Settings.Default.BlockedProviders?.Clear();
-                Properties.Settings.Default.BlockedProviders ??= new StringCollection();
+                Settings.Default.BlockedProviders?.Clear();
+                Settings.Default.BlockedProviders ??= new StringCollection();
 
-                Properties.Settings.Default.BlockedProviders.AddRange(formCheckBoxList.UncheckedItems.ToArray());
-                Properties.Settings.Default.Save();
+                Settings.Default.BlockedProviders.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+                Settings.Default.Save();
 
                 // Reload the providers and translations
                 await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
@@ -1604,16 +1736,16 @@ namespace GoToBible.Windows
         private void ToolStripMenuItemSql_Click(object sender, EventArgs e)
         {
             // Show the SQL Server Connection String Dialog
-            string key = Properties.Settings.Default.SqlConnectionString;
-            using FormApiKey formApiKey = new FormApiKey(key, "SQL Server", new Uri("https://www.microsoft.com/en-us/sql-server/sql-server-downloads/", UriKind.Absolute), Properties.Resources.SqlIcon);
+            string key = Settings.Default.SqlConnectionString;
+            using FormApiKey formApiKey = new FormApiKey(key, "SQL Server", new Uri("https://www.microsoft.com/en-us/sql-server/sql-server-downloads/", UriKind.Absolute), Resources.SqlIcon);
             formApiKey.ShowDialog(this);
 
             // Only load the provider if the key has changed
             if (key != formApiKey.Key)
             {
                 // Save the key
-                Properties.Settings.Default.SqlConnectionString = formApiKey.Key;
-                Properties.Settings.Default.Save();
+                Settings.Default.SqlConnectionString = formApiKey.Key;
+                Settings.Default.Save();
 
                 // Update the cache
                 if (string.IsNullOrWhiteSpace(formApiKey.Key))
@@ -1635,18 +1767,18 @@ namespace GoToBible.Windows
         private async void ToolStripMenuItemTranslations_Click(object sender, EventArgs e)
         {
             // Show the show/hide translations dialog
-            List<string> blockedTranslations = Properties.Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
+            List<string> blockedTranslations = Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
             Dictionary<string, string> items = this.translations.ToDictionary(k => k.UniqueKey(), v => v.UniqueName(this.translations));
-            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedTranslations, "Configure Translations", Properties.Resources.TranslationsIcon);
+            using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedTranslations, "Configure Translations", Resources.TranslationsIcon);
             DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
             if (dialogResult == DialogResult.OK)
             {
                 // Save the blocked translations
-                Properties.Settings.Default.BlockedTranslations?.Clear();
-                Properties.Settings.Default.BlockedTranslations ??= new StringCollection();
+                Settings.Default.BlockedTranslations?.Clear();
+                Settings.Default.BlockedTranslations ??= new StringCollection();
 
-                Properties.Settings.Default.BlockedTranslations.AddRange(formCheckBoxList.UncheckedItems.ToArray());
-                Properties.Settings.Default.Save();
+                Settings.Default.BlockedTranslations.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+                Settings.Default.Save();
 
                 // Reload the providers and translations
                 await this.LoadTranslationComboBoxes(this.renderer.Providers.ToList(), string.Empty, string.Empty, string.Empty);
@@ -1684,6 +1816,7 @@ namespace GoToBible.Windows
             this.ToolStripMenuItemEnterApiKeys.Visible = this.IsDeveloper;
             this.ToolStripMenuItemProviders.Visible = this.IsDeveloper;
             this.ToolStripMenuItemDebugMode.Visible = this.IsDeveloper;
+            this.ToolStripMenuItemLegacyBrowser.Visible = this.IsDeveloper;
 
             // Reload the providers and translations
             await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
