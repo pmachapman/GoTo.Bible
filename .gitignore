@@ -341,3 +341,6 @@ healthchecksdb
 
 # Visual Studio Tools Configuration
 .config
+
+# Mac specific files
+.DS_Store
