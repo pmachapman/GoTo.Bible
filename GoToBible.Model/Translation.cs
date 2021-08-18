@@ -25,7 +25,7 @@ namespace GoToBible.Model
         /// <value>
         ///   <c>true</c> if this instance can be exported; otherwise, <c>false</c>.
         /// </value>
-        public bool CanBeExported { get; set; } = false;
+        public bool CanBeExported { get; set; }
 
         /// <summary>
         /// Gets or sets the translation's unique code.
@@ -41,7 +41,7 @@ namespace GoToBible.Model
         /// <value>
         ///   <c>true</c> if a commentary; otherwise, <c>false</c>.
         /// </value>
-        public bool Commentary { get; set; } = false;
+        public bool Commentary { get; set; }
 
         /// <summary>
         /// Gets or sets the copyright message.
@@ -68,14 +68,6 @@ namespace GoToBible.Model
         public string? Language { get; set; }
 
         /// <summary>
-        /// Gets or sets the id of the translation provider.
-        /// </summary>
-        /// <value>
-        /// The translation provider id.
-        /// </value>
-        public string Provider { get; set; } = string.Empty;
-
-        /// <summary>
         /// Gets or sets the name of the translation.
         /// </summary>
         /// <value>
@@ -87,6 +79,14 @@ namespace GoToBible.Model
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets the id of the translation provider.
+        /// </summary>
+        /// <value>
+        /// The translation provider id.
+        /// </value>
+        public string Provider { get; set; } = string.Empty;
+
+        /// <summary>
         /// Gets or sets the year the translation was made.
         /// </summary>
         /// <value>
@@ -95,6 +95,6 @@ namespace GoToBible.Model
         public int Year { get; set; }
 
         /// <inheritdoc/>
-        public override string ToString() => $"{this.Language}: {this.Name}";
+        public override string ToString() => this.Language == null ? this.Name : $"{this.Language}: {this.Name}";
     }
 }

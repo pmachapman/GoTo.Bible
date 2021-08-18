@@ -11,7 +11,7 @@ namespace GoToBible.Model
     /// <summary>
     /// A passage reference.
     /// </summary>
-    public class PassageReference
+    public record PassageReference
     {
         /// <summary>
         /// Gets or sets the chapter reference.

@@ -580,7 +580,7 @@ namespace GoToBible.Model
                 {
                     if (!rangePart.Contains(':'))
                     {
-                        semiParts[i] = semiParts[i] + ':' + 1;
+                        semiParts[i] = semiParts[i] + ":1";
                     }
                 }
 
@@ -603,12 +603,11 @@ namespace GoToBible.Model
 
             for (int i = 1; i < parts.Length; i++)
             {
-                if (parts[i].IndexOf(':') != -1)
+                if (parts[i].Contains(':'))
                 {
                     continue;
                 }
-
-                if (!parts[0].Contains(':'))
+                else if (!parts[0].Contains(':'))
                 {
                     if (!parts[i].Contains('-'))
                     {

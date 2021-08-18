@@ -11,7 +11,7 @@ namespace GoToBible.Model
     /// <summary>
     /// A chapter reference.
     /// </summary>
-    public class ChapterReference
+    public record ChapterReference
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="ChapterReference" /> class.
