@@ -7,11 +7,12 @@
 namespace GoToBible.Model
 {
     using System;
+    using System.Linq;
 
     /// <summary>
     /// A passage reference.
     /// </summary>
-    public record PassageReference
+    public record PassageReference : IEquatable<PassageReference>
     {
         /// <summary>
         /// Gets or sets the chapter reference.
@@ -47,5 +48,27 @@ namespace GoToBible.Model
         /// We only require the chapter reference. This method assumes you used <c>AsPassageReference()</c> to generate this object.
         /// </remarks>
         public bool IsValid => this.ChapterReference.IsValid;
+
+        /// <inheritdoc/>
+        public virtual bool Equals(PassageReference? other)
+         => other is not null
+            && this.ChapterReference == other.ChapterReference
+            && this.Display == other.Display
+            && this.HighlightedVerses.SequenceEqual(other.HighlightedVerses)
+            && this.IsValid == other.IsValid;
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            HashCode hashCode = default;
+            hashCode.Add(this.ChapterReference);
+            hashCode.Add(this.Display);
+            foreach (int highlightedVerse in this.HighlightedVerses)
+            {
+                hashCode.Add(highlightedVerse);
+            }
+
+            return hashCode.ToHashCode();
+        }
     }
 }

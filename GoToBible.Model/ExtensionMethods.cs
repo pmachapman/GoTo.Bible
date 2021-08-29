@@ -237,18 +237,18 @@ namespace GoToBible.Model
             }
 
             // Sanitise the passage reference for retrieving the book and verse
-            string sanitisedPassage = SanitisePassageReference(passage);
+            string sanitisedPassage = passage.SanitisePassageReference();
 
             // Get the book
-            string book = GetBook(sanitisedPassage);
+            string book = sanitisedPassage.GetBook();
             if (!string.IsNullOrWhiteSpace(book) && BookLengths[book] is int[] chapters)
             {
                 if (chapters.Length == 1)
                 {
-                    sanitisedPassage = NormaliseSingleChapterReference(sanitisedPassage);
+                    sanitisedPassage = sanitisedPassage.NormaliseSingleChapterReference();
                 }
 
-                string[] ranges = GetRanges(sanitisedPassage);
+                string[] ranges = sanitisedPassage.GetRanges();
                 foreach (string range in ranges)
                 {
                     if (!int.TryParse(range.Split(':')[0], out int chapter))
@@ -496,7 +496,7 @@ namespace GoToBible.Model
         /// <returns>
         /// The book from the passage reference.
         /// </returns>
-        private static string GetBook(string passage)
+        internal static string GetBook(this string passage)
         {
             // Prepare the passage reference for the regex
             passage = passage.Replace(":", string.Empty);
@@ -534,7 +534,7 @@ namespace GoToBible.Model
         /// </summary>
         /// <param name="passage">The passage.</param>
         /// <returns>The ranges.</returns>
-        private static string[] GetRanges(string passage)
+        internal static string[] GetRanges(this string passage)
         {
             // Validate input
             if (string.IsNullOrWhiteSpace(passage) || passage.Length == 1)
@@ -545,7 +545,7 @@ namespace GoToBible.Model
             passage = passage[1..];
             Regex rangePartRegex = new Regex(@"\d", RegexOptions.Compiled);
             string rangePart = passage[rangePartRegex.Match(passage).Index..];
-            rangePart = NormaliseCommas(rangePart);
+            rangePart = rangePart.NormaliseCommas();
             string[] semiParts = rangePart.Split(';');
             rangePart = semiParts[0];
             semiParts = semiParts.Skip(1).ToArray();
@@ -584,7 +584,7 @@ namespace GoToBible.Model
                     }
                 }
 
-                ranges.AddRange(GetRanges("Book" + semiParts[i]));
+                ranges.AddRange($"Book{semiParts[i]}".GetRanges());
             }
 
             return ranges.ToArray();
@@ -597,7 +597,7 @@ namespace GoToBible.Model
         /// <returns>
         /// The range part with commas normalised.
         /// </returns>
-        private static string NormaliseCommas(string rangePart)
+        internal static string NormaliseCommas(this string rangePart)
         {
             string[] parts = rangePart.Split(',');
 
@@ -630,7 +630,7 @@ namespace GoToBible.Model
         /// <returns>
         /// The single chapter reference normalised.
         /// </returns>
-        private static string NormaliseSingleChapterReference(string passage)
+        internal static string NormaliseSingleChapterReference(this string passage)
         {
             string[] semiParts = passage.Split(';');
             if (!semiParts[0].Contains(":"))
@@ -652,7 +652,7 @@ namespace GoToBible.Model
         /// <returns>
         /// The passage reference ready for cleaning.
         /// </returns>
-        private static string SanitisePassageReference(string passage)
+        internal static string SanitisePassageReference(this string passage)
         {
             Regex dashRegex = new Regex(@"[‐‑‒–—-]", RegexOptions.Compiled);
             return dashRegex.Replace(passage.Replace(" ", string.Empty).Replace('.', ':').ToLowerInvariant(), "-");
