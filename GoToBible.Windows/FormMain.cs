@@ -113,6 +113,8 @@ namespace GoToBible.Windows
             this.ToolStripResource.Location = new Point(this.ToolStripTranslation.Left + this.ToolStripTranslation.Width, 0);
             this.ToolStripSettings.Dock = DockStyle.None;
             this.ToolStripSettings.Location = new Point(this.ToolStripResource.Left + this.ToolStripResource.Width, 0);
+            this.ToolStripExtras.Dock = DockStyle.None;
+            this.ToolStripExtras.Location = new Point(this.ToolStripSettings.Left + this.ToolStripSettings.Width, 0);
             this.ToolStripContainerMain.ResumeLayout();
 
             // Set initial button states
@@ -910,6 +912,14 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
+        /// Handles the Click event of the GitHub ToolStripButton.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void ToolStripButtonGitHub_Click(object sender, EventArgs e)
+            => Process.Start(new ProcessStartInfo("https://github.com/pmachapman/GoTo.Bible") { UseShellExecute = true, Verb = "open" });
+
+        /// <summary>
         /// Handles the Click event of the Navigate Back ToolStripButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -1203,7 +1213,7 @@ namespace GoToBible.Windows
         private void ToolStripButtonWebBrowser_Click(object sender, EventArgs e)
             => Process.Start(new ProcessStartInfo(this.parameters.AsUrl().ToString()) { UseShellExecute = true, Verb = "open" });
 
-            /// <summary>
+        /// <summary>
         /// Handles the SelectedIndexChanged event of the Resource ToolStripComboBox.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -1722,6 +1732,14 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
+        /// Handles the Click event of the SettingsDirectory ToolStripMenuItem.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void ToolStripMenuItemSettingsDirectory_Click(object sender, EventArgs e)
+            => Process.Start(new ProcessStartInfo(SettingsDirectory) { UseShellExecute = true, Verb = "open" });
+
+        /// <summary>
         /// Handles the Click event of the ShowItalics ToolStripMenuItem.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -1817,6 +1835,7 @@ namespace GoToBible.Windows
             this.ToolStripMenuItemProviders.Visible = this.IsDeveloper;
             this.ToolStripMenuItemDebugMode.Visible = this.IsDeveloper;
             this.ToolStripMenuItemLegacyBrowser.Visible = this.IsDeveloper;
+            this.ToolStripMenuItemSettingsDirectory.Visible = this.IsDeveloper;
 
             // Reload the providers and translations
             await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);

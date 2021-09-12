@@ -46,6 +46,8 @@
             this.ToolStripSeparatorDebugMode = new System.Windows.Forms.ToolStripSeparator();
             this.ToolStripMenuItemDebugMode = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemDeveloperMode = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemLegacyBrowser = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemSettingsDirectory = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripNavigate = new System.Windows.Forms.ToolStrip();
             this.ToolStripButtonNavigateBack = new System.Windows.Forms.ToolStripButton();
             this.ToolStripButtonNavigateForward = new System.Windows.Forms.ToolStripButton();
@@ -63,13 +65,14 @@
             this.ToolStripResource = new System.Windows.Forms.ToolStrip();
             this.ToolStripLabelResource = new System.Windows.Forms.ToolStripLabel();
             this.ToolStripComboBoxResource = new System.Windows.Forms.ToolStripComboBox();
+            this.ToolStripExtras = new System.Windows.Forms.ToolStrip();
             this.FontDialogMain = new System.Windows.Forms.FontDialog();
             this.ColourDialogBackground = new System.Windows.Forms.ColorDialog();
             this.ToolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.FolderBrowserDialogMain = new System.Windows.Forms.FolderBrowserDialog();
             this.SaveFileDialogMain = new System.Windows.Forms.SaveFileDialog();
             this.ColourDialogHighlight = new System.Windows.Forms.ColorDialog();
-            this.ToolStripMenuItemLegacyBrowser = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripButtonGitHub = new System.Windows.Forms.ToolStripButton();
             this.ToolStripContainerMain.ContentPanel.SuspendLayout();
             this.ToolStripContainerMain.TopToolStripPanel.SuspendLayout();
             this.ToolStripContainerMain.SuspendLayout();
@@ -80,6 +83,7 @@
             this.ToolStripTranslation.SuspendLayout();
             this.ToolStripPassage.SuspendLayout();
             this.ToolStripResource.SuspendLayout();
+            this.ToolStripExtras.SuspendLayout();
             this.SuspendLayout();
             // 
             // ToolStripContainerMain
@@ -100,11 +104,12 @@
             // 
             // ToolStripContainerMain.TopToolStripPanel
             // 
+            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripExtras);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripSettings);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripNavigate);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripTranslation);
-            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripResource);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripPassage);
+            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripResource);
             // 
             // SplitContainerMain
             // 
@@ -124,9 +129,9 @@
             this.ToolStripButtonNewWindow,
             this.ToolStripButtonWebBrowser,
             this.ToolStripSplitButtonSettings});
-            this.ToolStripSettings.Location = new System.Drawing.Point(6, 0);
+            this.ToolStripSettings.Location = new System.Drawing.Point(3, 25);
             this.ToolStripSettings.Name = "ToolStripSettings";
-            this.ToolStripSettings.Size = new System.Drawing.Size(121, 25);
+            this.ToolStripSettings.Size = new System.Drawing.Size(90, 25);
             this.ToolStripSettings.TabIndex = 3;
             // 
             // ToolStripButtonNewWindow
@@ -176,7 +181,7 @@
             this.ToolStripMenuItemIgnoreDiacritics,
             this.ToolStripMenuItemIgnorePunctuation});
             this.ToolStripMenuItemInterlinear.Name = "ToolStripMenuItemInterlinear";
-            this.ToolStripMenuItemInterlinear.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemInterlinear.Size = new System.Drawing.Size(177, 22);
             this.ToolStripMenuItemInterlinear.Text = "&Interlinear...";
             // 
             // ToolStripMenuItemIgnoreCase
@@ -208,7 +213,7 @@
             this.ToolStripMenuItemShowItalics.CheckOnClick = true;
             this.ToolStripMenuItemShowItalics.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemShowItalics.Image")));
             this.ToolStripMenuItemShowItalics.Name = "ToolStripMenuItemShowItalics";
-            this.ToolStripMenuItemShowItalics.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemShowItalics.Size = new System.Drawing.Size(177, 22);
             this.ToolStripMenuItemShowItalics.Text = "&Show Italics";
             this.ToolStripMenuItemShowItalics.ToolTipText = "Show words supplied by translators in italics";
             this.ToolStripMenuItemShowItalics.Click += new System.EventHandler(this.ToolStripMenuItemShowItalics_Click);
@@ -217,7 +222,7 @@
             // 
             this.ToolStripMenuItemFontSettings.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemFontSettings.Image")));
             this.ToolStripMenuItemFontSettings.Name = "ToolStripMenuItemFontSettings";
-            this.ToolStripMenuItemFontSettings.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemFontSettings.Size = new System.Drawing.Size(177, 22);
             this.ToolStripMenuItemFontSettings.Text = "&Font Settings";
             this.ToolStripMenuItemFontSettings.ToolTipText = "Change the font and text colour";
             this.ToolStripMenuItemFontSettings.Click += new System.EventHandler(this.ToolStripMenuItemFontSettings_Click);
@@ -226,7 +231,7 @@
             // 
             this.ToolStripMenuItemHighlightColour.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemHighlightColour.Image")));
             this.ToolStripMenuItemHighlightColour.Name = "ToolStripMenuItemHighlightColour";
-            this.ToolStripMenuItemHighlightColour.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemHighlightColour.Size = new System.Drawing.Size(177, 22);
             this.ToolStripMenuItemHighlightColour.Text = "&Highlight Colour";
             this.ToolStripMenuItemHighlightColour.ToolTipText = "Change the colour that verses are highlighted in";
             this.ToolStripMenuItemHighlightColour.Click += new System.EventHandler(this.ToolStripMenuItemHighlightColour_Click);
@@ -235,7 +240,7 @@
             // 
             this.ToolStripMenuItemBackgroundColour.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemBackgroundColour.Image")));
             this.ToolStripMenuItemBackgroundColour.Name = "ToolStripMenuItemBackgroundColour";
-            this.ToolStripMenuItemBackgroundColour.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemBackgroundColour.Size = new System.Drawing.Size(177, 22);
             this.ToolStripMenuItemBackgroundColour.Text = "Background &Colour";
             this.ToolStripMenuItemBackgroundColour.ToolTipText = "Change the background colour";
             this.ToolStripMenuItemBackgroundColour.Click += new System.EventHandler(this.ToolStripMenuItemBackgroundColour_Click);
@@ -251,7 +256,7 @@
             this.ToolStripMenuItemSql});
             this.ToolStripMenuItemEnterApiKeys.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemEnterApiKeys.Image")));
             this.ToolStripMenuItemEnterApiKeys.Name = "ToolStripMenuItemEnterApiKeys";
-            this.ToolStripMenuItemEnterApiKeys.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemEnterApiKeys.Size = new System.Drawing.Size(177, 22);
             this.ToolStripMenuItemEnterApiKeys.Text = "Enter &API Key...";
             this.ToolStripMenuItemEnterApiKeys.ToolTipText = "Enter API keys for Bible APIs";
             // 
@@ -319,10 +324,11 @@
             this.ToolStripSeparatorDebugMode,
             this.ToolStripMenuItemDebugMode,
             this.ToolStripMenuItemDeveloperMode,
-            this.ToolStripMenuItemLegacyBrowser});
+            this.ToolStripMenuItemLegacyBrowser,
+            this.ToolStripMenuItemSettingsDirectory});
             this.ToolStripMenuItemConfigure.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemConfigure.Image")));
             this.ToolStripMenuItemConfigure.Name = "ToolStripMenuItemConfigure";
-            this.ToolStripMenuItemConfigure.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemConfigure.Size = new System.Drawing.Size(177, 22);
             this.ToolStripMenuItemConfigure.Text = "C&onfigure...";
             this.ToolStripMenuItemConfigure.ToolTipText = "Configure Providers and Translations";
             // 
@@ -330,7 +336,7 @@
             // 
             this.ToolStripMenuItemCommentaries.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemCommentaries.Image")));
             this.ToolStripMenuItemCommentaries.Name = "ToolStripMenuItemCommentaries";
-            this.ToolStripMenuItemCommentaries.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemCommentaries.Size = new System.Drawing.Size(199, 22);
             this.ToolStripMenuItemCommentaries.Text = "&Commentaries";
             this.ToolStripMenuItemCommentaries.ToolTipText = "Enable or Disable Commentaries";
             this.ToolStripMenuItemCommentaries.Click += new System.EventHandler(this.ToolStripMenuItemCommentaries_Click);
@@ -339,7 +345,7 @@
             // 
             this.ToolStripMenuItemLanguages.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemLanguages.Image")));
             this.ToolStripMenuItemLanguages.Name = "ToolStripMenuItemLanguages";
-            this.ToolStripMenuItemLanguages.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemLanguages.Size = new System.Drawing.Size(199, 22);
             this.ToolStripMenuItemLanguages.Text = "&Languages";
             this.ToolStripMenuItemLanguages.ToolTipText = "Enable or Disable Languages";
             this.ToolStripMenuItemLanguages.Click += new System.EventHandler(this.ToolStripMenuItemLanguages_Click);
@@ -348,7 +354,7 @@
             // 
             this.ToolStripMenuItemTranslations.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemTranslations.Image")));
             this.ToolStripMenuItemTranslations.Name = "ToolStripMenuItemTranslations";
-            this.ToolStripMenuItemTranslations.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemTranslations.Size = new System.Drawing.Size(199, 22);
             this.ToolStripMenuItemTranslations.Text = "&Translations";
             this.ToolStripMenuItemTranslations.ToolTipText = "Enable or Disable Translations";
             this.ToolStripMenuItemTranslations.Click += new System.EventHandler(this.ToolStripMenuItemTranslations_Click);
@@ -357,7 +363,7 @@
             // 
             this.ToolStripMenuItemProviders.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemProviders.Image")));
             this.ToolStripMenuItemProviders.Name = "ToolStripMenuItemProviders";
-            this.ToolStripMenuItemProviders.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemProviders.Size = new System.Drawing.Size(199, 22);
             this.ToolStripMenuItemProviders.Text = "&Providers";
             this.ToolStripMenuItemProviders.ToolTipText = "Enable or Disable Providers";
             this.ToolStripMenuItemProviders.Click += new System.EventHandler(this.ToolStripMenuItemProviders_Click);
@@ -365,14 +371,14 @@
             // ToolStripSeparatorDebugMode
             // 
             this.ToolStripSeparatorDebugMode.Name = "ToolStripSeparatorDebugMode";
-            this.ToolStripSeparatorDebugMode.Size = new System.Drawing.Size(177, 6);
+            this.ToolStripSeparatorDebugMode.Size = new System.Drawing.Size(196, 6);
             // 
             // ToolStripMenuItemDebugMode
             // 
             this.ToolStripMenuItemDebugMode.CheckOnClick = true;
             this.ToolStripMenuItemDebugMode.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemDebugMode.Image")));
             this.ToolStripMenuItemDebugMode.Name = "ToolStripMenuItemDebugMode";
-            this.ToolStripMenuItemDebugMode.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemDebugMode.Size = new System.Drawing.Size(199, 22);
             this.ToolStripMenuItemDebugMode.Text = "&Debug Mode";
             this.ToolStripMenuItemDebugMode.ToolTipText = "Enable or Disable Debug Mode";
             this.ToolStripMenuItemDebugMode.Click += new System.EventHandler(this.ToolStripMenuItemDebugMode_Click);
@@ -382,10 +388,29 @@
             this.ToolStripMenuItemDeveloperMode.CheckOnClick = true;
             this.ToolStripMenuItemDeveloperMode.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemDeveloperMode.Image")));
             this.ToolStripMenuItemDeveloperMode.Name = "ToolStripMenuItemDeveloperMode";
-            this.ToolStripMenuItemDeveloperMode.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemDeveloperMode.Size = new System.Drawing.Size(199, 22);
             this.ToolStripMenuItemDeveloperMode.Text = "De&veloper Mode";
             this.ToolStripMenuItemDeveloperMode.ToolTipText = "Enable or Disable Developer Mode";
             this.ToolStripMenuItemDeveloperMode.Click += new System.EventHandler(this.ToolStripMenuItemDeveloperMode_Click);
+            // 
+            // ToolStripMenuItemLegacyBrowser
+            // 
+            this.ToolStripMenuItemLegacyBrowser.CheckOnClick = true;
+            this.ToolStripMenuItemLegacyBrowser.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemLegacyBrowser.Image")));
+            this.ToolStripMenuItemLegacyBrowser.Name = "ToolStripMenuItemLegacyBrowser";
+            this.ToolStripMenuItemLegacyBrowser.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemLegacyBrowser.Text = "Le&gacy Browser";
+            this.ToolStripMenuItemLegacyBrowser.ToolTipText = "Enable or Disable the Legacy Web Browser";
+            this.ToolStripMenuItemLegacyBrowser.Click += new System.EventHandler(this.ToolStripMenuItemLegacyBrowser_Click);
+            // 
+            // ToolStripMenuItemSettingsDirectory
+            // 
+            this.ToolStripMenuItemSettingsDirectory.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemSettingsDirectory.Image")));
+            this.ToolStripMenuItemSettingsDirectory.Name = "ToolStripMenuItemSettingsDirectory";
+            this.ToolStripMenuItemSettingsDirectory.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemSettingsDirectory.Text = "Open &Settings Directory";
+            this.ToolStripMenuItemSettingsDirectory.ToolTipText = "View the settings directory";
+            this.ToolStripMenuItemSettingsDirectory.Click += new System.EventHandler(this.ToolStripMenuItemSettingsDirectory_Click);
             // 
             // ToolStripNavigate
             // 
@@ -393,7 +418,7 @@
             this.ToolStripNavigate.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripButtonNavigateBack,
             this.ToolStripButtonNavigateForward});
-            this.ToolStripNavigate.Location = new System.Drawing.Point(3, 25);
+            this.ToolStripNavigate.Location = new System.Drawing.Point(93, 25);
             this.ToolStripNavigate.Name = "ToolStripNavigate";
             this.ToolStripNavigate.Size = new System.Drawing.Size(58, 25);
             this.ToolStripNavigate.TabIndex = 2;
@@ -428,7 +453,7 @@
             this.ToolStripLabelSecondaryTranslation,
             this.ToolStripComboBoxSecondaryTranslation,
             this.ToolStripButtonSwap});
-            this.ToolStripTranslation.Location = new System.Drawing.Point(61, 25);
+            this.ToolStripTranslation.Location = new System.Drawing.Point(189, 75);
             this.ToolStripTranslation.Name = "ToolStripTranslation";
             this.ToolStripTranslation.Size = new System.Drawing.Size(642, 25);
             this.ToolStripTranslation.TabIndex = 0;
@@ -540,6 +565,16 @@
             this.ToolStripComboBoxResource.Size = new System.Drawing.Size(175, 25);
             this.ToolStripComboBoxResource.SelectedIndexChanged += new System.EventHandler(this.ToolStripComboBoxResource_SelectedIndexChanged);
             // 
+            // ToolStripExtras
+            // 
+            this.ToolStripExtras.Dock = System.Windows.Forms.DockStyle.None;
+            this.ToolStripExtras.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripButtonGitHub});
+            this.ToolStripExtras.Location = new System.Drawing.Point(4, 0);
+            this.ToolStripExtras.Name = "ToolStripExtras";
+            this.ToolStripExtras.Size = new System.Drawing.Size(66, 25);
+            this.ToolStripExtras.TabIndex = 5;
+            // 
             // FontDialogMain
             // 
             this.FontDialogMain.AllowScriptChange = false;
@@ -563,15 +598,15 @@
             // 
             this.ColourDialogHighlight.AnyColor = true;
             // 
-            // ToolStripMenuItemLegacyBrowser
+            // ToolStripButtonGitHub
             // 
-            this.ToolStripMenuItemLegacyBrowser.CheckOnClick = true;
-            this.ToolStripMenuItemLegacyBrowser.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemLegacyBrowser.Image")));
-            this.ToolStripMenuItemLegacyBrowser.Name = "ToolStripMenuItemLegacyBrowser";
-            this.ToolStripMenuItemLegacyBrowser.Size = new System.Drawing.Size(180, 22);
-            this.ToolStripMenuItemLegacyBrowser.Text = "Le&gacy Browser";
-            this.ToolStripMenuItemLegacyBrowser.ToolTipText = "Enable or Disable the Legacy Web Browser";
-            this.ToolStripMenuItemLegacyBrowser.Click += new System.EventHandler(this.ToolStripMenuItemLegacyBrowser_Click);
+            this.ToolStripButtonGitHub.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ToolStripButtonGitHub.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonGitHub.Image")));
+            this.ToolStripButtonGitHub.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ToolStripButtonGitHub.Name = "ToolStripButtonGitHub";
+            this.ToolStripButtonGitHub.Size = new System.Drawing.Size(23, 22);
+            this.ToolStripButtonGitHub.Text = "Contribute on GitHub";
+            this.ToolStripButtonGitHub.Click += new System.EventHandler(this.ToolStripButtonGitHub_Click);
             // 
             // FormMain
             // 
@@ -602,6 +637,8 @@
             this.ToolStripPassage.PerformLayout();
             this.ToolStripResource.ResumeLayout(false);
             this.ToolStripResource.PerformLayout();
+            this.ToolStripExtras.ResumeLayout(false);
+            this.ToolStripExtras.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -661,6 +698,9 @@
         private System.Windows.Forms.ToolStripButton ToolStripButtonWebBrowser;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemDeveloperMode;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemLegacyBrowser;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSettingsDirectory;
+        private System.Windows.Forms.ToolStrip ToolStripExtras;
+        private System.Windows.Forms.ToolStripButton ToolStripButtonGitHub;
     }
 }
 

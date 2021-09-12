@@ -31,11 +31,13 @@ namespace GoToBible.Windows
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCheckBoxList));
             this.ButtonOk = new System.Windows.Forms.Button();
             this.ButtonCancel = new System.Windows.Forms.Button();
             this.CheckedListBoxItems = new System.Windows.Forms.CheckedListBox();
             this.CheckBoxSelectAll = new System.Windows.Forms.CheckBox();
+            this.ToolTipItem = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // ButtonOk
@@ -70,7 +72,9 @@ namespace GoToBible.Windows
             this.CheckedListBoxItems.Name = "CheckedListBoxItems";
             this.CheckedListBoxItems.Size = new System.Drawing.Size(388, 184);
             this.CheckedListBoxItems.TabIndex = 0;
-            this.CheckedListBoxItems.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.CheckedListBoxTranslations_ItemCheck);
+            this.CheckedListBoxItems.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.CheckedListBoxItems_ItemCheck);
+            this.CheckedListBoxItems.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CheckedListBoxItems_MouseMove);
+            this.CheckedListBoxItems.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CheckedListBoxItems_MouseUp);
             // 
             // CheckBoxSelectAll
             // 
@@ -98,7 +102,7 @@ namespace GoToBible.Windows
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormCheckBoxList";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Load += new System.EventHandler(this.FormTranslations_Load);
+            this.Load += new System.EventHandler(this.FormCheckBoxList_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -110,5 +114,6 @@ namespace GoToBible.Windows
         private System.Windows.Forms.Button ButtonCancel;
         private System.Windows.Forms.CheckedListBox CheckedListBoxItems;
         private System.Windows.Forms.CheckBox CheckBoxSelectAll;
+        private System.Windows.Forms.ToolTip ToolTipItem;
     }
 }

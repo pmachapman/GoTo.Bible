@@ -34,6 +34,11 @@ namespace GoToBible.Windows
         private bool selectAllCheckBoxIsUpdating = false;
 
         /// <summary>
+        /// The tool tip index.
+        /// </summary>
+        private int toolTipIndex = -1;
+
+        /// <summary>
         /// Initialises a new instance of the <see cref="FormCheckBoxList" /> class.
         /// </summary>
         /// <param name="items">The items.</param>
@@ -63,6 +68,19 @@ namespace GoToBible.Windows
         /// The unchecked items.
         /// </value>
         public ReadOnlyCollection<string> UncheckedItems { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is compiled in debug mode.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance compiled debug mode; otherwise, <c>false</c>.
+        /// </value>
+        private static bool IsDebug =>
+#if DEBUG
+            true;
+#else
+            false;
+#endif
 
         /// <summary>
         /// Handles the Click event of the Cancel Button.
@@ -119,18 +137,58 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
-        /// Handles the ItemCheck event of the Translations CheckedListBox.
+        /// Handles the ItemCheck event of the Items CheckedListBox.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="ItemCheckEventArgs"/> instance containing the event data.</param>
-        private void CheckedListBoxTranslations_ItemCheck(object sender, ItemCheckEventArgs e) => this.UpdateCheckBoxSelectAll(e.NewValue == CheckState.Checked);
+        private void CheckedListBoxItems_ItemCheck(object sender, ItemCheckEventArgs e) => this.UpdateCheckBoxSelectAll(e.NewValue == CheckState.Checked);
 
         /// <summary>
-        /// Handles the Load event of the Translations Form.
+        /// Handles the MouseMove event of the Items CheckedListBox.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
+        private void CheckedListBoxItems_MouseMove(object sender, MouseEventArgs e)
+        {
+            // We only want the tooltip in debug mode, as it is very specific to the development environment
+            if (IsDebug && this.toolTipIndex != this.CheckedListBoxItems.IndexFromPoint(e.Location))
+            {
+                this.toolTipIndex = this.CheckedListBoxItems.IndexFromPoint(this.CheckedListBoxItems.PointToClient(MousePosition));
+                if (this.toolTipIndex > -1
+                    && this.toolTipIndex < this.CheckedListBoxItems.Items.Count
+                    && this.CheckedListBoxItems.Items[this.toolTipIndex] is KeyValuePair<string, string> item)
+                {
+                    this.ToolTipItem.SetToolTip(this.CheckedListBoxItems, item.Key);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the MouseUp event of the Items CheckedListBox.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
+        private void CheckedListBoxItems_MouseUp(object sender, MouseEventArgs e)
+        {
+            // We only want to copy the ID in debug mode, as this feature is very specific to the development environment
+            if (IsDebug && e.Button == MouseButtons.Right)
+            {
+                int itemIndex = this.CheckedListBoxItems.IndexFromPoint(this.CheckedListBoxItems.PointToClient(MousePosition));
+                if (itemIndex > -1
+                    && itemIndex < this.CheckedListBoxItems.Items.Count
+                    && this.CheckedListBoxItems.Items[itemIndex] is KeyValuePair<string, string> item)
+                {
+                    Clipboard.SetText(item.Key);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the Load event of the CheckBoxList Form.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void FormTranslations_Load(object sender, EventArgs e)
+        private void FormCheckBoxList_Load(object sender, EventArgs e)
         {
             this.CheckedListBoxItems.FormattingEnabled = true;
             this.CheckedListBoxItems.Format += (_, eventArgs) => eventArgs.Value = ((KeyValuePair<string, string>)eventArgs.ListItem).Value;
