@@ -225,11 +225,13 @@ namespace GoToBible.Windows
                 if (checkedCount == this.CheckedListBoxItems.Items.Count)
                 {
                     this.CheckBoxSelectAll.Text = @"De&select All";
+                    this.ToolTipItem.SetToolTip(this.CheckBoxSelectAll, $"{checkedCount} items selected");
                     this.CheckBoxSelectAll.CheckState = CheckState.Checked;
                 }
                 else
                 {
                     this.CheckBoxSelectAll.Text = @"&Select All";
+                    this.ToolTipItem.SetToolTip(this.CheckBoxSelectAll, $"{this.CheckedListBoxItems.Items.Count} items");
                     if (checkedCount == 0)
                     {
                         this.CheckBoxSelectAll.CheckState = CheckState.Unchecked;
