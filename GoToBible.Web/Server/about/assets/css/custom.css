@@ -1,0 +1,8 @@
+html body {
+    background-color: #171d22;
+    background-image: none;
+}
+
+.icon.solid:before {
+    font-family: 'Font Awesome 5 Free';
+}

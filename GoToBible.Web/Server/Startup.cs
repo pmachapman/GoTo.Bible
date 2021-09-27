@@ -6,17 +6,20 @@
 
 namespace GoToBible.Web.Server
 {
+    using System.IO;
     using GoToBible.Model;
     using GoToBible.Providers;
     using GoToBible.Web.Server.Models;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Caching.Distributed;
     using Microsoft.Extensions.Caching.SqlServer;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
     using Pomelo.Extensions.Caching.MySql;
 
@@ -165,7 +168,20 @@ namespace GoToBible.Web.Server
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
+            app.UseDefaultFiles(new DefaultFilesOptions
+            {
+                DefaultFileNames = { "index.html" },
+                RequestPath = new PathString("/about"),
+            });
             app.UseStaticFiles();
+
+            // Allow static files within the about directory to allow for automatic SSL renewal
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                ServeUnknownFileTypes = true, // this was needed as IIS would not serve extensionless URLs from the directory without it
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "about")),
+                RequestPath = new PathString("/about"),
+            });
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
