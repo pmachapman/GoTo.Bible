@@ -27,7 +27,7 @@ namespace GoToBible.Providers
         /// </summary>
         protected static readonly DistributedCacheEntryOptions CacheEntryOptions = new DistributedCacheEntryOptions
         {
-            SlidingExpiration = TimeSpan.FromDays(365),
+            SlidingExpiration = TimeSpan.FromHours(24),
         };
 
         /// <summary>
