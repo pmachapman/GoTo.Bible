@@ -68,6 +68,19 @@ namespace GoToBible.Tests.Model
         }
 
         /// <summary>
+        /// Tests a chapter constructor for a book that starts with a number and missing a chapter.
+        /// </summary>
+        [TestMethod]
+        public void TestBookAndChapterBookStartsWithNumberMissingChapterConstructor()
+        {
+            ChapterReference chapterReference = new ChapterReference("2 John");
+            Assert.AreEqual(chapterReference.Book, "2 John");
+            Assert.AreEqual(chapterReference.ChapterNumber, 0);
+            Assert.AreEqual(chapterReference.ToString(), "2 John 0");
+            Assert.IsTrue(chapterReference.IsValid);
+        }
+
+        /// <summary>
         /// Tests a valid chapter constructor.
         /// </summary>
         [TestMethod]

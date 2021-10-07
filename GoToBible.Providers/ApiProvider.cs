@@ -168,6 +168,12 @@ namespace GoToBible.Providers
             {
                 foreach (ChapterReference chapter in book.Chapters)
                 {
+                    // Handle one chapter books
+                    if (chapter.ChapterNumber == 0)
+                    {
+                        chapter.ChapterNumber = 1;
+                    }
+
                     yield return chapter.ToString();
                 }
             }
