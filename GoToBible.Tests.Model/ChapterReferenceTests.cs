@@ -22,9 +22,9 @@ namespace GoToBible.Tests.Model
         public void TestEmpty()
         {
             ChapterReference chapterReference = new ChapterReference();
-            Assert.AreEqual(chapterReference.Book, string.Empty);
-            Assert.AreEqual(chapterReference.ChapterNumber, 0);
-            Assert.AreEqual(chapterReference.ToString(), string.Empty);
+            Assert.AreEqual(string.Empty, chapterReference.Book);
+            Assert.AreEqual(0, chapterReference.ChapterNumber);
+            Assert.AreEqual(string.Empty, chapterReference.ToString());
             Assert.IsFalse(chapterReference.IsValid);
         }
 
@@ -35,9 +35,9 @@ namespace GoToBible.Tests.Model
         public void TestBookAndChapterInvalidConstructor()
         {
             ChapterReference chapterReference = new ChapterReference(string.Empty);
-            Assert.AreEqual(chapterReference.Book, string.Empty);
-            Assert.AreEqual(chapterReference.ChapterNumber, 0);
-            Assert.AreEqual(chapterReference.ToString(), string.Empty);
+            Assert.AreEqual(string.Empty, chapterReference.Book);
+            Assert.AreEqual(0, chapterReference.ChapterNumber, 0);
+            Assert.AreEqual(string.Empty, chapterReference.ToString());
             Assert.IsFalse(chapterReference.IsValid);
         }
 
@@ -48,9 +48,9 @@ namespace GoToBible.Tests.Model
         public void TestBookAndChapterInvalidChapterConstructor()
         {
             ChapterReference chapterReference = new ChapterReference("Genesis Fifty");
-            Assert.AreEqual(chapterReference.Book, "Genesis");
-            Assert.AreEqual(chapterReference.ChapterNumber, 0);
-            Assert.AreEqual(chapterReference.ToString(), "Genesis 0");
+            Assert.AreEqual("Genesis", chapterReference.Book);
+            Assert.AreEqual(0, chapterReference.ChapterNumber);
+            Assert.AreEqual("Genesis 0", chapterReference.ToString());
             Assert.IsTrue(chapterReference.IsValid);
         }
 
@@ -61,9 +61,9 @@ namespace GoToBible.Tests.Model
         public void TestBookAndChapterMissingChapterConstructor()
         {
             ChapterReference chapterReference = new ChapterReference("Genesis");
-            Assert.AreEqual(chapterReference.Book, "Genesis");
-            Assert.AreEqual(chapterReference.ChapterNumber, 0);
-            Assert.AreEqual(chapterReference.ToString(), "Genesis 0");
+            Assert.AreEqual("Genesis", chapterReference.Book);
+            Assert.AreEqual(0, chapterReference.ChapterNumber);
+            Assert.AreEqual("Genesis 0", chapterReference.ToString());
             Assert.IsTrue(chapterReference.IsValid);
         }
 
@@ -74,9 +74,9 @@ namespace GoToBible.Tests.Model
         public void TestBookAndChapterBookStartsWithNumberMissingChapterConstructor()
         {
             ChapterReference chapterReference = new ChapterReference("2 John");
-            Assert.AreEqual(chapterReference.Book, "2 John");
-            Assert.AreEqual(chapterReference.ChapterNumber, 0);
-            Assert.AreEqual(chapterReference.ToString(), "2 John 0");
+            Assert.AreEqual("2 John", chapterReference.Book);
+            Assert.AreEqual(0, chapterReference.ChapterNumber);
+            Assert.AreEqual("2 John 0", chapterReference.ToString());
             Assert.IsTrue(chapterReference.IsValid);
         }
 
@@ -87,9 +87,9 @@ namespace GoToBible.Tests.Model
         public void TestBookAndChapterValidChapterConstructor()
         {
             ChapterReference chapterReference = new ChapterReference("Genesis 50");
-            Assert.AreEqual(chapterReference.Book, "Genesis");
-            Assert.AreEqual(chapterReference.ChapterNumber, 50);
-            Assert.AreEqual(chapterReference.ToString(), "Genesis 50");
+            Assert.AreEqual("Genesis", chapterReference.Book);
+            Assert.AreEqual(50, chapterReference.ChapterNumber);
+            Assert.AreEqual("Genesis 50", chapterReference.ToString());
             Assert.IsTrue(chapterReference.IsValid);
         }
 
@@ -100,9 +100,9 @@ namespace GoToBible.Tests.Model
         public void TestTwoParameterInvalidConstructor()
         {
             ChapterReference chapterReference = new ChapterReference(string.Empty, 0);
-            Assert.AreEqual(chapterReference.Book, string.Empty);
-            Assert.AreEqual(chapterReference.ChapterNumber, 0);
-            Assert.AreEqual(chapterReference.ToString(), string.Empty);
+            Assert.AreEqual(string.Empty, chapterReference.Book);
+            Assert.AreEqual(0, chapterReference.ChapterNumber, 0);
+            Assert.AreEqual(string.Empty, chapterReference.ToString());
             Assert.IsFalse(chapterReference.IsValid);
         }
 
@@ -113,9 +113,9 @@ namespace GoToBible.Tests.Model
         public void TestTwoParameterPsalm151Constructor()
         {
             ChapterReference chapterReference = new ChapterReference("Psalm 151", 0);
-            Assert.AreEqual(chapterReference.Book, "Psalm");
-            Assert.AreEqual(chapterReference.ChapterNumber, 151);
-            Assert.AreEqual(chapterReference.ToString(), "Psalm 151");
+            Assert.AreEqual("Psalm", chapterReference.Book);
+            Assert.AreEqual(151, chapterReference.ChapterNumber);
+            Assert.AreEqual("Psalm 151", chapterReference.ToString());
             Assert.IsTrue(chapterReference.IsValid);
         }
 
@@ -126,9 +126,9 @@ namespace GoToBible.Tests.Model
         public void TestTwoParameterValidConstructor()
         {
             ChapterReference chapterReference = new ChapterReference("Genesis", 50);
-            Assert.AreEqual(chapterReference.Book, "Genesis");
-            Assert.AreEqual(chapterReference.ChapterNumber, 50);
-            Assert.AreEqual(chapterReference.ToString(), "Genesis 50");
+            Assert.AreEqual("Genesis", chapterReference.Book);
+            Assert.AreEqual(50, chapterReference.ChapterNumber);
+            Assert.AreEqual("Genesis 50", chapterReference.ToString());
             Assert.IsTrue(chapterReference.IsValid);
         }
     }

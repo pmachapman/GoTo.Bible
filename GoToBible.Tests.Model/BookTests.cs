@@ -22,9 +22,9 @@ namespace GoToBible.Tests.Model
         public void TestEmpty()
         {
             Book book = new Book();
-            Assert.AreEqual(book.Name, string.Empty);
-            Assert.AreEqual(book.Chapters.Count, 0);
-            Assert.AreEqual(book.ToString(), string.Empty);
+            Assert.AreEqual(string.Empty, book.Name);
+            Assert.AreEqual(0, book.Chapters.Count);
+            Assert.AreEqual(string.Empty, book.ToString());
         }
 
         /// <summary>
@@ -37,9 +37,9 @@ namespace GoToBible.Tests.Model
             {
                 Name = "Genesis",
             };
-            Assert.AreEqual(book.Name, "Genesis");
-            Assert.AreEqual(book.Chapters.Count, 0);
-            Assert.AreEqual(book.ToString(), "Genesis");
+            Assert.AreEqual("Genesis", book.Name);
+            Assert.AreEqual(0, book.Chapters.Count);
+            Assert.AreEqual("Genesis", book.ToString());
         }
     }
 }

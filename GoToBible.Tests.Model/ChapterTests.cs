@@ -22,14 +22,14 @@ namespace GoToBible.Tests.Model
         public void TestEmpty()
         {
             Chapter chapter = new Chapter();
-            Assert.AreEqual(chapter.Book, string.Empty);
-            Assert.AreEqual(chapter.ChapterNumber, 0);
-            Assert.AreEqual(chapter.Copyright, string.Empty);
-            Assert.AreEqual(chapter.NextChapterReference.ToString(), string.Empty);
-            Assert.AreEqual(chapter.PreviousChapterReference.ToString(), string.Empty);
+            Assert.AreEqual(string.Empty, chapter.Book);
+            Assert.AreEqual(0, chapter.ChapterNumber);
+            Assert.AreEqual(string.Empty, chapter.Copyright);
+            Assert.AreEqual(string.Empty, chapter.NextChapterReference.ToString());
+            Assert.AreEqual(string.Empty, chapter.PreviousChapterReference.ToString());
             Assert.IsFalse(chapter.SupportsItalics);
-            Assert.AreEqual(chapter.Text, string.Empty);
-            Assert.AreEqual(chapter.Translation, string.Empty);
+            Assert.AreEqual(string.Empty, chapter.Text);
+            Assert.AreEqual(string.Empty, chapter.Translation);
         }
     }
 }

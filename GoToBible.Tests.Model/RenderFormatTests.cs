@@ -19,18 +19,18 @@ namespace GoToBible.Tests.Model
         /// Tests <see cref="RenderFormat.Accordance"/>.
         /// </summary>
         [TestMethod]
-        public void TestAccordance() => Assert.AreEqual((int)RenderFormat.Accordance, 2);
+        public void TestAccordance() => Assert.AreEqual(2, (int)RenderFormat.Accordance);
 
         /// <summary>
         /// Tests <see cref="RenderFormat.Html"/>.
         /// </summary>
         [TestMethod]
-        public void TestHtml() => Assert.AreEqual((int)RenderFormat.Html, 1);
+        public void TestHtml() => Assert.AreEqual(1, (int)RenderFormat.Html);
 
         /// <summary>
         /// Tests <see cref="RenderFormat.Text"/>.
         /// </summary>
         [TestMethod]
-        public void TestText() => Assert.AreEqual((int)RenderFormat.Text, 0);
+        public void TestText() => Assert.AreEqual(0, (int)RenderFormat.Text);
     }
 }

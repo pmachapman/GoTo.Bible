@@ -22,18 +22,18 @@ namespace GoToBible.Tests.Model
         public void TestEmpty()
         {
             RenderingParameters renderingParameters = new RenderingParameters();
-            Assert.AreEqual(renderingParameters.BackgroundColour, Default.BackgroundColour);
-            Assert.AreEqual(renderingParameters.Font, Default.Font);
-            Assert.AreEqual(renderingParameters.ForegroundColour, Default.ForegroundColour);
-            Assert.AreEqual(renderingParameters.Format, RenderFormat.Html);
-            Assert.AreEqual(renderingParameters.HighlightColour, Default.HighlightColour);
+            Assert.AreEqual(Default.BackgroundColour, renderingParameters.BackgroundColour);
+            Assert.AreEqual(Default.Font, renderingParameters.Font);
+            Assert.AreEqual(Default.ForegroundColour, renderingParameters.ForegroundColour);
+            Assert.AreEqual(RenderFormat.Html, renderingParameters.Format);
+            Assert.AreEqual(Default.HighlightColour, renderingParameters.HighlightColour);
             Assert.IsFalse(renderingParameters.InterlinearIgnoresCase);
             Assert.IsFalse(renderingParameters.InterlinearIgnoresDiacritics);
             Assert.IsFalse(renderingParameters.InterlinearIgnoresPunctuation);
             Assert.IsFalse(renderingParameters.IsDebug);
-            Assert.AreEqual(renderingParameters.PassageReference, Default.PassageReference);
-            Assert.AreEqual(renderingParameters.PrimaryProvider, string.Empty);
-            Assert.AreEqual(renderingParameters.PrimaryTranslation, string.Empty);
+            Assert.AreEqual(Default.PassageReference, renderingParameters.PassageReference);
+            Assert.AreEqual(string.Empty, renderingParameters.PrimaryProvider);
+            Assert.AreEqual(string.Empty, renderingParameters.PrimaryTranslation);
             Assert.IsTrue(renderingParameters.RenderItalics);
             Assert.IsNull(renderingParameters.SecondaryProvider);
             Assert.IsNull(renderingParameters.SecondaryTranslation);

@@ -22,7 +22,7 @@ namespace GoToBible.Tests.Model
         public void TestEmpty()
         {
             RenderedPassage renderedPassage = new RenderedPassage();
-            Assert.AreEqual(renderedPassage.Content, string.Empty);
+            Assert.AreEqual(string.Empty, renderedPassage.Content);
             Assert.IsFalse(renderedPassage.NextPassage.IsValid);
             Assert.IsFalse(renderedPassage.PreviousPassage.IsValid);
             Assert.IsFalse(renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation);

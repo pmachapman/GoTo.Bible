@@ -22,9 +22,9 @@ namespace GoToBible.Tests.Model
         public void TestEmpty()
         {
             RenderColour renderColour = new RenderColour();
-            Assert.AreEqual(renderColour.R, 0);
-            Assert.AreEqual(renderColour.G, 0);
-            Assert.AreEqual(renderColour.B, 0);
+            Assert.AreEqual(0, renderColour.R);
+            Assert.AreEqual(0, renderColour.G);
+            Assert.AreEqual(0, renderColour.B);
         }
     }
 }

@@ -24,15 +24,15 @@ namespace GoToBible.Tests.Model
             Translation translation = new Translation();
             Assert.IsNull(translation.Author);
             Assert.IsFalse(translation.CanBeExported);
-            Assert.AreEqual(translation.Code, string.Empty);
+            Assert.AreEqual(string.Empty, translation.Code);
             Assert.IsFalse(translation.Commentary);
             Assert.IsNull(translation.Copyright);
             Assert.IsNull(translation.Dialect);
             Assert.IsNull(translation.Language);
-            Assert.AreEqual(translation.Provider, string.Empty);
-            Assert.AreEqual(translation.Name, string.Empty);
-            Assert.AreEqual(translation.Year, 0);
-            Assert.AreEqual(translation.ToString(), string.Empty);
+            Assert.AreEqual(string.Empty, translation.Provider);
+            Assert.AreEqual(string.Empty, translation.Name);
+            Assert.AreEqual(0, translation.Year);
+            Assert.AreEqual(string.Empty, translation.ToString());
         }
 
         /// <summary>
@@ -47,15 +47,15 @@ namespace GoToBible.Tests.Model
             };
             Assert.IsNull(translation.Author);
             Assert.IsFalse(translation.CanBeExported);
-            Assert.AreEqual(translation.Code, string.Empty);
+            Assert.AreEqual(string.Empty, translation.Code);
             Assert.IsFalse(translation.Commentary);
             Assert.IsNull(translation.Copyright);
             Assert.IsNull(translation.Dialect);
             Assert.IsNull(translation.Language);
-            Assert.AreEqual(translation.Provider, string.Empty);
-            Assert.AreEqual(translation.Name, "KJV");
-            Assert.AreEqual(translation.Year, 0);
-            Assert.AreEqual(translation.ToString(), "KJV");
+            Assert.AreEqual(string.Empty, translation.Provider);
+            Assert.AreEqual("KJV", translation.Name);
+            Assert.AreEqual(0, translation.Year);
+            Assert.AreEqual("KJV", translation.ToString());
         }
 
         /// <summary>
@@ -71,15 +71,15 @@ namespace GoToBible.Tests.Model
             };
             Assert.IsNull(translation.Author);
             Assert.IsFalse(translation.CanBeExported);
-            Assert.AreEqual(translation.Code, string.Empty);
+            Assert.AreEqual(string.Empty, translation.Code);
             Assert.IsFalse(translation.Commentary);
             Assert.IsNull(translation.Copyright);
             Assert.IsNull(translation.Dialect);
-            Assert.AreEqual(translation.Language, "English");
-            Assert.AreEqual(translation.Provider, string.Empty);
-            Assert.AreEqual(translation.Name, "KJV");
-            Assert.AreEqual(translation.Year, 0);
-            Assert.AreEqual(translation.ToString(), "English: KJV");
+            Assert.AreEqual("English", translation.Language);
+            Assert.AreEqual(string.Empty, translation.Provider);
+            Assert.AreEqual("KJV", translation.Name);
+            Assert.AreEqual(0, translation.Year);
+            Assert.AreEqual("English: KJV", translation.ToString());
         }
     }
 }

@@ -23,9 +23,9 @@ namespace GoToBible.Tests.Model
         {
             RenderFont renderFont = new RenderFont();
             Assert.IsFalse(renderFont.Bold);
-            Assert.AreEqual(renderFont.FamilyName, string.Empty);
+            Assert.AreEqual(string.Empty, renderFont.FamilyName);
             Assert.IsFalse(renderFont.Italic);
-            Assert.AreEqual(renderFont.SizeInPoints, 0);
+            Assert.AreEqual(0, renderFont.SizeInPoints);
             Assert.IsFalse(renderFont.Strikeout);
             Assert.IsFalse(renderFont.Underline);
         }

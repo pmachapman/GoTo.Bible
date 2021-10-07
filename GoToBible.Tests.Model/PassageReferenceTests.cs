@@ -23,8 +23,8 @@ namespace GoToBible.Tests.Model
         {
             PassageReference passageReference = new PassageReference();
             Assert.IsFalse(passageReference.ChapterReference.IsValid);
-            Assert.AreEqual(passageReference.Display, string.Empty);
-            Assert.AreEqual(passageReference.HighlightedVerses.Length, 0);
+            Assert.AreEqual(string.Empty, passageReference.Display);
+            Assert.AreEqual(0, passageReference.HighlightedVerses.Length);
             Assert.IsFalse(passageReference.IsValid);
         }
 
@@ -39,8 +39,8 @@ namespace GoToBible.Tests.Model
                 ChapterReference = new ChapterReference("Psalm 151"),
             };
             Assert.IsTrue(passageReference.ChapterReference.IsValid);
-            Assert.AreEqual(passageReference.Display, string.Empty);
-            Assert.AreEqual(passageReference.HighlightedVerses.Length, 0);
+            Assert.AreEqual(string.Empty, passageReference.Display);
+            Assert.AreEqual(0, passageReference.HighlightedVerses.Length);
             Assert.IsTrue(passageReference.IsValid);
         }
     }
