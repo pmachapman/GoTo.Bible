@@ -51,6 +51,69 @@ namespace GoToBible.Tests.Model
         }
 
         /// <summary>
+        /// Tests <see cref="ExtensionMethods.AsPassageReference(string, int)"/>.
+        /// </summary>
+        [TestMethod]
+        public void TestStringAsPassageReferenceOneChapterBookNoColon()
+        {
+            PassageReference expected = new PassageReference()
+            {
+                ChapterReference = new ChapterReference("2 John", 1),
+                Display = "2 John 1",
+            };
+            PassageReference actual = "2 John 1".AsPassageReference();
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ExtensionMethods.AsPassageReference(string, int)"/>.
+        /// </summary>
+        [TestMethod]
+        public void TestStringAsPassageReferenceOneChapterBookNoColonWithVerse()
+        {
+            PassageReference expected = new PassageReference()
+            {
+                ChapterReference = new ChapterReference("2 John", 1),
+                Display = "2 John 1:2",
+                HighlightedVerses = new int[] { 2 },
+            };
+            PassageReference actual = "2 John 2".AsPassageReference();
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ExtensionMethods.AsPassageReference(string, int)"/>.
+        /// </summary>
+        [TestMethod]
+        public void TestStringAsPassageReferenceOneChapterBookNoColonWithRange()
+        {
+            PassageReference expected = new PassageReference()
+            {
+                ChapterReference = new ChapterReference("2 John", 1),
+                Display = "2 John 1:1-2",
+                HighlightedVerses = new int[] { 1, 2 },
+            };
+            PassageReference actual = "2 John 1-2".AsPassageReference();
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ExtensionMethods.AsPassageReference(string, int)"/>.
+        /// </summary>
+        [TestMethod]
+        public void TestStringAsPassageReferenceOneChapterBookWithColon()
+        {
+            PassageReference expected = new PassageReference()
+            {
+                ChapterReference = new ChapterReference("2 John", 1),
+                Display = "2 John 1:1",
+                HighlightedVerses = new int[] { 1 },
+            };
+            PassageReference actual = "2 John 1:1".AsPassageReference();
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
         /// Tests <see cref="ExtensionMethods.AsUrl"/> for an empty <see cref="RenderingParameters"/>.
         /// </summary>
         [TestMethod]
@@ -136,6 +199,12 @@ namespace GoToBible.Tests.Model
         /// </summary>
         [TestMethod]
         public void TestNormaliseSingleChapterReferenceWithChapterAlreadySpecified() => Assert.AreEqual("jude1:1".NormaliseSingleChapterReference(), "jude1:1");
+
+        /// <summary>
+        /// Tests <see cref="ExtensionMethods.NormaliseSingleChapterReference"/> for a book beginning with a number.
+        /// </summary>
+        [TestMethod]
+        public void TestNormaliseSingleChapterReferenceForBookBeginningWithNumnber() => Assert.AreEqual("2john".NormaliseSingleChapterReference(), "2john");
 
         /// <summary>
         /// Tests <see cref="ExtensionMethods.RenderCss"/> for blank <see cref="RenderingParameters"/>.

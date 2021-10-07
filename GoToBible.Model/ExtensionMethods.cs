@@ -251,7 +251,7 @@ namespace GoToBible.Model
                 string[] ranges = sanitisedPassage.GetRanges();
                 foreach (string range in ranges)
                 {
-                    if (!int.TryParse(range.Split(':')[0], out int chapter))
+                    if (!int.TryParse(range.Split(':').First(), out int chapter))
                     {
                         chapter = defaultChapter;
                     }
@@ -259,7 +259,19 @@ namespace GoToBible.Model
                     // Set the chapter reference
                     book = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(book);
                     passageReference.ChapterReference = new ChapterReference(book, chapter);
-                    if (passage.Contains(':', StringComparison.OrdinalIgnoreCase))
+
+                    // Do not highlight the first verse of a one chapter book if there is no colon and there is not a range of verses
+                    bool highlightVerses = sanitisedPassage.Contains(':', StringComparison.OrdinalIgnoreCase);
+                    if (ranges.Length == 1 && chapters.Length == 1 && chapter == 1 && !passage.Contains(':', StringComparison.OrdinalIgnoreCase))
+                    {
+                        // We can highlight verses other than 1 if there is no colon
+                        if (int.TryParse(range.Split(':').Last(), out int verse) && verse == 1)
+                        {
+                            highlightVerses = false;
+                        }
+                    }
+
+                    if (highlightVerses)
                     {
                         List<int> highlightedVerses = new List<int>();
                         StringBuilder sb = new StringBuilder();
@@ -637,9 +649,12 @@ namespace GoToBible.Model
             {
                 Regex numberStartRegex = new Regex(@"[\w\s]\d", RegexOptions.Compiled);
                 int numberStart = numberStartRegex.Match(semiParts[0]).Index + 1;
-                string before = semiParts[0][..numberStart];
-                string after = semiParts[0][numberStart..];
-                semiParts[0] = $"{before}1:{after}";
+                if (numberStart > 1)
+                {
+                    string before = semiParts[0][..numberStart];
+                    string after = semiParts[0][numberStart..];
+                    semiParts[0] = $"{before}1:{after}";
+                }
             }
 
             return string.Join(";", semiParts);
