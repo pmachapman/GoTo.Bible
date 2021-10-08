@@ -17,6 +17,7 @@
     <PackageProjectUrl>https://goto.bible/</PackageProjectUrl>
     <PackageIcon>App.png</PackageIcon>
     <PackageIconUrl />
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <IncludeSymbols>true</IncludeSymbols>
     <RepositoryUrl>https://github.com/pmachapman/GoTo.Bible.git</RepositoryUrl>
     <NeutralLanguage>en-NZ</NeutralLanguage>
@@ -26,8 +27,8 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Bug fixes and improvements found when porting the unit tests from Swift</PackageReleaseNotes>
-    <Version>1.1.4</Version>
+    <PackageReleaseNotes>Bug fixes for one chapter books</PackageReleaseNotes>
+    <Version>1.1.8</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,9 +36,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="App.png" />
-    <None Remove="LICENSE.md" />
-    <None Remove="LICENSE.md" />
+    <None Include="..\README.md" Pack="true" PackagePath="\"/>
     <None Include="App.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
