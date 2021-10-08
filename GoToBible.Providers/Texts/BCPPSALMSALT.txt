@@ -224,7 +224,7 @@ Psalm 18:44  As soon as they hear of me, they shall obey me: but the strange chi
 Psalm 18:45  The strange children shall fail: and be afraid out of their prisons.
 Psalm 18:46  The Lord liveth, and blessed be my strong helper: and praised be the God of my salvation;
 Psalm 18:47  Even the God that seeth that I be avenged: and subdueth the people unto me.
-Psalm 18:48  It is he that delivereth me from my cruel enemies, and setteth me up above mine adversaries:  thou shalt rid me from the wicked man.
+Psalm 18:48  It is he that delivereth me from my cruel enemies, and setteth me up above mine adversaries: thou shalt rid me from the wicked man.
 Psalm 18:49  For this cause will I give thanks unto thee, O Lord, among the Gentiles: and sing praises unto thy Name.
 Psalm 18:50  Great prosperity giveth he unto his King: and sheweth loving-kindness unto David his Anointed, and unto his seed for evermore.
 Psalm 19:1  The heavens declare the glory of God: and the firmament sheweth his handywork.
@@ -263,7 +263,7 @@ Psalm 21:10  Their fruit shalt thou root out of the earth: and their seed from a
 Psalm 21:11  For they intended mischief against thee: and imagined such a device as they are not able to perform.
 Psalm 21:12  Therefore shalt thou put them to flight: and the strings of thy bow shalt thou make ready against the face of them.
 Psalm 21:13  Be thou exalted, Lord, in thine own strength: so will we sing, and praise thy power.
-Psalm 22:1  O my God, my God, look upon me; why hast  thou forsaken me: and art so far from my health, and from the words of my complaint?
+Psalm 22:1  O my God, my God, look upon me; why hast thou forsaken me: and art so far from my health, and from the words of my complaint?
 Psalm 22:2  O my God, I cry in the day-time, but thou hearest not: and in the night-season also I take no rest.
 Psalm 22:3  And thou continuest holy: O thou worship of Israel.
 Psalm 22:4  Our fathers hoped in thee: they trusted in thee, and thou didst deliver them.
@@ -344,7 +344,7 @@ Psalm 26:9  O shut not up my soul with the sinners: nor my life with the blood-t
 Psalm 26:10  In whose hands is wickedness: and their right hand is full of gifts.
 Psalm 26:11  But as for me, I will walk innocently: O deliver me, and be merciful unto me.
 Psalm 26:12  My foot standeth right: I will praise the Lord in the congregations.
-Psalm 27:1  he Lord is my light and my salvation; whom I then shall I fear: the Lord is the strength of my life; of whom then shall I be afraid?
+Psalm 27:1  The Lord is my light and my salvation; whom I then shall I fear: the Lord is the strength of my life; of whom then shall I be afraid?
 Psalm 27:2  When the wicked, even mine enemies and my foes, came upon me to eat up my flesh: they stumbled and fell.
 Psalm 27:3  Though an host of men were laid against me, yet shall not my heart be afraid: and though there rose up war against me, yet will I put my trust in him.
 Psalm 27:4  One thing have I desired of the Lord, which I will require: even that I may dwell in the house of the Lord all the days of my life, to behold the fair beauty of the Lord, and to visit his temple.
@@ -358,7 +358,7 @@ Psalm 27:11  Teach me thy way, O Lord: and lead me in the right way, because of 
 Psalm 27:12  Deliver me not over into the will of mine adversaries: for there are false witnesses risen up against me, and such as speak wrong.
 Psalm 27:13  I should utterly have fainted: but that I believe verily to see the goodness of the Lord in the land of the living.
 Psalm 27:14  O tarry thou the Lord's leisure: be strong, and he shall comfort thine heart; and put thou thy trust in the Lord.
-Psalm 28:1  Unto thee will I cry, O Lord my strength:  think no scorn of me; lest, if thou make as though thou hearest not, I become like them that go down into the pit.
+Psalm 28:1  Unto thee will I cry, O Lord my strength: think no scorn of me; lest, if thou make as though thou hearest not, I become like them that go down into the pit.
 Psalm 28:2  Hear the voice of my humble petitions, when I cry unto thee: when I hold up my hands towards the mercy-seat of thy holy temple.
 Psalm 28:3  O pluck me not away, neither destroy me, with the ungodly and wicked doers: which speak friendly to their neighbours, but imagine mischief in their hearts.
 Psalm 28:4  Reward them according to their deeds: and according to the wickedness of their own inventions. Recompense them after the work of their hands: pay them that they have deserved.
@@ -1329,7 +1329,7 @@ Psalm 84:9  Behold, O God our defender: and look upon the face of thine Anointed
 Psalm 84:10  For one day in thy courts: is better than a thousand. I had rather be a door-keeper in the house of my God: than to dwell in the tents of ungodliness.
 Psalm 84:11  For the Lord God is a light and defence: the Lord will give grace and worship, and no good thing shall he withhold from them that live a godly life.
 Psalm 84:12  O Lord God of hosts: blessed is the man that putteth his trust in thee.
-Psalm 85:1  Lord, thou art become gracious unto thy  land: thou hast turned away the captivity of Jacob.
+Psalm 85:1  Lord, thou art become gracious unto thy land: thou hast turned away the captivity of Jacob.
 Psalm 85:2  Thou hast forgiven the offence of thy people: and covered all their sins.
 Psalm 85:3  Thou hast taken away all thy displeasure: and turned thyself from thy wrathful indignation.
 Psalm 85:4  Turn us then, O God our Saviour: and let thine anger cease from us.
@@ -1338,7 +1338,7 @@ Psalm 85:6  Wilt thou not turn again, and quicken us: that thy people may rejoic
 Psalm 85:7  Shew us thy mercy, O Lord: and grant us thy salvation.
 Psalm 85:8  I will hearken what the Lord God will say concerning me: for he shall speak peace unto his people, and to his saints, that they turn not again.
 Psalm 85:9  For his salvation is nigh them that fear him: that glory may dwell in our land.
-Psalm 85:10  Mercy and truth are met together: righteousness  and peace have kissed each other.
+Psalm 85:10  Mercy and truth are met together: righteousness and peace have kissed each other.
 Psalm 85:11  Truth shall flourish out of the earth: and righteousness hath looked down from heaven.
 Psalm 85:12  Yea, the Lord shall shew loving-kindness: and our land shall give her increase.
 Psalm 85:13  Righteousness shall go before him: and he shall direct his going in the way.
@@ -1503,7 +1503,7 @@ Psalm 94:11  The Lord knoweth the thoughts of man: that they are but vain.
 Psalm 94:12  Blessed is the man whom thou chastenest, O Lord: and teachest him in thy law;
 Psalm 94:13  That thou mayest give him patience in time of adversity: until the pit be digged up for the ungodly.
 Psalm 94:14  For the Lord will not fail his people: neither will he forsake his inheritance;
-Psalm 94:15  Until righteousness turn again unto judgement:  all such as are true in heart shall follow it.
+Psalm 94:15  Until righteousness turn again unto judgement: all such as are true in heart shall follow it.
 Psalm 94:16  Who will rise up with me against the wicked: or who will take my part against the evil-doers?
 Psalm 94:17  If the Lord had not helped me: it had not failed but my soul had been put to silence.
 Psalm 94:18  But when I said, My foot hath slipt: thy mercy, O Lord, held me up.
