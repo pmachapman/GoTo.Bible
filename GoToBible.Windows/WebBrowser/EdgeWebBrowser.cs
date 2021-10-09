@@ -21,7 +21,14 @@ namespace GoToBible.Windows.WebBrowser
         public bool DeveloperMode
         {
             get => this.CoreWebView2.Settings.AreDevToolsEnabled;
-            set => this.CoreWebView2.Settings.AreDevToolsEnabled = value;
+            set
+            {
+                this.CoreWebView2.Settings.AreDevToolsEnabled = value;
+
+                // Set keyboard shortcuts and right click
+                this.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = value;
+                this.CoreWebView2.Settings.AreDefaultContextMenusEnabled = value;
+            }
         }
 
         /// <inheritdoc />

@@ -20,7 +20,15 @@ namespace GoToBible.Windows.WebBrowser
         public bool DeveloperMode
         {
             get => this.IsWebBrowserContextMenuEnabled;
-            set => this.IsWebBrowserContextMenuEnabled = value;
+            set
+            {
+                this.IsWebBrowserContextMenuEnabled = value;
+
+                // Set keyboard shortcuts and right click
+                this.WebBrowserShortcutsEnabled = value;
+                this.IsWebBrowserContextMenuEnabled = value;
+                this.AllowWebBrowserDrop = value;
+            }
         }
 
         /// <inheritdoc/>
@@ -43,6 +51,11 @@ namespace GoToBible.Windows.WebBrowser
             this.Name = name;
             this.Size = new System.Drawing.Size(100, 100);
             this.TabIndex = tabIndex;
+
+            // Disable keyboard shortcuts and right click
+            this.WebBrowserShortcutsEnabled = false;
+            this.IsWebBrowserContextMenuEnabled = false;
+            this.AllowWebBrowserDrop = false;
         }
 
         /// <inheritdoc/>
