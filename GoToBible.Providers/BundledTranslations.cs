@@ -28,6 +28,7 @@ namespace GoToBible.Providers
         {
             { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
             { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
+            { "BCPPSALMSVUL", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
             { "BSB", "Copyright &copy;2016, 2020 by Bible Hub. All Rights Reserved Worldwide. Free Licensing for use in Websites, Apps, Software, and Audio: <a href=\"http://berean.bible/licensing.htm\" target=\"_blank\">http://berean.bible/licensing.htm</a>" },
             { "LAOANG", "Public Domain" },
             { "LAOGRK", "Public Domain" },
@@ -45,6 +46,7 @@ namespace GoToBible.Providers
         {
             { "BCPPSALMS", new BookHelper("Psalm", 150) },
             { "BCPPSALMSALT", new BookHelper("Psalm", 150) },
+            { "BCPPSALMSVUL", new BookHelper("Psalm", 150) },
             { "BSB", new ProtestantCanon() },
             { "LAOANG", new BookHelper("Laodiceans", 1) },
             { "LAOGRK", new BookHelper("Laodiceans", 1) },
@@ -73,6 +75,7 @@ namespace GoToBible.Providers
         {
             { "BCPPSALMS", false },
             { "BCPPSALMSALT", false },
+            { "BCPPSALMSVUL", false },
             { "BSB", false },
             { "LAOANG", false },
             { "LAOGRK", false },
@@ -119,6 +122,9 @@ namespace GoToBible.Providers
             // Make sure we are in the new testament canon
             if (Canon[translation].IsValidChapter(book, chapterNumber))
             {
+                // Use this when developing to test your translation
+                // await using Stream? stream = File.OpenRead(@$"..\..\..\..\GoToBible.Providers\Texts\{translation}.txt");
+
                 // Get the text
                 await using Stream? stream = this.GetType().Assembly.GetManifestResourceStream($"GoToBible.Providers.Texts.{translation}.txt");
                 if (stream != null)
@@ -192,7 +198,17 @@ namespace GoToBible.Providers
                 Code = "BCPPSALMSALT",
                 Copyright = Copyright["BCPPSALMSALT"],
                 Language = "English",
-                Name = "Coverdale Psalter (Alternate Versification)",
+                Name = "Coverdale Psalter (KJV Versification)",
+                Provider = this.Id,
+                Year = 1539,
+            });
+            yield return await Task.FromResult(new Translation
+            {
+                CanBeExported = true,
+                Code = "BCPPSALMSVUL",
+                Copyright = Copyright["BCPPSALMSVUL"],
+                Language = "English",
+                Name = "Coverdale Psalter (Douay Versification)",
                 Provider = this.Id,
                 Year = 1539,
             });
