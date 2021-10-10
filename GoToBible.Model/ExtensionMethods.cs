@@ -209,6 +209,14 @@ namespace GoToBible.Model
         private static readonly Regex StripInvalidCharactersRegex = new Regex(@"[^a-zA-Z0-9\. _~:,-]", RegexOptions.Compiled);
 
         /// <summary>
+        /// The verse number regular expression.
+        /// </summary>
+        /// <remarks>
+        /// This includes support for verses with letters.
+        /// </remarks>
+        private static readonly Regex VerseNumberRegex = new Regex(@"[0-9]+[a-z]?", RegexOptions.Compiled);
+
+        /// <summary>
         /// Builds a <see cref="PassageReference" /> from a <see cref="ChapterReference" />.
         /// </summary>
         /// <param name="chapterReference">The chapter reference.</param>
@@ -273,30 +281,52 @@ namespace GoToBible.Model
 
                     if (highlightVerses)
                     {
-                        List<int> highlightedVerses = new List<int>();
+                        List<string> highlightedVerses = new List<string>();
                         StringBuilder sb = new StringBuilder();
                         foreach (string displayRange in ranges)
                         {
-                            int displayRangeVerse;
+                            string displayRangeVerse;
                             if (displayRange == "...")
                             {
-                                highlightedVerses.Add(int.MaxValue);
+                                // Convert ellipsis to hyphen
+                                highlightedVerses.Add("-");
                                 sb.Append('-');
                                 continue;
                             }
                             else if (displayRange.Contains(":", StringComparison.OrdinalIgnoreCase))
                             {
                                 string[] displayRangeParts = displayRange.Split(":", StringSplitOptions.RemoveEmptyEntries);
-                                if (!int.TryParse(displayRangeParts.First(), out int displayRangeChapter)
-                                    || displayRangeChapter != chapter
-                                    || !int.TryParse(new string(displayRangeParts.Last().Trim().TakeWhile(c => char.IsDigit(c) || c == '.').ToArray()), out displayRangeVerse))
+                                if (int.TryParse(displayRangeParts.First(), out int displayRangeChapter) && displayRangeChapter == chapter)
                                 {
+                                    Match verseNumberMatch = VerseNumberRegex.Match(displayRangeParts.Last().Trim());
+                                    if (verseNumberMatch.Success)
+                                    {
+                                        displayRangeVerse = verseNumberMatch.Value;
+                                    }
+                                    else
+                                    {
+                                        // No match
+                                        continue;
+                                    }
+                                }
+                                else
+                                {
+                                    // Invalid chapter in reference
                                     continue;
                                 }
                             }
-                            else if (!int.TryParse(displayRange, out displayRangeVerse))
+                            else
                             {
-                                continue;
+                                Match verseNumberMatch = VerseNumberRegex.Match(displayRange.Trim());
+                                if (verseNumberMatch.Success)
+                                {
+                                    displayRangeVerse = verseNumberMatch.Value;
+                                }
+                                else
+                                {
+                                    // No match
+                                    continue;
+                                }
                             }
 
                             if (sb.Length > 0 && sb[^1] != '-')
@@ -308,27 +338,9 @@ namespace GoToBible.Model
                             sb.Append(displayRangeVerse);
                         }
 
-                        // Fill in verses for highlighting
-                        for (int i = 0; i < highlightedVerses.Count; i++)
-                        {
-                            if (highlightedVerses[i] == int.MaxValue)
-                            {
-                                highlightedVerses.RemoveAt(i);
-                                if (i > 0 && i < highlightedVerses.Count)
-                                {
-                                    int start = highlightedVerses[i - 1];
-                                    int end = highlightedVerses[i];
-                                    for (int j = ++start; j < end; j++)
-                                    {
-                                        highlightedVerses.Add(j);
-                                    }
-                                }
-                            }
-                        }
-
                         // Set the display and highlighted verses
                         passageReference.Display = $"{book} {chapter}:{sb}";
-                        passageReference.HighlightedVerses = highlightedVerses.OrderBy(v => v).ToArray();
+                        passageReference.HighlightedVerses = highlightedVerses.ToArray();
                     }
                     else
                     {

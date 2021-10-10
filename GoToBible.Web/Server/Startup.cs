@@ -56,7 +56,8 @@ namespace GoToBible.Web.Server
         public void ConfigureServices(IServiceCollection services)
         {
             // Setup Razor and Web API
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new StringConverter()));
             services.AddRazorPages();
 
             // Add supported translation providers

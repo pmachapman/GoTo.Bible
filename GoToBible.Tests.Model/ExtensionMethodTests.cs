@@ -28,7 +28,7 @@ namespace GoToBible.Tests.Model
             {
                 ChapterReference = chapterReference,
                 Display = "1 John 1",
-                HighlightedVerses = Array.Empty<int>(),
+                HighlightedVerses = Array.Empty<string>(),
             };
             PassageReference actual = chapterReference.AsPassageReference();
             Assert.AreEqual(expected, actual);
@@ -44,7 +44,7 @@ namespace GoToBible.Tests.Model
             {
                 ChapterReference = new ChapterReference("1 John", 1),
                 Display = "1 John 1:3,6-7,9-12",
-                HighlightedVerses = new int[] { 3, 6, 7, 9, 10, 11, 12 },
+                HighlightedVerses = new string[] { "3", "6", "-", "7", "9", "-", "12" },
             };
             PassageReference actual = "1 John 1:3,6-7,9-12".AsPassageReference();
             Assert.AreEqual(expected, actual);
@@ -75,7 +75,7 @@ namespace GoToBible.Tests.Model
             {
                 ChapterReference = new ChapterReference("2 John", 1),
                 Display = "2 John 1:2",
-                HighlightedVerses = new int[] { 2 },
+                HighlightedVerses = new string[] { "2" },
             };
             PassageReference actual = "2 John 2".AsPassageReference();
             Assert.AreEqual(expected, actual);
@@ -91,7 +91,7 @@ namespace GoToBible.Tests.Model
             {
                 ChapterReference = new ChapterReference("2 John", 1),
                 Display = "2 John 1:1-2",
-                HighlightedVerses = new int[] { 1, 2 },
+                HighlightedVerses = new string[] { "1", "-", "2" },
             };
             PassageReference actual = "2 John 1-2".AsPassageReference();
             Assert.AreEqual(expected, actual);
@@ -107,9 +107,25 @@ namespace GoToBible.Tests.Model
             {
                 ChapterReference = new ChapterReference("2 John", 1),
                 Display = "2 John 1:1",
-                HighlightedVerses = new int[] { 1 },
+                HighlightedVerses = new string[] { "1" },
             };
             PassageReference actual = "2 John 1:1".AsPassageReference();
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ExtensionMethods.AsPassageReference(string, int)"/>.
+        /// </summary>
+        [TestMethod]
+        public void TestStringAsPassageReferenceWithLetters()
+        {
+            PassageReference expected = new PassageReference()
+            {
+                ChapterReference = new ChapterReference("1 Kings", 12),
+                Display = "1 Kings 12:24b-24g,24y-25",
+                HighlightedVerses = new string[] { "24b", "-", "24g", "24y", "-", "25" },
+            };
+            PassageReference actual = "1 Kings 12:24b-24g,24y-25".AsPassageReference();
             Assert.AreEqual(expected, actual);
         }
 

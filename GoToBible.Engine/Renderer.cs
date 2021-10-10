@@ -547,11 +547,10 @@ namespace GoToBible.Engine
                 if (line.Contains(' '))
                 {
                     // If we have a verse number, display it as such
-                    string verseNumber = line.Substring(0, line.IndexOf(' ')).Trim();
-                    if ((verseNumber.Length > 0 && char.IsDigit(verseNumber[0]))
-                        || (verseNumber.Length > 1 && char.IsDigit(verseNumber[1])))
+                    string verseNumber = line.GetVerseNumber();
+                    if (verseNumber.IsValidVerseNumber())
                     {
-                        if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
+                        if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
                         {
                             line = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <mark>" + line[(line.IndexOf(' ') + 1)..].Trim() + "</mark>";
                         }
@@ -674,16 +673,16 @@ namespace GoToBible.Engine
                 if (line1.Contains(' ') && line2.Contains(' '))
                 {
                     // Get the verse number
-                    string verseNumber1 = line1.Substring(0, line1.IndexOf(' ')).Trim();
-                    string verseNumber2 = line2.Substring(0, line2.IndexOf(' ')).Trim();
+                    string verseNumber1 = line1.GetVerseNumber();
+                    string verseNumber2 = line2.GetVerseNumber();
 
-                    // Ensure that the verse number is a number
-                    if (!((verseNumber1.Length > 0 && char.IsDigit(verseNumber1[0])) || (verseNumber1.Length > 1 && char.IsDigit(verseNumber1[1]))))
+                    // Ensure that the verse numbers are valid verse numbers
+                    if (!verseNumber1.IsValidVerseNumber())
                     {
                         verseNumber1 = string.Empty;
                     }
 
-                    if (!((verseNumber2.Length > 0 && char.IsDigit(verseNumber2[0])) || (verseNumber2.Length > 1 && char.IsDigit(verseNumber2[1]))))
+                    if (!verseNumber2.IsValidVerseNumber())
                     {
                         verseNumber2 = string.Empty;
                     }
@@ -896,8 +895,8 @@ namespace GoToBible.Engine
                     sb.Append("</span>");
 
                     // Add any highlighting
-                    if ((int.TryParse(verseNumber1, out int verseNumber1Value) && parameters.PassageReference.HighlightedVerses.Contains(verseNumber1Value))
-                    || (int.TryParse(verseNumber2, out int verseNumber2Value) && parameters.PassageReference.HighlightedVerses.Contains(verseNumber2Value)))
+                    if (verseNumber1.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses)
+                        || verseNumber2.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
                     {
                         // Add the verse number
                         if (verseNumber1 == verseNumber2)
@@ -935,11 +934,10 @@ namespace GoToBible.Engine
                 if (line1.Contains(' '))
                 {
                     // If we have a verse number, display it as such
-                    string verseNumber = line1.Substring(0, line1.IndexOf(' ')).Trim();
-                    if ((verseNumber.Length > 0 && char.IsDigit(verseNumber[0]))
-                        || (verseNumber.Length > 1 && char.IsDigit(verseNumber[1])))
+                    string verseNumber = line1.GetVerseNumber();
+                    if (verseNumber.IsValidVerseNumber())
                     {
-                        if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
+                        if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
                         {
                             line1 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\"><mark>" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</mark></span><span>&nbsp;</span></span>";
                         }
@@ -967,11 +965,10 @@ namespace GoToBible.Engine
                 if (line2.Contains(' '))
                 {
                     // If we have a verse number, display it as such
-                    string verseNumber = line2.Substring(0, line2.IndexOf(' ')).Trim();
-                    if ((verseNumber.Length > 0 && char.IsDigit(verseNumber[0]))
-                        || (verseNumber.Length > 1 && char.IsDigit(verseNumber[1])))
+                    string verseNumber = line2.GetVerseNumber();
+                    if (verseNumber.IsValidVerseNumber())
                     {
-                        if (int.TryParse(verseNumber, out int verseNumberValue) && parameters.PassageReference.HighlightedVerses.Contains(verseNumberValue))
+                        if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
                         {
                             line2 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\"><mark>" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</mark></span></span>";
                         }
