@@ -24,7 +24,7 @@ namespace GoToBible.Providers
         /// <summary>
         /// The SBL copyright messages.
         /// </summary>
-        private static readonly Dictionary<string, string> Copyright = new Dictionary<string, string>
+        private static readonly IReadOnlyDictionary<string, string> Copyright = new Dictionary<string, string>
         {
             { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
             { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
@@ -42,7 +42,7 @@ namespace GoToBible.Providers
         /// <summary>
         /// The canon.
         /// </summary>
-        private static readonly Dictionary<string, BookHelper> Canon = new Dictionary<string, BookHelper>
+        private static readonly IReadOnlyDictionary<string, BookHelper> Canon = new Dictionary<string, BookHelper>
         {
             { "BCPPSALMS", new BookHelper("Psalm", 150) },
             { "BCPPSALMSALT", new BookHelper("Psalm", 150) },
@@ -71,7 +71,7 @@ namespace GoToBible.Providers
             { "SBLGNTAPP", new NewTestamentCanon() },
         };
 
-        private static readonly Dictionary<string, bool> SupportsItalics = new Dictionary<string, bool>
+        private static readonly IReadOnlyDictionary<string, bool> SupportsItalics = new Dictionary<string, bool>
         {
             { "BCPPSALMS", false },
             { "BCPPSALMSALT", false },

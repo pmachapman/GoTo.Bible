@@ -141,10 +141,10 @@ namespace GoToBible.Windows
                 catch (Exception ex)
                 {
                     if (ex is ArgumentException
-                        || ex is ConfigurationErrorsException
-                        || ex is ConfigurationException
-                        || ex is PathTooLongException
-                        || ex is SecurityException)
+                        or ConfigurationErrorsException
+                        or ConfigurationException
+                        or PathTooLongException
+                        or SecurityException)
                     {
                         return Path.GetTempPath();
                     }
@@ -563,6 +563,9 @@ namespace GoToBible.Windows
                 {
                     this.providers.Add(new EsvBible(Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }), this.cache));
                 }
+
+                // Load the Logos Provider
+                this.providers.Add(new LogosProvider());
 
                 // Load the NET Provider
                 this.providers.Add(new NetBible(this.cache));
@@ -1276,10 +1279,10 @@ namespace GoToBible.Windows
                 if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
                     && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
                 {
-                    if ((primaryItem.Language == "Greek" && secondaryItem.Language != "Greek")
-                        || (primaryItem.Language == "Hebrew" && secondaryItem.Language != "Hebrew")
-                        || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
-                        || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
+                    if ((primaryItem.Language == "Greek" && !(secondaryItem.Language == "Greek" || secondaryItem.Language == null))
+                        || (primaryItem.Language == "Hebrew" && !(secondaryItem.Language == "Hebrew" || secondaryItem.Language == null))
+                        || (secondaryItem.Language == "Greek" && !(primaryItem.Language == "Greek" || primaryItem.Language == null))
+                        || (secondaryItem.Language == "Hebrew" && !(primaryItem.Language == "Hebrew" || primaryItem.Language == null)))
                     {
                         MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
@@ -1325,10 +1328,10 @@ namespace GoToBible.Windows
                 if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
                     && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
                 {
-                    if ((primaryItem.Language == "Greek" && secondaryItem.Language != "Greek")
-                        || (primaryItem.Language == "Hebrew" && secondaryItem.Language != "Hebrew")
-                        || (secondaryItem.Language == "Greek" && primaryItem.Language != "Greek")
-                        || (secondaryItem.Language == "Hebrew" && primaryItem.Language != "Hebrew"))
+                    if ((primaryItem.Language == "Greek" && !(secondaryItem.Language == "Greek" || secondaryItem.Language == null))
+                        || (primaryItem.Language == "Hebrew" && !(secondaryItem.Language == "Hebrew" || secondaryItem.Language == null))
+                        || (secondaryItem.Language == "Greek" && !(primaryItem.Language == "Greek" || primaryItem.Language == null))
+                        || (secondaryItem.Language == "Hebrew" && !(primaryItem.Language == "Hebrew" || primaryItem.Language == null)))
                     {
                         MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
