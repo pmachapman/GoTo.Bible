@@ -54,6 +54,21 @@ namespace GoToBible.Tests.Model
         /// Tests <see cref="ExtensionMethods.AsPassageReference(string, int)"/>.
         /// </summary>
         [TestMethod]
+        public void TestStringAsPassageReferenceOneChapterBookIntroduction()
+        {
+            PassageReference expected = new PassageReference()
+            {
+                ChapterReference = new ChapterReference("2 John", 0),
+                Display = "2 John 0",
+            };
+            PassageReference actual = "2 John 0".AsPassageReference();
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ExtensionMethods.AsPassageReference(string, int)"/>.
+        /// </summary>
+        [TestMethod]
         public void TestStringAsPassageReferenceOneChapterBookNoColon()
         {
             PassageReference expected = new PassageReference()

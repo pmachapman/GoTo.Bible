@@ -269,7 +269,7 @@ namespace GoToBible.Model
                     passageReference.ChapterReference = new ChapterReference(book, chapter);
 
                     // Do not highlight the first verse of a one chapter book if there is no colon and there is not a range of verses
-                    bool highlightVerses = sanitisedPassage.Contains(':', StringComparison.OrdinalIgnoreCase);
+                    bool highlightVerses = sanitisedPassage.Contains(':', StringComparison.OrdinalIgnoreCase) && chapter > 0;
                     if (ranges.Length == 1 && chapters.Length == 1 && chapter == 1 && !passage.Contains(':', StringComparison.OrdinalIgnoreCase))
                     {
                         // We can highlight verses other than 1 if there is no colon
@@ -665,7 +665,16 @@ namespace GoToBible.Model
                 {
                     string before = semiParts[0][..numberStart];
                     string after = semiParts[0][numberStart..];
-                    semiParts[0] = $"{before}1:{after}";
+
+                    // A special exemption for the introduction
+                    if (semiParts[0][numberStart] == '0')
+                    {
+                        semiParts[0] = $"{before}0:{after}";
+                    }
+                    else
+                    {
+                        semiParts[0] = $"{before}1:{after}";
+                    }
                 }
             }
 
