@@ -16,6 +16,7 @@ namespace GoToBible.Windows
     /// <summary>
     /// The GoToBible program.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public static class Program
     {
         /// <summary>
@@ -38,7 +39,6 @@ namespace GoToBible.Windows
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        [SupportedOSPlatform("windows")]
         public static void Main()
         {
             Application.EnableVisualStyles();

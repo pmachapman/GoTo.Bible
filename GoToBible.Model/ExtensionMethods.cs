@@ -293,7 +293,7 @@ namespace GoToBible.Model
                                 sb.Append('-');
                                 continue;
                             }
-                            else if (displayRange.Contains(":", StringComparison.OrdinalIgnoreCase))
+                            else if (displayRange.Contains(':'))
                             {
                                 string[] displayRangeParts = displayRange.Split(":", StringSplitOptions.RemoveEmptyEntries);
                                 if (int.TryParse(displayRangeParts.First(), out int displayRangeChapter) && displayRangeChapter == chapter)
@@ -657,7 +657,7 @@ namespace GoToBible.Model
         internal static string NormaliseSingleChapterReference(this string passage)
         {
             string[] semiParts = passage.Split(';');
-            if (!semiParts[0].Contains(":"))
+            if (!semiParts[0].Contains(':'))
             {
                 Regex numberStartRegex = new Regex(@"[\w\s]\d", RegexOptions.Compiled);
                 int numberStart = numberStartRegex.Match(semiParts[0]).Index + 1;

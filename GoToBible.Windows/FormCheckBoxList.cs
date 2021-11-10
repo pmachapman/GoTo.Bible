@@ -191,7 +191,7 @@ namespace GoToBible.Windows
         private void FormCheckBoxList_Load(object sender, EventArgs e)
         {
             this.CheckedListBoxItems.FormattingEnabled = true;
-            this.CheckedListBoxItems.Format += (_, eventArgs) => eventArgs.Value = ((KeyValuePair<string, string>)eventArgs.ListItem).Value;
+            this.CheckedListBoxItems.Format += (_, eventArgs) => eventArgs.Value = (eventArgs.ListItem as KeyValuePair<string, string>?)?.Value;
             this.CheckedListBoxItems.BeginUpdate();
             this.checkBoxListIsUpdating = true;
             foreach (KeyValuePair<string, string> item in this.items)

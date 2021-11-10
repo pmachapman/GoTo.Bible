@@ -7,6 +7,7 @@
 namespace GoToBible.Windows
 {
     using System.Drawing;
+    using System.Runtime.Versioning;
     using GoToBible.Model;
 
     /// <summary>
@@ -31,6 +32,7 @@ namespace GoToBible.Windows
         /// <returns>
         /// The <see cref="Font" /> corresponding to the <see cref="RenderFont" />.
         /// </returns>
+        [SupportedOSPlatform("windows")]
         public static Font AsFont(this RenderFont renderFont)
             => new Font(
                 renderFont.FamilyName,
@@ -55,6 +57,7 @@ namespace GoToBible.Windows
         /// <returns>
         /// The <see cref="RenderFont" /> corresponding to the <see cref="Font" />.
         /// </returns>
+        [SupportedOSPlatform("windows")]
         public static RenderFont AsRenderFont(this Font font) => new RenderFont
         {
             FamilyName = font.FontFamily.Name,

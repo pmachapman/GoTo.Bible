@@ -58,7 +58,7 @@ namespace GoToBible.Web.Server.Pages
         public void OnGet()
         {
             this.RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier;
-            this.logger.LogError($"Error in Request #{this.RequestId}");
+            this.logger.LogError("Error in Request #{RequestId}", this.RequestId);
         }
     }
 }

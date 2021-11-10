@@ -209,7 +209,7 @@ namespace GoToBible.Engine
                     for (int i = 0; i < lines1.Count; i++)
                     {
                         int expectedVerseNumber = i + 1;
-                        if (int.TryParse(lines1[i].Substring(0, lines1[i].IndexOf(' ')), out int verseNumber) && verseNumber > expectedVerseNumber)
+                        if (int.TryParse(lines1[i].AsSpan(0, lines1[i].IndexOf(' ')), out int verseNumber) && verseNumber > expectedVerseNumber)
                         {
                             lines1.Insert(i, $"{expectedVerseNumber}  ");
                         }
@@ -218,7 +218,7 @@ namespace GoToBible.Engine
                     for (int i = 0; i < lines2.Count; i++)
                     {
                         int expectedVerseNumber = i + 1;
-                        if (int.TryParse(lines2[i].Substring(0, lines2[i].IndexOf(' ')), out int verseNumber) && verseNumber > expectedVerseNumber)
+                        if (int.TryParse(lines2[i].AsSpan(0, lines2[i].IndexOf(' ')), out int verseNumber) && verseNumber > expectedVerseNumber)
                         {
                             lines2.Insert(i, $"{expectedVerseNumber}  ");
                         }
@@ -227,15 +227,15 @@ namespace GoToBible.Engine
                     // Add a superscription, if missing
                     if (lines1.Count > lines2.Count
                         && lines2.Count > 0
-                        && int.TryParse(lines2[0].Substring(0, lines2[0].IndexOf(' ')), out int _)
-                        && !int.TryParse(lines1[0].Substring(0, lines1[0].IndexOf(' ')), out int _))
+                        && int.TryParse(lines2[0].AsSpan(0, lines2[0].IndexOf(' ')), out int _)
+                        && !int.TryParse(lines1[0].AsSpan(0, lines1[0].IndexOf(' ')), out int _))
                     {
                         lines2.Insert(0, string.Empty);
                     }
                     else if (lines2.Count > lines1.Count
                         && lines1.Count > 0
-                        && int.TryParse(lines1[0].Substring(0, lines1[0].IndexOf(' ')), out int _)
-                        && !int.TryParse(lines2[0].Substring(0, lines2[0].IndexOf(' ')), out int _))
+                        && int.TryParse(lines1[0].AsSpan(0, lines1[0].IndexOf(' ')), out int _)
+                        && !int.TryParse(lines2[0].AsSpan(0, lines2[0].IndexOf(' ')), out int _))
                     {
                         lines1.Insert(0, string.Empty);
                     }

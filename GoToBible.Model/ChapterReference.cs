@@ -56,7 +56,7 @@ namespace GoToBible.Model
                 {
                     this.Book = bookAndChapter[..lastSpaceIndex];
                     string chapter = bookAndChapter[(lastSpaceIndex + 1)..];
-                    if (chapter.Contains(":", StringComparison.OrdinalIgnoreCase))
+                    if (chapter.Contains(':'))
                     {
                         chapter = chapter[..chapter.IndexOf(":", StringComparison.OrdinalIgnoreCase)];
                     }

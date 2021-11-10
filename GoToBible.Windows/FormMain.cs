@@ -581,7 +581,7 @@ namespace GoToBible.Windows
                 blockedProviders = Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
 
                 // Set the renderer
-                if (!(this.renderer is Renderer))
+                if (this.renderer is not Renderer)
                 {
                     this.renderer.Dispose();
                     this.renderer = new Renderer();
@@ -593,7 +593,7 @@ namespace GoToBible.Windows
                 this.providers.Add(new GoToBibleApi(this.cache));
 
                 // Set the renderer
-                if (!(this.renderer is GotoBibleApiRenderer))
+                if (this.renderer is not GotoBibleApiRenderer)
                 {
                     this.renderer.Dispose();
                     this.renderer = new GotoBibleApiRenderer();
@@ -1353,7 +1353,7 @@ namespace GoToBible.Windows
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="DrawItemEventArgs"/> instance containing the event data.</param>
-        private void ToolStripComboBox_DrawItem(object sender, DrawItemEventArgs e)
+        private void ToolStripComboBox_DrawItem(object? sender, DrawItemEventArgs e)
         {
             if (sender is ComboBox comboBox && e.Index > -1 && comboBox.Items[e.Index] is ComboBoxItem item)
             {

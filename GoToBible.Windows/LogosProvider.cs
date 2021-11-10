@@ -10,6 +10,7 @@ namespace GoToBible.Windows
     using System.Collections.Generic;
     using System.Reflection;
     using System.Runtime.InteropServices;
+    using System.Runtime.Versioning;
     using System.Threading.Tasks;
     using GoToBible.Model;
 
@@ -20,6 +21,7 @@ namespace GoToBible.Windows
     /// See https://wiki.logos.com/Logos_4_COM_API and https://wiki.logos.com/How_to_Use_the_COM_API for documentation.
     /// </remarks>
     /// <seealso cref="GoToBible.Model.IProvider" />
+    [SupportedOSPlatform("windows")]
     public class LogosProvider : IProvider
     {
         /// <summary>
