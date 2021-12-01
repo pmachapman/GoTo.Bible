@@ -43,6 +43,7 @@ namespace GoToBible.Web.Server.Controllers
             "BibliaApi-kjvapoc",
             "DigitalBiblePlatformApi-AAHWBTN2ET",
             "DigitalBiblePlatformApi-ENGASV",
+            "DigitalBiblePlatformApi-ENGESH",
             "DigitalBiblePlatformApi-ENGKJV",
             "DigitalBiblePlatformApi-ENGREV",
             "DigitalBiblePlatformApi-ENGWEB",
@@ -54,7 +55,7 @@ namespace GoToBible.Web.Server.Controllers
         private static readonly IReadOnlyDictionary<string, string> NameSubstitutions = new Dictionary<string, string>
         {
             { "The Holy Bible, American Standard Version", "American Standard Version" },
-            { "English Standard Version - FCBH Audio", "English Standard Version (2007)" },
+            { "English Standard Version®", "English Standard Version (2007)" },
             { "NAS New American Standard Bible", "New American Standard Bible (1995)" },
             { "King James (Authorised) Version (Ecumenical)", "King James Version" },
         };

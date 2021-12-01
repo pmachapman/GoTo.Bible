@@ -775,7 +775,7 @@ namespace GoToBible.Windows
                 if (!blockedTranslations.Contains(translation.UniqueKey()) && !blockedLanguages.Contains(translationLanguage))
                 {
                     // Add a heading, if required
-                    if (translation.Language != lastLanguage)
+                    if (translationLanguage != lastLanguage)
                     {
                         ComboBoxItem headingComboBoxItem = new ComboBoxItem
                         {

@@ -30,6 +30,7 @@ namespace GoToBible.Model
                 "GREEK" => $"!2-{value}",
                 "HEBREW" => $"!3-{value}",
                 "LATIN" => $"!4-{value}",
+                null => "!5",
                 _ => value,
             };
     }
