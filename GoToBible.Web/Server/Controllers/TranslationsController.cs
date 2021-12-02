@@ -42,6 +42,7 @@ namespace GoToBible.Web.Server.Controllers
             "BibliaApi-kjv1900",
             "BibliaApi-kjvapoc",
             "DigitalBiblePlatformApi-AAHWBTN2ET",
+            "DigitalBiblePlatformApi-EN1ESV",
             "DigitalBiblePlatformApi-ENGASV",
             "DigitalBiblePlatformApi-ENGESH",
             "DigitalBiblePlatformApi-ENGKJV",
