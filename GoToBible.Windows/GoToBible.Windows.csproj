@@ -56,7 +56,7 @@
       <Version>1.0.1054.31</Version>
     </PackageReference>
     <PackageReference Include="StyleCop.Analyzers">
-      <Version>1.2.0-beta.354</Version>
+      <Version>1.2.0-beta.376</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
