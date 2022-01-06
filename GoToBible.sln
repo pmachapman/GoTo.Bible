@@ -14,6 +14,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20AEBBA6-2AAC-41B1-9038-440DBB2BF3F9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		global.json = global.json
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+		SECURITY.md = SECURITY.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoToBible.Web.Server", "GoToBible.Web\Server\GoToBible.Web.Server.csproj", "{9EF01BC7-C417-45F3-9AEF-D8262215C143}"

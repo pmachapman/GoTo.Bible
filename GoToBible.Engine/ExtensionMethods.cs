@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
-// Copyright 2020-2021 Conglomo Limited. Please see LICENSE for license details.
+// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ namespace GoToBible.Engine
         ///  - brackets, see https://goto.bible/Acts.19_41/SBLGNT (SBL Greek New Testament)
         /// NOTE: The input must be directly from a translation.
         /// </returns>
-        public static string GetVerseNumber(this string line) => line.Contains(' ') ? line.Substring(0, line.IndexOf(' ')).Trim() : string.Empty;
+        public static string GetVerseNumber(this string line) => line.Contains(' ') ? line[..line.IndexOf(' ')].Trim() : string.Empty;
 
         /// <summary>
         /// Determines whether this is a valid verse number.
