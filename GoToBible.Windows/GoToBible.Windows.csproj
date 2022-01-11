@@ -53,7 +53,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="6.0.1" />
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.1054.31</Version>
+      <Version>1.0.1072.54</Version>
     </PackageReference>
     <PackageReference Include="StyleCop.Analyzers">
       <Version>1.2.0-beta.376</Version>
