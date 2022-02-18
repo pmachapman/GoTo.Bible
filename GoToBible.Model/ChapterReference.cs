@@ -26,7 +26,7 @@ namespace GoToBible.Model
         /// <summary>
         /// Initialises a new instance of the <see cref="ChapterReference"/> class.
         /// </summary>
-        /// <param name="book">The book.</param>
+        /// <param name="book">The book name.</param>
         /// <param name="chapter">The chapter.</param>
         public ChapterReference(string book, int chapter)
         {
@@ -46,7 +46,7 @@ namespace GoToBible.Model
         /// <summary>
         /// Initialises a new instance of the <see cref="ChapterReference"/> class.
         /// </summary>
-        /// <param name="bookAndChapter">The book and chapter number.</param>
+        /// <param name="bookAndChapter">The book name and chapter number.</param>
         public ChapterReference(string bookAndChapter)
         {
             if (!string.IsNullOrWhiteSpace(bookAndChapter))
@@ -79,10 +79,10 @@ namespace GoToBible.Model
         }
 
         /// <summary>
-        /// Gets or sets the book.
+        /// Gets or sets the name of the book.
         /// </summary>
         /// <value>
-        /// The book.
+        /// The book name.
         /// </value>
         public string Book { get; set; } = string.Empty;
 
@@ -92,6 +92,9 @@ namespace GoToBible.Model
         /// <value>
         /// The chapter number.
         /// </value>
+        /// <remarks>
+        /// Chapter 0 refers to the introduction.
+        /// </remarks>
         public int ChapterNumber { get; set; }
 
         /// <summary>
@@ -100,9 +103,6 @@ namespace GoToBible.Model
         /// <value>
         ///   <c>true</c> if this instance is valid; otherwise, <c>false</c>.
         /// </value>
-        /// <remarks>
-        /// Chapter 0 refers to the introduction.
-        /// </remarks>
         public bool IsValid => !string.IsNullOrWhiteSpace(this.Book);
 
         /// <inheritdoc/>

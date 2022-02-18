@@ -505,7 +505,7 @@ namespace GoToBible.Model
         }
 
         /// <summary>
-        /// Converts to <see cref="RenderColour" /> to an HTML string.
+        /// Converts a <see cref="RenderColour" /> to an HTML string.
         /// </summary>
         /// <param name="colour">The colour.</param>
         /// <returns>
@@ -514,11 +514,11 @@ namespace GoToBible.Model
         public static string ToHtml(this RenderColour colour) => "#" + colour.R.ToString("X2") + colour.G.ToString("X2") + colour.B.ToString("X2");
 
         /// <summary>
-        /// Gets the book.
+        /// Gets the name of the book from a passage reference string.
         /// </summary>
         /// <param name="passage">The passage. This must be lower case and without spaces.</param>
         /// <returns>
-        /// The book from the passage reference.
+        /// The book name from the passage reference.
         /// </returns>
         internal static string GetBook(this string passage)
         {
@@ -554,10 +554,11 @@ namespace GoToBible.Model
         }
 
         /// <summary>
-        /// Gets the ranges.
+        /// Gets the verse ranges from a sanitised passage reference.
         /// </summary>
         /// <param name="passage">The passage.</param>
-        /// <returns>The ranges.</returns>
+        /// <returns>The verse ranges.</returns>
+        /// <remarks>The string must be lower case and without spaces.</remarks>
         internal static string[] GetRanges(this string passage)
         {
             // Validate input
@@ -615,7 +616,7 @@ namespace GoToBible.Model
         }
 
         /// <summary>
-        /// Normalises the commas.
+        /// Normalises the commas in a range part.
         /// </summary>
         /// <param name="rangePart">The range part.</param>
         /// <returns>

@@ -34,7 +34,7 @@ namespace GoToBible.Model
         /// <summary>
         /// Gets the books for a translation.
         /// </summary>
-        /// <param name="translation">The translation.</param>
+        /// <param name="translation">The translation code.</param>
         /// <param name="includeChapters">If set to <c>true</c> include chapters.</param>
         /// <returns>
         /// The books.
@@ -48,7 +48,7 @@ namespace GoToBible.Model
         /// Gets a chapter from the bible.
         /// </summary>
         /// <param name="translation">The translation code.</param>
-        /// <param name="book">The book.</param>
+        /// <param name="book">The book name.</param>
         /// <param name="chapterNumber">The chapter number.</param>
         /// <returns>
         /// The chapter for rendering.

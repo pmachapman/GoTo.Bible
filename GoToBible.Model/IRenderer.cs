@@ -29,7 +29,7 @@ namespace GoToBible.Model
         /// <summary>
         /// Renders the specified parameters.
         /// </summary>
-        /// <param name="parameters">The parameters.</param>
+        /// <param name="parameters">The rendering parameters.</param>
         /// <param name="renderCompleteHtmlPage">If set to <c>true</c>, render the complete HTML page.</param>
         /// <returns>
         /// The output of the rendering.
