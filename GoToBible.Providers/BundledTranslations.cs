@@ -26,6 +26,7 @@ namespace GoToBible.Providers
         /// </summary>
         private static readonly IReadOnlyDictionary<string, string> Copyright = new Dictionary<string, string>
         {
+            { "BCP1979PSALMS", "Public Domain" },
             { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
             { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
             { "BCPPSALMSVUL", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
@@ -44,6 +45,7 @@ namespace GoToBible.Providers
         /// </summary>
         private static readonly IReadOnlyDictionary<string, BookHelper> Canon = new Dictionary<string, BookHelper>
         {
+            { "BCP1979PSALMS", new BookHelper("Psalm", 150) },
             { "BCPPSALMS", new BookHelper("Psalm", 150) },
             { "BCPPSALMSALT", new BookHelper("Psalm", 150) },
             { "BCPPSALMSVUL", new BookHelper("Psalm", 150) },
@@ -73,6 +75,7 @@ namespace GoToBible.Providers
 
         private static readonly IReadOnlyDictionary<string, bool> SupportsItalics = new Dictionary<string, bool>
         {
+            { "BCP1979PSALMS", false },
             { "BCPPSALMS", false },
             { "BCPPSALMSALT", false },
             { "BCPPSALMSVUL", false },
@@ -182,6 +185,16 @@ namespace GoToBible.Providers
         /// <inheritdoc/>
         public async IAsyncEnumerable<Translation> GetTranslationsAsync()
         {
+            yield return await Task.FromResult(new Translation
+            {
+                CanBeExported = true,
+                Code = "BCP1979PSALMS",
+                Copyright = Copyright["BCP1979PSALMS"],
+                Language = "English",
+                Name = "Book of Common Prayer (1979) Psalter",
+                Provider = this.Id,
+                Year = 1979,
+            });
             yield return await Task.FromResult(new Translation
             {
                 CanBeExported = true,
