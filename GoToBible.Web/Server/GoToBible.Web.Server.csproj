@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="6.0.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
     <PackageReference Include="Pomelo.Extensions.Caching.MySql" Version="2.1.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
