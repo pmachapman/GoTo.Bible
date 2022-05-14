@@ -25,5 +25,10 @@ namespace GoToBible.Model
         /// Render for import into Accordance.
         /// </summary>
         Accordance = 2,
+
+        /// <summary>
+        /// Render as an apparatus.
+        /// </summary>
+        Apparatus = 3,
     }
 }

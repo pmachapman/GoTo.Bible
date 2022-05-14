@@ -10,6 +10,7 @@ namespace GoToBible.Providers
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.IO;
+    using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -38,6 +39,7 @@ namespace GoToBible.Providers
             { "NTANOTES", "New Translation of the Apocrypha by <a href=\"https://goto.bible/\" target=\"_blank\">Peter Chapman</a> is licensed under <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">CC BY 4.0</a>" },
             { "SBLGNT", "Scripture quotations marked <a href=\"http://sblgnt.com/\" target=\"_blank\">SBLGNT</a> are from the <a href=\"http://sblgnt.com/\" target=\"_blank\">SBL Greek New Testament</a>. Copyright &copy; 2010 <a href=\"http://www.sbl-site.org/\" target=\"_blank\">Society of Biblical Literature</a> and <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>." },
             { "SBLGNTAPP", "Scripture quotations marked <a href=\"http://sblgnt.com/\" target=\"_blank\">SBLGNT</a> are from the <a href=\"http://sblgnt.com/\" target=\"_blank\">SBL Greek New Testament</a>. Copyright &copy; 2010 <a href=\"http://www.sbl-site.org/\" target=\"_blank\">Society of Biblical Literature</a> and <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>." },
+            { "TRWHAPP", "Public Domain" },
         };
 
         /// <summary>
@@ -71,6 +73,7 @@ namespace GoToBible.Providers
             },
             { "SBLGNT", new NewTestamentCanon() },
             { "SBLGNTAPP", new NewTestamentCanon() },
+            { "TRWHAPP", new NewTestamentCanon() },
         };
 
         private static readonly IReadOnlyDictionary<string, bool> SupportsItalics = new Dictionary<string, bool>
@@ -87,7 +90,26 @@ namespace GoToBible.Providers
             { "NTANOTES", true },
             { "SBLGNT", false },
             { "SBLGNTAPP", false },
+            { "TRWHAPP", false },
         };
+
+        /// <summary>
+        /// The renderer for apparatus generation.
+        /// </summary>
+        private readonly IRenderer? renderer;
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="BundledTranslations" /> class.
+        /// </summary>
+        public BundledTranslations()
+        {
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="BundledTranslations" /> class.
+        /// </summary>
+        /// <param name="renderer">The renderer. This is used for the apparatus generator.</param>
+        public BundledTranslations(IRenderer renderer) => this.renderer = renderer;
 
         /// <inheritdoc/>
         public string Id => nameof(BundledTranslations);
@@ -130,14 +152,15 @@ namespace GoToBible.Providers
 
                 // Get the text
                 await using Stream? stream = this.GetType().Assembly.GetManifestResourceStream($"GoToBible.Providers.Texts.{translation}.txt");
-                if (stream != null)
+                if (stream is not null)
                 {
+                    // Read the stream from the assembly
                     using StreamReader reader = new StreamReader(stream);
                     bool readingChapter = false;
                     string lineStart = $"{book} {chapterNumber}:";
                     string? line;
                     StringBuilder sb = new StringBuilder();
-                    while ((line = await reader.ReadLineAsync()) != null)
+                    while ((line = await reader.ReadLineAsync()) is not null)
                     {
                         if (line.StartsWith(lineStart, StringComparison.OrdinalIgnoreCase))
                         {
@@ -167,6 +190,24 @@ namespace GoToBible.Providers
                     }
 
                     chapter.Text = sb.ToString();
+                }
+                else if (this.renderer is not null && translation == "TRWHAPP" && this.renderer.Providers.Any(r => r.Id == "BibliaApi"))
+                {
+                    // Use the renderer to generate this apparatus
+                    RenderingParameters parameters = new RenderingParameters
+                    {
+                        Format = RenderFormat.Apparatus,
+                        InterlinearIgnoresCase = true,
+                        InterlinearIgnoresDiacritics = true,
+                        InterlinearIgnoresPunctuation = true,
+                        PassageReference = book.AsPassageReference(chapterNumber),
+                        PrimaryProvider = "BibliaApi",
+                        PrimaryTranslation = "tr1894mr",
+                        SecondaryProvider = "BibliaApi",
+                        SecondaryTranslation = "wh1881mr",
+                    };
+                    RenderedPassage renderedPassage = await this.renderer.RenderAsync(parameters, false);
+                    chapter.Text = renderedPassage.Content;
                 }
             }
 
@@ -309,6 +350,17 @@ namespace GoToBible.Providers
                 Name = "SBL Greek New Testament Apparatus",
                 Provider = this.Id,
                 Year = 2010,
+            });
+            yield return await Task.FromResult(new Translation
+            {
+                Author = "Peter Chapman",
+                Code = "TRWHAPP",
+                Commentary = true,
+                Copyright = Copyright["TRWHAPP"],
+                Language = "Greek",
+                Name = "Textus Receptus/Westcott and Hort Apparatus",
+                Provider = this.Id,
+                Year = 2022,
             });
         }
     }

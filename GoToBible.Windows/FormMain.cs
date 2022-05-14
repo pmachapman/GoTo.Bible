@@ -555,9 +555,6 @@ namespace GoToBible.Windows
                     this.providers.Add(new BibliaApi(Options.Create(new BibliaApiOptions { ApiKey = bibliaApiKey }), this.cache));
                 }
 
-                // Load the Bundled Translations Provider
-                this.providers.Add(new BundledTranslations());
-
                 // Load the Digital Bible Platform Provider
                 string digitalBiblePlatformApiKey = Settings.Default.DigitalBiblePlatformApiKey;
                 if (!string.IsNullOrWhiteSpace(digitalBiblePlatformApiKey))
@@ -594,6 +591,9 @@ namespace GoToBible.Windows
                     this.renderer.Dispose();
                     this.renderer = new Renderer();
                 }
+
+                // Load the Bundled Translations Provider
+                this.providers.Add(new BundledTranslations(this.renderer));
             }
             else
             {
