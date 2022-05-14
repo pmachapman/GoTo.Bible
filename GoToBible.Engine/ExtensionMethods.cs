@@ -174,6 +174,14 @@ namespace GoToBible.Engine
             .Replace("［", "[").Replace("］", "]");
 
         /// <summary>
+        /// Strips the HTML tags from the string.
+        /// </summary>
+        /// <param name="input">The input string.</param>
+        /// <returns>The input string without HTML tags.</returns>
+        public static string StripHtml(this string input)
+            => Regex.Replace(input, "<.*?>", string.Empty, RegexOptions.Compiled);
+
+        /// <summary>
         /// Renders the supplied words in normal type.
         /// </summary>
         /// <param name="line">The line.</param>

@@ -351,17 +351,22 @@ namespace GoToBible.Providers
                 Provider = this.Id,
                 Year = 2010,
             });
-            yield return await Task.FromResult(new Translation
+
+            // We can only generate an apparatus if we have a renderer
+            if (this.renderer is not null)
             {
-                Author = "Peter Chapman",
-                Code = "TRWHAPP",
-                Commentary = true,
-                Copyright = Copyright["TRWHAPP"],
-                Language = "Greek",
-                Name = "Textus Receptus/Westcott and Hort Apparatus",
-                Provider = this.Id,
-                Year = 2022,
-            });
+                yield return await Task.FromResult(new Translation
+                {
+                    Author = "Peter Chapman",
+                    Code = "TRWHAPP",
+                    Commentary = true,
+                    Copyright = Copyright["TRWHAPP"],
+                    Language = "Greek",
+                    Name = "Textus Receptus/Westcott and Hort Apparatus",
+                    Provider = this.Id,
+                    Year = 2022,
+                });
+            }
         }
     }
 }

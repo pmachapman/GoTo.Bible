@@ -247,6 +247,7 @@ namespace GoToBible.Engine
                     // Render each line
                     for (int i = 0; i < lines1.Count; i++)
                     {
+                        string content = string.Empty;
                         hasContent = true;
                         if (i < lines2.Count)
                         {
@@ -272,7 +273,7 @@ namespace GoToBible.Engine
                                 useFirstAttempt = firstAttempt.WordsInCommon > secondAttempt.WordsInCommon;
                             }
 
-                            if (parameters.IsDebug)
+                            if (parameters.IsDebug && parameters.Format == RenderFormat.Html)
                             {
                                 // Display debugging information for the renderer
                                 // This does not have to be user-friendly output
@@ -312,7 +313,7 @@ namespace GoToBible.Engine
                             else if (useFirstAttempt)
                             {
                                 // Render the first attempt
-                                sb.Append(firstAttempt.Content);
+                                content = firstAttempt.Content;
 
                                 // Store information for calculating suggestions
                                 if (firstAttempt.WordsInCommon < 3)
@@ -323,7 +324,7 @@ namespace GoToBible.Engine
                             else
                             {
                                 // Render the second attempt
-                                sb.Append(secondAttempt.Content);
+                                content = secondAttempt.Content;
 
                                 // Store information for calculating suggestions
                                 if (secondAttempt.WordsInCommon < 3)
@@ -334,7 +335,24 @@ namespace GoToBible.Engine
                         }
                         else
                         {
-                            sb.Append(RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false, firstChapter.SupportsItalics).Content);
+                            content = RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false, firstChapter.SupportsItalics).Content;
+                        }
+
+                        // Render the content if we are in HTML
+                        if (parameters.Format == RenderFormat.Html)
+                        {
+                            sb.Append(content);
+                        }
+                        else
+                        {
+                            // If we are rendering an apparatus, make sure it has content
+                            string textContent = content.StripHtml().Trim();
+
+                            // If we only have a verse number, or hyphenated verse number, skip
+                            if (!Regex.IsMatch(textContent, "^[\\-0-9]+$", RegexOptions.Compiled))
+                            {
+                                sb.Append(content);
+                            }
                         }
                     }
 
@@ -349,7 +367,7 @@ namespace GoToBible.Engine
                     }
 
                     // Make sure we have some content
-                    if (hasContent)
+                    if (hasContent && parameters.Format == RenderFormat.Html)
                     {
                         // Get all of the translations
                         List<Translation> translations = new List<Translation>();
@@ -512,18 +530,37 @@ namespace GoToBible.Engine
             }
             else if (string.IsNullOrWhiteSpace(line2))
             {
-                line2 = "&nbsp;";
+                if (parameters.Format == RenderFormat.Html)
+                {
+                    line2 = "&nbsp;";
+                }
+                else
+                {
+                    // Show the omission in the apparatus
+                    line2 = $"<em>omit</em>";
+                }
             }
 
-            // Render interlinear lines
-            string interlinearLine = $"</span><span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">{line1}</span><span title=\"{parameters.SecondaryTranslation}\">{line2}</span></span><span> ";
-            if (insertAt == -1)
+            string lineToRender;
+            if (parameters.Format == RenderFormat.Html)
             {
-                sb.Append(interlinearLine);
+                // Render interlinear lines
+                lineToRender = $"</span><span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">{line1}</span><span title=\"{parameters.SecondaryTranslation}\">{line2}</span></span><span> ";
             }
             else
             {
-                sb.Insert(insertAt, interlinearLine);
+                // Render as apparatus
+                lineToRender = $"<strong>{line1}</strong> {line2} | ";
+            }
+
+            // Render the line
+            if (insertAt == -1)
+            {
+                sb.Append(lineToRender);
+            }
+            else
+            {
+                sb.Insert(insertAt, lineToRender);
             }
         }
 
@@ -749,13 +786,18 @@ namespace GoToBible.Engine
 
                             // The following word is not divergent
                             renderedVerse.WordsInCommon++;
-                            if (reverseScan)
+
+                            // If we are renderering as HTML, render this word
+                            if (parameters.Format == RenderFormat.Html)
                             {
-                                sb.Insert(0, $"{word1} ");
-                            }
-                            else
-                            {
-                                sb.Append($"{word1} ");
+                                if (reverseScan)
+                                {
+                                    sb.Insert(0, $"{word1} ");
+                                }
+                                else
+                                {
+                                    sb.Append($"{word1} ");
+                                }
                             }
                         }
                         else
@@ -924,8 +966,17 @@ namespace GoToBible.Engine
                     }
                 }
 
-                // Add a HTML and text new line
-                renderedVerse.Content = $"{sb} <br>{Environment.NewLine}";
+                if (parameters.Format == RenderFormat.Html)
+                {
+                    // Add a HTML and text new line
+                    renderedVerse.Content = $"{sb} <br>{Environment.NewLine}";
+                }
+                else
+                {
+                    // Render an apparatus plainly
+                    renderedVerse.Content = $"{sb}{Environment.NewLine}";
+                }
+
                 return renderedVerse;
             }
             else if (!string.IsNullOrWhiteSpace(line1))
