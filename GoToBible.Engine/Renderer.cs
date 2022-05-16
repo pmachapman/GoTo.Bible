@@ -527,6 +527,12 @@ namespace GoToBible.Engine
                 if (parameters is ApparatusRenderingParameters apparatusParameters)
                 {
                     line2 = apparatusParameters.OmissionMarker;
+
+                    // Allow substitution
+                    if (line2.Contains("%OMITTED_PHRASE%", StringComparison.OrdinalIgnoreCase))
+                    {
+                        line2 = line2.Replace("%OMITTED_PHRASE%", line1, StringComparison.OrdinalIgnoreCase);
+                    }
                 }
                 else
                 {

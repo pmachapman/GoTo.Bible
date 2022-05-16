@@ -15,7 +15,10 @@ namespace GoToBible.Model
         /// Gets or sets the omission marker.
         /// </summary>
         /// <value>The marker for an omission.</value>
-        /// <remarks>This should be HTML code or an HTML entity.</remarks>
-        public string OmissionMarker = "<em>omit</em>";
+        /// <remarks>
+        /// This should be HTML code or an HTML entity.
+        /// You can substitute the omitted phrase with the marker %OMITTED_PHRASE%
+        /// Otherwise, the marker will be shown unmodified.</remarks>
+        public string OmissionMarker { get; set; } = "<em>Omit</em>";
     }
 }
