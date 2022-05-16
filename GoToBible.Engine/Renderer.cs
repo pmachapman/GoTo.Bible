@@ -38,19 +38,13 @@ namespace GoToBible.Engine
         /// <summary>
         /// Initialises a new instance of the <see cref="Renderer"/> class.
         /// </summary>
-        public Renderer()
-        {
-            this.Providers = new List<IProvider>();
-        }
+        public Renderer() => this.Providers = new List<IProvider>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="Renderer" /> class.
         /// </summary>
         /// <param name="providers">The providers.</param>
-        public Renderer(IEnumerable<IProvider> providers)
-        {
-            this.Providers = providers.ToList();
-        }
+        public Renderer(IEnumerable<IProvider> providers) => this.Providers = providers.ToList();
 
         /// <summary>
         /// Finalises an instance of the <see cref="Renderer"/> class.
@@ -530,14 +524,13 @@ namespace GoToBible.Engine
             }
             else if (string.IsNullOrWhiteSpace(line2))
             {
-                if (parameters.Format == RenderFormat.Html)
+                if (parameters is ApparatusRenderingParameters apparatusParameters)
                 {
-                    line2 = "&nbsp;";
+                    line2 = apparatusParameters.OmissionMarker;
                 }
                 else
                 {
-                    // Show the omission in the apparatus
-                    line2 = $"<em>omit</em>";
+                    line2 = "&nbsp;";
                 }
             }
 
@@ -973,6 +966,15 @@ namespace GoToBible.Engine
                 }
                 else
                 {
+                    // Cleanup the end of the apparatus
+                    if (parameters.Format == RenderFormat.Apparatus
+                        && sb[^9] == '|')
+                    {
+                        // Remove "| " from the end (" | </span>") by replacing with a space
+                        // as HTML doesn't mind multiple spaces
+                        sb[^9] = ' ';
+                    }
+
                     // Render an apparatus plainly
                     renderedVerse.Content = $"{sb}{Environment.NewLine}";
                 }

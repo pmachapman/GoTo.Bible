@@ -194,12 +194,13 @@ namespace GoToBible.Providers
                 else if (this.renderer is not null && translation == "TRWHAPP" && this.renderer.Providers.Any(r => r.Id == "BibliaApi"))
                 {
                     // Use the renderer to generate this apparatus
-                    RenderingParameters parameters = new RenderingParameters
+                    ApparatusRenderingParameters parameters = new()
                     {
                         Format = RenderFormat.Apparatus,
                         InterlinearIgnoresCase = true,
                         InterlinearIgnoresDiacritics = true,
                         InterlinearIgnoresPunctuation = true,
+                        OmissionMarker = "&mdash;",
                         PassageReference = book.AsPassageReference(chapterNumber),
                         PrimaryProvider = "BibliaApi",
                         PrimaryTranslation = "tr1894mr",
