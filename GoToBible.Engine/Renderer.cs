@@ -527,12 +527,6 @@ namespace GoToBible.Engine
                 if (parameters is ApparatusRenderingParameters apparatusParameters)
                 {
                     line2 = apparatusParameters.OmissionMarker;
-
-                    // Allow substitution
-                    if (line2.Contains("%OMITTED_PHRASE%", StringComparison.OrdinalIgnoreCase))
-                    {
-                        line2 = line2.Replace("%OMITTED_PHRASE%", line1, StringComparison.OrdinalIgnoreCase);
-                    }
                 }
                 else
                 {
@@ -549,7 +543,20 @@ namespace GoToBible.Engine
             else
             {
                 // Render as apparatus
-                lineToRender = $"<strong>{line1}</strong> {line2} | ";
+
+                // TODO: Render as spreadsheet
+                // TODO: Render preceeding word for insertions (or succeeding word if first word)
+                // TODO: If a word is present more than once, display word(s) before and/or after until distinct occurence
+
+                // Allow substitutions for omitted phrases
+                if (line2.Contains("%OMITTED_PHRASE%", StringComparison.OrdinalIgnoreCase))
+                {
+                    lineToRender = line2.Replace("%OMITTED_PHRASE%", line1, StringComparison.OrdinalIgnoreCase) + " | ";
+                }
+                else
+                {
+                    lineToRender = $"<strong>{line1}</strong> {line2} | ";
+                }
             }
 
             // Render the line
