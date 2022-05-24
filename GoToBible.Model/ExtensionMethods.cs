@@ -455,23 +455,8 @@ namespace GoToBible.Model
             sb.Append("body{");
             sb.Append($"background-color:{parameters.BackgroundColour.ToHtml()};");
             sb.Append($"color:{parameters.ForegroundColour.ToHtml()};");
-            if (parameters.Font.Bold)
-            {
-                sb.Append("font-weight:bold;");
-            }
-            else
-            {
-                sb.Append("font-weight:normal;");
-            }
-
-            if (parameters.Font.Italic)
-            {
-                sb.Append("font-style:italic;");
-            }
-            else
-            {
-                sb.Append("font-style:normal;");
-            }
+            sb.Append(parameters.Font.Bold ? "font-weight:bold;" : "font-weight:normal;");
+            sb.Append(parameters.Font.Italic ? "font-style:italic;" : "font-style:normal;");
 
             if (parameters.Font.Strikeout && parameters.Font.Underline)
             {
@@ -605,7 +590,7 @@ namespace GoToBible.Model
                 {
                     if (!rangePart.Contains(':'))
                     {
-                        semiParts[i] = semiParts[i] + ":1";
+                        semiParts[i] += ":1";
                     }
                 }
 
@@ -632,7 +617,8 @@ namespace GoToBible.Model
                 {
                     continue;
                 }
-                else if (!parts[0].Contains(':'))
+
+                if (!parts[0].Contains(':'))
                 {
                     if (!parts[i].Contains('-'))
                     {

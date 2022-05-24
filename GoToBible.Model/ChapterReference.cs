@@ -65,7 +65,7 @@ namespace GoToBible.Model
                     {
                         this.ChapterNumber = chapterNumber;
                     }
-                    else if (int.TryParse(this.Book, out int bookNumber))
+                    else if (int.TryParse(this.Book, out int _))
                     {
                         // Handle the case for one chapter books that start with a number
                         this.Book = bookAndChapter;

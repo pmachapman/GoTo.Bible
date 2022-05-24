@@ -23,7 +23,7 @@ namespace GoToBible.Model
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The custom sort value.</returns>
-        private static string? GetCustomSortValue(string? value)
+        private static string GetCustomSortValue(string? value)
             => value?.ToUpperInvariant() switch
             {
                 "ENGLISH" => $"!1-{value}",
