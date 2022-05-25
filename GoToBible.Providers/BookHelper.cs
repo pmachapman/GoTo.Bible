@@ -197,15 +197,6 @@ namespace GoToBible.Providers
         }
 
         /// <summary>
-        /// Determines whether this instance has the specified book.
-        /// </summary>
-        /// <param name="book">The book.</param>
-        /// <returns>
-        ///   <c>true</c> if this instance has the specified book; otherwise, <c>false</c>.
-        /// </returns>
-        public bool HasBook(string book) => this.BookChapters.Contains(book.ToLowerInvariant());
-
-        /// <summary>
         /// Determines whether the specified book contains the specified chapter.
         /// </summary>
         /// <param name="book">The book name.</param>

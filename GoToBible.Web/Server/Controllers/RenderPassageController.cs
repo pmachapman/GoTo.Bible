@@ -74,7 +74,7 @@ namespace GoToBible.Web.Server.Controllers
             {
                 try
                 {
-                    StatisticsContext context = this.context!;
+                    StatisticsContext statisticsContext = this.context!;
                     Statistics statistics = new Statistics
                     {
                         AccessedAt = DateTime.UtcNow,
@@ -86,8 +86,8 @@ namespace GoToBible.Web.Server.Controllers
                         SecondaryProvider = parameters.SecondaryProvider,
                         SecondaryTranslation = parameters.SecondaryTranslation,
                     };
-                    await context.Statistics.AddAsync(statistics);
-                    await context.SaveChangesAsync();
+                    await statisticsContext.Statistics.AddAsync(statistics);
+                    await statisticsContext.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {

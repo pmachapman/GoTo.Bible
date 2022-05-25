@@ -82,12 +82,12 @@ namespace GoToBible.Windows
         /// <summary>
         /// A value indicating whether or not the translations are loaded.
         /// </summary>
-        private bool translationsLoaded = false;
+        private bool translationsLoaded;
 
         /// <summary>
         /// A value indicating whether or not the web view is initialised.
         /// </summary>
-        private bool webViewInitialised = false;
+        private bool webViewInitialised;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="FormMain" /> class.
@@ -463,12 +463,20 @@ namespace GoToBible.Windows
 
             // Setup the main web browser
             webViewMain.Initialise("WebViewMain", 1);
-            this.SplitContainerMain.Panel1.Controls.Add(webViewMain as Control);
+            if (webViewMain is Control webViewMainControl)
+            {
+                this.SplitContainerMain.Panel1.Controls.Add(webViewMainControl);
+            }
+
             this.WebViewMain = webViewMain;
 
             // Setup the resource web browser
             webViewResource.Initialise("WebViewResource", 2);
-            this.SplitContainerMain.Panel2.Controls.Add(webViewResource as Control);
+            if (webViewResource is Control webViewResourceControl)
+            {
+                this.SplitContainerMain.Panel2.Controls.Add(webViewResourceControl);
+            }
+
             this.WebViewResource = webViewResource;
 
             // Resume the layouts
@@ -696,28 +704,28 @@ namespace GoToBible.Windows
             List<string> blockedLanguages = Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
             List<string> blockedTranslations = Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
             List<string> blockedCommentaries = Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
-            List<Translation> commentaries = new List<Translation>();
-            List<Translation> translations = new List<Translation>();
+            List<Translation> unsortedCommentaries = new List<Translation>();
+            List<Translation> unsortedTranslations = new List<Translation>();
             foreach (IProvider provider in translationProviders)
             {
                 await foreach (Translation translation in provider.GetTranslationsAsync())
                 {
                     if (translation.Commentary)
                     {
-                        commentaries.Add(translation);
+                        unsortedCommentaries.Add(translation);
                     }
                     else
                     {
-                        translations.Add(translation);
+                        unsortedTranslations.Add(translation);
                     }
                 }
             }
 
             // Store the translations for use by other methods
             this.translations.Clear();
-            this.translations.AddRange(translations.OrderBy(t => t.Language, new LanguageComparer()).ThenBy(t => t.Name));
+            this.translations.AddRange(unsortedTranslations.OrderBy(t => t.Language, new LanguageComparer()).ThenBy(t => t.Name));
             this.commentaries.Clear();
-            this.commentaries.AddRange(commentaries.OrderBy(t => t.Name));
+            this.commentaries.AddRange(unsortedCommentaries.OrderBy(t => t.Name));
             this.ToolStripMenuItemConfigure.Enabled = true;
 
             // Load the commentaries and translations from the providers
@@ -909,8 +917,8 @@ namespace GoToBible.Windows
             if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
             {
                 // Render for export to Accordance
-                RenderedPassage renderedPassage = await this.renderer.RenderAsync(this.parameters with { Format = RenderFormat.Accordance }, false);
-                await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, renderedPassage.Content);
+                RenderedPassage renderedPassageForExport = await this.renderer.RenderAsync(this.parameters with { Format = RenderFormat.Accordance }, false);
+                await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, renderedPassageForExport.Content);
             }
         }
 

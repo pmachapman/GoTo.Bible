@@ -19,7 +19,7 @@ namespace GoToBible.Windows.AutoComplete
         /// <summary>
         /// The current position.
         /// </summary>
-        private int currentPosition = 0;
+        private int currentPosition;
 
         /// <summary>
         /// Gets the string list.
@@ -33,7 +33,7 @@ namespace GoToBible.Windows.AutoComplete
         public int Next(int celt, string[] rgelt, IntPtr pceltFetched)
         {
             int fetched = 0;
-            while ((this.currentPosition <= this.StringList.Length - 1) && (fetched < celt))
+            while (this.currentPosition <= this.StringList.Length - 1 && fetched < celt)
             {
                 rgelt[fetched] = this.StringList[this.currentPosition];
                 fetched++;

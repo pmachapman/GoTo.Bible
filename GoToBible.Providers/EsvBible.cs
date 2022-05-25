@@ -186,15 +186,7 @@ namespace GoToBible.Providers
             };
 
             // If there is only one chapter, do not use a chapter number
-            string chapterPart;
-            if (Canon.GetNumberOfChapters(book) == 1)
-            {
-                chapterPart = string.Empty;
-            }
-            else
-            {
-                chapterPart = $"+{chapterNumber}";
-            }
+            string chapterPart = Canon.GetNumberOfChapters(book) == 1 ? string.Empty : $"+{chapterNumber}";
 
             // Load the book
             string url = $"?q={book}{chapterPart}&include-passage-references=false&include-footnotes=false&include-headings=false&include-short-copyright=false&indent-poetry=false";

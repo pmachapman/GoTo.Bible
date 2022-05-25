@@ -266,7 +266,7 @@ namespace GoToBible.Model
 
                     // Set the chapter reference
                     book = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(book);
-                    passageReference.ChapterReference = new ChapterReference(book, chapter);
+                    passageReference = new PassageReference { ChapterReference = new ChapterReference(book, chapter) };
 
                     // Do not highlight the first verse of a one chapter book if there is no colon and there is not a range of verses
                     bool highlightVerses = sanitisedPassage.Contains(':', StringComparison.OrdinalIgnoreCase) && chapter > 0;
@@ -339,12 +339,20 @@ namespace GoToBible.Model
                         }
 
                         // Set the display and highlighted verses
-                        passageReference.Display = $"{book} {chapter}:{sb}";
-                        passageReference.HighlightedVerses = highlightedVerses.ToArray();
+                        passageReference = new PassageReference
+                        {
+                            ChapterReference = passageReference.ChapterReference,
+                            Display = $"{book} {chapter}:{sb}",
+                            HighlightedVerses = highlightedVerses.ToArray(),
+                        };
                     }
                     else
                     {
-                        passageReference.Display = $"{book} {chapter}";
+                        passageReference = new PassageReference
+                        {
+                            ChapterReference = passageReference.ChapterReference,
+                            Display = $"{book} {chapter}",
+                        };
                     }
 
                     break;

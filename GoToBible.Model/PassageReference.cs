@@ -12,26 +12,26 @@ namespace GoToBible.Model
     /// <summary>
     /// A passage reference.
     /// </summary>
-    public record PassageReference : IEquatable<PassageReference>
+    public record PassageReference
     {
         /// <summary>
-        /// Gets or sets the chapter reference.
+        /// Gets the chapter reference.
         /// </summary>
         /// <value>
         /// The chapter reference.
         /// </value>
-        public ChapterReference ChapterReference { get; set; } = new ChapterReference();
+        public ChapterReference ChapterReference { get; init; } = new ChapterReference();
 
         /// <summary>
-        /// Gets or sets the passage reference to display.
+        /// Gets the passage reference to display.
         /// </summary>
         /// <value>
         /// The passage reference.
         /// </value>
-        public string Display { get; set; } = string.Empty;
+        public string Display { get; init; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the highlighted verses.
+        /// Gets the highlighted verses.
         /// </summary>
         /// <value>
         /// The verses to highlight.
@@ -45,7 +45,7 @@ namespace GoToBible.Model
         ///     i.e. <c>24g,-,25</c>
         /// but not colons, commas, or any other characters.
         /// </remarks>
-        public string[] HighlightedVerses { get; set; } = Array.Empty<string>();
+        public string[] HighlightedVerses { get; init; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets a value indicating whether this instance is valid.

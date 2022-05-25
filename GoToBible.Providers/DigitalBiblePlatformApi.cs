@@ -25,11 +25,6 @@ namespace GoToBible.Providers
     public class DigitalBiblePlatformApi : ApiProvider
     {
         /// <summary>
-        /// The new testament canon.
-        /// </summary>
-        private static readonly BookHelper NewTestamentCanon = new NewTestamentCanon();
-
-        /// <summary>
         /// The options.
         /// </summary>
         private readonly DigitalBiblePlatformApiOptions options;
@@ -88,7 +83,7 @@ namespace GoToBible.Providers
                 }),
             });
 
-            if (bookData?.data?.Any() ?? false)
+            if (bookData?.data.Any() ?? false)
             {
                 foreach (var book in bookData.data)
                 {
@@ -269,7 +264,7 @@ namespace GoToBible.Providers
                 // Clean up the JSON
                 json = json.Replace("\"dbp-prod\"", "\"dbp_prod\"", StringComparison.Ordinal);
 
-                var translations = DeserializeAnonymousType(json, new
+                var dbpTranslations = DeserializeAnonymousType(json, new
                 {
                     data = EmptyListOf(new
                     {
@@ -295,14 +290,14 @@ namespace GoToBible.Providers
                         },
                     },
                 });
-                if (translations is not null)
+                if (dbpTranslations is not null)
                 {
                     // Set page variables
-                    lastPage = translations.meta.pagination.last_page;
-                    page = translations.meta.pagination.current_page;
+                    lastPage = dbpTranslations.meta.pagination.last_page;
+                    page = dbpTranslations.meta.pagination.current_page;
 
                     List<DigitalBiblePlatformTranslation> digitalBiblePlatformTranslations = new List<DigitalBiblePlatformTranslation>();
-                    foreach (var translation in translations.data)
+                    foreach (var translation in dbpTranslations.data)
                     {
                         // Get the name
                         string name;
@@ -403,7 +398,7 @@ namespace GoToBible.Providers
 
                 if (copyrightJson?.Any() ?? false)
                 {
-                    copyright = copyrightJson.FirstOrDefault(c => c.id == id)?.copyright?.copyright ?? copyrightJson.First().copyright.copyright;
+                    copyright = copyrightJson.FirstOrDefault(c => c.id == id)?.copyright.copyright ?? copyrightJson.First().copyright.copyright;
                 }
             }
 

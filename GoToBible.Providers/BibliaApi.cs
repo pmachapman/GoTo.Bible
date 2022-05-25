@@ -127,15 +127,7 @@ namespace GoToBible.Providers
             };
 
             // If there is only one chapter, do not use a chapter number
-            string chapterPart;
-            if (Canon.GetNumberOfChapters(book) == 1)
-            {
-                chapterPart = string.Empty;
-            }
-            else
-            {
-                chapterPart = $"+{chapterNumber}";
-            }
+            string chapterPart = Canon.GetNumberOfChapters(book) == 1 ? string.Empty : $"+{chapterNumber}";
 
             // Load the book
             string url = $"content/{translation}.txt?key={this.options.ApiKey}&passage={book}{chapterPart}&eachVerse=[VerseNum]++[VerseText]\\n";

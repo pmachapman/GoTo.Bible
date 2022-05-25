@@ -160,9 +160,11 @@ namespace GoToBible.Tests.Model
         [TestMethod]
         public void TestAsUrl_RenderingParametersOneTranslation()
         {
-            RenderingParameters renderingParameters = new RenderingParameters();
-            renderingParameters.PassageReference.Display = "1 John 1:3,6-7";
-            renderingParameters.PrimaryTranslation = "ESV";
+            RenderingParameters renderingParameters = new RenderingParameters
+            {
+                PassageReference = new PassageReference { Display = "1 John 1:3,6-7" },
+                PrimaryTranslation = "ESV",
+            };
             Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV"), renderingParameters.AsUrl());
         }
 
@@ -172,10 +174,12 @@ namespace GoToBible.Tests.Model
         [TestMethod]
         public void TestAsUrl_RenderingParametersTwoTranslations()
         {
-            RenderingParameters renderingParameters = new RenderingParameters();
-            renderingParameters.PassageReference.Display = "1 John 1:3,6-7";
-            renderingParameters.PrimaryTranslation = "ESV";
-            renderingParameters.SecondaryTranslation = "NET";
+            RenderingParameters renderingParameters = new RenderingParameters
+            {
+                PassageReference = new PassageReference { Display = "1 John 1:3,6-7" },
+                PrimaryTranslation = "ESV",
+                SecondaryTranslation = "NET",
+            };
             Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV/NET"), renderingParameters.AsUrl());
         }
 

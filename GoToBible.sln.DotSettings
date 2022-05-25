@@ -6,6 +6,5 @@
 	<s:Boolean x:Key="/Default/CodeEditing/TypingAssist/SurroundTypingEnabled/@EntryValue">False</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/Browsers/Browsers/@EntryValue">C91+,E91+,FF89+,IE11+,O75+,S14+</s:String>
 	<s:String x:Key="/Default/CodeInspection/JsInspections/LanguageLevel/@EntryValue">Experimental</s:String>
-	<s:Boolean x:Key="/Default/InstalledDictionaries/InstalledDictionaries/=GoTo_002EBible_005Cnode_005Fmodules_005Cdictionary_002Den_002Dau_005Cindex_002Edic/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/ReSpeller/ReSpellerEnabled/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Conglomo/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

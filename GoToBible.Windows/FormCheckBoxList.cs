@@ -26,12 +26,12 @@ namespace GoToBible.Windows
         /// <summary>
         /// A value indicating whether the check box list is updating.
         /// </summary>
-        private bool checkBoxListIsUpdating = false;
+        private bool checkBoxListIsUpdating;
 
         /// <summary>
         /// A value indicating whether the select all check box is updating.
         /// </summary>
-        private bool selectAllCheckBoxIsUpdating = false;
+        private bool selectAllCheckBoxIsUpdating;
 
         /// <summary>
         /// The tool tip index.
@@ -232,14 +232,7 @@ namespace GoToBible.Windows
                 {
                     this.CheckBoxSelectAll.Text = @"&Select All";
                     this.ToolTipItem.SetToolTip(this.CheckBoxSelectAll, $"{this.CheckedListBoxItems.Items.Count} items");
-                    if (checkedCount == 0)
-                    {
-                        this.CheckBoxSelectAll.CheckState = CheckState.Unchecked;
-                    }
-                    else
-                    {
-                        this.CheckBoxSelectAll.CheckState = CheckState.Indeterminate;
-                    }
+                    this.CheckBoxSelectAll.CheckState = checkedCount == 0 ? CheckState.Unchecked : CheckState.Indeterminate;
                 }
 
                 this.selectAllCheckBoxIsUpdating = false;
