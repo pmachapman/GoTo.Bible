@@ -264,6 +264,7 @@ namespace GoToBible.Engine
                             }
                             else
                             {
+                                // When rendering the text we want more words in common
                                 useFirstAttempt = firstAttempt.WordsInCommon > secondAttempt.WordsInCommon;
                             }
 
@@ -545,7 +546,6 @@ namespace GoToBible.Engine
                 // Render as apparatus
 
                 // TODO: Render as spreadsheet
-                // TODO: Render preceeding word for insertions (or succeeding word if first word)
                 // TODO: If a word is present more than once, display word(s) before and/or after until distinct occurence
 
                 // Allow substitutions for omitted phrases
@@ -759,6 +759,7 @@ namespace GoToBible.Engine
                     bool interlinear = false;
                     string interlinear1 = string.Empty;
                     string interlinear2 = string.Empty;
+                    string lastWordInCommon = string.Empty;
                     for (int i = 0; i < Math.Max(words1.Count, words2.Count); i++)
                     {
                         string word1 = string.Empty;
@@ -778,6 +779,17 @@ namespace GoToBible.Engine
                             // If we are in interlinear mode, return to non-interlinear mode
                             if (interlinear)
                             {
+                                // If we are to render the neighbouring word in the apparatus for additions
+                                bool skipThisWord = false;
+                                if (parameters is ApparatusRenderingParameters { RenderNeighbourForAddition: true }
+                                    && string.IsNullOrWhiteSpace(interlinear1))
+                                {
+                                    // Add the appropriate neighbour
+                                    skipThisWord = true;
+                                    interlinear1 = word1;
+                                    interlinear2 = reverseScan ? $"{word2} {interlinear2}" : $"{interlinear2} {word2}";
+                                }
+
                                 // Render interlinear lines
                                 RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1);
 
@@ -788,7 +800,18 @@ namespace GoToBible.Engine
 
                                 // Record as a divergent phrase
                                 renderedVerse.DivergentPhrases++;
+
+                                // Skip this word, if it was added to the interlinear segments
+                                if (skipThisWord)
+                                {
+                                    continue;
+                                }
                             }
+
+                            // Remember the last word in common for the RenderNeighboutForAddition setting
+                            // when generating an apparatus. This may be used if the last phrase of a pair
+                            // of lines is divergent.
+                            lastWordInCommon = word1;
 
                             // The following word is not divergent
                             renderedVerse.WordsInCommon++;
@@ -933,6 +956,18 @@ namespace GoToBible.Engine
                     // Render remaining interlinear lines
                     if (interlinear)
                     {
+                        // If we are to render the neighbouring word in the apparatus for additions
+                        if (parameters is ApparatusRenderingParameters { RenderNeighbourForAddition: true }
+                            && string.IsNullOrWhiteSpace(interlinear1))
+                        {
+                            // Add the appropriate neighbour
+                            // Note how the order for interlinear2 varies from the block this same operation is performed above.
+                            // That is because there we are working with the word after the interlinear portion, here as we are at
+                            // end of the line, we are dealing with the word before the interlinear portion.
+                            interlinear1 = lastWordInCommon;
+                            interlinear2 = reverseScan ? $"{interlinear2} {lastWordInCommon}" : $"{lastWordInCommon} {interlinear2}";
+                        }
+
                         RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1);
 
                         // Record as a divergent phrase

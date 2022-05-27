@@ -16,16 +16,6 @@ namespace GoToBible.Windows
     public static class ExtensionMethods
     {
         /// <summary>
-        /// Returns a <see cref="RenderColour" /> as a <see cref="Color" />.
-        /// </summary>
-        /// <param name="renderColour">The render colour.</param>
-        /// <returns>
-        /// The <see cref="Color" /> corresponding to the <see cref="RenderColour" />.
-        /// </returns>
-        public static Color AsColor(this RenderColour renderColour)
-            => Color.FromArgb(renderColour.R, renderColour.G, renderColour.B);
-
-        /// <summary>
         /// Returns a <see cref="RenderFont" /> as a <see cref="Font" />.
         /// </summary>
         /// <param name="renderFont">The render font.</param>

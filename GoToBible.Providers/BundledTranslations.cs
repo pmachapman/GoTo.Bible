@@ -101,6 +101,7 @@ namespace GoToBible.Providers
         /// <summary>
         /// Initialises a new instance of the <see cref="BundledTranslations" /> class.
         /// </summary>
+        /// ReSharper disable once UnusedMember.Global
         public BundledTranslations()
         {
         }
@@ -194,16 +195,17 @@ namespace GoToBible.Providers
                 else if (this.renderer is not null && translation == "TRWHAPP" && this.renderer.Providers.Any(r => r.Id == "BibliaApi"))
                 {
                     // Use the renderer to generate this apparatus
-                    ApparatusRenderingParameters parameters = new()
+                    ApparatusRenderingParameters parameters = new ApparatusRenderingParameters
                     {
                         Format = RenderFormat.Apparatus,
                         InterlinearIgnoresCase = true,
                         InterlinearIgnoresDiacritics = true,
                         InterlinearIgnoresPunctuation = true,
-                        OmissionMarker = "<strike>%OMITTED_PHRASE%</strike>",
+                        OmissionMarker = "<em>omit</em>",
                         PassageReference = book.AsPassageReference(chapterNumber),
                         PrimaryProvider = "BibliaApi",
                         PrimaryTranslation = "tr1894mr",
+                        RenderNeighbourForAddition = true,
                         SecondaryProvider = "BibliaApi",
                         SecondaryTranslation = "wh1881mr",
                     };
