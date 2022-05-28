@@ -201,7 +201,6 @@ namespace GoToBible.Providers
                         InterlinearIgnoresCase = true,
                         InterlinearIgnoresDiacritics = true,
                         InterlinearIgnoresPunctuation = true,
-                        OmissionMarker = "<em>omit</em>",
                         PassageReference = book.AsPassageReference(chapterNumber),
                         PrimaryProvider = "BibliaApi",
                         PrimaryTranslation = "tr1894mr",

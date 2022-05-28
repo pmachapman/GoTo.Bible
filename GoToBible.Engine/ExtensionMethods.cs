@@ -53,6 +53,63 @@ namespace GoToBible.Engine
         }
 
         /// <summary>
+        /// Counts the number of occurrences of a substirng within another string.
+        /// </summary>
+        /// <param name="text">The string to check within.</param>
+        /// <param name="value">The substring to count.</param>
+        /// <param name="stringComparison">The string comparison type.</param>
+        /// <returns>The number of occurrences of the substring within the string.</returns>
+        public static int CountOccurrences(this string text, string value, StringComparison stringComparison)
+        {
+            // Clean up the text and value
+            text = $" {text.Trim()} ";
+            value = $" {value.Trim()} ";
+
+            // Get the number of substring occurrences
+            int count = 0;
+            int minIndex = text.IndexOf(value, 0, stringComparison);
+            while (minIndex != -1)
+            {
+                count++;
+                minIndex = text.IndexOf(value, minIndex + value.Length, stringComparison);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Gets the occurrence number of a substring within another string.
+        /// </summary>
+        /// <param name="text">The string to check within.</param>
+        /// <param name="value">The substring to count.</param>
+        /// <param name="approximatePosition">The approximate position of this occurrence. This should be an underestimate at worst.</param>
+        /// <param name="stringComparison">The string comparison type.</param>
+        /// <returns>The occurrence number of the substring within the string.</returns>
+        public static int GetOccurrence(this string text, string value, int approximatePosition, StringComparison stringComparison)
+        {
+            // Clean up the text and value
+            text = $" {text.Trim()} ";
+            value = $" {value.Trim()} ";
+
+            // Find the occurrence number based on the approximate position
+            int count = 0;
+            int minIndex = text.IndexOf(value, 0, stringComparison);
+            while (minIndex != -1)
+            {
+                count++;
+                if (minIndex >= approximatePosition)
+                {
+                    break;
+                }
+
+                // Check for the next occurrence
+                minIndex = text.IndexOf(value, minIndex + value.Length, stringComparison);
+            }
+
+            return count;
+        }
+
+        /// <summary>
         /// Gets the verse number from a line.
         /// </summary>
         /// <param name="line">The line.</param>
@@ -136,7 +193,7 @@ namespace GoToBible.Engine
                     // Direct hit
                     return true;
                 }
-                else if (highlightedVerses[i] == "-" && i > 0 && i < (highlightedVerses.Length - 1))
+                else if (highlightedVerses[i] == "-" && i > 0 && i < highlightedVerses.Length - 1)
                 {
                     // Check inside this range
                     bool matches = string.CompareOrdinal(verseNumber, highlightedVerses[i - 1]) > 0 && string.CompareOrdinal(verseNumber, highlightedVerses[i + 1]) < 0;
@@ -145,7 +202,7 @@ namespace GoToBible.Engine
                         return matches;
                     }
                 }
-                else if (highlightedVerses[i] == "-" && i > 0 && i == (highlightedVerses.Length - 1))
+                else if (highlightedVerses[i] == "-" && i > 0 && i == highlightedVerses.Length - 1)
                 {
                     // Check from this range, as the last highlighted verse value is a hyphen
                     return string.CompareOrdinal(verseNumber, highlightedVerses[i - 1]) > 0;

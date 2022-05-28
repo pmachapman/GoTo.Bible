@@ -491,6 +491,7 @@ namespace GoToBible.Model
             }
 
             sb.Append($"sup{{font-size:{parameters.Font.SizeInPoints * 0.75f}pt;font-weight:bold}}.sup{{font-weight:bold}}");
+            sb.Append(".occurrence{vertical-align:super;font-size:smaller}");
             sb.Append($".copyright{{border-top:1px solid {parameters.ForegroundColour.ToHtml()};font-size:{Math.Round(parameters.Font.SizeInPoints * 0.75, 2)}pt}}");
             sb.Append(".supsub{display:inline-flex;flex-direction:column;justify-content:space-between;vertical-align:middle;font-size:50%}");
             sb.Append($"mark{{background-color:{parameters.HighlightColour.ToHtml()}}}");

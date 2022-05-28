@@ -49,11 +49,8 @@ namespace GoToBible.Engine
         /// <summary>
         /// Finalises an instance of the <see cref="Renderer"/> class.
         /// </summary>
-        ~Renderer()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            this.Dispose(false);
-        }
+        /// <remarks>Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</remarks>
+        ~Renderer() => this.Dispose(false);
 
         /// <inheritdoc/>
         public IReadOnlyCollection<IProvider> Providers { get; set; }
@@ -174,11 +171,7 @@ namespace GoToBible.Engine
                 if (!string.IsNullOrWhiteSpace(parameters.SecondaryTranslation))
                 {
                     // Get the second provider
-                    IProvider? secondProvider = this.Providers.FirstOrDefault(p => p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider));
-                    if (secondProvider == null)
-                    {
-                        secondProvider = firstProvider;
-                    }
+                    IProvider secondProvider = this.Providers.FirstOrDefault(p => p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider)) ?? firstProvider;
 
                     // Get the second translation, if specified
                     Chapter secondChapter = await secondProvider.GetChapterAsync(parameters.SecondaryTranslation, parameters.PassageReference.ChapterReference);
@@ -424,7 +417,7 @@ namespace GoToBible.Engine
                         if ((!parameters.InterlinearIgnoresCase
                             || !parameters.InterlinearIgnoresDiacritics
                             || !parameters.InterlinearIgnoresPunctuation)
-                            && linesWithLessThanThreeWordsInCommon > (totalInterlinearLines / 2)
+                            && linesWithLessThanThreeWordsInCommon > totalInterlinearLines / 2
                             && primaryTranslation?.Language == secondaryTranslation?.Language)
                         {
                             // If at least one of "Ignore Case", "Ignore Diacritics", and "Ignore Punctuation" is false, and
@@ -512,7 +505,9 @@ namespace GoToBible.Engine
         /// <param name="line2">The second line.</param>
         /// <param name="parameters">The rendering parameters.</param>
         /// <param name="insertAt">The index to insert at. If -1, the segments are appended.</param>
-        private static void RenderInterlinearLineSegmentsAsHtml(StringBuilder sb, string line1, string line2, RenderingParameters parameters, int insertAt)
+        /// <param name="baseLine">The line which <c>param1</c> sits within.Used for apparatus calculations.</param>
+        /// <param name="approximatePosition">The approximate position of this phrase. Use for occurrence number calulations.</param>
+        private static void RenderInterlinearLineSegmentsAsHtml(StringBuilder sb, string line1, string line2, RenderingParameters parameters, int insertAt, string baseLine, int approximatePosition)
         {
             // Do not allow empty lines
             if (string.IsNullOrWhiteSpace(line1) && string.IsNullOrWhiteSpace(line2))
@@ -546,15 +541,36 @@ namespace GoToBible.Engine
                 // Render as apparatus
 
                 // TODO: Render as spreadsheet
-                // TODO: If a word is present more than once, display word(s) before and/or after until distinct occurence
+
+                // See if the phrase occurs more than once
+                int occurrence = 0;
+                if (baseLine.CountOccurrences(line1, StringComparison.OrdinalIgnoreCase) > 1)
+                {
+                    occurrence = baseLine.GetOccurrence(line1, approximatePosition, StringComparison.OrdinalIgnoreCase);
+                }
+
+                // Clean up the line
+                line1 = line1.Trim();
 
                 // Allow substitutions for omitted phrases
                 if (line2.Contains("%OMITTED_PHRASE%", StringComparison.OrdinalIgnoreCase))
                 {
                     lineToRender = line2.Replace("%OMITTED_PHRASE%", line1, StringComparison.OrdinalIgnoreCase) + " | ";
                 }
+                else if (occurrence > 0)
+                {
+                    // There is more than one occurrence in this line
+                    string occurrenceMarker = string.Empty;
+                    if (parameters is ApparatusRenderingParameters apparatusParameters)
+                    {
+                        occurrenceMarker = apparatusParameters.OccurrenceMarker.Replace("%OCCURRENCE%", occurrence.ToString(), StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    lineToRender = $"<strong>{line1}</strong>{occurrenceMarker} {line2} | ";
+                }
                 else
                 {
+                    // There is only one occurrence in this line
                     lineToRender = $"<strong>{line1}</strong> {line2} | ";
                 }
             }
@@ -612,14 +628,7 @@ namespace GoToBible.Engine
                 // Render additional words in italics
                 if (supportsItalics)
                 {
-                    if (parameters.RenderItalics)
-                    {
-                        line = line.RenderItalics();
-                    }
-                    else
-                    {
-                        line = line.StripItalics();
-                    }
+                    line = parameters.RenderItalics ? line.RenderItalics() : line.StripItalics();
                 }
 
                 // Add a HTML and text new line
@@ -760,6 +769,7 @@ namespace GoToBible.Engine
                     string interlinear1 = string.Empty;
                     string interlinear2 = string.Empty;
                     string lastWordInCommon = string.Empty;
+                    int approximatePosition = 0;
                     for (int i = 0; i < Math.Max(words1.Count, words2.Count); i++)
                     {
                         string word1 = string.Empty;
@@ -791,7 +801,7 @@ namespace GoToBible.Engine
                                 }
 
                                 // Render interlinear lines
-                                RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1);
+                                RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1, line1, approximatePosition);
 
                                 // Reset interlinear
                                 interlinear = false;
@@ -806,6 +816,22 @@ namespace GoToBible.Engine
                                 {
                                     continue;
                                 }
+                            }
+
+                            // Remember the approximate position of end of this word,
+                            // so that we can roughly know where the divergent phrase starts
+                            if (i < words1.Count)
+                            {
+                                int index = 0;
+                                int count = i + 1;
+                                if (reverseScan)
+                                {
+                                    // Exclude the current word in our getting the words from the reversed list
+                                    index = count;
+                                    count = words1.Count - count - 1;
+                                }
+
+                                approximatePosition = count < 1 ? 0 : words1.GetRange(index, count).Sum(w => w.Length + 1);
                             }
 
                             // Remember the last word in common for the RenderNeighboutForAddition setting
@@ -851,8 +877,8 @@ namespace GoToBible.Engine
                                 // If there is any match in the next few words where key and value are the same, skip
                                 if (matches.Any() && !matches.Any(m => m.Key == m.Value && m.Key < i + 7))
                                 {
-                                    KeyValuePair<int, int> closest1 = matches.OrderBy(m => m.Key).First();
-                                    KeyValuePair<int, int> closest2 = matches.OrderBy(m => m.Value).First();
+                                    KeyValuePair<int, int> closest1 = matches.MinBy(m => m.Key);
+                                    KeyValuePair<int, int> closest2 = matches.MinBy(m => m.Value);
 
                                     // If there is a closest match where key and value are the same, skip
                                     if (closest1.Key != closest1.Value && closest2.Key != closest2.Value)
@@ -968,7 +994,7 @@ namespace GoToBible.Engine
                             interlinear2 = reverseScan ? $"{interlinear2} {lastWordInCommon}" : $"{lastWordInCommon} {interlinear2}";
                         }
 
-                        RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1);
+                        RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1, line1, approximatePosition);
 
                         // Record as a divergent phrase
                         renderedVerse.DivergentPhrases++;
