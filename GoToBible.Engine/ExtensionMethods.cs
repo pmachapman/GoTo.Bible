@@ -10,6 +10,7 @@ namespace GoToBible.Engine
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Text;
     using System.Text.RegularExpressions;
     using GoToBible.Model;
 
@@ -75,6 +76,40 @@ namespace GoToBible.Engine
             }
 
             return count;
+        }
+
+        /// <summary>
+        /// Encodes a string for a CSV field.
+        /// </summary>
+        /// <param name="field">The field to encode.</param>
+        /// <param name="separator">The separator (defaults to a comma).</param>
+        /// <returns>
+        /// A string suitable to output to a CSV file.
+        /// </returns>
+        public static string EncodeCsvField(this string field, char separator = ',')
+        {
+            // Set up the string builder
+            StringBuilder sb = new StringBuilder(field);
+
+            // Fields with leading/trailing whitespace must be embedded in double quotes
+            bool embedInQuotes = sb.Length > 0 && (sb[0] == ' ' || sb[0] == '\t' || sb[^1] == ' ' || sb[^1] == '\t');
+
+            // If we have not yet found a reason to embed in quotes
+            if (!embedInQuotes)
+            {
+                for (int i = 0; i < sb.Length; i++)
+                {
+                    // Embed in quotes to preserve commas, line-breaks etc.
+                    if (sb[i] == separator || sb[i] == '\r' || sb[i] == '\n' || sb[i] == '"')
+                    {
+                        embedInQuotes = true;
+                        break;
+                    }
+                }
+            }
+
+            // If the field itself has quotes, they must each be represented by a pair of consecutive quotes.
+            return embedInQuotes ? $"\"{sb.Replace("\"", "\"\"")}\"" : sb.ToString();
         }
 
         /// <summary>

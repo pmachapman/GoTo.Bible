@@ -29,6 +29,14 @@ namespace GoToBible.Model
         /// <summary>
         /// Render as an apparatus.
         /// </summary>
+        /// <remarks>This should be used with <see cref="ApparatusRenderingParameters"/>.</remarks>
         Apparatus = 3,
+
+        /// <summary>
+        /// Renders as an apparatus in CSV based spreadsheet format.
+        /// The columns are: Book,Chapter,Verse,Occurrence,Phrase,Variant.
+        /// </summary>
+        /// <remarks>This should be used with <see cref="SpreadsheetRenderingParameters"/>.</remarks>
+        Spreadsheet = 4,
     }
 }

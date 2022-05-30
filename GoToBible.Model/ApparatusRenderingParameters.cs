@@ -9,7 +9,7 @@ namespace GoToBible.Model
     /// <summary>
     /// The apparatus rendering parameters.
     /// </summary>
-    public record ApparatusRenderingParameters : RenderingParameters
+    public record ApparatusRenderingParameters : SpreadsheetRenderingParameters
     {
         /// <summary>
         /// Gets or sets a value indicating whether we should render the neighbouring
@@ -41,6 +41,6 @@ namespace GoToBible.Model
         /// You can substitute the omitted phrase with the marker %OMITTED_PHRASE%
         /// Otherwise, the marker will be shown unmodified.
         /// </remarks>
-        public string OmissionMarker { get; set; } = "<em>Omit</em>";
+        public override string OmissionMarker { get; set; } = $"<em>{Omit}</em>";
     }
 }
