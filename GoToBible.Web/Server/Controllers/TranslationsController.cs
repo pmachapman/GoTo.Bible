@@ -70,10 +70,7 @@ namespace GoToBible.Web.Server.Controllers
         /// Initialises a new instance of the <see cref="TranslationsController" /> class.
         /// </summary>
         /// <param name="providers">The providers.</param>
-        public TranslationsController(IEnumerable<IProvider> providers)
-        {
-            this.providers = providers;
-        }
+        public TranslationsController(IEnumerable<IProvider> providers) => this.providers = providers;
 
         /// <summary>
         /// GET: <c>/v1/Translations</c>.

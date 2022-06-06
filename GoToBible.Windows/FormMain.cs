@@ -121,6 +121,7 @@ namespace GoToBible.Windows
             this.ToolStripButtonNavigateBack.Enabled = false;
             this.ToolStripButtonNavigateForward.Enabled = false;
             this.ToolStripMenuItemConfigure.Enabled = false;
+            this.ToolStripButtonApparatusGenerator.Enabled = false;
         }
 
         /// <summary>
@@ -727,6 +728,7 @@ namespace GoToBible.Windows
             this.commentaries.Clear();
             this.commentaries.AddRange(unsortedCommentaries.OrderBy(t => t.Name));
             this.ToolStripMenuItemConfigure.Enabled = true;
+            this.ToolStripButtonApparatusGenerator.Enabled = true;
 
             // Load the commentaries and translations from the providers
             int primaryTranslationSelectedIndex = 0;
@@ -904,6 +906,17 @@ namespace GoToBible.Windows
             catch (InvalidOperationException)
             {
             }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the Apparatus Generator ToolStripButton.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void ToolStripButtonApparatusGenerator_Click(object sender, EventArgs e)
+        {
+            FormApparatusGenerator formApparatusGenerator = new FormApparatusGenerator(this.parameters.PrimaryTranslation, this.renderer, this.translations, this.providers);
+            formApparatusGenerator.ShowDialog();
         }
 
         /// <summary>

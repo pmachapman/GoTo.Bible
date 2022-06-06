@@ -158,14 +158,22 @@ namespace GoToBible.Engine
 
                 // If we have a second translation
                 StringBuilder sb = new StringBuilder();
-                if (renderCompleteHtmlPage && parameters.Format != RenderFormat.Spreadsheet)
+                if (renderCompleteHtmlPage)
                 {
-                    sb.AppendLine("<!DOCTYPE html>");
-                    sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
-                    sb.AppendLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
-                    sb.Append("<style>");
-                    sb.Append(parameters.RenderCss());
-                    sb.AppendLine("</style></head><body>");
+                    if (parameters.Format == RenderFormat.Spreadsheet)
+                    {
+                        sb.AppendLine("Book,Chapter,Verse,Occurrence,Phrase,Variant");
+                    }
+                    else
+                    {
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine(
+                            "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
+                        sb.AppendLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
+                        sb.Append("<style>");
+                        sb.Append(parameters.RenderCss());
+                        sb.AppendLine("</style></head><body>");
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(parameters.SecondaryTranslation))

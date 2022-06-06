@@ -207,6 +207,7 @@ namespace GoToBible.Windows
         /// <summary>
         /// Updates the Select All CheckBox.
         /// </summary>
+        /// <param name="checkOn">Whether or not to check the check box.</param>
         private void UpdateCheckBoxSelectAll(bool? checkOn = null)
         {
             if (!this.checkBoxListIsUpdating)

@@ -28,10 +28,7 @@ namespace GoToBible.Web.Server.Controllers
         /// Initialises a new instance of the <see cref="BooksController" /> class.
         /// </summary>
         /// <param name="providers">The providers.</param>
-        public BooksController(IEnumerable<IProvider> providers)
-        {
-            this.providers = providers;
-        }
+        public BooksController(IEnumerable<IProvider> providers) => this.providers = providers;
 
         /// <summary>
         /// GET: <c>/v1/Books?translation={translation_id}&amp;provider={provider_id}&amp;includeChapters={true_or_false}</c>.

@@ -158,7 +158,7 @@ namespace GoToBible.Windows
             }
             catch (Exception ex)
             {
-                if (!(ex is ArgumentException
+                if (ex is not (ArgumentException
                     or ArgumentNullException
                     or COMException
                     or InvalidComObjectException
