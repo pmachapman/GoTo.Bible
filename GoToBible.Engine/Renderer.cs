@@ -71,7 +71,7 @@ namespace GoToBible.Engine
 
             // Get the first provider
             IProvider? firstProvider = this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider);
-            if (firstProvider == null)
+            if (firstProvider is null)
             {
                 return renderedPassage;
             }
@@ -853,7 +853,7 @@ namespace GoToBible.Engine
                             {
                                 // If we are to render the neighbouring word in the apparatus for additions
                                 bool skipThisWord = false;
-                                if (parameters is ApparatusRenderingParameters { RenderNeighbourForAddition: true }
+                                if (parameters is SpreadsheetRenderingParameters { RenderNeighbourForAddition: true }
                                     && string.IsNullOrWhiteSpace(interlinear1))
                                 {
                                     // Add the appropriate neighbour
@@ -1045,7 +1045,7 @@ namespace GoToBible.Engine
                     if (interlinear)
                     {
                         // If we are to render the neighbouring word in the apparatus for additions
-                        if (parameters is ApparatusRenderingParameters { RenderNeighbourForAddition: true }
+                        if (parameters is SpreadsheetRenderingParameters { RenderNeighbourForAddition: true }
                             && string.IsNullOrWhiteSpace(interlinear1))
                         {
                             // Add the appropriate neighbour
@@ -1102,6 +1102,11 @@ namespace GoToBible.Engine
                 {
                     // Add a HTML and text new line
                     renderedVerse.Content = $"{sb} <br>{Environment.NewLine}";
+                }
+                else if (parameters.Format == RenderFormat.Spreadsheet)
+                {
+                    // We do not need an extra line break for a spreadsheet
+                    renderedVerse.Content = sb.ToString();
                 }
                 else
                 {

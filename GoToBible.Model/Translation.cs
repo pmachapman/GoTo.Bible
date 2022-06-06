@@ -95,6 +95,6 @@ namespace GoToBible.Model
         public int Year { get; set; }
 
         /// <inheritdoc/>
-        public override string ToString() => this.Language == null ? this.Name : $"{this.Language}: {this.Name}";
+        public override string ToString() => this.Language is null ? this.Name : $"{this.Language}: {this.Name}";
     }
 }

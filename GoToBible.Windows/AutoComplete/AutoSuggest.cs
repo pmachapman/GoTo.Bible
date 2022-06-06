@@ -71,7 +71,7 @@ namespace GoToBible.Windows.AutoComplete
         private static object? GetAutoComplete()
         {
             Type? autocompleteType = Type.GetTypeFromCLSID(AutoCompleteClsId);
-            if (autocompleteType != null)
+            if (autocompleteType is not null)
             {
                 return Activator.CreateInstance(autocompleteType);
             }
@@ -104,7 +104,7 @@ namespace GoToBible.Windows.AutoComplete
             }
             finally
             {
-                if (iac != null)
+                if (iac is not null)
                 {
                     Marshal.ReleaseComObject(iac);
                 }
@@ -130,7 +130,7 @@ namespace GoToBible.Windows.AutoComplete
             }
             finally
             {
-                if (iac != null)
+                if (iac is not null)
                 {
                     Marshal.ReleaseComObject(iac);
                 }

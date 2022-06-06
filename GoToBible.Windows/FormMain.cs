@@ -219,7 +219,7 @@ namespace GoToBible.Windows
         /// <param name="disposing"><c>true</c> if managed resources should be disposed; otherwise, <c>false</c>.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && this.components != null)
+            if (disposing && this.components is not null)
             {
                 this.components.Dispose();
                 this.renderer.Dispose();
@@ -259,7 +259,7 @@ namespace GoToBible.Windows
             Program.Forms.Remove(this);
 
             // Disable autocomplete
-            if (this.ToolStripTextBoxPassage.TextBox != null)
+            if (this.ToolStripTextBoxPassage.TextBox is not null)
             {
                 AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
             }
@@ -337,21 +337,21 @@ namespace GoToBible.Windows
             }
 
             // Setup the tool strip controls
-            if (this.ToolStripComboBoxPrimaryTranslation.ComboBox != null)
+            if (this.ToolStripComboBoxPrimaryTranslation.ComboBox is not null)
             {
                 this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
                 this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
                 this.ToolStripComboBoxPrimaryTranslation.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
             }
 
-            if (this.ToolStripComboBoxSecondaryTranslation.ComboBox != null)
+            if (this.ToolStripComboBoxSecondaryTranslation.ComboBox is not null)
             {
                 this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
                 this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
                 this.ToolStripComboBoxSecondaryTranslation.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
             }
 
-            if (this.ToolStripComboBoxResource.ComboBox != null)
+            if (this.ToolStripComboBoxResource.ComboBox is not null)
             {
                 this.ToolStripComboBoxResource.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
                 this.ToolStripComboBoxResource.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
@@ -875,7 +875,7 @@ namespace GoToBible.Windows
                 this.ToolStripMenuItemIgnorePunctuation.Checked = true;
                 await this.ShowPassage(true, false);
             }
-            else if (this.renderedPassage.Suggestions.NavigateToChapter != null)
+            else if (this.renderedPassage.Suggestions.NavigateToChapter is not null)
             {
                 // If this book is not present, go to the suggested book
                 this.ToolStripTextBoxPassage.Text = this.renderedPassage.Suggestions.NavigateToChapter.ToString();
@@ -991,7 +991,7 @@ namespace GoToBible.Windows
             {
                 // Add the book names to the suggestions list
                 IProvider? provider = this.providers.FirstOrDefault(p => p.Id == primaryComboBoxItem.Provider) ?? this.providers.FirstOrDefault();
-                if (provider != null)
+                if (provider is not null)
                 {
                     await foreach (Book book in provider.GetBooksAsync(primaryComboBoxItem.Code, false))
                     {
@@ -1008,7 +1008,7 @@ namespace GoToBible.Windows
             {
                 // Add the book names to the suggestions list
                 IProvider? provider = this.providers.FirstOrDefault(p => p.Id == secondaryComboBoxItem.Provider) ?? this.providers.FirstOrDefault();
-                if (provider != null)
+                if (provider is not null)
                 {
                     await foreach (Book book in provider.GetBooksAsync(secondaryComboBoxItem.Code, false))
                     {
@@ -1021,7 +1021,7 @@ namespace GoToBible.Windows
             }
 
             // Enable autocomplete
-            if (this.ToolStripTextBoxPassage.TextBox != null)
+            if (this.ToolStripTextBoxPassage.TextBox is not null)
             {
                 AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
                 AutoSuggest.Enable(this.ToolStripTextBoxPassage.TextBox, suggestions.ToArray());
@@ -1300,10 +1300,10 @@ namespace GoToBible.Windows
                 if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
                     && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
                 {
-                    if ((primaryItem.Language == "Greek" && !(secondaryItem.Language == "Greek" || secondaryItem.Language == null))
-                        || (primaryItem.Language == "Hebrew" && !(secondaryItem.Language == "Hebrew" || secondaryItem.Language == null))
-                        || (secondaryItem.Language == "Greek" && !(primaryItem.Language == "Greek" || primaryItem.Language == null))
-                        || (secondaryItem.Language == "Hebrew" && !(primaryItem.Language == "Hebrew" || primaryItem.Language == null)))
+                    if ((primaryItem.Language == "Greek" && !(secondaryItem.Language == "Greek" || secondaryItem.Language is null))
+                        || (primaryItem.Language == "Hebrew" && !(secondaryItem.Language == "Hebrew" || secondaryItem.Language is null))
+                        || (secondaryItem.Language == "Greek" && !(primaryItem.Language == "Greek" || primaryItem.Language is null))
+                        || (secondaryItem.Language == "Hebrew" && !(primaryItem.Language == "Hebrew" || primaryItem.Language is null)))
                     {
                         MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
@@ -1349,10 +1349,10 @@ namespace GoToBible.Windows
                 if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
                     && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
                 {
-                    if ((primaryItem.Language == "Greek" && !(secondaryItem.Language == "Greek" || secondaryItem.Language == null))
-                        || (primaryItem.Language == "Hebrew" && !(secondaryItem.Language == "Hebrew" || secondaryItem.Language == null))
-                        || (secondaryItem.Language == "Greek" && !(primaryItem.Language == "Greek" || primaryItem.Language == null))
-                        || (secondaryItem.Language == "Hebrew" && !(primaryItem.Language == "Hebrew" || primaryItem.Language == null)))
+                    if ((primaryItem.Language == "Greek" && !(secondaryItem.Language == "Greek" || secondaryItem.Language is null))
+                        || (primaryItem.Language == "Hebrew" && !(secondaryItem.Language == "Hebrew" || secondaryItem.Language is null))
+                        || (secondaryItem.Language == "Greek" && !(primaryItem.Language == "Greek" || primaryItem.Language is null))
+                        || (secondaryItem.Language == "Hebrew" && !(primaryItem.Language == "Hebrew" || primaryItem.Language is null)))
                     {
                         MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;

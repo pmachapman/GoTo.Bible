@@ -12,15 +12,6 @@ namespace GoToBible.Model
     public record ApparatusRenderingParameters : SpreadsheetRenderingParameters
     {
         /// <summary>
-        /// Gets or sets a value indicating whether we should render the neighbouring
-        /// word in the apparatus, if a phrase is an addition.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if we are to render the neighbouring word; otherwise <c>false</c>.
-        /// </value>
-        public bool RenderNeighbourForAddition { get; set; }
-
-        /// <summary>
         /// Gets or sets the occurrence marker.
         /// </summary>
         /// <value>The marker for an occurrence.</value>

@@ -70,7 +70,7 @@ namespace GoToBible.Web.Server.Controllers
         public async Task<IActionResult> Post(RenderingParameters parameters, bool renderCompleteHtmlPage = false)
         {
             // If we can record statistics
-            if (this.context != null)
+            if (this.context is not null)
             {
                 try
                 {

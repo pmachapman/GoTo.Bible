@@ -34,7 +34,7 @@ namespace GoToBible.Windows.WebBrowser
         /// <inheritdoc/>
         public Task SetInnerHtmlAsync(string innerHtml)
         {
-            if (this.Document != null && this.Document.Body != null)
+            if (this.Document is not null && this.Document.Body is not null)
             {
                 this.Document.Body.InnerHtml = innerHtml;
             }
@@ -61,7 +61,7 @@ namespace GoToBible.Windows.WebBrowser
         /// <inheritdoc/>
         public void NavigateToString(string htmlContent)
         {
-            if (this.Document != null)
+            if (this.Document is not null)
             {
                 this.Document.OpenNew(true);
                 this.Document.Write(htmlContent);

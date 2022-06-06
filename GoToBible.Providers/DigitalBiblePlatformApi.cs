@@ -174,7 +174,7 @@ namespace GoToBible.Providers
 
                 // Get the text
                 StringBuilder sb = new StringBuilder();
-                if (chapterJson != null)
+                if (chapterJson is not null)
                 {
                     foreach (var verse in chapterJson.data)
                     {

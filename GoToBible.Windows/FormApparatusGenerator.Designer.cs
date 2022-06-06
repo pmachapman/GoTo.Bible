@@ -54,6 +54,7 @@ namespace GoToBible.Windows
             this.ToolTipItem = new System.Windows.Forms.ToolTip(this.components);
             this.OpenFileDialogMain = new System.Windows.Forms.OpenFileDialog();
             this.ProgressBarMain = new System.Windows.Forms.ProgressBar();
+            this.SaveFileDialogMain = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // ComboBoxBaseText
@@ -294,5 +295,6 @@ namespace GoToBible.Windows
         private System.Windows.Forms.ToolTip ToolTipItem;
         private System.Windows.Forms.OpenFileDialog OpenFileDialogMain;
         private System.Windows.Forms.ProgressBar ProgressBarMain;
+        private System.Windows.Forms.SaveFileDialog SaveFileDialogMain;
     }
 }

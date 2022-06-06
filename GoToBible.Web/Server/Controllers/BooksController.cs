@@ -43,7 +43,7 @@ namespace GoToBible.Web.Server.Controllers
         public async IAsyncEnumerable<Book> Get(string provider, string translation, bool includeChapters)
         {
             IProvider? bookProvider = this.providers.SingleOrDefault(p => p.Id == provider);
-            if (bookProvider != null)
+            if (bookProvider is not null)
             {
                 await foreach (Book book in bookProvider.GetBooksAsync(translation, includeChapters))
                 {

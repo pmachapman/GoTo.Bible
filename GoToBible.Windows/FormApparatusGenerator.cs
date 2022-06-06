@@ -9,8 +9,10 @@ namespace GoToBible.Windows
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using GoToBible.Engine;
@@ -133,57 +135,117 @@ namespace GoToBible.Windows
                 return;
             }
 
-            // TODO: Show and start the progress bar
-
-            // If we have only one comparison translation, and no addition apparatus, just generate it
-            if (this.CheckedListBoxComparisonTexts.SelectedItems.Count == 1 && !this.selectedFileNames.Any())
+            // Get the primary translation
+            if (this.ComboBoxBaseText.SelectedItem is not TranslationComboBoxItem primaryTranslation)
             {
-                // TODO: Flesh out the parameters
-                RenderingParameters parameters;
-                if (this.RadioButtonCsv.Checked)
+                MessageBox.Show(@"You must select a base translation.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Show the progress bar
+            this.ProgressBarMain.Show();
+
+            // For every comparison translation
+            StringBuilder sb = new StringBuilder();
+            foreach (TranslationComboBoxItem comboBoxItem in this.CheckedListBoxComparisonTexts.SelectedItems)
+            {
+                // For every selected book
+                foreach (Book book in this.CheckedListBoxBooks.SelectedItems)
                 {
-                    parameters = new SpreadsheetRenderingParameters
+                    // For every chapter in the book
+                    foreach (ChapterReference chapter in book.Chapters)
                     {
-                        Format = RenderFormat.Spreadsheet,
-                    };
-                }
-                else
-                {
-                    parameters = new ApparatusRenderingParameters
-                    {
-                        Format = RenderFormat.Apparatus,
-                    };
+                        // Setup the parameters for a spreadsheet
+                        SpreadsheetRenderingParameters parameters = new SpreadsheetRenderingParameters
+                        {
+                            Format = RenderFormat.Spreadsheet,
+                            InterlinearIgnoresCase = true,
+                            InterlinearIgnoresDiacritics = true,
+                            InterlinearIgnoresPunctuation = true,
+                            PassageReference = chapter.AsPassageReference(),
+                            PrimaryProvider = primaryTranslation.Provider,
+                            PrimaryTranslation = primaryTranslation.Code,
+                            RenderNeighbourForAddition = true,
+                            SecondaryProvider = comboBoxItem.Provider,
+                            SecondaryTranslation = comboBoxItem.Code,
+                        };
+
+                        // Render the output
+                        RenderedPassage passage = await this.renderer.RenderAsync(parameters, false);
+                        if (!string.IsNullOrWhiteSpace(passage.Content))
+                        {
+                            sb.Append(passage.Content);
+                        }
+                        else
+                        {
+                            this.ProgressBarMain.Hide();
+                            MessageBox.Show(
+                                $@"There was an unknown error rendering the apparatus for {parameters}.",
+                                this.Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
                 }
 
-                // Render the output
-                RenderedPassage passage = await this.renderer.RenderAsync(parameters, true);
-                if (string.IsNullOrWhiteSpace(passage.Content))
+                // TODO: Merge spreadsheets
+            }
+
+            // TODO: Handle the multiple apparatus files
+
+            // Save the output
+            if (this.RadioButtonCsv.Checked)
+            {
+                // Save the spreadsheet
+                this.SaveFileDialogMain.DefaultExt = "*.csv";
+                this.SaveFileDialogMain.Filter = @"CSV Spreadsheet (*.csv)|*.csv|All Files (*.*)|*.*";
+                if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
-                    // TODO: Hide the progress bar
-                    MessageBox.Show(@"There was an unknown error rendering the apparatus.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                else
-                {
-                    // TODO: Save the file
-                    // TODO: Add save dialog to form
+                    // Get the variant readings for the header
+                    string variantHeadings;
+                    if (this.CheckedListBoxComparisonTexts.SelectedItems.Count == 1 && !this.selectedFileNames.Any())
+                    {
+                        variantHeadings = "Variant";
+                    }
+                    else
+                    {
+                        // Generate the variant headings
+                        variantHeadings = string.Empty;
+
+                        // Add the selected comparison translations
+                        foreach (Translation translation in this.CheckedListBoxComparisonTexts.SelectedItems)
+                        {
+                            variantHeadings += $"{translation.Code},";
+                        }
+
+                        // Add the selected file names
+                        foreach (string path in this.selectedFileNames)
+                        {
+                            string fileName = Path.GetFileNameWithoutExtension(path);
+                            variantHeadings += $"{fileName},";
+                        }
+
+                        // Remove the last comma
+                        variantHeadings = variantHeadings.TrimEnd(',');
+                    }
+
+                    // Append the header
+                    sb.Insert(0, $"Book,Chapter,Verse,Occurrence,Phrase,{variantHeadings}{Environment.NewLine}");
+
+                    // Save the file
+                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, sb.ToString());
                 }
             }
             else
             {
-                // TODO: Generate the spreadsheet that will be the source for our output
-
-                // Create the output
-                if (this.RadioButtonCsv.Checked)
-                {
-                    // TODO: Save the spreadsheet
-                }
-                else
-                {
-                    // TODO: Generate the HTML file
-                }
+                // TODO: Generate the HTML file
+                // TODO: Save the HTML file
+                this.SaveFileDialogMain.DefaultExt = "*.html";
+                this.SaveFileDialogMain.Filter = @"HTML File (*.html)|*.html;*.htm|All Files (*.*)|*.*";
             }
 
+            this.ProgressBarMain.Hide();
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -400,9 +462,9 @@ namespace GoToBible.Windows
                 // Add the book names to the suggestions list
                 IProvider? provider = this.providers.FirstOrDefault(p => p.Id == comboBoxItem.Provider) ??
                                       this.providers.FirstOrDefault();
-                if (provider != null)
+                if (provider is not null)
                 {
-                    await foreach (Book book in provider.GetBooksAsync(comboBoxItem.Code, false))
+                    await foreach (Book book in provider.GetBooksAsync(comboBoxItem.Code, true))
                     {
                         this.CheckedListBoxBooks.Items.Add(book, this.CheckBoxSelectAllBooks.CheckState == CheckState.Checked);
                     }
