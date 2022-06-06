@@ -224,14 +224,10 @@ namespace GoToBible.Providers
                     // Set the previous chapter for the next iteration (if it needs it)
                     previousChapter = nextChapter;
                 }
+            }
 
-                // Return the chapter
-                return chapter;
-            }
-            else
-            {
-                return chapter;
-            }
+            // Return the chapter
+            return chapter;
         }
 
         /// <inheritdoc/>

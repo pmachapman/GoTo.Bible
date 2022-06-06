@@ -251,14 +251,10 @@ namespace GoToBible.Providers
                         chapter.NextChapterReference = GetChapterReference(data.passage_meta.First().next_chapter?.First() ?? 0);
                     }
                 }
+            }
 
-                // Return the chapter
-                return chapter;
-            }
-            else
-            {
-                return chapter;
-            }
+            // Return the chapter
+            return chapter;
         }
 
         /// <inheritdoc/>

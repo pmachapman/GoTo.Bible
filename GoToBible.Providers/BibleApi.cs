@@ -297,14 +297,10 @@ namespace GoToBible.Providers
 
                     chapter.NextChapterReference = new ChapterReference(nextBook, nextChapter);
                 }
+            }
 
-                // Return the chapter
-                return chapter;
-            }
-            else
-            {
-                return chapter;
-            }
+            // Return the chapter
+            return chapter;
         }
 
         /// <inheritdoc/>
