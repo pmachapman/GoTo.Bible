@@ -100,7 +100,14 @@ namespace GoToBible.Providers
                     {
                         foreach (string bookAndChapter in book.chapters.Select(c => c.passage))
                         {
-                            chapterReferences.Add(new ChapterReference(bookAndChapter));
+                            ChapterReference chapterReference = new ChapterReference(bookAndChapter);
+                            if (chapterReference.ChapterNumber == 0)
+                            {
+                                // Fix Obadiah, 2 John, 3 John, Jude
+                                chapterReference.ChapterNumber = 1;
+                            }
+
+                            chapterReferences.Add(chapterReference);
                         }
                     }
 

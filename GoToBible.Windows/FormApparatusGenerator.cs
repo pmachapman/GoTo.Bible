@@ -124,12 +124,12 @@ namespace GoToBible.Windows
         private async void ButtonOk_Click(object sender, EventArgs e)
         {
             // Check for valid inputs
-            if (!this.selectedFileNames.Any() && this.CheckedListBoxComparisonTexts.SelectedItems.Count == 0)
+            if (!this.selectedFileNames.Any() && this.CheckedListBoxComparisonTexts.CheckedItems.Count == 0)
             {
                 MessageBox.Show(@"You must select at least one comparison translation, or additional apparatus data file.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else if (this.CheckedListBoxBooks.SelectedItems.Count == 0)
+            else if (this.CheckedListBoxBooks.CheckedItems.Count == 0)
             {
                 MessageBox.Show(@"You must select at least one book.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -147,10 +147,10 @@ namespace GoToBible.Windows
 
             // For every comparison translation
             StringBuilder sb = new StringBuilder();
-            foreach (TranslationComboBoxItem comboBoxItem in this.CheckedListBoxComparisonTexts.SelectedItems)
+            foreach (TranslationComboBoxItem comboBoxItem in this.CheckedListBoxComparisonTexts.CheckedItems)
             {
                 // For every selected book
-                foreach (Book book in this.CheckedListBoxBooks.SelectedItems)
+                foreach (Book book in this.CheckedListBoxBooks.CheckedItems)
                 {
                     // For every chapter in the book
                     foreach (ChapterReference chapter in book.Chapters)
@@ -204,7 +204,7 @@ namespace GoToBible.Windows
                 {
                     // Get the variant readings for the header
                     string variantHeadings;
-                    if (this.CheckedListBoxComparisonTexts.SelectedItems.Count == 1 && !this.selectedFileNames.Any())
+                    if (this.CheckedListBoxComparisonTexts.CheckedItems.Count == 1 && !this.selectedFileNames.Any())
                     {
                         variantHeadings = "Variant";
                     }
@@ -214,7 +214,7 @@ namespace GoToBible.Windows
                         variantHeadings = string.Empty;
 
                         // Add the selected comparison translations
-                        foreach (Translation translation in this.CheckedListBoxComparisonTexts.SelectedItems)
+                        foreach (Translation translation in this.CheckedListBoxComparisonTexts.CheckedItems)
                         {
                             variantHeadings += $"{translation.Code},";
                         }
@@ -233,8 +233,8 @@ namespace GoToBible.Windows
                     // Append the header
                     sb.Insert(0, $"Book,Chapter,Verse,Occurrence,Phrase,{variantHeadings}{Environment.NewLine}");
 
-                    // Save the file
-                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, sb.ToString());
+                    // Save the file with the BOM
+                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, sb.ToString(), Encoding.UTF8);
                 }
             }
             else
