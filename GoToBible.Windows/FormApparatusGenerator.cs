@@ -8,6 +8,7 @@ namespace GoToBible.Windows
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Drawing;
     using System.IO;
     using System.Linq;
@@ -92,6 +93,28 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether or not this instance is generating.
+        /// </summary>
+        /// <value><c>true</c> if the instance is generating; otherwise, <c>false</c>.</value>
+        private bool IsGenerating
+        {
+            get => this.ProgressBarMain.Visible;
+            set
+            {
+                this.ProgressBarMain.Visible = value;
+                this.ComboBoxBaseText.Enabled = !value;
+                this.CheckedListBoxComparisonTexts.Enabled = !value;
+                this.CheckBoxSelectAllComparisonTexts.Enabled = !value;
+                this.CheckedListBoxBooks.Enabled = !value;
+                this.CheckBoxSelectAllBooks.Enabled = !value;
+                this.ButtonBrowse.Enabled = !value;
+                this.RadioButtonCsv.Enabled = !value;
+                this.RadioButtonHtml.Enabled = !value;
+                this.ButtonOk.Enabled = !value;
+            }
+        }
+
+        /// <summary>
         /// Handles the Click event of the Browse Button.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -112,6 +135,7 @@ namespace GoToBible.Windows
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
+            this.IsGenerating = false;
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
@@ -124,15 +148,27 @@ namespace GoToBible.Windows
         private async void ButtonOk_Click(object sender, EventArgs e)
         {
             // Check for valid inputs
-            if (!this.selectedFileNames.Any() && this.CheckedListBoxComparisonTexts.CheckedItems.Count == 0)
+            if (!this.selectedFileNames.Any())
             {
-                MessageBox.Show(@"You must select at least one comparison translation, or additional apparatus data file.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            else if (this.CheckedListBoxBooks.CheckedItems.Count == 0)
-            {
-                MessageBox.Show(@"You must select at least one book.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                if (this.CheckedListBoxComparisonTexts.CheckedItems.Count == 0)
+                {
+                    MessageBox.Show(
+                        @"You must select at least one comparison translation, or additional apparatus data file.",
+                        this.Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (this.CheckedListBoxBooks.CheckedItems.Count == 0)
+                {
+                    MessageBox.Show(
+                        @"You must select at least one book.",
+                        this.Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
             }
 
             // Get the primary translation
@@ -143,10 +179,27 @@ namespace GoToBible.Windows
             }
 
             // Show the progress bar
-            this.ProgressBarMain.Show();
+            this.IsGenerating = true;
+
+            // Build the data table for the final output
+            DataTable dataTable = new DataTable();
+
+            // Book,Chapter,Verse,Occurrence,Phrase,Variant
+            Type[] columnTypes = { typeof(string), typeof(int), typeof(string), typeof(int), typeof(string), typeof(string) };
+            dataTable.Columns.Add("Book", columnTypes[0]);
+            dataTable.Columns.Add("Chapter", columnTypes[1]);
+            dataTable.Columns.Add("Verse", columnTypes[2]);
+            dataTable.Columns.Add("Occurrence", columnTypes[3]);
+            dataTable.Columns.Add("Phrase", columnTypes[4]);
+
+            // Use variant if we are only comparing with one text
+            if (this.CheckedListBoxComparisonTexts.CheckedItems.Count == 1
+                && !this.selectedFileNames.Any())
+            {
+                dataTable.Columns.Add("Variant", columnTypes[5]);
+            }
 
             // For every comparison translation
-            StringBuilder sb = new StringBuilder();
             foreach (TranslationComboBoxItem comboBoxItem in this.CheckedListBoxComparisonTexts.CheckedItems)
             {
                 // For every selected book
@@ -171,28 +224,56 @@ namespace GoToBible.Windows
                         };
 
                         // Render the output
-                        RenderedPassage passage = await this.renderer.RenderAsync(parameters, false);
-                        if (!string.IsNullOrWhiteSpace(passage.Content))
+                        RenderedPassage passage = await this.renderer.RenderAsync(parameters, true);
+                        if (!string.IsNullOrWhiteSpace(passage.Content) && this.IsGenerating)
                         {
-                            sb.Append(passage.Content);
+                            DataTable table = passage.Content.AsDataTable(columnTypes);
+                            if (dataTable.Columns[^1].ColumnName == "Variant")
+                            {
+                                // We are only dealing with one text - just merge
+                                dataTable.Merge(table);
+                            }
+                            else
+                            {
+                                // Set up the columns then merge
+                                table.Columns[^1].ColumnName = comboBoxItem.Code;
+                                dataTable.Columns.Add(comboBoxItem.Code, typeof(string));
+                                dataTable.Merge(table);
+                            }
                         }
                         else
                         {
-                            this.ProgressBarMain.Hide();
-                            MessageBox.Show(
-                                $@"There was an unknown error rendering the apparatus for {parameters}.",
-                                this.Text,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
+                            this.IsGenerating = false;
+                            if (string.IsNullOrWhiteSpace(passage.Content))
+                            {
+                                MessageBox.Show(
+                                    $@"There was an unknown error rendering the apparatus for {parameters}.",
+                                    this.Text,
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                            }
+
                             return;
                         }
                     }
                 }
-
-                // TODO: Merge spreadsheets
             }
 
-            // TODO: Handle the multiple apparatus files
+            // Add the multiple apparatus files
+            foreach (string path in this.selectedFileNames)
+            {
+                // Get the CSV file contents
+                string content = await File.ReadAllTextAsync(path);
+                DataTable table = content.AsDataTable(columnTypes);
+
+                // Set up the columns then merge
+                string columnName = Path.GetFileNameWithoutExtension(path);
+                table.Columns[^1].ColumnName = columnName;
+                dataTable.Columns.Add(columnName, typeof(string));
+                dataTable.Merge(table);
+            }
+
+            // TODO: De-duplicate the rows by filling in empty columns
 
             // Save the output
             if (this.RadioButtonCsv.Checked)
@@ -202,39 +283,8 @@ namespace GoToBible.Windows
                 this.SaveFileDialogMain.Filter = @"CSV Spreadsheet (*.csv)|*.csv|All Files (*.*)|*.*";
                 if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
-                    // Get the variant readings for the header
-                    string variantHeadings;
-                    if (this.CheckedListBoxComparisonTexts.CheckedItems.Count == 1 && !this.selectedFileNames.Any())
-                    {
-                        variantHeadings = "Variant";
-                    }
-                    else
-                    {
-                        // Generate the variant headings
-                        variantHeadings = string.Empty;
-
-                        // Add the selected comparison translations
-                        foreach (Translation translation in this.CheckedListBoxComparisonTexts.CheckedItems)
-                        {
-                            variantHeadings += $"{translation.Code},";
-                        }
-
-                        // Add the selected file names
-                        foreach (string path in this.selectedFileNames)
-                        {
-                            string fileName = Path.GetFileNameWithoutExtension(path);
-                            variantHeadings += $"{fileName},";
-                        }
-
-                        // Remove the last comma
-                        variantHeadings = variantHeadings.TrimEnd(',');
-                    }
-
-                    // Append the header
-                    sb.Insert(0, $"Book,Chapter,Verse,Occurrence,Phrase,{variantHeadings}{Environment.NewLine}");
-
                     // Save the file with the BOM
-                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, sb.ToString(), Encoding.UTF8);
+                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, dataTable.AsCsvData(), Encoding.UTF8);
                 }
             }
             else
@@ -245,7 +295,7 @@ namespace GoToBible.Windows
                 this.SaveFileDialogMain.Filter = @"HTML File (*.html)|*.html;*.htm|All Files (*.*)|*.*";
             }
 
-            this.ProgressBarMain.Hide();
+            this.IsGenerating = false;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -368,6 +418,13 @@ namespace GoToBible.Windows
             // Update the books to match the base translation's canon
             await this.UpdateBooksAsync();
         }
+
+        /// <summary>
+        /// Handles the FormClosing event of the Form.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void FormApparatusGenerator_FormClosing(object sender, FormClosingEventArgs e) => this.IsGenerating = false;
 
         /// <summary>
         /// Handles the Load event of the Form.
