@@ -289,10 +289,14 @@ namespace GoToBible.Windows
             }
             else
             {
-                // TODO: Generate the HTML file
-                // TODO: Save the HTML file
+                // Save the HTML file
                 this.SaveFileDialogMain.DefaultExt = "*.html";
                 this.SaveFileDialogMain.Filter = @"HTML File (*.html)|*.html;*.htm|All Files (*.*)|*.*";
+                if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
+                {
+                    // Save the file with the BOM
+                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, dataTable.AsHtmlApparatus(), Encoding.UTF8);
+                }
             }
 
             this.IsGenerating = false;

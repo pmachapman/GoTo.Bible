@@ -25,14 +25,14 @@ namespace GoToBible.Windows
         /// <summary>
         /// Converts a <see cref="DataTable"/> to a CSV string.
         /// </summary>
-        /// <param name="dt">The data table.</param>
+        /// <param name="dataTable">The data table.</param>
         /// <param name="separator">The separator. Defaults to a comma.</param>
         /// <returns>The CSV data.</returns>
-        public static string AsCsvData(this DataTable dt, char separator = ',')
+        public static string AsCsvData(this DataTable dataTable, char separator = ',')
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(string.Join(separator, dt.Columns.Cast<DataColumn>().Select(column => column.ColumnName)));
-            foreach (DataRow row in dt.Rows)
+            sb.AppendLine(string.Join(separator, dataTable.Columns.Cast<DataColumn>().Select(column => column.ColumnName)));
+            foreach (DataRow row in dataTable.Rows)
             {
                 IEnumerable<string> fields = row.ItemArray
                     .Select(field => field?.ToString()?.EncodeCsvField(separator) ?? string.Empty);
@@ -282,6 +282,23 @@ namespace GoToBible.Windows
                 renderFont.SizeInPoints,
                 (renderFont.Bold ? FontStyle.Bold : FontStyle.Regular) & (renderFont.Italic ? FontStyle.Italic : FontStyle.Regular) & (renderFont.Strikeout ? FontStyle.Strikeout : FontStyle.Regular) & (renderFont.Underline ? FontStyle.Underline : FontStyle.Regular),
                 GraphicsUnit.Point);
+
+        /// <summary>
+        /// Generates an HTML apparatus from a DataTable.
+        /// </summary>
+        /// <param name="dataTable">The data table.</param>
+        /// <returns>The HTML code for the apparatus.</returns>
+        public static string AsHtmlApparatus(this DataTable dataTable)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (DataRow row in dataTable.Rows)
+            {
+                // TODO: Generate the HTML
+                sb.Append(row);
+            }
+
+            return sb.ToString();
+        }
 
         /// <summary>
         /// Returns a <see cref="Color" /> as a <see cref="RenderColour" />.
