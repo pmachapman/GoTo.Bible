@@ -77,10 +77,11 @@ namespace GoToBible.Windows
             this.CheckedListBoxComparisonTexts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.CheckedListBoxComparisonTexts.FormattingEnabled = true;
+            this.CheckedListBoxComparisonTexts.IntegralHeight = false;
             this.CheckedListBoxComparisonTexts.Location = new System.Drawing.Point(187, 55);
             this.CheckedListBoxComparisonTexts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckedListBoxComparisonTexts.Name = "CheckedListBoxComparisonTexts";
-            this.CheckedListBoxComparisonTexts.Size = new System.Drawing.Size(335, 136);
+            this.CheckedListBoxComparisonTexts.Size = new System.Drawing.Size(335, 149);
             this.CheckedListBoxComparisonTexts.TabIndex = 3;
             this.CheckedListBoxComparisonTexts.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.CheckedListBoxComparisonTexts_ItemCheck);
             // 
@@ -142,10 +143,11 @@ namespace GoToBible.Windows
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.CheckedListBoxBooks.FormattingEnabled = true;
+            this.CheckedListBoxBooks.IntegralHeight = false;
             this.CheckedListBoxBooks.Location = new System.Drawing.Point(187, 245);
             this.CheckedListBoxBooks.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CheckedListBoxBooks.Name = "CheckedListBoxBooks";
-            this.CheckedListBoxBooks.Size = new System.Drawing.Size(335, 136);
+            this.CheckedListBoxBooks.Size = new System.Drawing.Size(335, 151);
             this.CheckedListBoxBooks.TabIndex = 6;
             this.CheckedListBoxBooks.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.CheckedListBoxBooks_ItemCheck);
             // 
@@ -177,6 +179,7 @@ namespace GoToBible.Windows
             // 
             this.LabelBaseText.AutoSize = true;
             this.LabelBaseText.Location = new System.Drawing.Point(14, 20);
+            this.LabelBaseText.MaximumSize = new System.Drawing.Size(180, 0);
             this.LabelBaseText.Name = "LabelBaseText";
             this.LabelBaseText.Size = new System.Drawing.Size(130, 20);
             this.LabelBaseText.TabIndex = 0;
@@ -186,8 +189,9 @@ namespace GoToBible.Windows
             // 
             this.LabelComparisonTexts.AutoSize = true;
             this.LabelComparisonTexts.Location = new System.Drawing.Point(14, 55);
+            this.LabelComparisonTexts.MaximumSize = new System.Drawing.Size(180, 0);
             this.LabelComparisonTexts.Name = "LabelComparisonTexts";
-            this.LabelComparisonTexts.Size = new System.Drawing.Size(185, 20);
+            this.LabelComparisonTexts.Size = new System.Drawing.Size(152, 40);
             this.LabelComparisonTexts.TabIndex = 2;
             this.LabelComparisonTexts.Text = "&2. Select Comparison Texts";
             // 
@@ -195,6 +199,7 @@ namespace GoToBible.Windows
             // 
             this.LabelBooks.AutoSize = true;
             this.LabelBooks.Location = new System.Drawing.Point(14, 245);
+            this.LabelBooks.MaximumSize = new System.Drawing.Size(180, 0);
             this.LabelBooks.Name = "LabelBooks";
             this.LabelBooks.Size = new System.Drawing.Size(108, 20);
             this.LabelBooks.TabIndex = 5;
@@ -205,6 +210,7 @@ namespace GoToBible.Windows
             this.LabelIncludeApparatusData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LabelIncludeApparatusData.AutoSize = true;
             this.LabelIncludeApparatusData.Location = new System.Drawing.Point(14, 441);
+            this.LabelIncludeApparatusData.MaximumSize = new System.Drawing.Size(180, 0);
             this.LabelIncludeApparatusData.Name = "LabelIncludeApparatusData";
             this.LabelIncludeApparatusData.Size = new System.Drawing.Size(180, 20);
             this.LabelIncludeApparatusData.TabIndex = 8;
