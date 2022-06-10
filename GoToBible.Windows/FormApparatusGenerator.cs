@@ -28,6 +28,11 @@ namespace GoToBible.Windows
     public partial class FormApparatusGenerator : Form
     {
         /// <summary>
+        /// The books in order.
+        /// </summary>
+        private readonly List<string> books = new List<string>();
+
+        /// <summary>
         /// The available providers.
         /// </summary>
         private readonly IEnumerable<IProvider> providers;
@@ -266,14 +271,38 @@ namespace GoToBible.Windows
                 string content = await File.ReadAllTextAsync(path);
                 DataTable table = content.AsDataTable(columnTypes);
 
-                // Set up the columns then merge
-                string columnName = Path.GetFileNameWithoutExtension(path);
-                table.Columns[^1].ColumnName = columnName;
-                dataTable.Columns.Add(columnName, typeof(string));
+                // If we have a variant column, rename it to the file name
+                if (table.Columns.Count == 6 && table.Columns[5].ColumnName == "Variant")
+                {
+                    string columnName = Path.GetFileNameWithoutExtension(path);
+                    table.Columns[5].ColumnName = columnName;
+                }
+
+                // Add the additional columns
+                for (int i = 5; i < table.Columns.Count; i++)
+                {
+                    dataTable.Columns.Add(table.Columns[i].ColumnName, typeof(string));
+                }
+
                 dataTable.Merge(table);
             }
 
-            // TODO: De-duplicate the rows by filling in empty columns
+            // If we have more than one variant
+            if (dataTable.Columns.Count > 6)
+            {
+                // TODO: De-duplicate the rows by filling in empty columns
+                // TODO: A Verse Comparer (handle hyphens and letters)
+                // Order By: Book,Chapter,Verse,Occurrence,Phrase
+                foreach (DataRow row in dataTable.AsEnumerable()
+                             .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
+                             .ThenBy(r => (int)r["Chapter"])
+                             .ThenBy(r => (string)r["Verse"])
+                             .ThenBy(r => (int)r["Occurence"])
+                             .ThenBy(r => (string)r["Phrase"]))
+                {
+                    // TODO: Merge the rows where appropriate
+                }
+            }
 
             // Save the output
             if (this.RadioButtonCsv.Checked)
@@ -513,6 +542,7 @@ namespace GoToBible.Windows
         private async Task UpdateBooksAsync()
         {
             // Update the books to match the base translation's canon
+            this.books.Clear();
             this.checkedListBoxBooksIsUpdating = true;
             this.CheckedListBoxBooks.BeginUpdate();
             this.CheckedListBoxBooks.Items.Clear();
@@ -527,6 +557,7 @@ namespace GoToBible.Windows
                 {
                     await foreach (Book book in provider.GetBooksAsync(comboBoxItem.Code, true))
                     {
+                        this.books.Add(book.Name);
                         this.CheckedListBoxBooks.Items.Add(book, this.CheckBoxSelectAllBooks.CheckState == CheckState.Checked);
                     }
                 }
