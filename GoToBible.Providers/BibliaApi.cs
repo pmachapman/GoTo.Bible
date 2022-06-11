@@ -103,7 +103,7 @@ namespace GoToBible.Providers
                             ChapterReference chapterReference = new ChapterReference(bookAndChapter);
                             if (chapterReference.ChapterNumber == 0)
                             {
-                                // Fix Obadiah, 2 John, 3 John, Jude
+                                // Fix Obadiah, Philemon, 2 John, 3 John, Jude
                                 chapterReference.ChapterNumber = 1;
                             }
 

@@ -204,6 +204,18 @@ namespace GoToBible.Windows
                 dataTable.Columns.Add("Variant", columnTypes[5]);
             }
 
+            // Set up the apparatus rendering parameters, as we will use this with the spreadsheet generation
+            ApparatusRenderingParameters apparatusParameters = new ApparatusRenderingParameters
+            {
+                Format = RenderFormat.Spreadsheet,
+                InterlinearIgnoresCase = true,
+                InterlinearIgnoresDiacritics = true,
+                InterlinearIgnoresPunctuation = true,
+                PrimaryProvider = primaryTranslation.Provider,
+                PrimaryTranslation = primaryTranslation.Code,
+                RenderNeighbourForAddition = true,
+            };
+
             // For every comparison translation
             foreach (TranslationComboBoxItem comboBoxItem in this.CheckedListBoxComparisonTexts.CheckedItems)
             {
@@ -214,16 +226,9 @@ namespace GoToBible.Windows
                     foreach (ChapterReference chapter in book.Chapters)
                     {
                         // Setup the parameters for a spreadsheet
-                        SpreadsheetRenderingParameters parameters = new SpreadsheetRenderingParameters
+                        SpreadsheetRenderingParameters parameters = apparatusParameters with
                         {
-                            Format = RenderFormat.Spreadsheet,
-                            InterlinearIgnoresCase = true,
-                            InterlinearIgnoresDiacritics = true,
-                            InterlinearIgnoresPunctuation = true,
                             PassageReference = chapter.AsPassageReference(),
-                            PrimaryProvider = primaryTranslation.Provider,
-                            PrimaryTranslation = primaryTranslation.Code,
-                            RenderNeighbourForAddition = true,
                             SecondaryProvider = comboBoxItem.Provider,
                             SecondaryTranslation = comboBoxItem.Code,
                         };
@@ -352,7 +357,15 @@ namespace GoToBible.Windows
                 if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
                     // Save the file with the BOM
-                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, finalDataTable.AsCsvData(), Encoding.UTF8);
+                    await File.WriteAllTextAsync(
+                        this.SaveFileDialogMain.FileName,
+                        finalDataTable.AsCsvData(),
+                        Encoding.UTF8);
+                }
+                else
+                {
+                    this.IsGenerating = false;
+                    return;
                 }
             }
             else
@@ -363,7 +376,15 @@ namespace GoToBible.Windows
                 if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
                     // Save the file with the BOM
-                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, finalDataTable.AsHtmlApparatus(), Encoding.UTF8);
+                    await File.WriteAllTextAsync(
+                        this.SaveFileDialogMain.FileName,
+                        finalDataTable.AsHtmlApparatus(apparatusParameters),
+                        Encoding.UTF8);
+                }
+                else
+                {
+                    this.IsGenerating = false;
+                    return;
                 }
             }
 

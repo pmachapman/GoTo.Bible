@@ -10,6 +10,7 @@ namespace GoToBible.Windows
     using System.Collections.Generic;
     using System.Data;
     using System.Drawing;
+    using System.Globalization;
     using System.Linq;
     using System.Runtime.Versioning;
     using System.Text;
@@ -287,16 +288,160 @@ namespace GoToBible.Windows
         /// Generates an HTML apparatus from a DataTable.
         /// </summary>
         /// <param name="dataTable">The data table.</param>
+        /// <param name="parameters">The apparatus rendering parameters.</param>
         /// <returns>The HTML code for the apparatus.</returns>
-        public static string AsHtmlApparatus(this DataTable dataTable)
+        public static string AsHtmlApparatus(this DataTable dataTable, ApparatusRenderingParameters parameters)
         {
+            // Set upp the page
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<!DOCTYPE html>");
+            sb.AppendLine(
+                "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
+            sb.AppendLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
+            sb.Append("<style>");
+            sb.Append(parameters.RenderCss());
+            sb.AppendLine("</style></head><body>");
+
+            // Show the variants
+            ChapterReference lastChapter = new ChapterReference();
+            string lastVerse = string.Empty;
             foreach (DataRow row in dataTable.Rows)
             {
-                // TODO: Generate the HTML
-                sb.Append(row);
+                // Separate from the previous phrase if we are in the same chapter/verse
+                ChapterReference thisChapter = new ChapterReference((string)row["Book"], (int)row["Chapter"]);
+                string thisVerse = (string)row["Verse"];
+                if (thisVerse == lastVerse && thisChapter == lastChapter)
+                {
+                    // We are in the same verse
+                    sb.Append(" | ");
+                }
+                else if (thisChapter.Book != lastChapter.Book)
+                {
+                    // We are in a new book
+                    if (!string.IsNullOrEmpty(lastChapter.Book))
+                    {
+                        sb.AppendLine("</p>");
+                    }
+
+                    sb.AppendLine($"<h1>{thisChapter.Book}</h1><p>");
+                }
+                else
+                {
+                    sb.Append(' ');
+                }
+
+                if (thisChapter.ChapterNumber != lastChapter.ChapterNumber
+                    || thisChapter.Book != lastChapter.Book)
+                {
+                    // We are in a new chapter number
+                    sb.Append("<sup>");
+                    if (thisChapter.Book != "Obadiah"
+                        && thisChapter.Book != "Philemon"
+                        && thisChapter.Book != "2 John"
+                        && thisChapter.Book != "3 John"
+                        && thisChapter.Book != "Jude")
+                    {
+                        // We don't show the chapter number in one chapter books
+                        sb.Append($"{thisChapter.ChapterNumber}:");
+                    }
+
+                    sb.Append($"{thisVerse}</sup>");
+                }
+                else if (thisVerse != lastVerse)
+                {
+                    // We are in a new verse
+                    sb.Append($"<sup>{thisVerse}</sup>");
+                }
+
+                // Show the word
+                sb.Append($"<strong>{row["Phrase"]}</strong>");
+
+                // Show the occurence
+                int occurrence = (int)row["Occurrence"];
+                if (occurrence > 0)
+                {
+                    // There is more than one occurrence in this line
+                    sb.Append(parameters.OccurrenceMarker.Replace("%OCCURRENCE%", occurrence.ToString(), StringComparison.OrdinalIgnoreCase));
+                }
+
+                sb.Append(' ');
+
+                // Get the variants by text
+                Dictionary<string, string> variants = new Dictionary<string, string>();
+                for (int i = 5; i < dataTable.Columns.Count; i++)
+                {
+                    // Format based on interlinear paramters
+                    string? variant = row[i].ToString();
+                    if (!string.IsNullOrEmpty(variant))
+                    {
+                        if (parameters.InterlinearIgnoresCase)
+                        {
+                            variant = variant.ToLowerInvariant();
+                        }
+
+                        if (parameters.InterlinearIgnoresDiacritics)
+                        {
+                            variant = variant.Normalize(NormalizationForm.FormD);
+                            char[] chars = variant.Where(c =>
+                                CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
+                            variant = new string(chars).Normalize(NormalizationForm.FormC);
+                        }
+
+                        if (parameters.InterlinearIgnoresPunctuation)
+                        {
+                            variant = new string(variant.Where(c => !char.IsPunctuation(c)).ToArray());
+                        }
+
+                        // Final clean up
+                        variant = variant.NormaliseWhitespace().Trim();
+
+                        // Add the variant
+                        bool variantFound = false;
+                        foreach (string key in variants.Keys)
+                        {
+                            if (string.Compare(
+                                    key,
+                                    variant,
+                                    CultureInfo.InvariantCulture,
+                                    parameters.AsCompareOptions()) == 0)
+                            {
+                                variants[key] += $" {dataTable.Columns[i].ColumnName}";
+                                variantFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!variantFound)
+                        {
+                            variants.Add(variant, dataTable.Columns[i].ColumnName);
+                        }
+                    }
+                }
+
+                // Show the variants by text
+                bool firstVariant = true;
+                foreach ((string variant, string texts) in variants)
+                {
+                    if (!firstVariant)
+                    {
+                        sb.Append("; ");
+                    }
+
+                    sb.Append($"{variant} {texts}");
+                    firstVariant = false;
+                }
+
+                lastChapter = thisChapter;
+                lastVerse = thisVerse;
             }
 
+            if (dataTable.Rows.Count > 0)
+            {
+                sb.Append("</p>");
+            }
+
+            // End the document
+            sb.AppendLine("</body></html>");
             return sb.ToString();
         }
 
@@ -327,6 +472,37 @@ namespace GoToBible.Windows
             Strikeout = font.Strikeout,
             Underline = font.Underline,
         };
+
+        /// <summary>
+        /// Removes extra whitepace, and changes all white space to a simple space.
+        /// </summary>
+        /// <param name="value">The value to normalise.</param>
+        /// <returns>The normalised value.</returns>
+        public static string NormaliseWhitespace(this string value)
+        {
+            StringBuilder sb = new StringBuilder();
+            bool previousIsWhitespace = false;
+            foreach (char character in value)
+            {
+                bool isWhitespace = char.IsWhiteSpace(character);
+                if (previousIsWhitespace && isWhitespace)
+                {
+                    continue;
+                }
+                else if (isWhitespace)
+                {
+                    sb.Append(' ');
+                }
+                else
+                {
+                    sb.Append(character);
+                }
+
+                previousIsWhitespace = isWhitespace;
+            }
+
+            return sb.ToString();
+        }
 
         /// <summary>
         /// Gets the unique key for the translation.
