@@ -100,7 +100,14 @@ namespace GoToBible.Providers
                     {
                         foreach (string bookAndChapter in book.chapters.Select(c => c.passage))
                         {
-                            chapterReferences.Add(new ChapterReference(bookAndChapter));
+                            ChapterReference chapterReference = new ChapterReference(bookAndChapter);
+                            if (chapterReference.ChapterNumber == 0)
+                            {
+                                // Fix Obadiah, Philemon, 2 John, 3 John, Jude
+                                chapterReference.ChapterNumber = 1;
+                            }
+
+                            chapterReferences.Add(chapterReference);
                         }
                     }
 
@@ -181,14 +188,10 @@ namespace GoToBible.Providers
                     // Set the previous chapter for the next iteration (if it needs it)
                     previousChapter = nextChapter;
                 }
+            }
 
-                // Return the chapter
-                return chapter;
-            }
-            else
-            {
-                return chapter;
-            }
+            // Return the chapter
+            return chapter;
         }
 
         /// <inheritdoc/>

@@ -10,6 +10,7 @@ namespace GoToBible.Engine
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Text;
     using System.Text.RegularExpressions;
     using GoToBible.Model;
 
@@ -50,6 +51,97 @@ namespace GoToBible.Engine
             }
 
             return compareOptions;
+        }
+
+        /// <summary>
+        /// Counts the number of occurrences of a substirng within another string.
+        /// </summary>
+        /// <param name="text">The string to check within.</param>
+        /// <param name="value">The substring to count.</param>
+        /// <param name="stringComparison">The string comparison type.</param>
+        /// <returns>The number of occurrences of the substring within the string.</returns>
+        public static int CountOccurrences(this string text, string value, StringComparison stringComparison)
+        {
+            // Clean up the text and value
+            text = $" {text.Trim()} ";
+            value = $" {value.Trim()} ";
+
+            // Get the number of substring occurrences
+            int count = 0;
+            int minIndex = text.IndexOf(value, 0, stringComparison);
+            while (minIndex != -1)
+            {
+                count++;
+                minIndex = text.IndexOf(value, minIndex + value.Length, stringComparison);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Encodes a string for a CSV field.
+        /// </summary>
+        /// <param name="field">The field to encode.</param>
+        /// <param name="separator">The separator (defaults to a comma).</param>
+        /// <returns>
+        /// A string suitable to output to a CSV file.
+        /// </returns>
+        public static string EncodeCsvField(this string field, char separator = ',')
+        {
+            // Set up the string builder
+            StringBuilder sb = new StringBuilder(field);
+
+            // Fields with leading/trailing whitespace must be embedded in double quotes
+            bool embedInQuotes = sb.Length > 0 && (sb[0] == ' ' || sb[0] == '\t' || sb[^1] == ' ' || sb[^1] == '\t');
+
+            // If we have not yet found a reason to embed in quotes
+            if (!embedInQuotes)
+            {
+                for (int i = 0; i < sb.Length; i++)
+                {
+                    // Embed in quotes to preserve commas, line-breaks etc.
+                    if (sb[i] == separator || sb[i] == '\r' || sb[i] == '\n' || sb[i] == '"')
+                    {
+                        embedInQuotes = true;
+                        break;
+                    }
+                }
+            }
+
+            // If the field itself has quotes, they must each be represented by a pair of consecutive quotes.
+            return embedInQuotes ? $"\"{sb.Replace("\"", "\"\"")}\"" : sb.ToString();
+        }
+
+        /// <summary>
+        /// Gets the occurrence number of a substring within another string.
+        /// </summary>
+        /// <param name="text">The string to check within.</param>
+        /// <param name="value">The substring to count.</param>
+        /// <param name="approximatePosition">The approximate position of this occurrence. This should be an underestimate at worst.</param>
+        /// <param name="stringComparison">The string comparison type.</param>
+        /// <returns>The occurrence number of the substring within the string.</returns>
+        public static int GetOccurrence(this string text, string value, int approximatePosition, StringComparison stringComparison)
+        {
+            // Clean up the text and value
+            text = $" {text.Trim()} ";
+            value = $" {value.Trim()} ";
+
+            // Find the occurrence number based on the approximate position
+            int count = 0;
+            int minIndex = text.IndexOf(value, 0, stringComparison);
+            while (minIndex != -1)
+            {
+                count++;
+                if (minIndex >= approximatePosition)
+                {
+                    break;
+                }
+
+                // Check for the next occurrence
+                minIndex = text.IndexOf(value, minIndex + value.Length, stringComparison);
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -136,7 +228,7 @@ namespace GoToBible.Engine
                     // Direct hit
                     return true;
                 }
-                else if (highlightedVerses[i] == "-" && i > 0 && i < (highlightedVerses.Length - 1))
+                else if (highlightedVerses[i] == "-" && i > 0 && i < highlightedVerses.Length - 1)
                 {
                     // Check inside this range
                     bool matches = string.CompareOrdinal(verseNumber, highlightedVerses[i - 1]) > 0 && string.CompareOrdinal(verseNumber, highlightedVerses[i + 1]) < 0;
@@ -145,7 +237,7 @@ namespace GoToBible.Engine
                         return matches;
                     }
                 }
-                else if (highlightedVerses[i] == "-" && i > 0 && i == (highlightedVerses.Length - 1))
+                else if (highlightedVerses[i] == "-" && i > 0 && i == highlightedVerses.Length - 1)
                 {
                     // Check from this range, as the last highlighted verse value is a hyphen
                     return string.CompareOrdinal(verseNumber, highlightedVerses[i - 1]) > 0;
@@ -172,6 +264,14 @@ namespace GoToBible.Engine
             .Replace("[", $"<{italicsTag}>").Replace("]", $"</{italicsTag}>")
             .Replace("<pre>", "[[").Replace("</pre>", "]]")
             .Replace("［", "[").Replace("］", "]");
+
+        /// <summary>
+        /// Strips the HTML tags from the string.
+        /// </summary>
+        /// <param name="input">The input string.</param>
+        /// <returns>The input string without HTML tags.</returns>
+        public static string StripHtml(this string input)
+            => Regex.Replace(input, "<.*?>", string.Empty, RegexOptions.Compiled);
 
         /// <summary>
         /// Renders the supplied words in normal type.

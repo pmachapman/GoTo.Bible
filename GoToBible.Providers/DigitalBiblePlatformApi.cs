@@ -174,7 +174,7 @@ namespace GoToBible.Providers
 
                 // Get the text
                 StringBuilder sb = new StringBuilder();
-                if (chapterJson != null)
+                if (chapterJson is not null)
                 {
                     foreach (var verse in chapterJson.data)
                     {
@@ -224,14 +224,10 @@ namespace GoToBible.Providers
                     // Set the previous chapter for the next iteration (if it needs it)
                     previousChapter = nextChapter;
                 }
+            }
 
-                // Return the chapter
-                return chapter;
-            }
-            else
-            {
-                return chapter;
-            }
+            // Return the chapter
+            return chapter;
         }
 
         /// <inheritdoc/>

@@ -30,10 +30,7 @@ namespace GoToBible.Web.Server.Pages
         /// Initialises a new instance of the <see cref="ErrorModel"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public ErrorModel(ILogger<ErrorModel> logger)
-        {
-            this.logger = logger;
-        }
+        public ErrorModel(ILogger<ErrorModel> logger) => this.logger = logger;
 
         /// <summary>
         /// Gets or sets the request identifier.

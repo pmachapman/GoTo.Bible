@@ -29,20 +29,14 @@ namespace GoToBible.Providers
         /// Initialises a new instance of the <see cref="BookHelper"/> class.
         /// </summary>
         /// <param name="bookChapters">The book chapters.</param>
-        public BookHelper(OrderedDictionary bookChapters)
-        {
-            this.BookChapters = bookChapters;
-        }
+        public BookHelper(OrderedDictionary bookChapters) => this.BookChapters = bookChapters;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="BookHelper"/> class.
         /// </summary>
         /// <param name="bookName">Name of the book.</param>
         /// <param name="chapters">The chapters.</param>
-        public BookHelper(string bookName, int chapters)
-        {
-            this.BookChapters = new OrderedDictionary { [bookName.ToLowerInvariant()] = chapters };
-        }
+        public BookHelper(string bookName, int chapters) => this.BookChapters = new OrderedDictionary { [bookName.ToLowerInvariant()] = chapters };
 
         /// <summary>
         /// Gets the numbers of chapters in each book.

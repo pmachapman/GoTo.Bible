@@ -1,8 +1,11 @@
-﻿// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+﻿// -----------------------------------------------------------------------
+// <copyright file="FormApiKey.Designer.cs" company="Conglomo">
+// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// </copyright>
+// -----------------------------------------------------------------------
 
 namespace GoToBible.Windows
 {
-
     partial class FormApiKey
     {
         /// <summary>

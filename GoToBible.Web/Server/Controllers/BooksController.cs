@@ -28,10 +28,7 @@ namespace GoToBible.Web.Server.Controllers
         /// Initialises a new instance of the <see cref="BooksController" /> class.
         /// </summary>
         /// <param name="providers">The providers.</param>
-        public BooksController(IEnumerable<IProvider> providers)
-        {
-            this.providers = providers;
-        }
+        public BooksController(IEnumerable<IProvider> providers) => this.providers = providers;
 
         /// <summary>
         /// GET: <c>/v1/Books?translation={translation_id}&amp;provider={provider_id}&amp;includeChapters={true_or_false}</c>.
@@ -46,7 +43,7 @@ namespace GoToBible.Web.Server.Controllers
         public async IAsyncEnumerable<Book> Get(string provider, string translation, bool includeChapters)
         {
             IProvider? bookProvider = this.providers.SingleOrDefault(p => p.Id == provider);
-            if (bookProvider != null)
+            if (bookProvider is not null)
             {
                 await foreach (Book book in bookProvider.GetBooksAsync(translation, includeChapters))
                 {

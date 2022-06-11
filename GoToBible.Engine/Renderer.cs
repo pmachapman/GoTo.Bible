@@ -38,28 +38,19 @@ namespace GoToBible.Engine
         /// <summary>
         /// Initialises a new instance of the <see cref="Renderer"/> class.
         /// </summary>
-        public Renderer()
-        {
-            this.Providers = new List<IProvider>();
-        }
+        public Renderer() => this.Providers = new List<IProvider>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="Renderer" /> class.
         /// </summary>
         /// <param name="providers">The providers.</param>
-        public Renderer(IEnumerable<IProvider> providers)
-        {
-            this.Providers = providers.ToList();
-        }
+        public Renderer(IEnumerable<IProvider> providers) => this.Providers = providers.ToList();
 
         /// <summary>
         /// Finalises an instance of the <see cref="Renderer"/> class.
         /// </summary>
-        ~Renderer()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            this.Dispose(false);
-        }
+        /// <remarks>Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</remarks>
+        ~Renderer() => this.Dispose(false);
 
         /// <inheritdoc/>
         public IReadOnlyCollection<IProvider> Providers { get; set; }
@@ -80,7 +71,7 @@ namespace GoToBible.Engine
 
             // Get the first provider
             IProvider? firstProvider = this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider);
-            if (firstProvider == null)
+            if (firstProvider is null)
             {
                 return renderedPassage;
             }
@@ -169,22 +160,26 @@ namespace GoToBible.Engine
                 StringBuilder sb = new StringBuilder();
                 if (renderCompleteHtmlPage)
                 {
-                    sb.AppendLine("<!DOCTYPE html>");
-                    sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
-                    sb.AppendLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
-                    sb.Append("<style>");
-                    sb.Append(parameters.RenderCss());
-                    sb.AppendLine("</style></head><body>");
+                    if (parameters.Format == RenderFormat.Spreadsheet)
+                    {
+                        sb.AppendLine("Book,Chapter,Verse,Occurrence,Phrase,Variant");
+                    }
+                    else
+                    {
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine(
+                            "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
+                        sb.AppendLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
+                        sb.Append("<style>");
+                        sb.Append(parameters.RenderCss());
+                        sb.AppendLine("</style></head><body>");
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(parameters.SecondaryTranslation))
                 {
                     // Get the second provider
-                    IProvider? secondProvider = this.Providers.FirstOrDefault(p => p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider));
-                    if (secondProvider == null)
-                    {
-                        secondProvider = firstProvider;
-                    }
+                    IProvider secondProvider = this.Providers.FirstOrDefault(p => p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider)) ?? firstProvider;
 
                     // Get the second translation, if specified
                     Chapter secondChapter = await secondProvider.GetChapterAsync(parameters.SecondaryTranslation, parameters.PassageReference.ChapterReference);
@@ -247,6 +242,7 @@ namespace GoToBible.Engine
                     // Render each line
                     for (int i = 0; i < lines1.Count; i++)
                     {
+                        string content = string.Empty;
                         hasContent = true;
                         if (i < lines2.Count)
                         {
@@ -269,10 +265,11 @@ namespace GoToBible.Engine
                             }
                             else
                             {
+                                // When rendering the text we want more words in common
                                 useFirstAttempt = firstAttempt.WordsInCommon > secondAttempt.WordsInCommon;
                             }
 
-                            if (parameters.IsDebug)
+                            if (parameters.IsDebug && parameters.Format == RenderFormat.Html)
                             {
                                 // Display debugging information for the renderer
                                 // This does not have to be user-friendly output
@@ -312,7 +309,7 @@ namespace GoToBible.Engine
                             else if (useFirstAttempt)
                             {
                                 // Render the first attempt
-                                sb.Append(firstAttempt.Content);
+                                content = firstAttempt.Content;
 
                                 // Store information for calculating suggestions
                                 if (firstAttempt.WordsInCommon < 3)
@@ -323,7 +320,7 @@ namespace GoToBible.Engine
                             else
                             {
                                 // Render the second attempt
-                                sb.Append(secondAttempt.Content);
+                                content = secondAttempt.Content;
 
                                 // Store information for calculating suggestions
                                 if (secondAttempt.WordsInCommon < 3)
@@ -334,7 +331,24 @@ namespace GoToBible.Engine
                         }
                         else
                         {
-                            sb.Append(RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false, firstChapter.SupportsItalics).Content);
+                            content = RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false, firstChapter.SupportsItalics).Content;
+                        }
+
+                        // Render the content if we are in HTML
+                        if (parameters.Format == RenderFormat.Html)
+                        {
+                            sb.Append(content);
+                        }
+                        else
+                        {
+                            // If we are rendering an apparatus, make sure it has content
+                            string textContent = content.StripHtml().Trim();
+
+                            // If we only have a verse number, or hyphenated verse number, skip
+                            if (!Regex.IsMatch(textContent, "^[\\-0-9]+$", RegexOptions.Compiled))
+                            {
+                                sb.Append(content);
+                            }
                         }
                     }
 
@@ -349,7 +363,7 @@ namespace GoToBible.Engine
                     }
 
                     // Make sure we have some content
-                    if (hasContent)
+                    if (hasContent && parameters.Format == RenderFormat.Html)
                     {
                         // Get all of the translations
                         List<Translation> translations = new List<Translation>();
@@ -366,52 +380,71 @@ namespace GoToBible.Engine
                             }
                         }
 
-                        // Fix up the tooltips
-                        Translation? primaryTranslation = translations.FirstOrDefault(t => t.Code == parameters.PrimaryTranslation);
-                        string primaryTranslationName = primaryTranslation?.UniqueName(translations) ?? "Primary Translation";
-                        Translation? secondaryTranslation = translations.FirstOrDefault(t => t.Code == parameters.SecondaryTranslation);
-                        string secondaryTranslationName = secondaryTranslation?.UniqueName(translations) ?? "Secondary Translation";
-                        sb.Replace($"<span title=\"{parameters.PrimaryTranslation}\">", $"<span title=\"{primaryTranslationName}\">");
-                        sb.Replace($"<span title=\"{parameters.SecondaryTranslation}\">", $"<span title=\"{secondaryTranslationName}\">");
+                        // Get the primary and secondary translations for the following calculations
+                        Translation? primaryTranslation =
+                            translations.FirstOrDefault(t => t.Code == parameters.PrimaryTranslation);
+                        Translation? secondaryTranslation =
+                            translations.FirstOrDefault(t => t.Code == parameters.SecondaryTranslation);
 
-                        // Supplement the translation copyrights if the chapter copyrights are missing
-                        if (string.IsNullOrWhiteSpace(firstChapter.Copyright) && !string.IsNullOrWhiteSpace(primaryTranslation?.Copyright))
+                        // If we are rendering as HTML or an apparatu
+                        if (parameters.Format != RenderFormat.Spreadsheet)
                         {
-                            firstChapter.Copyright = primaryTranslation.Copyright;
-                        }
+                            // Fix up the tooltips
+                            string primaryTranslationName =
+                                primaryTranslation?.UniqueName(translations) ?? "Primary Translation";
+                            string secondaryTranslationName =
+                                secondaryTranslation?.UniqueName(translations) ?? "Secondary Translation";
+                            sb.Replace(
+                                $"<span title=\"{parameters.PrimaryTranslation}\">",
+                                $"<span title=\"{primaryTranslationName}\">");
+                            sb.Replace(
+                                $"<span title=\"{parameters.SecondaryTranslation}\">",
+                                $"<span title=\"{secondaryTranslationName}\">");
 
-                        if (string.IsNullOrWhiteSpace(secondChapter.Copyright) && !string.IsNullOrWhiteSpace(secondaryTranslation?.Copyright))
-                        {
-                            secondChapter.Copyright = secondaryTranslation.Copyright;
-                        }
-
-                        // Display copyright
-                        if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) || !string.IsNullOrWhiteSpace(secondChapter.Copyright))
-                        {
-                            sb.Append("<p class=\"copyright\">");
-                            if (!string.IsNullOrWhiteSpace(firstChapter.Copyright))
+                            // Supplement the translation copyrights if the chapter copyrights are missing
+                            if (string.IsNullOrWhiteSpace(firstChapter.Copyright) &&
+                                !string.IsNullOrWhiteSpace(primaryTranslation?.Copyright))
                             {
-                                sb.Append($"<strong>{primaryTranslationName}: </strong> {firstChapter.Copyright}");
+                                firstChapter.Copyright = primaryTranslation.Copyright;
                             }
 
-                            if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) && !string.IsNullOrWhiteSpace(secondChapter.Copyright))
+                            if (string.IsNullOrWhiteSpace(secondChapter.Copyright) &&
+                                !string.IsNullOrWhiteSpace(secondaryTranslation?.Copyright))
                             {
-                                sb.Append("<br>");
+                                secondChapter.Copyright = secondaryTranslation.Copyright;
                             }
 
-                            if (!string.IsNullOrWhiteSpace(secondChapter.Copyright))
+                            // Display copyright
+                            if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) ||
+                                !string.IsNullOrWhiteSpace(secondChapter.Copyright))
                             {
-                                sb.Append($"<strong>{secondaryTranslationName}: </strong> {secondChapter.Copyright}");
-                            }
+                                sb.Append("<p class=\"copyright\">");
+                                if (!string.IsNullOrWhiteSpace(firstChapter.Copyright))
+                                {
+                                    sb.Append($"<strong>{primaryTranslationName}: </strong> {firstChapter.Copyright}");
+                                }
 
-                            sb.AppendLine("</p>");
+                                if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) &&
+                                    !string.IsNullOrWhiteSpace(secondChapter.Copyright))
+                                {
+                                    sb.Append("<br>");
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(secondChapter.Copyright))
+                                {
+                                    sb.Append(
+                                        $"<strong>{secondaryTranslationName}: </strong> {secondChapter.Copyright}");
+                                }
+
+                                sb.AppendLine("</p>");
+                            }
                         }
 
                         // Generate the rendering suggestions
                         if ((!parameters.InterlinearIgnoresCase
                             || !parameters.InterlinearIgnoresDiacritics
                             || !parameters.InterlinearIgnoresPunctuation)
-                            && linesWithLessThanThreeWordsInCommon > (totalInterlinearLines / 2)
+                            && linesWithLessThanThreeWordsInCommon > totalInterlinearLines / 2
                             && primaryTranslation?.Language == secondaryTranslation?.Language)
                         {
                             // If at least one of "Ignore Case", "Ignore Diacritics", and "Ignore Punctuation" is false, and
@@ -421,7 +454,7 @@ namespace GoToBible.Engine
                         }
 
                         // Display the rendering suggestions, if we are debugging
-                        if (parameters.IsDebug)
+                        if (parameters.IsDebug && parameters.Format != RenderFormat.Spreadsheet)
                         {
                             sb.Append("<p>");
                             sb.Append(HorizontalLine);
@@ -442,13 +475,13 @@ namespace GoToBible.Engine
                     }
 
                     // Display copyright
-                    if (!string.IsNullOrWhiteSpace(firstChapter.Copyright))
+                    if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) && parameters.Format != RenderFormat.Spreadsheet)
                     {
                         sb.AppendLine($"<p class=\"copyright\">{firstChapter.Copyright}</p>");
                     }
                 }
 
-                if (renderCompleteHtmlPage)
+                if (renderCompleteHtmlPage && parameters.Format != RenderFormat.Spreadsheet)
                 {
                     // End the document
                     sb.AppendLine("</body></html>");
@@ -492,6 +525,30 @@ namespace GoToBible.Engine
         }
 
         /// <summary>
+        /// Formats a series of strings for CSV.
+        /// </summary>
+        /// <param name="values">Each of the CSV column values.</param>
+        /// <returns>The CSV string, including a line break.</returns>
+        private static string FormatCsv(params string[] values)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < values.Length; i++)
+            {
+                sb.Append(values[i].EncodeCsvField());
+                if (i == values.Length - 1)
+                {
+                    sb.AppendLine();
+                }
+                else
+                {
+                    sb.Append(',');
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
         /// Renders the interlinear line as HTML.
         /// </summary>
         /// <param name="sb">The string builder.</param>
@@ -499,31 +556,95 @@ namespace GoToBible.Engine
         /// <param name="line2">The second line.</param>
         /// <param name="parameters">The rendering parameters.</param>
         /// <param name="insertAt">The index to insert at. If -1, the segments are appended.</param>
-        private static void RenderInterlinearLineSegmentsAsHtml(StringBuilder sb, string line1, string line2, RenderingParameters parameters, int insertAt)
+        /// <param name="baseLine">The line which <c>param1</c> sits within.Used for apparatus calculations.</param>
+        /// <param name="verseNumber">The verse number. This should be the verse number of the base line.</param>
+        /// <param name="approximatePosition">The approximate position of this phrase. Use for occurrence number calulations.</param>
+        private static void RenderInterlinearLineSegmentsAsHtml(StringBuilder sb, string line1, string line2, RenderingParameters parameters, int insertAt, string baseLine, string verseNumber, int approximatePosition)
         {
             // Do not allow empty lines
             if (string.IsNullOrWhiteSpace(line1) && string.IsNullOrWhiteSpace(line2))
             {
                 return;
             }
-            else if (string.IsNullOrWhiteSpace(line1))
+            else if (string.IsNullOrWhiteSpace(line1) && parameters.Format != RenderFormat.Spreadsheet)
             {
                 line1 = "&nbsp;";
             }
             else if (string.IsNullOrWhiteSpace(line2))
             {
-                line2 = "&nbsp;";
+                if (parameters is SpreadsheetRenderingParameters spreadsheetRenderingParameters)
+                {
+                    line2 = spreadsheetRenderingParameters.OmissionMarker;
+                }
+                else if (parameters.Format != RenderFormat.Spreadsheet)
+                {
+                    line2 = "&nbsp;";
+                }
             }
 
-            // Render interlinear lines
-            string interlinearLine = $"</span><span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">{line1}</span><span title=\"{parameters.SecondaryTranslation}\">{line2}</span></span><span> ";
-            if (insertAt == -1)
+            string lineToRender;
+            if (parameters.Format == RenderFormat.Html)
             {
-                sb.Append(interlinearLine);
+                // Render interlinear lines
+                lineToRender = $"</span><span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">{line1}</span><span title=\"{parameters.SecondaryTranslation}\">{line2}</span></span><span> ";
             }
             else
             {
-                sb.Insert(insertAt, interlinearLine);
+                // Render as an apparatus or a spreadsheet
+
+                // See if the phrase occurs more than once
+                int occurrence = 0;
+                if (baseLine.CountOccurrences(line1, StringComparison.OrdinalIgnoreCase) > 1)
+                {
+                    occurrence = baseLine.GetOccurrence(line1, approximatePosition, StringComparison.OrdinalIgnoreCase);
+                }
+
+                // Clean up the line
+                line1 = line1.Trim();
+
+                // Render as spreadsheet
+                if (parameters.Format == RenderFormat.Spreadsheet)
+                {
+                    // Book,Chapter,Verse,Occurrence,Phrase,Variant
+                    lineToRender = FormatCsv(
+                        parameters.PassageReference.ChapterReference.Book,
+                        parameters.PassageReference.ChapterReference.ChapterNumber.ToString(),
+                        verseNumber,
+                        occurrence.ToString(),
+                        line1,
+                        line2.Trim());
+                }
+                else if (line2.Contains("%OMITTED_PHRASE%", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Allow substitutions for omitted phrases
+                    lineToRender = line2.Replace("%OMITTED_PHRASE%", line1, StringComparison.OrdinalIgnoreCase) + " | ";
+                }
+                else if (occurrence > 0)
+                {
+                    // There is more than one occurrence in this line
+                    string occurrenceMarker = string.Empty;
+                    if (parameters is ApparatusRenderingParameters apparatusParameters)
+                    {
+                        occurrenceMarker = apparatusParameters.OccurrenceMarker.Replace("%OCCURRENCE%", occurrence.ToString(), StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    lineToRender = $"<strong>{line1}</strong>{occurrenceMarker} {line2} | ";
+                }
+                else
+                {
+                    // There is only one occurrence in this line
+                    lineToRender = $"<strong>{line1}</strong> {line2} | ";
+                }
+            }
+
+            // Render the line
+            if (insertAt == -1)
+            {
+                sb.Append(lineToRender);
+            }
+            else
+            {
+                sb.Insert(insertAt, lineToRender);
             }
         }
 
@@ -569,18 +690,11 @@ namespace GoToBible.Engine
                 // Render additional words in italics
                 if (supportsItalics)
                 {
-                    if (parameters.RenderItalics)
-                    {
-                        line = line.RenderItalics();
-                    }
-                    else
-                    {
-                        line = line.StripItalics();
-                    }
+                    line = parameters.RenderItalics ? line.RenderItalics() : line.StripItalics();
                 }
 
                 // Add a HTML and text new line
-                return $"{line} <br>{Environment.NewLine}";
+                return parameters.Format == RenderFormat.Spreadsheet ? line : $"{line} <br>{Environment.NewLine}";
             }
             else
             {
@@ -610,7 +724,7 @@ namespace GoToBible.Engine
                 // Render additional words in italics
                 if (supportsItalics)
                 {
-                    if (parameters.RenderItalics)
+                    if (parameters.RenderItalics && parameters.Format != RenderFormat.Spreadsheet)
                     {
                         line1 = line1.RenderItalics();
 
@@ -639,7 +753,7 @@ namespace GoToBible.Engine
 
                 if (supportsItalics)
                 {
-                    if (parameters.RenderItalics)
+                    if (parameters.RenderItalics && parameters.Format != RenderFormat.Spreadsheet)
                     {
                         line2 = line2.RenderItalics();
 
@@ -716,6 +830,8 @@ namespace GoToBible.Engine
                     bool interlinear = false;
                     string interlinear1 = string.Empty;
                     string interlinear2 = string.Empty;
+                    string lastWordInCommon = string.Empty;
+                    int approximatePosition = 0;
                     for (int i = 0; i < Math.Max(words1.Count, words2.Count); i++)
                     {
                         string word1 = string.Empty;
@@ -735,8 +851,19 @@ namespace GoToBible.Engine
                             // If we are in interlinear mode, return to non-interlinear mode
                             if (interlinear)
                             {
+                                // If we are to render the neighbouring word in the apparatus for additions
+                                bool skipThisWord = false;
+                                if (parameters is SpreadsheetRenderingParameters { RenderNeighbourForAddition: true }
+                                    && string.IsNullOrWhiteSpace(interlinear1))
+                                {
+                                    // Add the appropriate neighbour
+                                    skipThisWord = true;
+                                    interlinear1 = word1;
+                                    interlinear2 = reverseScan ? $"{word2} {interlinear2}" : $"{interlinear2} {word2}";
+                                }
+
                                 // Render interlinear lines
-                                RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1);
+                                RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1, line1, verseNumber1, approximatePosition);
 
                                 // Reset interlinear
                                 interlinear = false;
@@ -745,17 +872,49 @@ namespace GoToBible.Engine
 
                                 // Record as a divergent phrase
                                 renderedVerse.DivergentPhrases++;
+
+                                // Skip this word, if it was added to the interlinear segments
+                                if (skipThisWord)
+                                {
+                                    continue;
+                                }
                             }
+
+                            // Remember the approximate position of end of this word,
+                            // so that we can roughly know where the divergent phrase starts
+                            if (i < words1.Count)
+                            {
+                                int index = 0;
+                                int count = i + 1;
+                                if (reverseScan)
+                                {
+                                    // Exclude the current word in our getting the words from the reversed list
+                                    index = count;
+                                    count = words1.Count - count - 1;
+                                }
+
+                                approximatePosition = count < 1 ? 0 : words1.GetRange(index, count).Sum(w => w.Length + 1);
+                            }
+
+                            // Remember the last word in common for the RenderNeighboutForAddition setting
+                            // when generating an apparatus. This may be used if the last phrase of a pair
+                            // of lines is divergent.
+                            lastWordInCommon = word1;
 
                             // The following word is not divergent
                             renderedVerse.WordsInCommon++;
-                            if (reverseScan)
+
+                            // If we are renderering as HTML, render this word
+                            if (parameters.Format == RenderFormat.Html)
                             {
-                                sb.Insert(0, $"{word1} ");
-                            }
-                            else
-                            {
-                                sb.Append($"{word1} ");
+                                if (reverseScan)
+                                {
+                                    sb.Insert(0, $"{word1} ");
+                                }
+                                else
+                                {
+                                    sb.Append($"{word1} ");
+                                }
                             }
                         }
                         else
@@ -780,8 +939,8 @@ namespace GoToBible.Engine
                                 // If there is any match in the next few words where key and value are the same, skip
                                 if (matches.Any() && !matches.Any(m => m.Key == m.Value && m.Key < i + 7))
                                 {
-                                    KeyValuePair<int, int> closest1 = matches.OrderBy(m => m.Key).First();
-                                    KeyValuePair<int, int> closest2 = matches.OrderBy(m => m.Value).First();
+                                    KeyValuePair<int, int> closest1 = matches.MinBy(m => m.Key);
+                                    KeyValuePair<int, int> closest2 = matches.MinBy(m => m.Value);
 
                                     // If there is a closest match where key and value are the same, skip
                                     if (closest1.Key != closest1.Value && closest2.Key != closest2.Value)
@@ -885,48 +1044,84 @@ namespace GoToBible.Engine
                     // Render remaining interlinear lines
                     if (interlinear)
                     {
-                        RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1);
+                        // If we are to render the neighbouring word in the apparatus for additions
+                        if (parameters is SpreadsheetRenderingParameters { RenderNeighbourForAddition: true }
+                            && string.IsNullOrWhiteSpace(interlinear1))
+                        {
+                            // Add the appropriate neighbour
+                            // Note how the order for interlinear2 varies from the block this same operation is performed above.
+                            // That is because there we are working with the word after the interlinear portion, here as we are at
+                            // end of the line, we are dealing with the word before the interlinear portion.
+                            interlinear1 = lastWordInCommon;
+                            interlinear2 = reverseScan ? $"{interlinear2} {lastWordInCommon}" : $"{lastWordInCommon} {interlinear2}";
+                        }
+
+                        RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1, line1, verseNumber1, approximatePosition);
 
                         // Record as a divergent phrase
                         renderedVerse.DivergentPhrases++;
                     }
 
-                    // Finish
-                    sb.Append("</span>");
-
-                    // Add any highlighting
-                    if (verseNumber1.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses)
-                        || verseNumber2.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
+                    // Finish HTML and Apparatus content
+                    if (parameters.Format != RenderFormat.Spreadsheet)
                     {
-                        // Add the verse number
-                        if (verseNumber1 == verseNumber2)
+                        sb.Append("</span>");
+
+                        // Add any highlighting
+                        if (verseNumber1.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses)
+                            || verseNumber2.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
                         {
-                            sb.Insert(0, $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <mark><span>");
+                            // Add the verse number
+                            if (verseNumber1 == verseNumber2)
+                            {
+                                sb.Insert(0, $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <mark><span>");
+                            }
+                            else
+                            {
+                                sb.Insert(0, $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <mark><span> ");
+                            }
+
+                            sb.Append("</mark>");
                         }
                         else
                         {
-                            sb.Insert(0, $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <mark><span> ");
-                        }
-
-                        sb.Append("</mark>");
-                    }
-                    else
-                    {
-                        // Add the verse number without highlighting
-                        if (verseNumber1 == verseNumber2)
-                        {
-                            sb.Insert(0, $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <span>");
-                        }
-                        else
-                        {
-                            sb.Insert(0, $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <span> ");
+                            // Add the verse number without highlighting
+                            if (verseNumber1 == verseNumber2)
+                            {
+                                sb.Insert(0, $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <span>");
+                            }
+                            else
+                            {
+                                sb.Insert(0, $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <span> ");
+                            }
                         }
                     }
                 }
 
-                // Add a HTML and text new line
-                renderedVerse.Content = $"{sb} <br>{Environment.NewLine}";
-                return renderedVerse;
+                if (parameters.Format == RenderFormat.Html)
+                {
+                    // Add a HTML and text new line
+                    renderedVerse.Content = $"{sb} <br>{Environment.NewLine}";
+                }
+                else if (parameters.Format == RenderFormat.Spreadsheet)
+                {
+                    // We do not need an extra line break for a spreadsheet
+                    renderedVerse.Content = sb.ToString();
+                }
+                else
+                {
+                    // Cleanup the end of the apparatus
+                    if (parameters.Format == RenderFormat.Apparatus
+                        && sb[^9] == '|')
+                    {
+                        // Remove "| " from the end (" | </span>") by replacing with a space
+                        // as HTML doesn't mind multiple spaces
+                        sb[^9] = ' ';
+                    }
+
+                    // Render an apparatus plainly
+                    renderedVerse.Content = $"{sb}{Environment.NewLine}";
+                }
             }
             else if (!string.IsNullOrWhiteSpace(line1))
             {
@@ -937,7 +1132,25 @@ namespace GoToBible.Engine
                     string verseNumber = line1.GetVerseNumber();
                     if (verseNumber.IsValidVerseNumber())
                     {
-                        if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
+                        if (parameters.Format == RenderFormat.Spreadsheet)
+                        {
+                            // Just in case parameters is not a SpreadsheetRenderingParameters
+                            string omissionMarker = SpreadsheetRenderingParameters.Omit;
+                            if (parameters is SpreadsheetRenderingParameters spreadsheetRenderingParameters)
+                            {
+                                omissionMarker = spreadsheetRenderingParameters.OmissionMarker;
+                            }
+
+                            // Book,Chapter,Verse,Occurrence,Phrase,Variant
+                            line1 = FormatCsv(
+                                parameters.PassageReference.ChapterReference.Book,
+                                parameters.PassageReference.ChapterReference.ChapterNumber.ToString(),
+                                verseNumber,
+                                "0",
+                                line2[(line2.IndexOf(' ') + 1)..].Trim(),
+                                omissionMarker);
+                        }
+                        else if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
                         {
                             line1 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\"><mark>" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</mark></span><span>&nbsp;</span></span>";
                         }
@@ -946,7 +1159,7 @@ namespace GoToBible.Engine
                             line1 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</span><span>&nbsp;</span></span>";
                         }
                     }
-                    else
+                    else if (parameters.Format != RenderFormat.Spreadsheet)
                     {
                         line1 = $"<span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line1.Trim() + "</span><span>&nbsp;</span></span>";
                     }
@@ -955,9 +1168,8 @@ namespace GoToBible.Engine
                 // Set the statistics
                 renderedVerse.DivergentPhrases = 1;
 
-                // Add a HTML and text new line
-                renderedVerse.Content = $"{line1} <br>{Environment.NewLine}";
-                return renderedVerse;
+                // Add an HTML and text new line if not a spreadsheet
+                renderedVerse.Content = parameters.Format == RenderFormat.Spreadsheet ? line1 : $"{line1} <br>{Environment.NewLine}";
             }
             else if (!string.IsNullOrWhiteSpace(line2))
             {
@@ -968,7 +1180,18 @@ namespace GoToBible.Engine
                     string verseNumber = line2.GetVerseNumber();
                     if (verseNumber.IsValidVerseNumber())
                     {
-                        if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
+                        if (parameters.Format == RenderFormat.Spreadsheet)
+                        {
+                            // Book,Chapter,Verse,Occurrence,Phrase,Variant
+                            line2 = FormatCsv(
+                                parameters.PassageReference.ChapterReference.Book,
+                                parameters.PassageReference.ChapterReference.ChapterNumber.ToString(),
+                                verseNumber,
+                                "0",
+                                string.Empty,
+                                line2[(line2.IndexOf(' ') + 1)..].Trim());
+                        }
+                        else if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
                         {
                             line2 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\"><mark>" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</mark></span></span>";
                         }
@@ -977,7 +1200,7 @@ namespace GoToBible.Engine
                             line2 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\">" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</span></span>";
                         }
                     }
-                    else
+                    else if (parameters.Format != RenderFormat.Spreadsheet)
                     {
                         line2 = $"<span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line2.Trim() + "</span><span>&nbsp;</span></span>";
                     }
@@ -986,15 +1209,15 @@ namespace GoToBible.Engine
                 // Set the statistics
                 renderedVerse.DivergentPhrases = 1;
 
-                // Add a HTML and text new line
-                renderedVerse.Content = $"{line2} <br>{Environment.NewLine}";
-                return renderedVerse;
+                // Add an HTML and text new line if not a spreadsheet
+                renderedVerse.Content = parameters.Format == RenderFormat.Spreadsheet ? line2 : $"{line2} <br>{Environment.NewLine}";
             }
             else
             {
                 renderedVerse.Content = string.Empty;
-                return renderedVerse;
             }
+
+            return renderedVerse;
         }
     }
 }

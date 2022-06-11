@@ -151,14 +151,14 @@ namespace GoToBible.Windows
             try
             {
                 Type? type = Type.GetTypeFromProgID("LogosBibleSoftware.Launcher", true);
-                if (type != null)
+                if (type is not null)
                 {
                     this.launcher = Activator.CreateInstance(type);
                 }
             }
             catch (Exception ex)
             {
-                if (!(ex is ArgumentException
+                if (ex is not (ArgumentException
                     or ArgumentNullException
                     or COMException
                     or InvalidComObjectException
@@ -206,15 +206,15 @@ namespace GoToBible.Windows
             };
 
             // If Logos is running
-            if (this.launcher?.Application != null)
+            if (this.launcher?.Application is not null)
             {
                 dynamic? request = this.launcher.Application.CopyBibleVerses.CreateRequest();
-                if (request != null)
+                if (request is not null)
                 {
                     request.Reference = this.launcher.Application.DataTypes.GetDataType("bible").ParseReference($"{book} {chapterNumber}");
                     chapter.Text = this.launcher.Application.CopyBibleVerses.GetText(request);
                     dynamic referenceDetails = request.Reference.Details;
-                    if (referenceDetails?.NextChapter?.Details != null)
+                    if (referenceDetails?.NextChapter?.Details is not null)
                     {
                         // This is usually an integer (e.g. 1), but could be a letter (e.g. A) or a number-letter (e.g. 1A) or a special value like Title
                         if (!int.TryParse(referenceDetails.NextChapter.Details.Chapter, out int nextChapter))
@@ -225,7 +225,7 @@ namespace GoToBible.Windows
                         chapter.NextChapterReference = new ChapterReference(BookMapping[referenceDetails.NextChapter.Details.Book], nextChapter);
                     }
 
-                    if (referenceDetails?.PreviousChapter?.Details != null)
+                    if (referenceDetails?.PreviousChapter?.Details is not null)
                     {
                         // This is usually an integer (e.g. 1), but could be a letter (e.g. A) or a number-letter (e.g. 1A) or a special value like Title
                         if (!int.TryParse(referenceDetails.PreviousChapter.Details.Chapter, out int previousChapter))
@@ -251,7 +251,7 @@ namespace GoToBible.Windows
         /// <inheritdoc/>
         public async IAsyncEnumerable<Translation> GetTranslationsAsync()
         {
-            if (this.launcher?.Application != null)
+            if (this.launcher?.Application is not null)
             {
                 yield return await Task.FromResult(Translation);
             }

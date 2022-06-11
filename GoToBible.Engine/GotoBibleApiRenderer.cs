@@ -44,11 +44,8 @@ namespace GoToBible.Engine
         /// <summary>
         /// Finalises an instance of the <see cref="GotoBibleApiRenderer"/> class.
         /// </summary>
-        ~GotoBibleApiRenderer()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            this.Dispose(false);
-        }
+        /// <remarks>Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</remarks>
+        ~GotoBibleApiRenderer() => this.Dispose(false);
 
         /// <inheritdoc/>
         public IReadOnlyCollection<IProvider> Providers { get; set; }

@@ -275,7 +275,7 @@ namespace GoToBible.Providers
                 chapter.Text = output;
 
                 // Get the previous chapter reference
-                if (chapterJson.data.previous != null && ReverseBookCodeMap.ContainsKey(chapterJson.data.previous.bookId))
+                if (chapterJson.data.previous is not null && ReverseBookCodeMap.ContainsKey(chapterJson.data.previous.bookId))
                 {
                     string previousBook = ReverseBookCodeMap[chapterJson.data.previous.bookId];
                     if (!int.TryParse(chapterJson.data.previous.number, out int previousChapter))
@@ -287,7 +287,7 @@ namespace GoToBible.Providers
                 }
 
                 // Get the next chapter reference
-                if (chapterJson.data.next != null && ReverseBookCodeMap.ContainsKey(chapterJson.data.next.bookId))
+                if (chapterJson.data.next is not null && ReverseBookCodeMap.ContainsKey(chapterJson.data.next.bookId))
                 {
                     string nextBook = ReverseBookCodeMap[chapterJson.data.next.bookId];
                     if (!int.TryParse(chapterJson.data.next.number, out int nextChapter))
@@ -297,14 +297,10 @@ namespace GoToBible.Providers
 
                     chapter.NextChapterReference = new ChapterReference(nextBook, nextChapter);
                 }
+            }
 
-                // Return the chapter
-                return chapter;
-            }
-            else
-            {
-                return chapter;
-            }
+            // Return the chapter
+            return chapter;
         }
 
         /// <inheritdoc/>

@@ -1,4 +1,10 @@
-﻿namespace GoToBible.Windows
+﻿// -----------------------------------------------------------------------
+// <copyright file="FormMain.Designer.cs" company="Conglomo">
+// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace GoToBible.Windows
 {
     partial class FormMain
     {
@@ -19,6 +25,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.ToolStripContainerMain = new System.Windows.Forms.ToolStripContainer();
             this.SplitContainerMain = new System.Windows.Forms.SplitContainer();
+            this.ToolStripExtras = new System.Windows.Forms.ToolStrip();
+            this.ToolStripButtonGitHub = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSettings = new System.Windows.Forms.ToolStrip();
             this.ToolStripButtonNewWindow = new System.Windows.Forms.ToolStripButton();
             this.ToolStripButtonWebBrowser = new System.Windows.Forms.ToolStripButton();
@@ -65,25 +73,24 @@
             this.ToolStripResource = new System.Windows.Forms.ToolStrip();
             this.ToolStripLabelResource = new System.Windows.Forms.ToolStripLabel();
             this.ToolStripComboBoxResource = new System.Windows.Forms.ToolStripComboBox();
-            this.ToolStripExtras = new System.Windows.Forms.ToolStrip();
             this.FontDialogMain = new System.Windows.Forms.FontDialog();
             this.ColourDialogBackground = new System.Windows.Forms.ColorDialog();
             this.ToolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.FolderBrowserDialogMain = new System.Windows.Forms.FolderBrowserDialog();
             this.SaveFileDialogMain = new System.Windows.Forms.SaveFileDialog();
             this.ColourDialogHighlight = new System.Windows.Forms.ColorDialog();
-            this.ToolStripButtonGitHub = new System.Windows.Forms.ToolStripButton();
+            this.ToolStripButtonApparatusGenerator = new System.Windows.Forms.ToolStripButton();
             this.ToolStripContainerMain.ContentPanel.SuspendLayout();
             this.ToolStripContainerMain.TopToolStripPanel.SuspendLayout();
             this.ToolStripContainerMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainerMain)).BeginInit();
             this.SplitContainerMain.SuspendLayout();
+            this.ToolStripExtras.SuspendLayout();
             this.ToolStripSettings.SuspendLayout();
             this.ToolStripNavigate.SuspendLayout();
             this.ToolStripTranslation.SuspendLayout();
             this.ToolStripPassage.SuspendLayout();
             this.ToolStripResource.SuspendLayout();
-            this.ToolStripExtras.SuspendLayout();
             this.SuspendLayout();
             // 
             // ToolStripContainerMain
@@ -95,10 +102,12 @@
             // ToolStripContainerMain.ContentPanel
             // 
             this.ToolStripContainerMain.ContentPanel.Controls.Add(this.SplitContainerMain);
-            this.ToolStripContainerMain.ContentPanel.Size = new System.Drawing.Size(1014, 367);
+            this.ToolStripContainerMain.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ToolStripContainerMain.ContentPanel.Size = new System.Drawing.Size(1183, 439);
             this.ToolStripContainerMain.Location = new System.Drawing.Point(-1, 0);
+            this.ToolStripContainerMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ToolStripContainerMain.Name = "ToolStripContainerMain";
-            this.ToolStripContainerMain.Size = new System.Drawing.Size(1014, 467);
+            this.ToolStripContainerMain.Size = new System.Drawing.Size(1183, 539);
             this.ToolStripContainerMain.TabIndex = 0;
             this.ToolStripContainerMain.Text = "toolStripContainer1";
             // 
@@ -107,20 +116,41 @@
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripExtras);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripSettings);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripNavigate);
-            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripTranslation);
-            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripPassage);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripResource);
+            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripPassage);
+            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripTranslation);
             // 
             // SplitContainerMain
             // 
             this.SplitContainerMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SplitContainerMain.Location = new System.Drawing.Point(0, 0);
+            this.SplitContainerMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.SplitContainerMain.Name = "SplitContainerMain";
             this.SplitContainerMain.Panel2Collapsed = true;
-            this.SplitContainerMain.Size = new System.Drawing.Size(1014, 367);
+            this.SplitContainerMain.Size = new System.Drawing.Size(1183, 439);
             this.SplitContainerMain.SplitterDistance = 615;
-            this.SplitContainerMain.SplitterWidth = 6;
+            this.SplitContainerMain.SplitterWidth = 7;
             this.SplitContainerMain.TabIndex = 0;
+            // 
+            // ToolStripExtras
+            // 
+            this.ToolStripExtras.Dock = System.Windows.Forms.DockStyle.None;
+            this.ToolStripExtras.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripButtonGitHub});
+            this.ToolStripExtras.Location = new System.Drawing.Point(4, 0);
+            this.ToolStripExtras.Name = "ToolStripExtras";
+            this.ToolStripExtras.Size = new System.Drawing.Size(35, 25);
+            this.ToolStripExtras.TabIndex = 5;
+            // 
+            // ToolStripButtonGitHub
+            // 
+            this.ToolStripButtonGitHub.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ToolStripButtonGitHub.Image = global::GoToBible.Windows.Properties.Resources.GitHub;
+            this.ToolStripButtonGitHub.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ToolStripButtonGitHub.Name = "ToolStripButtonGitHub";
+            this.ToolStripButtonGitHub.Size = new System.Drawing.Size(23, 22);
+            this.ToolStripButtonGitHub.Text = "Contribute on GitHub";
+            this.ToolStripButtonGitHub.Click += new System.EventHandler(this.ToolStripButtonGitHub_Click);
             // 
             // ToolStripSettings
             // 
@@ -128,10 +158,11 @@
             this.ToolStripSettings.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripButtonNewWindow,
             this.ToolStripButtonWebBrowser,
+            this.ToolStripButtonApparatusGenerator,
             this.ToolStripSplitButtonSettings});
             this.ToolStripSettings.Location = new System.Drawing.Point(3, 25);
             this.ToolStripSettings.Name = "ToolStripSettings";
-            this.ToolStripSettings.Size = new System.Drawing.Size(90, 25);
+            this.ToolStripSettings.Size = new System.Drawing.Size(144, 25);
             this.ToolStripSettings.TabIndex = 3;
             // 
             // ToolStripButtonNewWindow
@@ -181,7 +212,7 @@
             this.ToolStripMenuItemIgnoreDiacritics,
             this.ToolStripMenuItemIgnorePunctuation});
             this.ToolStripMenuItemInterlinear.Name = "ToolStripMenuItemInterlinear";
-            this.ToolStripMenuItemInterlinear.Size = new System.Drawing.Size(177, 22);
+            this.ToolStripMenuItemInterlinear.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemInterlinear.Text = "&Interlinear...";
             // 
             // ToolStripMenuItemIgnoreCase
@@ -213,7 +244,7 @@
             this.ToolStripMenuItemShowItalics.CheckOnClick = true;
             this.ToolStripMenuItemShowItalics.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemShowItalics.Image")));
             this.ToolStripMenuItemShowItalics.Name = "ToolStripMenuItemShowItalics";
-            this.ToolStripMenuItemShowItalics.Size = new System.Drawing.Size(177, 22);
+            this.ToolStripMenuItemShowItalics.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemShowItalics.Text = "&Show Italics";
             this.ToolStripMenuItemShowItalics.ToolTipText = "Show words supplied by translators in italics";
             this.ToolStripMenuItemShowItalics.Click += new System.EventHandler(this.ToolStripMenuItemShowItalics_Click);
@@ -222,7 +253,7 @@
             // 
             this.ToolStripMenuItemFontSettings.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemFontSettings.Image")));
             this.ToolStripMenuItemFontSettings.Name = "ToolStripMenuItemFontSettings";
-            this.ToolStripMenuItemFontSettings.Size = new System.Drawing.Size(177, 22);
+            this.ToolStripMenuItemFontSettings.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemFontSettings.Text = "&Font Settings";
             this.ToolStripMenuItemFontSettings.ToolTipText = "Change the font and text colour";
             this.ToolStripMenuItemFontSettings.Click += new System.EventHandler(this.ToolStripMenuItemFontSettings_Click);
@@ -231,7 +262,7 @@
             // 
             this.ToolStripMenuItemHighlightColour.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemHighlightColour.Image")));
             this.ToolStripMenuItemHighlightColour.Name = "ToolStripMenuItemHighlightColour";
-            this.ToolStripMenuItemHighlightColour.Size = new System.Drawing.Size(177, 22);
+            this.ToolStripMenuItemHighlightColour.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemHighlightColour.Text = "&Highlight Colour";
             this.ToolStripMenuItemHighlightColour.ToolTipText = "Change the colour that verses are highlighted in";
             this.ToolStripMenuItemHighlightColour.Click += new System.EventHandler(this.ToolStripMenuItemHighlightColour_Click);
@@ -240,7 +271,7 @@
             // 
             this.ToolStripMenuItemBackgroundColour.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemBackgroundColour.Image")));
             this.ToolStripMenuItemBackgroundColour.Name = "ToolStripMenuItemBackgroundColour";
-            this.ToolStripMenuItemBackgroundColour.Size = new System.Drawing.Size(177, 22);
+            this.ToolStripMenuItemBackgroundColour.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemBackgroundColour.Text = "Background &Colour";
             this.ToolStripMenuItemBackgroundColour.ToolTipText = "Change the background colour";
             this.ToolStripMenuItemBackgroundColour.Click += new System.EventHandler(this.ToolStripMenuItemBackgroundColour_Click);
@@ -256,7 +287,7 @@
             this.ToolStripMenuItemSql});
             this.ToolStripMenuItemEnterApiKeys.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemEnterApiKeys.Image")));
             this.ToolStripMenuItemEnterApiKeys.Name = "ToolStripMenuItemEnterApiKeys";
-            this.ToolStripMenuItemEnterApiKeys.Size = new System.Drawing.Size(177, 22);
+            this.ToolStripMenuItemEnterApiKeys.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemEnterApiKeys.Text = "Enter &API Key...";
             this.ToolStripMenuItemEnterApiKeys.ToolTipText = "Enter API keys for Bible APIs";
             // 
@@ -328,7 +359,7 @@
             this.ToolStripMenuItemSettingsDirectory});
             this.ToolStripMenuItemConfigure.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemConfigure.Image")));
             this.ToolStripMenuItemConfigure.Name = "ToolStripMenuItemConfigure";
-            this.ToolStripMenuItemConfigure.Size = new System.Drawing.Size(177, 22);
+            this.ToolStripMenuItemConfigure.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemConfigure.Text = "C&onfigure...";
             this.ToolStripMenuItemConfigure.ToolTipText = "Configure Providers and Translations";
             // 
@@ -418,7 +449,7 @@
             this.ToolStripNavigate.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripButtonNavigateBack,
             this.ToolStripButtonNavigateForward});
-            this.ToolStripNavigate.Location = new System.Drawing.Point(93, 25);
+            this.ToolStripNavigate.Location = new System.Drawing.Point(147, 25);
             this.ToolStripNavigate.Name = "ToolStripNavigate";
             this.ToolStripNavigate.Size = new System.Drawing.Size(58, 25);
             this.ToolStripNavigate.TabIndex = 2;
@@ -453,7 +484,7 @@
             this.ToolStripLabelSecondaryTranslation,
             this.ToolStripComboBoxSecondaryTranslation,
             this.ToolStripButtonSwap});
-            this.ToolStripTranslation.Location = new System.Drawing.Point(189, 75);
+            this.ToolStripTranslation.Location = new System.Drawing.Point(3, 75);
             this.ToolStripTranslation.Name = "ToolStripTranslation";
             this.ToolStripTranslation.Size = new System.Drawing.Size(642, 25);
             this.ToolStripTranslation.TabIndex = 0;
@@ -513,7 +544,7 @@
             this.ToolStripLabelPassage,
             this.ToolStripTextBoxPassage,
             this.ToolStripButtonPassageGo});
-            this.ToolStripPassage.Location = new System.Drawing.Point(3, 75);
+            this.ToolStripPassage.Location = new System.Drawing.Point(3, 50);
             this.ToolStripPassage.Name = "ToolStripPassage";
             this.ToolStripPassage.Size = new System.Drawing.Size(186, 25);
             this.ToolStripPassage.TabIndex = 1;
@@ -526,7 +557,6 @@
             // 
             // ToolStripTextBoxPassage
             // 
-            this.ToolStripTextBoxPassage.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.ToolStripTextBoxPassage.Name = "ToolStripTextBoxPassage";
             this.ToolStripTextBoxPassage.Size = new System.Drawing.Size(100, 25);
             this.ToolStripTextBoxPassage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ToolStripTextBoxPassage_KeyDown);
@@ -547,7 +577,7 @@
             this.ToolStripResource.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripLabelResource,
             this.ToolStripComboBoxResource});
-            this.ToolStripResource.Location = new System.Drawing.Point(3, 50);
+            this.ToolStripResource.Location = new System.Drawing.Point(189, 50);
             this.ToolStripResource.Name = "ToolStripResource";
             this.ToolStripResource.Size = new System.Drawing.Size(244, 25);
             this.ToolStripResource.TabIndex = 4;
@@ -565,20 +595,10 @@
             this.ToolStripComboBoxResource.Size = new System.Drawing.Size(175, 25);
             this.ToolStripComboBoxResource.SelectedIndexChanged += new System.EventHandler(this.ToolStripComboBoxResource_SelectedIndexChanged);
             // 
-            // ToolStripExtras
-            // 
-            this.ToolStripExtras.Dock = System.Windows.Forms.DockStyle.None;
-            this.ToolStripExtras.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripButtonGitHub});
-            this.ToolStripExtras.Location = new System.Drawing.Point(4, 0);
-            this.ToolStripExtras.Name = "ToolStripExtras";
-            this.ToolStripExtras.Size = new System.Drawing.Size(66, 25);
-            this.ToolStripExtras.TabIndex = 5;
-            // 
             // FontDialogMain
             // 
             this.FontDialogMain.AllowScriptChange = false;
-            this.FontDialogMain.Font = new System.Drawing.Font("Calibri", 14.25F);
+            this.FontDialogMain.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FontDialogMain.ShowColor = true;
             // 
             // ColourDialogBackground
@@ -598,23 +618,24 @@
             // 
             this.ColourDialogHighlight.AnyColor = true;
             // 
-            // ToolStripButtonGitHub
+            // ToolStripButtonApparatusGenerator
             // 
-            this.ToolStripButtonGitHub.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonGitHub.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonGitHub.Image")));
-            this.ToolStripButtonGitHub.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ToolStripButtonGitHub.Name = "ToolStripButtonGitHub";
-            this.ToolStripButtonGitHub.Size = new System.Drawing.Size(23, 22);
-            this.ToolStripButtonGitHub.Text = "Contribute on GitHub";
-            this.ToolStripButtonGitHub.Click += new System.EventHandler(this.ToolStripButtonGitHub_Click);
+            this.ToolStripButtonApparatusGenerator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ToolStripButtonApparatusGenerator.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonApparatusGenerator.Image")));
+            this.ToolStripButtonApparatusGenerator.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ToolStripButtonApparatusGenerator.Name = "ToolStripButtonApparatusGenerator";
+            this.ToolStripButtonApparatusGenerator.Size = new System.Drawing.Size(23, 22);
+            this.ToolStripButtonApparatusGenerator.Text = "&Apparatus Generator";
+            this.ToolStripButtonApparatusGenerator.Click += new System.EventHandler(this.ToolStripButtonApparatusGenerator_Click);
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1012, 467);
+            this.ClientSize = new System.Drawing.Size(1181, 539);
             this.Controls.Add(this.ToolStripContainerMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "FormMain";
             this.Text = "GoTo.Bible";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -627,6 +648,8 @@
             this.ToolStripContainerMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainerMain)).EndInit();
             this.SplitContainerMain.ResumeLayout(false);
+            this.ToolStripExtras.ResumeLayout(false);
+            this.ToolStripExtras.PerformLayout();
             this.ToolStripSettings.ResumeLayout(false);
             this.ToolStripSettings.PerformLayout();
             this.ToolStripNavigate.ResumeLayout(false);
@@ -637,8 +660,6 @@
             this.ToolStripPassage.PerformLayout();
             this.ToolStripResource.ResumeLayout(false);
             this.ToolStripResource.PerformLayout();
-            this.ToolStripExtras.ResumeLayout(false);
-            this.ToolStripExtras.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -701,6 +722,7 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSettingsDirectory;
         private System.Windows.Forms.ToolStrip ToolStripExtras;
         private System.Windows.Forms.ToolStripButton ToolStripButtonGitHub;
+        private System.Windows.Forms.ToolStripButton ToolStripButtonApparatusGenerator;
     }
 }
 
