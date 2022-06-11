@@ -288,20 +288,61 @@ namespace GoToBible.Windows
             }
 
             // If we have more than one variant
+            DataTable finalDataTable;
             if (dataTable.Columns.Count > 6)
             {
-                // TODO: De-duplicate the rows by filling in empty columns
-                // TODO: A Verse Comparer (handle hyphens and letters)
+                // Set up the final data table which will be de-duplicated and sorted
+                finalDataTable = new DataTable();
+                foreach (DataColumn column in dataTable.Columns)
+                {
+                    finalDataTable.Columns.Add(column.ColumnName, column.DataType);
+                }
+
+                // De-duplicate the rows by filling in empty columns
                 // Order By: Book,Chapter,Verse,Occurrence,Phrase
+                DataRow? lastRow = null;
                 foreach (DataRow row in dataTable.AsEnumerable()
                              .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
                              .ThenBy(r => (int)r["Chapter"])
-                             .ThenBy(r => (string)r["Verse"])
-                             .ThenBy(r => (int)r["Occurence"])
+                             .ThenBy(r => (string)r["Verse"], new VerseComparer())
+                             .ThenBy(r => (int)r["Occurrence"])
                              .ThenBy(r => (string)r["Phrase"]))
                 {
-                    // TODO: Merge the rows where appropriate
+                    // If the last row is the same as this row
+                    // TODO: Fix this so it accurate compares
+                    if (lastRow != null
+                        && row["Book"] == lastRow["Book"]
+                        && row["Chapter"] == lastRow["Chapter"]
+                        && row["Verse"] == lastRow["Verse"]
+                        && row["Occurrence"] == lastRow["Occurrence"]
+                        && row["Phrase"] == lastRow["Phrase"])
+                    {
+                        // Fill in the empty fields
+                        for (int i = 5; i < row.ItemArray.Length; i++)
+                        {
+                            if (string.IsNullOrEmpty(lastRow[i].ToString())
+                                && !string.IsNullOrEmpty(row[i].ToString()))
+                            {
+                                lastRow.BeginEdit();
+                                lastRow[i] = row[i];
+                                lastRow.EndEdit();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Add the data row to the new table
+                        DataRow newRow = finalDataTable.NewRow();
+                        newRow.ItemArray = row.ItemArray;
+                        finalDataTable.Rows.Add(newRow);
+                    }
+
+                    lastRow = row;
                 }
+            }
+            else
+            {
+                finalDataTable = dataTable;
             }
 
             // Save the output
@@ -313,7 +354,7 @@ namespace GoToBible.Windows
                 if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
                     // Save the file with the BOM
-                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, dataTable.AsCsvData(), Encoding.UTF8);
+                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, finalDataTable.AsCsvData(), Encoding.UTF8);
                 }
             }
             else
@@ -324,7 +365,7 @@ namespace GoToBible.Windows
                 if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
                     // Save the file with the BOM
-                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, dataTable.AsHtmlApparatus(), Encoding.UTF8);
+                    await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, finalDataTable.AsHtmlApparatus(), Encoding.UTF8);
                 }
             }
 
