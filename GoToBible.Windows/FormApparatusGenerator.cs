@@ -309,13 +309,12 @@ namespace GoToBible.Windows
                              .ThenBy(r => (string)r["Phrase"]))
                 {
                     // If the last row is the same as this row
-                    // TODO: Fix this so it accurate compares
                     if (lastRow != null
-                        && row["Book"] == lastRow["Book"]
-                        && row["Chapter"] == lastRow["Chapter"]
-                        && row["Verse"] == lastRow["Verse"]
-                        && row["Occurrence"] == lastRow["Occurrence"]
-                        && row["Phrase"] == lastRow["Phrase"])
+                        && (string)row["Book"] == (string)lastRow["Book"]
+                        && (int)row["Chapter"] == (int)lastRow["Chapter"]
+                        && (string)row["Verse"] == (string)lastRow["Verse"]
+                        && (int)row["Occurrence"] == (int)lastRow["Occurrence"]
+                        && (string)row["Phrase"] == (string)lastRow["Phrase"])
                     {
                         // Fill in the empty fields
                         for (int i = 5; i < row.ItemArray.Length; i++)
@@ -335,9 +334,8 @@ namespace GoToBible.Windows
                         DataRow newRow = finalDataTable.NewRow();
                         newRow.ItemArray = row.ItemArray;
                         finalDataTable.Rows.Add(newRow);
+                        lastRow = newRow;
                     }
-
-                    lastRow = row;
                 }
             }
             else
