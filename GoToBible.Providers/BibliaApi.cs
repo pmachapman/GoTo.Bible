@@ -167,6 +167,9 @@ namespace GoToBible.Providers
                     chapter.Text = chapter.Text[5..];
                 }
 
+                // Clean up Modifier Letter Apostrophes in scrmorph
+                chapter.Text = chapter.Text.Replace("ʼ", "᾿");
+
                 // Get the next/previous chapters
                 bool getNextChapter = false;
                 string previousChapter = string.Empty;
