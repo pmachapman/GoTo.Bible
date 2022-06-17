@@ -10,6 +10,7 @@ namespace GoToBible.Windows
     using System.Collections.Generic;
     using System.Data;
     using System.Drawing;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Runtime.Versioning;
@@ -296,22 +297,31 @@ namespace GoToBible.Windows
             DataTable finalDataTable;
             if (dataTable.Columns.Count > 6)
             {
-                // Set up the final data table which will be de-duplicated and sorted
-                finalDataTable = new DataTable();
+                // Add the row number for sorting purposes
+                dataTable.Columns.Add("RowNumber", typeof(int));
+                for (int i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    dataTable.Rows[i].BeginEdit();
+                    dataTable.Rows[i]["RowNumber"] = i + 1;
+                    dataTable.Rows[i].EndEdit();
+                }
+
+                // Set up the final data table which will be de-duplicated
+                DataTable unsortedDataTable = new DataTable();
                 foreach (DataColumn column in dataTable.Columns)
                 {
-                    finalDataTable.Columns.Add(column.ColumnName, column.DataType);
+                    unsortedDataTable.Columns.Add(column.ColumnName, column.DataType);
                 }
 
                 // De-duplicate the rows by filling in empty columns
-                // Order By: Book,Chapter,Verse,Occurrence,Phrase
                 DataRow? lastRow = null;
                 foreach (DataRow row in dataTable.AsEnumerable()
                              .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
                              .ThenBy(r => (int)r["Chapter"])
                              .ThenBy(r => (string)r["Verse"], new VerseComparer())
                              .ThenBy(r => (int)r["Occurrence"])
-                             .ThenBy(r => (string)r["Phrase"]))
+                             .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters))
+                             .ThenBy(r => (int)r["RowNumber"]))
                 {
                     // If the last row is the same as this row
                     if (lastRow != null
@@ -319,10 +329,10 @@ namespace GoToBible.Windows
                         && (int)row["Chapter"] == (int)lastRow["Chapter"]
                         && (string)row["Verse"] == (string)lastRow["Verse"]
                         && (int)row["Occurrence"] == (int)lastRow["Occurrence"]
-                        && (string)row["Phrase"] == (string)lastRow["Phrase"])
+                        && string.Compare((string)row["Phrase"], (string)lastRow["Phrase"], CultureInfo.InvariantCulture, apparatusParameters.AsCompareOptions()) == 0)
                     {
                         // Fill in the empty fields
-                        for (int i = 5; i < row.ItemArray.Length; i++)
+                        for (int i = 5; i < row.ItemArray.Length - 1; i++)
                         {
                             if (string.IsNullOrEmpty(lastRow[i].ToString())
                                 && !string.IsNullOrEmpty(row[i].ToString()))
@@ -336,11 +346,36 @@ namespace GoToBible.Windows
                     else
                     {
                         // Add the data row to the new table
-                        DataRow newRow = finalDataTable.NewRow();
+                        DataRow newRow = unsortedDataTable.NewRow();
                         newRow.ItemArray = row.ItemArray;
-                        finalDataTable.Rows.Add(newRow);
+                        unsortedDataTable.Rows.Add(newRow);
                         lastRow = newRow;
                     }
+                }
+
+                // Set up the final data table which will be sorted
+                finalDataTable = new DataTable();
+                foreach (DataColumn column in dataTable.Columns)
+                {
+                    if (column.ColumnName != "RowNumber")
+                    {
+                        finalDataTable.Columns.Add(column.ColumnName, column.DataType);
+                    }
+                }
+
+                // Sort the output
+                foreach (DataRow row in unsortedDataTable.AsEnumerable()
+                             .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
+                             .ThenBy(r => (int)r["Chapter"])
+                             .ThenBy(r => (string)r["Verse"], new VerseComparer())
+                             .ThenBy(r => (int)r["RowNumber"])
+                             .ThenBy(r => (int)r["Occurrence"])
+                             .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters)))
+                {
+                    // Add the data row to the new table
+                    DataRow newRow = finalDataTable.NewRow();
+                    newRow.ItemArray = row.ItemArray[..^1];
+                    finalDataTable.Rows.Add(newRow);
                 }
             }
             else
