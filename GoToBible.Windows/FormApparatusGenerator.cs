@@ -274,7 +274,22 @@ namespace GoToBible.Windows
             foreach (string path in this.selectedFileNames)
             {
                 // Get the CSV file contents
-                string content = await File.ReadAllTextAsync(path);
+                string content;
+                try
+                {
+                    content = await File.ReadAllTextAsync(path);
+                }
+                catch (IOException)
+                {
+                            this.IsGenerating = false;
+                    MessageBox.Show(
+                        $@"There was an error loading: {Path.GetFileName(path)}.",
+                        this.Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
                 DataTable table = content.AsDataTable(columnTypes);
 
                 // If we have a variant column, rename it to the file name
@@ -287,7 +302,13 @@ namespace GoToBible.Windows
                 // Add the additional columns
                 for (int i = 5; i < table.Columns.Count; i++)
                 {
-                    dataTable.Columns.Add(table.Columns[i].ColumnName, typeof(string));
+                    string columnName = table.Columns[i].ColumnName;
+                    if (dataTable.Columns.Contains(columnName))
+                    {
+                        columnName += $"_{dataTable.Columns.Count}";
+                    }
+
+                    dataTable.Columns.Add(columnName, typeof(string));
                 }
 
                 dataTable.Merge(table);
