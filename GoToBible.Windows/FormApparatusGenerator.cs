@@ -281,7 +281,7 @@ namespace GoToBible.Windows
                 }
                 catch (IOException)
                 {
-                            this.IsGenerating = false;
+                    this.IsGenerating = false;
                     MessageBox.Show(
                         $@"There was an error loading: {Path.GetFileName(path)}.",
                         this.Text,
