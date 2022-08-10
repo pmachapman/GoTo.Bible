@@ -6,7 +6,8 @@ We only support the latest release of each published library. No effort will be 
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.1.x   | :white_check_mark: |
+| 1.2.x   | :white_check_mark: |
+| 1.1.x   | :x:                |
 | 1.0.x   | :x:                |
 
 ## Reporting a Vulnerability
