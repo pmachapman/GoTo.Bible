@@ -66,7 +66,6 @@ jobs:
 
     - run: |
        dotnet sln remove GoToBible.Windows/GoToBible.Windows.csproj
-       dotnet sln remove GoToBible.Windows.Designer/GoToBible.Windows.Designer.csproj
        dotnet build
 
     - name: Perform CodeQL Analysis
