@@ -27,7 +27,7 @@ namespace GoToBible.Web.Server.Pages
         private readonly ILogger<ErrorModel> logger;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="ErrorModel"/> class.
+        /// Initializes a new instance of the <see cref="ErrorModel"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         public ErrorModel(ILogger<ErrorModel> logger) => this.logger = logger;

@@ -79,7 +79,7 @@ namespace GoToBible.Windows
         private string[] selectedFileNames = Array.Empty<string>();
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="FormApparatusGenerator" /> class.
+        /// Initializes a new instance of the <see cref="FormApparatusGenerator" /> class.
         /// </summary>
         /// <param name="selectedBaseTranslation">The selected base translation.</param>
         /// <param name="renderer">The renderer to use.</param>

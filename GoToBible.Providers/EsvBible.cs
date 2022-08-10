@@ -135,7 +135,7 @@ namespace GoToBible.Providers
         private readonly EsvBibleOptions options;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="EsvBible" /> class.
+        /// Initializes a new instance of the <see cref="EsvBible" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="cache">The cache.</param>

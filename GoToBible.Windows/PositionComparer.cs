@@ -22,7 +22,7 @@ namespace GoToBible.Windows
         private readonly IList<T> orderBy;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="PositionComparer{T}" /> class.
+        /// Initializes a new instance of the <see cref="PositionComparer{T}" /> class.
         /// </summary>
         /// <param name="orderBy">The list to order by.</param>
         public PositionComparer(IList<T> orderBy) => this.orderBy = orderBy;

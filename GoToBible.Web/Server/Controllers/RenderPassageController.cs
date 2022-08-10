@@ -46,7 +46,7 @@ namespace GoToBible.Web.Server.Controllers
         private readonly Renderer renderer;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="RenderPassageController" /> class.
+        /// Initializes a new instance of the <see cref="RenderPassageController" /> class.
         /// </summary>
         /// <param name="providers">The providers.</param>
         /// <param name="loggerFactory">The logger factory.</param>

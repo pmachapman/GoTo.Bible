@@ -35,7 +35,7 @@ namespace GoToBible.Providers
         private static readonly Regex VerseNumberRegex = new Regex($"{Regex.Escape(Environment.NewLine)}(\\d+|\\d+\\-\\d+|\\d+[a-z])\\]", RegexOptions.Compiled);
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="BibleApi" /> class.
+        /// Initializes a new instance of the <see cref="BibleApi" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="cache">The cache.</param>

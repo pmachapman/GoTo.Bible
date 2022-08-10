@@ -24,14 +24,11 @@ namespace GoToBible.Providers
     public class GoToBibleApi : ApiProvider
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="GoToBibleApi" /> class.
+        /// Initializes a new instance of the <see cref="GoToBibleApi" /> class.
         /// </summary>
         /// <param name="cache">The cache.</param>
         public GoToBibleApi(IDistributedCache cache)
-            : base(cache)
-        {
-            this.HttpClient.BaseAddress = new Uri("https://api.goto.bible/v1/", UriKind.Absolute);
-        }
+            : base(cache) => this.HttpClient.BaseAddress = new Uri("https://api.goto.bible/v1/", UriKind.Absolute);
 
         /// <inheritdoc/>
         public override string Id => nameof(GoToBibleApi);

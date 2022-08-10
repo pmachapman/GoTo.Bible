@@ -19,7 +19,7 @@ namespace GoToBible.Windows
         private readonly RenderingParameters parameters;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="WordComparer" /> class.
+        /// Initializes a new instance of the <see cref="WordComparer" /> class.
         /// </summary>
         /// <param name="parameters">The rendering parameters.</param>
         public WordComparer(RenderingParameters parameters) => this.parameters = parameters;

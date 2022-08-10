@@ -67,7 +67,7 @@ namespace GoToBible.Web.Server.Controllers
         private readonly IEnumerable<IProvider> providers;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="TranslationsController" /> class.
+        /// Initializes a new instance of the <see cref="TranslationsController" /> class.
         /// </summary>
         /// <param name="providers">The providers.</param>
         public TranslationsController(IEnumerable<IProvider> providers) => this.providers = providers;

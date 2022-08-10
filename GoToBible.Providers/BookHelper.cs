@@ -19,20 +19,20 @@ namespace GoToBible.Providers
     internal class BookHelper
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="BookHelper"/> class.
+        /// Initializes a new instance of the <see cref="BookHelper"/> class.
         /// </summary>
         public BookHelper()
         {
         }
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="BookHelper"/> class.
+        /// Initializes a new instance of the <see cref="BookHelper"/> class.
         /// </summary>
         /// <param name="bookChapters">The book chapters.</param>
         public BookHelper(OrderedDictionary bookChapters) => this.BookChapters = bookChapters;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="BookHelper"/> class.
+        /// Initializes a new instance of the <see cref="BookHelper"/> class.
         /// </summary>
         /// <param name="bookName">Name of the book.</param>
         /// <param name="chapters">The chapters.</param>

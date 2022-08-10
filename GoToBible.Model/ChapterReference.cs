@@ -14,7 +14,7 @@ namespace GoToBible.Model
     public record ChapterReference
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="ChapterReference" /> class.
+        /// Initializes a new instance of the <see cref="ChapterReference" /> class.
         /// </summary>
         /// <remarks>
         /// This returns an invalid chapter reference.
@@ -24,7 +24,7 @@ namespace GoToBible.Model
         }
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="ChapterReference"/> class.
+        /// Initializes a new instance of the <see cref="ChapterReference"/> class.
         /// </summary>
         /// <param name="book">The book name.</param>
         /// <param name="chapter">The chapter.</param>
@@ -44,7 +44,7 @@ namespace GoToBible.Model
         }
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="ChapterReference"/> class.
+        /// Initializes a new instance of the <see cref="ChapterReference"/> class.
         /// </summary>
         /// <param name="bookAndChapter">The book name and chapter number.</param>
         public ChapterReference(string bookAndChapter)

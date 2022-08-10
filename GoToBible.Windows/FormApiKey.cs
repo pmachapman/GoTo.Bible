@@ -18,7 +18,7 @@ namespace GoToBible.Windows
     public partial class FormApiKey : Form
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="FormApiKey" /> class.
+        /// Initializes a new instance of the <see cref="FormApiKey" /> class.
         /// </summary>
         /// <param name="key">The existing key.</param>
         /// <param name="provider">The provider.</param>

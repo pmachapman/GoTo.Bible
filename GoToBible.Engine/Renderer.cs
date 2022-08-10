@@ -36,18 +36,18 @@ namespace GoToBible.Engine
         private bool disposedValue;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="Renderer"/> class.
+        /// Initializes a new instance of the <see cref="Renderer"/> class.
         /// </summary>
         public Renderer() => this.Providers = new List<IProvider>();
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="Renderer" /> class.
+        /// Initializes a new instance of the <see cref="Renderer" /> class.
         /// </summary>
         /// <param name="providers">The providers.</param>
         public Renderer(IEnumerable<IProvider> providers) => this.Providers = providers.ToList();
 
         /// <summary>
-        /// Finalises an instance of the <see cref="Renderer"/> class.
+        /// Finalizes an instance of the <see cref="Renderer"/> class.
         /// </summary>
         /// <remarks>Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</remarks>
         ~Renderer() => this.Dispose(false);

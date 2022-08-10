@@ -45,7 +45,7 @@ namespace GoToBible.Providers
         private readonly NltBibleOptions options;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="NltBible" /> class.
+        /// Initializes a new instance of the <see cref="NltBible" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="cache">The cache.</param>

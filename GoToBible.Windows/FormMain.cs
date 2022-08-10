@@ -90,7 +90,7 @@ namespace GoToBible.Windows
         private bool webViewInitialised;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="FormMain" /> class.
+        /// Initializes a new instance of the <see cref="FormMain" /> class.
         /// </summary>
         /// <param name="primaryWindow">If set to <c>true</c>, this is the primary window, which means settings will be saved.</param>
         public FormMain(bool primaryWindow)
@@ -408,7 +408,7 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
-        /// Initialises the WebView2 asynchronously.
+        /// Initializes the WebView2 asynchronously.
         /// </summary>
         private async Task InitialiseAsync()
         {
@@ -430,7 +430,7 @@ namespace GoToBible.Windows
         }
 
         /// <summary>
-        /// Initialises the Web Browser.
+        /// Initializes the Web Browser.
         /// </summary>
         /// <param name="removeExisting">if set to <c>true</c>, remove the existing web browser control.</param>
         private async Task InitialiseWebBrowser(bool removeExisting)

@@ -142,7 +142,7 @@ namespace GoToBible.Providers
         private bool disposedValue;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="ApiProvider" /> class.
+        /// Initializes a new instance of the <see cref="ApiProvider" /> class.
         /// </summary>
         /// <param name="cache">The cache.</param>
         protected ApiProvider(IDistributedCache cache)
@@ -153,13 +153,10 @@ namespace GoToBible.Providers
         }
 
         /// <summary>
-        /// Finalises an instance of the <see cref="ApiProvider"/> class.
+        /// Finalizes an instance of the <see cref="ApiProvider"/> class.
         /// </summary>
-        ~ApiProvider()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            this.Dispose(false);
-        }
+        /// <remarks>Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</remarks>
+        ~ApiProvider() => this.Dispose(false);
 
         /// <inheritdoc/>
         public abstract string Id { get; }

@@ -39,7 +39,7 @@ namespace GoToBible.Windows
         private int toolTipIndex = -1;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="FormCheckBoxList" /> class.
+        /// Initializes a new instance of the <see cref="FormCheckBoxList" /> class.
         /// </summary>
         /// <param name="items">The items.</param>
         /// <param name="uncheckedItems">The unchecked items.</param>

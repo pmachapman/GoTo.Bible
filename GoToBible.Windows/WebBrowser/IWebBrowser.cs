@@ -31,7 +31,7 @@ namespace GoToBible.Windows.WebBrowser
         Task SetInnerHtmlAsync(string htmlContent);
 
         /// <summary>
-        /// Initialises the controle.
+        /// Initializes the control.
         /// </summary>
         /// <param name="name">The control name.</param>
         /// <param name="tabIndex">The control tab index.</param>

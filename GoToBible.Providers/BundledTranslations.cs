@@ -99,7 +99,7 @@ namespace GoToBible.Providers
         private readonly IRenderer? renderer;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="BundledTranslations" /> class.
+        /// Initializes a new instance of the <see cref="BundledTranslations" /> class.
         /// </summary>
         /// ReSharper disable once UnusedMember.Global
         public BundledTranslations()
@@ -107,7 +107,7 @@ namespace GoToBible.Providers
         }
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="BundledTranslations" /> class.
+        /// Initializes a new instance of the <see cref="BundledTranslations" /> class.
         /// </summary>
         /// <param name="renderer">The renderer. This is used for the apparatus generator.</param>
         public BundledTranslations(IRenderer renderer) => this.renderer = renderer;

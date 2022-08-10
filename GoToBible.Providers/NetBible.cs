@@ -45,14 +45,11 @@ namespace GoToBible.Providers
         };
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="NetBible" /> class.
+        /// Initializes a new instance of the <see cref="NetBible" /> class.
         /// </summary>
         /// <param name="cache">The cache.</param>
         public NetBible(IDistributedCache cache)
-            : base(cache)
-        {
-            this.HttpClient.BaseAddress = new Uri("https://labs.bible.org/api/", UriKind.Absolute);
-        }
+            : base(cache) => this.HttpClient.BaseAddress = new Uri("https://labs.bible.org/api/", UriKind.Absolute);
 
         /// <inheritdoc/>
         public override string Id => nameof(NetBible);

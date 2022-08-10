@@ -144,7 +144,7 @@ namespace GoToBible.Windows
         private readonly dynamic? launcher;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="LogosProvider"/> class.
+        /// Initializes a new instance of the <see cref="LogosProvider"/> class.
         /// </summary>
         public LogosProvider()
         {

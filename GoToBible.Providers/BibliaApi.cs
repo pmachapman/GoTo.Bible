@@ -40,7 +40,7 @@ namespace GoToBible.Providers
         private readonly BibliaApiOptions options;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="BibliaApi" /> class.
+        /// Initializes a new instance of the <see cref="BibliaApi" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="cache">The cache.</param>

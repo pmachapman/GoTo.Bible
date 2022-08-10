@@ -14,7 +14,7 @@ namespace GoToBible.Web.Server.Models
     public class StatisticsContext : DbContext
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="StatisticsContext"/> class.
+        /// Initializes a new instance of the <see cref="StatisticsContext"/> class.
         /// </summary>
         /// <param name="options">The options.</param>
         public StatisticsContext(DbContextOptions<StatisticsContext> options)

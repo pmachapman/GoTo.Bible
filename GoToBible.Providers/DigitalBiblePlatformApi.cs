@@ -35,7 +35,7 @@ namespace GoToBible.Providers
         private readonly List<DigitalBiblePlatformTranslation> translations = new List<DigitalBiblePlatformTranslation>();
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="DigitalBiblePlatformApi" /> class.
+        /// Initializes a new instance of the <see cref="DigitalBiblePlatformApi" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="cache">The cache.</param>

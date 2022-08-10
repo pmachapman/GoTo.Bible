@@ -30,7 +30,7 @@ namespace GoToBible.Engine
         private bool disposedValue;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="GotoBibleApiRenderer" /> class.
+        /// Initializes a new instance of the <see cref="GotoBibleApiRenderer" /> class.
         /// </summary>
         public GotoBibleApiRenderer()
         {
@@ -42,7 +42,7 @@ namespace GoToBible.Engine
         }
 
         /// <summary>
-        /// Finalises an instance of the <see cref="GotoBibleApiRenderer"/> class.
+        /// Finalizes an instance of the <see cref="GotoBibleApiRenderer"/> class.
         /// </summary>
         /// <remarks>Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</remarks>
         ~GotoBibleApiRenderer() => this.Dispose(false);

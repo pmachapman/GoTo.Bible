@@ -10,7 +10,7 @@
     "documentationRules": {
       "companyName": "Conglomo",
       "copyrightText": "Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.",
-      "documentationCulture": "en-GB"
+      "documentationCulture": "en-US"
     },
     "layoutRules": {
       "newlineAtEndOfFile": "require"
