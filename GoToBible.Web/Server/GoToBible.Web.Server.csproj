@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <StartupObject>GoToBible.Web.Server.Program</StartupObject>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>GoToBible.Web.Server.snk</AssemblyOriginatorKeyFile>

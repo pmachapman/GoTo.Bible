@@ -4,38 +4,37 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Windows
+namespace GoToBible.Windows;
+
+/// <summary>
+/// A combo box item.
+/// </summary>
+public class ComboBoxItem
 {
     /// <summary>
-    /// A combo box item.
+    /// Gets or sets a value indicating whether this <see cref="ComboBoxItem"/> is bold.
     /// </summary>
-    public class ComboBoxItem
-    {
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="ComboBoxItem"/> is bold.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if bold; otherwise, <c>false</c>.
-        /// </value>
-        public bool Bold { get; set; }
+    /// <value>
+    ///   <c>true</c> if bold; otherwise, <c>false</c>.
+    /// </value>
+    public bool Bold { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="ComboBoxItem"/> is selectable.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if selectable; otherwise, <c>false</c>.
-        /// </value>
-        public bool Selectable { get; set; } = true;
+    /// <summary>
+    /// Gets or sets a value indicating whether this <see cref="ComboBoxItem"/> is selectable.
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if selectable; otherwise, <c>false</c>.
+    /// </value>
+    public bool Selectable { get; set; } = true;
 
-        /// <summary>
-        /// Gets or sets the text.
-        /// </summary>
-        /// <value>
-        /// The text.
-        /// </value>
-        public string Text { get; set; } = string.Empty;
+    /// <summary>
+    /// Gets or sets the text.
+    /// </summary>
+    /// <value>
+    /// The text.
+    /// </value>
+    public string Text { get; set; } = string.Empty;
 
-        /// <inheritdoc/>
-        public override string ToString() => this.Text;
-    }
+    /// <inheritdoc/>
+    public override string ToString() => this.Text;
 }

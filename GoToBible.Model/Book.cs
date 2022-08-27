@@ -4,32 +4,31 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Model
+namespace GoToBible.Model;
+
+using System.Collections.Generic;
+
+/// <summary>
+/// A book in a translation.
+/// </summary>
+public class Book
 {
-    using System.Collections.Generic;
+    /// <summary>
+    /// Gets the chapters.
+    /// </summary>
+    /// <value>
+    /// The chapters.
+    /// </value>
+    public IReadOnlyCollection<ChapterReference> Chapters { get; init; } = new List<ChapterReference>();
 
     /// <summary>
-    /// A book in a translation.
+    /// Gets or sets the name of the book.
     /// </summary>
-    public class Book
-    {
-        /// <summary>
-        /// Gets the chapters.
-        /// </summary>
-        /// <value>
-        /// The chapters.
-        /// </value>
-        public IReadOnlyCollection<ChapterReference> Chapters { get; init; } = new List<ChapterReference>();
+    /// <value>
+    /// The name of the book.
+    /// </value>
+    public string Name { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the name of the book.
-        /// </summary>
-        /// <value>
-        /// The name of the book.
-        /// </value>
-        public string Name { get; set; } = string.Empty;
-
-        /// <inheritdoc/>
-        public override string ToString() => this.Name;
-    }
+    /// <inheritdoc/>
+    public override string ToString() => this.Name;
 }

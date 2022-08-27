@@ -4,19 +4,18 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Web.Server.Models
+namespace GoToBible.Web.Server.Models;
+
+/// <summary>
+/// Cache Configuration Settings.
+/// </summary>
+public class CacheSettings
 {
     /// <summary>
-    /// Cache Configuration Settings.
+    /// Gets or sets the name of the cache database provider.
     /// </summary>
-    public class CacheSettings
-    {
-        /// <summary>
-        /// Gets or sets the name of the cache database provider.
-        /// </summary>
-        /// <value>
-        /// The name of the cache database provider.
-        /// </value>
-        public string DatabaseProvider { get; set; } = string.Empty;
-    }
+    /// <value>
+    /// The name of the cache database provider.
+    /// </value>
+    public string DatabaseProvider { get; set; } = string.Empty;
 }

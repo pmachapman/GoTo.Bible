@@ -4,33 +4,32 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Tests.Model
+namespace GoToBible.Tests.Model;
+
+using GoToBible.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+/// <summary>
+/// Tests the <see cref="RenderFormat"/> enumeration.
+/// </summary>
+[TestClass]
+public class RenderFormatTests
 {
-    using GoToBible.Model;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    /// <summary>
+    /// Tests <see cref="RenderFormat.Accordance"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestAccordance() => Assert.AreEqual(2, (int)RenderFormat.Accordance);
 
     /// <summary>
-    /// Tests the <see cref="RenderFormat"/> enumeration.
+    /// Tests <see cref="RenderFormat.Html"/>.
     /// </summary>
-    [TestClass]
-    public class RenderFormatTests
-    {
-        /// <summary>
-        /// Tests <see cref="RenderFormat.Accordance"/>.
-        /// </summary>
-        [TestMethod]
-        public void TestAccordance() => Assert.AreEqual(2, (int)RenderFormat.Accordance);
+    [TestMethod]
+    public void TestHtml() => Assert.AreEqual(1, (int)RenderFormat.Html);
 
-        /// <summary>
-        /// Tests <see cref="RenderFormat.Html"/>.
-        /// </summary>
-        [TestMethod]
-        public void TestHtml() => Assert.AreEqual(1, (int)RenderFormat.Html);
-
-        /// <summary>
-        /// Tests <see cref="RenderFormat.Text"/>.
-        /// </summary>
-        [TestMethod]
-        public void TestText() => Assert.AreEqual(0, (int)RenderFormat.Text);
-    }
+    /// <summary>
+    /// Tests <see cref="RenderFormat.Text"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestText() => Assert.AreEqual(0, (int)RenderFormat.Text);
 }

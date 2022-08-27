@@ -4,42 +4,41 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Tests.Model
+namespace GoToBible.Tests.Model;
+
+using GoToBible.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+/// <summary>
+/// Tests the <see cref="Book"/> class.
+/// </summary>
+[TestClass]
+public class BookTests
 {
-    using GoToBible.Model;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    /// <summary>
+    /// Tests the empty object.
+    /// </summary>
+    [TestMethod]
+    public void TestEmpty()
+    {
+        Book book = new Book();
+        Assert.AreEqual(string.Empty, book.Name);
+        Assert.AreEqual(0, book.Chapters.Count);
+        Assert.AreEqual(string.Empty, book.ToString());
+    }
 
     /// <summary>
-    /// Tests the <see cref="Book"/> class.
+    /// Tests the <see cref="Book.Name"/> property.
     /// </summary>
-    [TestClass]
-    public class BookTests
+    [TestMethod]
+    public void TestName()
     {
-        /// <summary>
-        /// Tests the empty object.
-        /// </summary>
-        [TestMethod]
-        public void TestEmpty()
+        Book book = new Book()
         {
-            Book book = new Book();
-            Assert.AreEqual(string.Empty, book.Name);
-            Assert.AreEqual(0, book.Chapters.Count);
-            Assert.AreEqual(string.Empty, book.ToString());
-        }
-
-        /// <summary>
-        /// Tests the <see cref="Book.Name"/> property.
-        /// </summary>
-        [TestMethod]
-        public void TestName()
-        {
-            Book book = new Book()
-            {
-                Name = "Genesis",
-            };
-            Assert.AreEqual("Genesis", book.Name);
-            Assert.AreEqual(0, book.Chapters.Count);
-            Assert.AreEqual("Genesis", book.ToString());
-        }
+            Name = "Genesis",
+        };
+        Assert.AreEqual("Genesis", book.Name);
+        Assert.AreEqual(0, book.Chapters.Count);
+        Assert.AreEqual("Genesis", book.ToString());
     }
 }

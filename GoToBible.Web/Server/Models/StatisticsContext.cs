@@ -4,30 +4,29 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Web.Server.Models
+namespace GoToBible.Web.Server.Models;
+
+using Microsoft.EntityFrameworkCore;
+
+/// <summary>
+/// The statistics data context.
+/// </summary>
+public class StatisticsContext : DbContext
 {
-    using Microsoft.EntityFrameworkCore;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StatisticsContext"/> class.
+    /// </summary>
+    /// <param name="options">The options.</param>
+    public StatisticsContext(DbContextOptions<StatisticsContext> options)
+        : base(options)
+    {
+    }
 
     /// <summary>
-    /// The statistics data context.
+    /// Gets or sets the statistics.
     /// </summary>
-    public class StatisticsContext : DbContext
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StatisticsContext"/> class.
-        /// </summary>
-        /// <param name="options">The options.</param>
-        public StatisticsContext(DbContextOptions<StatisticsContext> options)
-            : base(options)
-        {
-        }
-
-        /// <summary>
-        /// Gets or sets the statistics.
-        /// </summary>
-        /// <value>
-        /// The statistics.
-        /// </value>
-        public DbSet<Statistics> Statistics { get; set; } = default!;
-    }
+    /// <value>
+    /// The statistics.
+    /// </value>
+    public DbSet<Statistics> Statistics { get; set; } = default!;
 }

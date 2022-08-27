@@ -4,27 +4,26 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Tests.Model
-{
-    using GoToBible.Model;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+namespace GoToBible.Tests.Model;
 
+using GoToBible.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+/// <summary>
+/// Tests the <see cref="RenderColour"/> class.
+/// </summary>
+[TestClass]
+public class RenderColourTests
+{
     /// <summary>
-    /// Tests the <see cref="RenderColour"/> class.
+    /// Tests the empty object.
     /// </summary>
-    [TestClass]
-    public class RenderColourTests
+    [TestMethod]
+    public void TestEmpty()
     {
-        /// <summary>
-        /// Tests the empty object.
-        /// </summary>
-        [TestMethod]
-        public void TestEmpty()
-        {
-            RenderColour renderColour = new RenderColour();
-            Assert.AreEqual(0, renderColour.R);
-            Assert.AreEqual(0, renderColour.G);
-            Assert.AreEqual(0, renderColour.B);
-        }
+        RenderColour renderColour = new RenderColour();
+        Assert.AreEqual(0, renderColour.R);
+        Assert.AreEqual(0, renderColour.G);
+        Assert.AreEqual(0, renderColour.B);
     }
 }

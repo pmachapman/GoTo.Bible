@@ -4,34 +4,33 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Windows.WebBrowser
+namespace GoToBible.Windows.WebBrowser;
+
+using System;
+using System.Threading.Tasks;
+
+/// <summary>
+/// An empty web browser implementation.
+/// </summary>
+/// <seealso cref="GoToBible.Windows.WebBrowser.IWebBrowser" />
+public class EmptyWebBrowser : IWebBrowser
 {
-    using System;
-    using System.Threading.Tasks;
+    /// <inheritdoc/>
+    public bool DeveloperMode { get; set; }
 
-    /// <summary>
-    /// An empty web browser implementation.
-    /// </summary>
-    /// <seealso cref="GoToBible.Windows.WebBrowser.IWebBrowser" />
-    public class EmptyWebBrowser : IWebBrowser
+    /// <inheritdoc/>
+    public void Dispose() => GC.SuppressFinalize(this);
+
+    /// <inheritdoc/>
+    public void Initialise(string name, int tabIndex)
     {
-        /// <inheritdoc/>
-        public bool DeveloperMode { get; set; }
-
-        /// <inheritdoc/>
-        public void Dispose() => GC.SuppressFinalize(this);
-
-        /// <inheritdoc/>
-        public void Initialise(string name, int tabIndex)
-        {
-        }
-
-        /// <inheritdoc/>
-        public void NavigateToString(string htmlContent)
-        {
-        }
-
-        /// <inheritdoc/>
-        public Task SetInnerHtmlAsync(string htmlContent) => Task.CompletedTask;
     }
+
+    /// <inheritdoc/>
+    public void NavigateToString(string htmlContent)
+    {
+    }
+
+    /// <inheritdoc/>
+    public Task SetInnerHtmlAsync(string htmlContent) => Task.CompletedTask;
 }

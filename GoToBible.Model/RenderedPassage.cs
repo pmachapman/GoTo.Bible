@@ -4,43 +4,42 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Model
+namespace GoToBible.Model;
+
+/// <summary>
+/// A rendered passage.
+/// </summary>
+public class RenderedPassage
 {
     /// <summary>
-    /// A rendered passage.
+    /// Gets or sets the passage content.
     /// </summary>
-    public class RenderedPassage
-    {
-        /// <summary>
-        /// Gets or sets the passage content.
-        /// </summary>
-        /// <value>
-        /// The passage content.
-        /// </value>
-        public string Content { get; set; } = string.Empty;
+    /// <value>
+    /// The passage content.
+    /// </value>
+    public string Content { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the next passage.
-        /// </summary>
-        /// <value>
-        /// The next passage.
-        /// </value>
-        public PassageReference NextPassage { get; set; } = new PassageReference();
+    /// <summary>
+    /// Gets or sets the next passage.
+    /// </summary>
+    /// <value>
+    /// The next passage.
+    /// </value>
+    public PassageReference NextPassage { get; set; } = new PassageReference();
 
-        /// <summary>
-        /// Gets or sets the previous passage.
-        /// </summary>
-        /// <value>
-        /// The previous passage.
-        /// </value>
-        public PassageReference PreviousPassage { get; set; } = new PassageReference();
+    /// <summary>
+    /// Gets or sets the previous passage.
+    /// </summary>
+    /// <value>
+    /// The previous passage.
+    /// </value>
+    public PassageReference PreviousPassage { get; set; } = new PassageReference();
 
-        /// <summary>
-        /// Gets or sets the rendering suggestions.
-        /// </summary>
-        /// <value>
-        /// The rendering suggestions.
-        /// </value>
-        public RenderingSuggestions Suggestions { get; set; } = new RenderingSuggestions();
-    }
+    /// <summary>
+    /// Gets or sets the rendering suggestions.
+    /// </summary>
+    /// <value>
+    /// The rendering suggestions.
+    /// </value>
+    public RenderingSuggestions Suggestions { get; set; } = new RenderingSuggestions();
 }

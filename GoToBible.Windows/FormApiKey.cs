@@ -4,127 +4,126 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Windows
+namespace GoToBible.Windows;
+
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
+
+/// <summary>
+/// The Enter API Key Form.
+/// </summary>
+/// <seealso cref="Form" />
+public partial class FormApiKey : Form
 {
-    using System;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Windows.Forms;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FormApiKey" /> class.
+    /// </summary>
+    /// <param name="key">The existing key.</param>
+    /// <param name="provider">The provider.</param>
+    /// <param name="signUpUrl">The sign up URL.</param>
+    /// <param name="icon">The form icon.</param>
+    public FormApiKey(string key, string provider, Uri signUpUrl, Icon icon)
+    {
+        this.InitializeComponent();
+        this.Icon = icon;
+        this.Key = key;
+        this.Provider = provider;
+        this.SignUpUrl = signUpUrl;
+    }
 
     /// <summary>
-    /// The Enter API Key Form.
+    /// Gets the API key.
     /// </summary>
-    /// <seealso cref="Form" />
-    public partial class FormApiKey : Form
+    /// <value>
+    /// The API key.
+    /// </value>
+    public string Key { get; private set; }
+
+    /// <summary>
+    /// Gets the API provider name.
+    /// </summary>
+    /// <value>
+    /// The API provider name.
+    /// </value>
+    public string Provider { get; }
+
+    /// <summary>
+    /// Gets the API key sign up URL.
+    /// </summary>
+    /// <value>
+    /// The API key sign up URL.
+    /// </value>
+    public Uri SignUpUrl { get; }
+
+    /// <summary>
+    /// Handles the Click event of the Cancel Button.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+    private void ButtonCancel_Click(object sender, EventArgs e)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FormApiKey" /> class.
-        /// </summary>
-        /// <param name="key">The existing key.</param>
-        /// <param name="provider">The provider.</param>
-        /// <param name="signUpUrl">The sign up URL.</param>
-        /// <param name="icon">The form icon.</param>
-        public FormApiKey(string key, string provider, Uri signUpUrl, Icon icon)
+        this.DialogResult = DialogResult.Cancel;
+        this.Close();
+    }
+
+    /// <summary>
+    /// Handles the Click event of the Ok Button.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+    private void ButtonOk_Click(object sender, EventArgs e)
+    {
+        this.Key = this.TextBoxKey.Text;
+        this.DialogResult = DialogResult.OK;
+        this.Close();
+    }
+
+    /// <summary>
+    /// Handles the Load event of the BibleApi Form.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+    private void FormBibleApi_Load(object sender, EventArgs e)
+    {
+        if (this.Provider.Contains("SQL", StringComparison.InvariantCulture))
         {
-            this.InitializeComponent();
-            this.Icon = icon;
-            this.Key = key;
-            this.Provider = provider;
-            this.SignUpUrl = signUpUrl;
+            this.Text = $@"Enter {this.Provider} Connection String";
+            this.LabelEnterKey.Text = $@"Enter your {this.Provider} connection string below.";
+            this.LinkLabelSignup.Text = $@"&Download {this.Provider}";
         }
-
-        /// <summary>
-        /// Gets the API key.
-        /// </summary>
-        /// <value>
-        /// The API key.
-        /// </value>
-        public string Key { get; private set; }
-
-        /// <summary>
-        /// Gets the API provider name.
-        /// </summary>
-        /// <value>
-        /// The API provider name.
-        /// </value>
-        public string Provider { get; }
-
-        /// <summary>
-        /// Gets the API key sign up URL.
-        /// </summary>
-        /// <value>
-        /// The API key sign up URL.
-        /// </value>
-        public Uri SignUpUrl { get; }
-
-        /// <summary>
-        /// Handles the Click event of the Cancel Button.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void ButtonCancel_Click(object sender, EventArgs e)
+        else
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
-
-        /// <summary>
-        /// Handles the Click event of the Ok Button.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void ButtonOk_Click(object sender, EventArgs e)
-        {
-            this.Key = this.TextBoxKey.Text;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        /// <summary>
-        /// Handles the Load event of the BibleApi Form.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void FormBibleApi_Load(object sender, EventArgs e)
-        {
-            if (this.Provider.Contains("SQL", StringComparison.InvariantCulture))
+            this.Text = $@"Enter {this.Provider} Key";
+            if (this.Provider.Length > 15)
             {
-                this.Text = $@"Enter {this.Provider} Connection String";
-                this.LabelEnterKey.Text = $@"Enter your {this.Provider} connection string below.";
-                this.LinkLabelSignup.Text = $@"&Download {this.Provider}";
+                this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your resources.";
+            }
+            else if (this.Provider.Length > 10)
+            {
+                this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your resources with GoToBible.";
             }
             else
             {
-                this.Text = $@"Enter {this.Provider} Key";
-                if (this.Provider.Length > 15)
-                {
-                    this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your resources.";
-                }
-                else if (this.Provider.Length > 10)
-                {
-                    this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your resources with GoToBible.";
-                }
-                else
-                {
-                    this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.";
-                }
-
-                this.LinkLabelSignup.Text = @"&Sign up for an API key";
+                this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.";
             }
 
-            this.TextBoxKey.Text = this.Key;
+            this.LinkLabelSignup.Text = @"&Sign up for an API key";
         }
 
-        /// <summary>
-        /// Handles the LinkClicked event of the LinkLabelSignup control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="LinkLabelLinkClickedEventArgs"/> instance containing the event data.</param>
-        private void LinkLabelSignup_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-            => Process.Start(new ProcessStartInfo(this.SignUpUrl.ToString())
-            {
-                UseShellExecute = true,
-                Verb = "open",
-            });
+        this.TextBoxKey.Text = this.Key;
     }
+
+    /// <summary>
+    /// Handles the LinkClicked event of the LinkLabelSignup control.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="LinkLabelLinkClickedEventArgs"/> instance containing the event data.</param>
+    private void LinkLabelSignup_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        => Process.Start(new ProcessStartInfo(this.SignUpUrl.ToString())
+        {
+            UseShellExecute = true,
+            Verb = "open",
+        });
 }

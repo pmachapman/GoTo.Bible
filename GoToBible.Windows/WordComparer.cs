@@ -4,28 +4,27 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Windows
+namespace GoToBible.Windows;
+
+using System.Collections.Generic;
+using System.Globalization;
+using GoToBible.Engine;
+using GoToBible.Model;
+
+/// <summary>
+/// A word/phrase string comparer.
+/// </summary>
+public class WordComparer : IComparer<string>
 {
-    using System.Collections.Generic;
-    using System.Globalization;
-    using GoToBible.Engine;
-    using GoToBible.Model;
+    private readonly RenderingParameters parameters;
 
     /// <summary>
-    /// A word/phrase string comparer.
+    /// Initializes a new instance of the <see cref="WordComparer" /> class.
     /// </summary>
-    public class WordComparer : IComparer<string>
-    {
-        private readonly RenderingParameters parameters;
+    /// <param name="parameters">The rendering parameters.</param>
+    public WordComparer(RenderingParameters parameters) => this.parameters = parameters;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WordComparer" /> class.
-        /// </summary>
-        /// <param name="parameters">The rendering parameters.</param>
-        public WordComparer(RenderingParameters parameters) => this.parameters = parameters;
-
-        /// <inheritdoc />
-        public int Compare(string? x, string? y)
-            => string.Compare(x, y, CultureInfo.InvariantCulture, this.parameters.AsCompareOptions());
-    }
+    /// <inheritdoc />
+    public int Compare(string? x, string? y)
+        => string.Compare(x, y, CultureInfo.InvariantCulture, this.parameters.AsCompareOptions());
 }

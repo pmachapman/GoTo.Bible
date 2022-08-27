@@ -4,23 +4,22 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers
-{
-    using System.Collections.Generic;
-    using GoToBible.Model;
+namespace GoToBible.Providers;
 
+using System.Collections.Generic;
+using GoToBible.Model;
+
+/// <summary>
+/// A translation from the Digital Bible Platform.
+/// </summary>
+/// <seealso cref="GoToBible.Model.Translation" />
+public class DigitalBiblePlatformTranslation : Translation
+{
     /// <summary>
-    /// A translation from the Digital Bible Platform.
+    /// Gets or sets the DAM Ids for each volume.
     /// </summary>
-    /// <seealso cref="GoToBible.Model.Translation" />
-    public class DigitalBiblePlatformTranslation : Translation
-    {
-        /// <summary>
-        /// Gets or sets the DAM Ids for each volume.
-        /// </summary>
-        /// <value>
-        /// The DAM Ids.
-        /// </value>
-        public IReadOnlyCollection<string> DamIds { get; set; } = new List<string>();
-    }
+    /// <value>
+    /// The DAM Ids.
+    /// </value>
+    public IReadOnlyCollection<string> DamIds { get; set; } = new List<string>();
 }

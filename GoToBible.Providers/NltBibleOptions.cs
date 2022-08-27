@@ -4,19 +4,18 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers
+namespace GoToBible.Providers;
+
+/// <summary>
+/// The NLT API Provider Options.
+/// </summary>
+public class NltBibleOptions
 {
     /// <summary>
-    /// The NLT API Provider Options.
+    /// Gets or sets the API key.
     /// </summary>
-    public class NltBibleOptions
-    {
-        /// <summary>
-        /// Gets or sets the API key.
-        /// </summary>
-        /// <value>
-        /// The API key.
-        /// </value>
-        public string ApiKey { get; set; } = string.Empty;
-    }
+    /// <value>
+    /// The API key.
+    /// </value>
+    public string ApiKey { get; set; } = string.Empty;
 }
