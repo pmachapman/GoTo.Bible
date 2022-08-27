@@ -248,7 +248,11 @@ namespace GoToBible.Windows
                             {
                                 // Set up the columns then merge
                                 table.Columns[^1].ColumnName = comboBoxItem.Code;
-                                dataTable.Columns.Add(comboBoxItem.Code, typeof(string));
+                                if (!dataTable.Columns.Contains(comboBoxItem.Code))
+                                {
+                                    dataTable.Columns.Add(comboBoxItem.Code, typeof(string));
+                                }
+
                                 dataTable.Merge(table);
                             }
                         }
