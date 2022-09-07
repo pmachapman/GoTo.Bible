@@ -260,6 +260,13 @@
     [Parameter]
     public string? SecondaryTranslation { get; set; }
 
+    /// <summary>
+    /// The settings passed in the query string.
+    /// </summary>
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? Settings { get; set; }
+
     /// <inheritdoc />
     protected override async Task OnInitializedAsync()
     {
@@ -269,14 +276,7 @@
         // If we don't have the ESV, default to the ENGESV, then the NET
         if (this.translations.All(t => t.Code != "ESV"))
         {
-            if (this.translations.Any(t => t.Code == "ENGESV"))
-            {
-                this.defaultTranslation = "ENGESV";
-            }
-            else
-            {
-                this.defaultTranslation = "NET";
-            }
+            this.defaultTranslation = this.translations.Any(t => t.Code == "ENGESV") ? "ENGESV" : "NET";
         }
 
         // Get the local copy of the rendering parameters
@@ -320,10 +320,19 @@
             this.renderingParametersModel.SecondaryTranslation = this.SecondaryTranslation.DecodePassageFromUrl();
         }
 
-        // Load the settings
+        // Load the settings from local storage
         this.renderingParametersModel.InterlinearIgnoresCase = localRenderingParameters?.InterlinearIgnoresCase ?? false;
         this.renderingParametersModel.InterlinearIgnoresDiacritics = localRenderingParameters?.InterlinearIgnoresDiacritics ?? false;
         this.renderingParametersModel.InterlinearIgnoresPunctuation = localRenderingParameters?.InterlinearIgnoresPunctuation ?? false;
+
+        // Load the settings from the query string, if present
+        if (this.Settings.HasValue)
+        {
+            InterlinearMode settings = (InterlinearMode)this.Settings;
+            this.renderingParametersModel.InterlinearIgnoresCase = settings.HasFlag(InterlinearMode.IgnoresCase);
+            this.renderingParametersModel.InterlinearIgnoresDiacritics = settings.HasFlag(InterlinearMode.IgnoresDiacritics);
+            this.renderingParametersModel.InterlinearIgnoresPunctuation = settings.HasFlag(InterlinearMode.IgnoresPunctuation);
+        }
 
         // Call the base implementation
         await base.OnInitializedAsync();
