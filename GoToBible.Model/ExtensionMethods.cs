@@ -393,6 +393,12 @@ public static class ExtensionMethods
                 sb.Append('/');
                 sb.Append(Uri.EscapeDataString(parameters.SecondaryTranslation));
             }
+
+            InterlinearMode mode = parameters.GetInterlinearMode();
+            if (mode != InterlinearMode.None)
+            {
+                sb.Append($"?settings={(int)mode}");
+            }
         }
 
         return new Uri(sb.ToString(), uriKind);
@@ -448,6 +454,19 @@ public static class ExtensionMethods
         segment = segment.Replace(":", "_", StringComparison.OrdinalIgnoreCase);
         segment = segment.Replace(",", "~", StringComparison.OrdinalIgnoreCase);
         return segment;
+    }
+
+    /// <summary>
+    /// Gets the interlinear mode.
+    /// </summary>
+    /// <param name="parameters">The parameters.</param>
+    /// <returns>The interlinear mode.</returns>
+    public static InterlinearMode GetInterlinearMode(this RenderingParameters parameters)
+    {
+        InterlinearMode result = parameters.InterlinearIgnoresCase ? InterlinearMode.IgnoresCase : InterlinearMode.None;
+        result |= parameters.InterlinearIgnoresDiacritics ? InterlinearMode.IgnoresDiacritics : InterlinearMode.None;
+        result |= parameters.InterlinearIgnoresPunctuation ? InterlinearMode.IgnoresPunctuation : InterlinearMode.None;
+        return result;
     }
 
     /// <summary>
