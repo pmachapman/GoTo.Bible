@@ -50,7 +50,7 @@ jobs:
     - name: Set up dotnet
       uses: actions/setup-dotnet@v3.0.1
       with:
-        global-json-file: global.json
+        dotnet-version: '6.0.x'
         dotnet-quality: 'preview'
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
