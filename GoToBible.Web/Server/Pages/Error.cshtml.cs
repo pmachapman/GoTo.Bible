@@ -7,7 +7,6 @@
 namespace GoToBible.Web.Server.Pages;
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -18,7 +17,6 @@ using Microsoft.Extensions.Logging;
 /// <seealso cref="PageModel" />
 [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 [IgnoreAntiforgeryToken]
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:File name should match first type name", Justification = "This is a Razor page.")]
 public class ErrorModel : PageModel
 {
     /// <summary>

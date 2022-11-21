@@ -8,7 +8,6 @@ namespace GoToBible.Providers;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -202,34 +201,31 @@ public abstract class ApiProvider : IProvider
     /// </summary>
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <param name="json">The json.</param>
-    /// <param name="anonymousTypeObject">The anonymous type object.</param>
+    /// <param name="_">The anonymous type object.</param>
     /// <param name="options">The options.</param>
     /// <returns>The value.</returns>
-    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "The parameter is required for the type.")]
-    protected static TValue? DeserializeAnonymousType<TValue>(string json, TValue anonymousTypeObject, JsonSerializerOptions? options = default)
+    protected static TValue? DeserializeAnonymousType<TValue>(string json, TValue _, JsonSerializerOptions? options = default)
         => JsonSerializer.Deserialize<TValue>(json, options);
 
     /// <summary>
     /// Creates an empty list of an anonymous object.
     /// </summary>
     /// <typeparam name="TValue">The type of the value.</typeparam>
-    /// <param name="anonymousTypeObject">The anonymous type object.</param>
+    /// <param name="_">The anonymous type object.</param>
     /// <returns>
     /// An empty list of the anonymous object.
     /// </returns>
-    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "The parameter is required for the type.")]
-    protected static List<TValue> EmptyListOf<TValue>(TValue anonymousTypeObject) => new List<TValue>();
+    protected static List<TValue> EmptyListOf<TValue>(TValue _) => new List<TValue>();
 
     /// <summary>
     /// Creates a nullable type of the specified anonymous object.
     /// </summary>
     /// <typeparam name="TValue">The type of the value.</typeparam>
-    /// <param name="anonymousTypeObject">The anonymous type object.</param>
+    /// <param name="_">The anonymous type object.</param>
     /// <returns>
     /// The anonymous object as a nullable type.
     /// </returns>
-    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "The parameter is required for the type.")]
-    protected static TValue? Nullable<TValue>(TValue anonymousTypeObject) => default;
+    protected static TValue? Nullable<TValue>(TValue _) => default;
 
     /// <inheritdoc cref="IDisposable" />
     protected virtual void Dispose(bool disposing)
