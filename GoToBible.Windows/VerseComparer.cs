@@ -39,7 +39,7 @@ public class VerseComparer : IComparer<string>
         }
         else if (int.TryParse(x, out a))
         {
-            if (Regex.IsMatch(y!, "[0-9]+[a-z]"))
+            if (Regex.IsMatch(y!, "^[0-9]+[a-z]$"))
             {
                 // Get the digit
                 if (!int.TryParse(y![..^1], out b))
@@ -55,7 +55,7 @@ public class VerseComparer : IComparer<string>
                     return a.CompareTo(b);
                 }
             }
-            else if (Regex.IsMatch(y!, "[0-9]+[a-z]?-[0-9]+[a-z]?"))
+            else if (Regex.IsMatch(y!, "^[0-9]+[a-z]?-[0-9]+[a-z]?$"))
             {
                 // Get the first digit
                 if (!int.TryParse(new string(y!.TakeWhile(char.IsDigit).ToArray()), out b))
@@ -79,7 +79,7 @@ public class VerseComparer : IComparer<string>
         }
         else if (int.TryParse(y, out b))
         {
-            if (Regex.IsMatch(x!, "[0-9]+[a-z]"))
+            if (Regex.IsMatch(x!, "^[0-9]+[a-z]$"))
             {
                 // Get the digit
                 if (!int.TryParse(x![..^1], out a))
@@ -95,7 +95,7 @@ public class VerseComparer : IComparer<string>
                     return a.CompareTo(b);
                 }
             }
-            else if (Regex.IsMatch(x!, "[0-9]+[a-z]?-[0-9]+[a-z]?"))
+            else if (Regex.IsMatch(x!, "^[0-9]+[a-z]?-[0-9]+[a-z]?$"))
             {
                 // Get the first digit
                 if (!int.TryParse(new string(x!.TakeWhile(char.IsDigit).ToArray()), out a))
@@ -117,7 +117,7 @@ public class VerseComparer : IComparer<string>
                 return -1;
             }
         }
-        else if (Regex.IsMatch(x!, "[0-9]+[a-z]") && Regex.IsMatch(y!, "[0-9]+[a-z]"))
+        else if (Regex.IsMatch(x!, "^[0-9]+[a-z]$") && Regex.IsMatch(y!, "^[0-9]+[a-z]$"))
         {
             if (!int.TryParse(x![..^1], out a) || !int.TryParse(y![..^1], out b))
             {
@@ -133,8 +133,8 @@ public class VerseComparer : IComparer<string>
                 return a.CompareTo(b);
             }
         }
-        else if (Regex.IsMatch(x!, "[0-9]+[a-z]?-[0-9]+[a-z]?")
-                 && Regex.IsMatch(y!, "[0-9]+[a-z]?-[0-9]+[a-z]?"))
+        else if (Regex.IsMatch(x!, "^[0-9]+[a-z]?-[0-9]+[a-z]?$")
+                 && Regex.IsMatch(y!, "^[0-9]+[a-z]?-[0-9]+[a-z]?$"))
         {
             // Get the first digits
             if (!int.TryParse(new string(x!.TakeWhile(char.IsDigit).ToArray()), out a)
