@@ -5,7 +5,6 @@
 // -----------------------------------------------------------------------
 
 using System.IO;
-using System.Net;
 using GoToBible.Model;
 using GoToBible.Providers;
 using GoToBible.Web.Server;

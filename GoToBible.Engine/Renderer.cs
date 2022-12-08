@@ -250,8 +250,8 @@ public class Renderer : IRenderer
                         RenderedVerse secondAttempt = RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, true, firstChapter.SupportsItalics);
 
                         // If there are no words in any, skip
-                        if (firstAttempt.TotalWordsLine1 == 0 && firstAttempt.TotalWordsLine2 == 0 && firstAttempt.DivergentPhrases == 0 && firstAttempt.WordsInCommon == 0
-                            && secondAttempt.TotalWordsLine1 == 0 && secondAttempt.TotalWordsLine2 == 0 && secondAttempt.DivergentPhrases == 0 && secondAttempt.WordsInCommon == 0)
+                        if (firstAttempt is { TotalWordsLine1: 0, TotalWordsLine2: 0, DivergentPhrases: 0, WordsInCommon: 0 } 
+                            && secondAttempt is { TotalWordsLine1: 0, TotalWordsLine2: 0, DivergentPhrases: 0, WordsInCommon: 0 })
                         {
                             continue;
                         }
@@ -269,7 +269,7 @@ public class Renderer : IRenderer
                             useFirstAttempt = firstAttempt.WordsInCommon > secondAttempt.WordsInCommon;
                         }
 
-                        if (parameters.IsDebug && parameters.Format == RenderFormat.Html)
+                        if (parameters is { IsDebug: true, Format: RenderFormat.Html })
                         {
                             // Display debugging information for the renderer
                             // This does not have to be user-friendly output

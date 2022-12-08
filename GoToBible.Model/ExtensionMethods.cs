@@ -485,7 +485,7 @@ public static class ExtensionMethods
         sb.Append(parameters.Font.Bold ? "font-weight:bold;" : "font-weight:normal;");
         sb.Append(parameters.Font.Italic ? "font-style:italic;" : "font-style:normal;");
 
-        if (parameters.Font.Strikeout && parameters.Font.Underline)
+        if (parameters.Font is { Strikeout: true, Underline: true })
         {
             sb.Append("text-decoration:underline line-through;");
         }

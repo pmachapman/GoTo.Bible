@@ -159,9 +159,8 @@ public class BundledTranslations : IProvider
                 using StreamReader reader = new StreamReader(stream);
                 bool readingChapter = false;
                 string lineStart = $"{book} {chapterNumber}:";
-                string? line;
                 StringBuilder sb = new StringBuilder();
-                while ((line = await reader.ReadLineAsync()) is not null)
+                while (await reader.ReadLineAsync() is { } line)
                 {
                     if (line.StartsWith(lineStart, StringComparison.OrdinalIgnoreCase))
                     {
