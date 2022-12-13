@@ -250,7 +250,7 @@ public class Renderer : IRenderer
                         RenderedVerse secondAttempt = RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, true, firstChapter.SupportsItalics);
 
                         // If there are no words in any, skip
-                        if (firstAttempt is { TotalWordsLine1: 0, TotalWordsLine2: 0, DivergentPhrases: 0, WordsInCommon: 0 } 
+                        if (firstAttempt is { TotalWordsLine1: 0, TotalWordsLine2: 0, DivergentPhrases: 0, WordsInCommon: 0 }
                             && secondAttempt is { TotalWordsLine1: 0, TotalWordsLine2: 0, DivergentPhrases: 0, WordsInCommon: 0 })
                         {
                             continue;

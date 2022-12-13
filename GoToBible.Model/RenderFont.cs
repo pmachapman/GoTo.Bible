@@ -60,5 +60,5 @@ public record RenderFont
     /// <value>
     ///   <c>true</c> if underlined; otherwise, <c>false</c>.
     /// </value>
-    public bool Underline { get;  set; }
+    public bool Underline { get; set; }
 }
