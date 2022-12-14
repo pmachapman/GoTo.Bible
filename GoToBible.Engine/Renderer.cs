@@ -4,6 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+// ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+
 namespace GoToBible.Engine;
 
 using System;
