@@ -521,8 +521,16 @@
         // If this book is not present, go to the suggested book
         if (this.passage.Suggestions.NavigateToChapter is not null)
         {
-            this.renderingParametersModel.Passage = this.passage.Suggestions.NavigateToChapter.ToString();
-            await this.ShowPassageAsync(true);
+            if (string.Equals(this.renderingParametersModel.Passage, this.passage.Suggestions.NavigateToChapter.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                // If the pasage and next chapter are the same, stop loading
+                await this.JsRuntime.InvokeVoidAsync("setContent", "passage-content", string.Empty);
+            }
+            else
+            {
+                this.renderingParametersModel.Passage = this.passage.Suggestions.NavigateToChapter.ToString();
+                await this.ShowPassageAsync(true);
+            }
         }
     }
 
