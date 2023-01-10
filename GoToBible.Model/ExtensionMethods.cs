@@ -392,13 +392,13 @@ public static class ExtensionMethods
             {
                 sb.Append('/');
                 sb.Append(Uri.EscapeDataString(parameters.SecondaryTranslation));
+                InterlinearMode mode = parameters.GetInterlinearMode();
+                if (mode != InterlinearMode.None)
+                {
+                    sb.Append($"?settings={(int)mode}");
+                }
             }
 
-            InterlinearMode mode = parameters.GetInterlinearMode();
-            if (mode != InterlinearMode.None)
-            {
-                sb.Append($"?settings={(int)mode}");
-            }
         }
 
         return new Uri(sb.ToString(), uriKind);

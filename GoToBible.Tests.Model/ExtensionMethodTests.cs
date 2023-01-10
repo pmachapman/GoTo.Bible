@@ -169,6 +169,23 @@ public class ExtensionMethodTests
     }
 
     /// <summary>
+    /// Tests <see cref="ExtensionMethods.AsUrl"/> for a <see cref="RenderingParameters"/> with one translation and settings.
+    /// </summary>
+    [TestMethod]
+    public void TestAsUrl_RenderingParametersOneTranslationInterlinearMode()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            PassageReference = new PassageReference { Display = "1 John 1:3,6-7" },
+            PrimaryTranslation = "ESV",
+            InterlinearIgnoresCase = true,
+            InterlinearIgnoresDiacritics = true,
+            InterlinearIgnoresPunctuation = false,
+        };
+        Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV"), renderingParameters.AsUrl());
+    }
+
+    /// <summary>
     /// Tests <see cref="ExtensionMethods.AsUrl"/> for a <see cref="RenderingParameters"/> with two translations.
     /// </summary>
     [TestMethod]
@@ -181,6 +198,24 @@ public class ExtensionMethodTests
             SecondaryTranslation = "NET",
         };
         Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV/NET"), renderingParameters.AsUrl());
+    }
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.AsUrl"/> for a <see cref="RenderingParameters"/> with two translations and settings.
+    /// </summary>
+    [TestMethod]
+    public void TestAsUrl_RenderingParametersTwoTranslationsInterlinearMode()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            PassageReference = new PassageReference { Display = "1 John 1:3,6-7" },
+            PrimaryTranslation = "ESV",
+            SecondaryTranslation = "NET",
+            InterlinearIgnoresCase = true,
+            InterlinearIgnoresDiacritics = true,
+            InterlinearIgnoresPunctuation = true,
+        };
+        Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV/NET?settings=7"), renderingParameters.AsUrl());
     }
 
     /// <summary>
