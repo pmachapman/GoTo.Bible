@@ -87,21 +87,21 @@ public class DigitalBiblePlatformApi : ApiProvider
         {
             foreach (var book in bookData.data)
             {
-                string bookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(ReverseBookCodeMap[book.book_id]);
-                List<ChapterReference> chapterReferences = new List<ChapterReference>();
-                if (includeChapters)
+                if (ReverseBookCodeMap.ContainsKey(book.book_id))
                 {
-                    foreach (int chapter in book.chapters)
+                    string bookName =
+                        CultureInfo.InvariantCulture.TextInfo.ToTitleCase(ReverseBookCodeMap[book.book_id]);
+                    List<ChapterReference> chapterReferences = new List<ChapterReference>();
+                    if (includeChapters)
                     {
-                        chapterReferences.Add(new ChapterReference(bookName, chapter));
+                        foreach (int chapter in book.chapters)
+                        {
+                            chapterReferences.Add(new ChapterReference(bookName, chapter));
+                        }
                     }
-                }
 
-                yield return new Book
-                {
-                    Chapters = chapterReferences.AsReadOnly(),
-                    Name = bookName,
-                };
+                    yield return new Book { Chapters = chapterReferences.AsReadOnly(), Name = bookName, };
+                }
             }
         }
     }
@@ -258,7 +258,9 @@ public class DigitalBiblePlatformApi : ApiProvider
             }
 
             // Clean up the JSON
-            json = json.Replace("\"dbp-prod\"", "\"dbp_prod\"", StringComparison.Ordinal);
+            json = json
+                .Replace("\"dbp-prod\"", "\"dbp_prod\"", StringComparison.Ordinal)
+                .Replace(",\"filesets\":[]", string.Empty);
 
             var dbpTranslations = DeserializeAnonymousType(json, new
             {
@@ -269,13 +271,13 @@ public class DigitalBiblePlatformApi : ApiProvider
                     vname = string.Empty,
                     date = string.Empty,
                     language = string.Empty,
-                    filesets = new
+                    filesets = Nullable(new
                     {
                         dbp_prod = EmptyListOf(new
                         {
                             id = string.Empty,
                         }),
-                    },
+                    }),
                 }),
                 meta = new
                 {
@@ -314,7 +316,7 @@ public class DigitalBiblePlatformApi : ApiProvider
                         name = translation.abbr;
                     }
 
-                    List<string> damIds = translation.filesets.dbp_prod.Select(t => t.id).ToList();
+                    List<string> damIds = translation.filesets?.dbp_prod.Select(t => t.id).ToList() ?? new List<string>();
                     DigitalBiblePlatformTranslation digitalBiblePlatformTranslation = new DigitalBiblePlatformTranslation
                     {
                         Code = translation.abbr,
