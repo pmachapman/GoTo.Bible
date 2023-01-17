@@ -153,31 +153,17 @@ public class DigitalBiblePlatformApi : ApiProvider
         {
             if (NewTestamentCanon.HasBook(bookName))
             {
-                if (digitalBiblePlatformTranslation.DamIds.Any(
-                        d => d.Contains("N_", StringComparison.OrdinalIgnoreCase)))
-                {
-                    damId = digitalBiblePlatformTranslation.DamIds.First(d =>
-                        d.Contains("N_", StringComparison.OrdinalIgnoreCase));
-                }
-                else
-                {
-                    damId = digitalBiblePlatformTranslation.DamIds.First(d =>
-                        !d.Contains("O_", StringComparison.OrdinalIgnoreCase));
-                }
+                damId = digitalBiblePlatformTranslation.DamIds.FirstOrDefault(d =>
+                    d.Contains("N_", StringComparison.OrdinalIgnoreCase))
+                        ?? digitalBiblePlatformTranslation.DamIds.First(d =>
+                    !d.Contains("O_", StringComparison.OrdinalIgnoreCase));
             }
             else if (OldTestamentCanon.HasBook(bookName))
             {
-                if (digitalBiblePlatformTranslation.DamIds.Any(
-                        d => d.Contains("O_", StringComparison.OrdinalIgnoreCase)))
-                {
-                    damId = digitalBiblePlatformTranslation.DamIds.First(d =>
-                        d.Contains("O_", StringComparison.OrdinalIgnoreCase));
-                }
-                else
-                {
-                    damId = digitalBiblePlatformTranslation.DamIds.First(d =>
-                        !d.Contains("N_", StringComparison.OrdinalIgnoreCase));
-                }
+                damId = digitalBiblePlatformTranslation.DamIds.FirstOrDefault(d =>
+                            d.Contains("O_", StringComparison.OrdinalIgnoreCase))
+                        ?? digitalBiblePlatformTranslation.DamIds.First(d =>
+                            !d.Contains("N_", StringComparison.OrdinalIgnoreCase));
             }
             else
             {
