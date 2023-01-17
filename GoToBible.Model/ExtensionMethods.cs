@@ -302,13 +302,12 @@ public static partial class ExtensionMethods
 
                 // Do not highlight the first verse of a one chapter book if there is no colon and there is not a range of verses
                 bool highlightVerses = sanitisedPassage.Contains(':', StringComparison.OrdinalIgnoreCase) && chapter > 0;
-                if (ranges.Length == 1 && chapters.Length == 1 && chapter == 1 && !passage.Contains(':', StringComparison.OrdinalIgnoreCase))
+                if (ranges.Length == 1 && chapters.Length == 1 && chapter == 1
+                    && !passage.Contains(':', StringComparison.OrdinalIgnoreCase)
+                    && int.TryParse(range.Split(':').Last(), out int verse) && verse == 1)
                 {
                     // We can highlight verses other than 1 if there is no colon
-                    if (int.TryParse(range.Split(':').Last(), out int verse) && verse == 1)
-                    {
-                        highlightVerses = false;
-                    }
+                    highlightVerses = false;
                 }
 
                 if (highlightVerses)
@@ -644,12 +643,9 @@ public static partial class ExtensionMethods
 
         for (int i = 0; i < semiParts.Length; i++)
         {
-            if (!semiParts[i].Split('-')[0].Contains(':'))
+            if (!semiParts[i].Split('-')[0].Contains(':') && !rangePart.Contains(':'))
             {
-                if (!rangePart.Contains(':'))
-                {
-                    semiParts[i] += ":1";
-                }
+                semiParts[i] += ":1";
             }
 
             ranges.AddRange($"Book{semiParts[i]}".GetRanges());
@@ -711,14 +707,7 @@ public static partial class ExtensionMethods
                 string after = semiParts[0][numberStart..];
 
                 // A special exemption for the introduction
-                if (semiParts[0][numberStart] == '0')
-                {
-                    semiParts[0] = $"{before}0:{after}";
-                }
-                else
-                {
-                    semiParts[0] = $"{before}1:{after}";
-                }
+                semiParts[0] = semiParts[0][numberStart] == '0' ? $"{before}0:{after}" : $"{before}1:{after}";
             }
         }
 
