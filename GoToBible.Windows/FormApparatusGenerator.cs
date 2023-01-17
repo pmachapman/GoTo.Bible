@@ -188,7 +188,7 @@ public partial class FormApparatusGenerator : Form
         this.IsGenerating = true;
 
         // Build the data table for the final output
-        DataTable dataTable = new DataTable();
+        using DataTable dataTable = new DataTable();
 
         // Book,Chapter,Verse,Occurrence,Phrase,Variant
         Type[] columnTypes = { typeof(string), typeof(int), typeof(string), typeof(int), typeof(string), typeof(string) };
@@ -319,133 +319,140 @@ public partial class FormApparatusGenerator : Form
         }
 
         // If we have more than one variant
-        DataTable finalDataTable;
-        if (dataTable.Columns.Count > 6)
+        DataTable? finalDataTable = null;
+        try
         {
-            // Add the row number for sorting purposes
-            dataTable.Columns.Add("RowNumber", typeof(int));
-            for (int i = 0; i < dataTable.Rows.Count; i++)
+            if (dataTable.Columns.Count > 6)
             {
-                dataTable.Rows[i].BeginEdit();
-                dataTable.Rows[i]["RowNumber"] = i + 1;
-                dataTable.Rows[i].EndEdit();
-            }
-
-            // Set up the final data table which will be de-duplicated
-            DataTable unsortedDataTable = new DataTable();
-            foreach (DataColumn column in dataTable.Columns)
-            {
-                unsortedDataTable.Columns.Add(column.ColumnName, column.DataType);
-            }
-
-            // De-duplicate the rows by filling in empty columns
-            DataRow? lastRow = null;
-            foreach (DataRow row in dataTable.AsEnumerable()
-                         .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
-                         .ThenBy(r => (int)r["Chapter"])
-                         .ThenBy(r => (string)r["Verse"], new VerseComparer())
-                         .ThenBy(r => (int)r["Occurrence"])
-                         .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters))
-                         .ThenBy(r => (int)r["RowNumber"]))
-            {
-                // If the last row is the same as this row
-                if (lastRow is not null
-                    && (string)row["Book"] == (string)lastRow["Book"]
-                    && (int)row["Chapter"] == (int)lastRow["Chapter"]
-                    && (string)row["Verse"] == (string)lastRow["Verse"]
-                    && (int)row["Occurrence"] == (int)lastRow["Occurrence"]
-                    && string.Compare((string)row["Phrase"], (string)lastRow["Phrase"], CultureInfo.InvariantCulture, apparatusParameters.AsCompareOptions()) == 0)
+                // Add the row number for sorting purposes
+                dataTable.Columns.Add("RowNumber", typeof(int));
+                for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
-                    // Fill in the empty fields
-                    for (int i = 5; i < row.ItemArray.Length - 1; i++)
+                    dataTable.Rows[i].BeginEdit();
+                    dataTable.Rows[i]["RowNumber"] = i + 1;
+                    dataTable.Rows[i].EndEdit();
+                }
+
+                // Set up the final data table which will be de-duplicated
+                using DataTable unsortedDataTable = new DataTable();
+                foreach (DataColumn column in dataTable.Columns)
+                {
+                    unsortedDataTable.Columns.Add(column.ColumnName, column.DataType);
+                }
+
+                // De-duplicate the rows by filling in empty columns
+                DataRow? lastRow = null;
+                foreach (DataRow row in dataTable.AsEnumerable()
+                             .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
+                             .ThenBy(r => (int)r["Chapter"])
+                             .ThenBy(r => (string)r["Verse"], new VerseComparer())
+                             .ThenBy(r => (int)r["Occurrence"])
+                             .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters))
+                             .ThenBy(r => (int)r["RowNumber"]))
+                {
+                    // If the last row is the same as this row
+                    if (lastRow is not null
+                        && (string)row["Book"] == (string)lastRow["Book"]
+                        && (int)row["Chapter"] == (int)lastRow["Chapter"]
+                        && (string)row["Verse"] == (string)lastRow["Verse"]
+                        && (int)row["Occurrence"] == (int)lastRow["Occurrence"]
+                        && string.Compare((string)row["Phrase"], (string)lastRow["Phrase"], CultureInfo.InvariantCulture, apparatusParameters.AsCompareOptions()) == 0)
                     {
-                        if (string.IsNullOrEmpty(lastRow[i].ToString())
-                            && !string.IsNullOrEmpty(row[i].ToString()))
+                        // Fill in the empty fields
+                        for (int i = 5; i < row.ItemArray.Length - 1; i++)
                         {
-                            lastRow.BeginEdit();
-                            lastRow[i] = row[i];
-                            lastRow.EndEdit();
+                            if (string.IsNullOrEmpty(lastRow[i].ToString())
+                                && !string.IsNullOrEmpty(row[i].ToString()))
+                            {
+                                lastRow.BeginEdit();
+                                lastRow[i] = row[i];
+                                lastRow.EndEdit();
+                            }
                         }
                     }
+                    else
+                    {
+                        // Add the data row to the new table
+                        DataRow newRow = unsortedDataTable.NewRow();
+                        newRow.ItemArray = row.ItemArray;
+                        unsortedDataTable.Rows.Add(newRow);
+                        lastRow = newRow;
+                    }
+                }
+
+                // Set up the final data table which will be sorted
+                finalDataTable = new DataTable();
+                foreach (DataColumn column in dataTable.Columns)
+                {
+                    if (column.ColumnName != "RowNumber")
+                    {
+                        finalDataTable.Columns.Add(column.ColumnName, column.DataType);
+                    }
+                }
+
+                // Sort the output
+                foreach (DataRow row in unsortedDataTable.AsEnumerable()
+                             .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
+                             .ThenBy(r => (int)r["Chapter"])
+                             .ThenBy(r => (string)r["Verse"], new VerseComparer())
+                             .ThenBy(r => (int)r["RowNumber"])
+                             .ThenBy(r => (int)r["Occurrence"])
+                             .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters)))
+                {
+                    // Add the data row to the new table
+                    DataRow newRow = finalDataTable.NewRow();
+                    newRow.ItemArray = row.ItemArray[..^1];
+                    finalDataTable.Rows.Add(newRow);
+                }
+            }
+            else
+            {
+                finalDataTable = dataTable;
+            }
+
+            // Save the output
+            if (this.RadioButtonCsv.Checked)
+            {
+                // Save the spreadsheet
+                this.SaveFileDialogMain.DefaultExt = "*.csv";
+                this.SaveFileDialogMain.Filter = @"CSV Spreadsheet (*.csv)|*.csv|All Files (*.*)|*.*";
+                if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
+                {
+                    // Save the file with the BOM
+                    await File.WriteAllTextAsync(
+                        this.SaveFileDialogMain.FileName,
+                        finalDataTable.AsCsvData(),
+                        Encoding.UTF8);
                 }
                 else
                 {
-                    // Add the data row to the new table
-                    DataRow newRow = unsortedDataTable.NewRow();
-                    newRow.ItemArray = row.ItemArray;
-                    unsortedDataTable.Rows.Add(newRow);
-                    lastRow = newRow;
+                    this.IsGenerating = false;
+                    return;
                 }
             }
-
-            // Set up the final data table which will be sorted
-            finalDataTable = new DataTable();
-            foreach (DataColumn column in dataTable.Columns)
+            else
             {
-                if (column.ColumnName != "RowNumber")
+                // Save the HTML file
+                this.SaveFileDialogMain.DefaultExt = "*.html";
+                this.SaveFileDialogMain.Filter = @"HTML File (*.html)|*.html;*.htm|All Files (*.*)|*.*";
+                if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
-                    finalDataTable.Columns.Add(column.ColumnName, column.DataType);
+                    // Save the file with the BOM
+                    await File.WriteAllTextAsync(
+                        this.SaveFileDialogMain.FileName,
+                        finalDataTable.AsHtmlApparatus(apparatusParameters),
+                        Encoding.UTF8);
+                }
+                else
+                {
+                    this.IsGenerating = false;
+                    return;
                 }
             }
-
-            // Sort the output
-            foreach (DataRow row in unsortedDataTable.AsEnumerable()
-                         .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
-                         .ThenBy(r => (int)r["Chapter"])
-                         .ThenBy(r => (string)r["Verse"], new VerseComparer())
-                         .ThenBy(r => (int)r["RowNumber"])
-                         .ThenBy(r => (int)r["Occurrence"])
-                         .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters)))
-            {
-                // Add the data row to the new table
-                DataRow newRow = finalDataTable.NewRow();
-                newRow.ItemArray = row.ItemArray[..^1];
-                finalDataTable.Rows.Add(newRow);
-            }
         }
-        else
+        finally
         {
-            finalDataTable = dataTable;
-        }
-
-        // Save the output
-        if (this.RadioButtonCsv.Checked)
-        {
-            // Save the spreadsheet
-            this.SaveFileDialogMain.DefaultExt = "*.csv";
-            this.SaveFileDialogMain.Filter = @"CSV Spreadsheet (*.csv)|*.csv|All Files (*.*)|*.*";
-            if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
-            {
-                // Save the file with the BOM
-                await File.WriteAllTextAsync(
-                    this.SaveFileDialogMain.FileName,
-                    finalDataTable.AsCsvData(),
-                    Encoding.UTF8);
-            }
-            else
-            {
-                this.IsGenerating = false;
-                return;
-            }
-        }
-        else
-        {
-            // Save the HTML file
-            this.SaveFileDialogMain.DefaultExt = "*.html";
-            this.SaveFileDialogMain.Filter = @"HTML File (*.html)|*.html;*.htm|All Files (*.*)|*.*";
-            if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
-            {
-                // Save the file with the BOM
-                await File.WriteAllTextAsync(
-                    this.SaveFileDialogMain.FileName,
-                    finalDataTable.AsHtmlApparatus(apparatusParameters),
-                    Encoding.UTF8);
-            }
-            else
-            {
-                this.IsGenerating = false;
-                return;
-            }
+            finalDataTable?.Dispose();
         }
 
         this.IsGenerating = false;
