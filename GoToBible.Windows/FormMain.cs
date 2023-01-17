@@ -1300,10 +1300,10 @@ public partial class FormMain : Form
             if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
                 && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
             {
-                if ((primaryItem.Language == "Greek" && !(secondaryItem.Language == "Greek" || secondaryItem.Language is null))
-                    || (primaryItem.Language == "Hebrew" && !(secondaryItem.Language == "Hebrew" || secondaryItem.Language is null))
-                    || (secondaryItem.Language == "Greek" && !(primaryItem.Language == "Greek" || primaryItem.Language is null))
-                    || (secondaryItem.Language == "Hebrew" && !(primaryItem.Language == "Hebrew" || primaryItem.Language is null)))
+                if ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
+                    || (primaryItem.Language == "Hebrew" && secondaryItem.Language is not ("Hebrew" or null))
+                    || (secondaryItem.Language == "Greek" && primaryItem.Language is not ("Greek" or null))
+                    || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null)))
                 {
                     MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
@@ -1349,10 +1349,10 @@ public partial class FormMain : Form
             if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
                 && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
             {
-                if ((primaryItem.Language == "Greek" && !(secondaryItem.Language == "Greek" || secondaryItem.Language is null))
-                    || (primaryItem.Language == "Hebrew" && !(secondaryItem.Language == "Hebrew" || secondaryItem.Language is null))
-                    || (secondaryItem.Language == "Greek" && !(primaryItem.Language == "Greek" || primaryItem.Language is null))
-                    || (secondaryItem.Language == "Hebrew" && !(primaryItem.Language == "Hebrew" || primaryItem.Language is null)))
+                if ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
+                    || (primaryItem.Language == "Hebrew" && secondaryItem.Language is not ("Hebrew" or null))
+                    || (secondaryItem.Language == "Greek" && primaryItem.Language is not ("Greek" or null))
+                    || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null)))
                 {
                     MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
