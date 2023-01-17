@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="NetBible.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ public class NetBible : ApiProvider
         // Load the book
         string url = $"?passage={book}+{chapterNumber}&formatting=plain&type=json";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         // The NET will return the first chapter for any invalid references
         if (!Canon.IsValidChapter(book, chapterNumber))

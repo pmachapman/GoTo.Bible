@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="GoToBibleApi.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ public class GoToBibleApi : ApiProvider
                 string urlTranslation = HttpUtility.UrlEncode(providerTranslation.Code);
                 string url = $"Books?provider={urlProvider}&translation={urlTranslation}&includeChapters=false";
                 string cacheKey = this.GetCacheKey(url);
-                string json = await this.Cache.GetStringAsync(cacheKey);
+                string? json = await this.Cache.GetStringAsync(cacheKey);
 
                 if (string.IsNullOrWhiteSpace(json))
                 {
@@ -84,7 +84,7 @@ public class GoToBibleApi : ApiProvider
     {
         string url = "Translations";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {

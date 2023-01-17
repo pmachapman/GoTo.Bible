@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Renderer.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ using GoToBible.Model;
 /// <summary>
 /// The renderer.
 /// </summary>
-public class Renderer : IRenderer
+public partial class Renderer : IRenderer
 {
     /// <summary>
     /// A horizontal line.
@@ -30,7 +30,16 @@ public class Renderer : IRenderer
     /// <summary>
     /// The regular expression to italicise words.
     /// </summary>
-    private static readonly Regex ItaliciseWordsRegex = new Regex("(<em>[^<]+)([ ])([^<]+</em>)", RegexOptions.Compiled);
+    /// <returns>The italicise words regular expression.</returns>
+    [GeneratedRegex("(<em>[^<]+)([ ])([^<]+</em>)", RegexOptions.Compiled)]
+    private static partial Regex ItaliciseWordsRegex();
+
+    /// <summary>
+    /// The regular expression to find verse numbers.
+    /// </summary>
+    /// <returns>The verse number regular expression.</returns>
+    [GeneratedRegex("^[\\-0-9]+$", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 
     /// <summary>
     /// A value indicating whether or not this instance has been disposed.
@@ -347,7 +356,7 @@ public class Renderer : IRenderer
                         string textContent = content.StripHtml().Trim();
 
                         // If we only have a verse number, or hyphenated verse number, skip
-                        if (!Regex.IsMatch(textContent, "^[\\-0-9]+$", RegexOptions.Compiled))
+                        if (!VerseNumberRegex().IsMatch(textContent))
                         {
                             sb.Append(content);
                         }
@@ -733,7 +742,7 @@ public class Renderer : IRenderer
                     // Only run a maximum for the number of spaces in the line
                     for (int i = 0; i < line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).Length; i++)
                     {
-                        string updatedLine1 = ItaliciseWordsRegex.Replace(line1, "$1</em>$2<em>$3");
+                        string updatedLine1 = ItaliciseWordsRegex().Replace(line1, "$1</em>$2<em>$3");
                         if (updatedLine1 == line1)
                         {
                             break;
@@ -762,7 +771,7 @@ public class Renderer : IRenderer
                     // Only run a maximum for the number of spaces in the line
                     for (int i = 0; i < line2.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).Length; i++)
                     {
-                        string updatedLine2 = ItaliciseWordsRegex.Replace(line2, "$1</em>$2<em>$3");
+                        string updatedLine2 = ItaliciseWordsRegex().Replace(line2, "$1</em>$2<em>$3");
                         if (updatedLine2 == line2)
                         {
                             break;

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FormApparatusGenerator.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -297,7 +297,7 @@ public partial class FormApparatusGenerator : Form
             DataTable table = content.AsDataTable(columnTypes);
 
             // If we have a variant column, rename it to the file name
-            if (table.Columns.Count == 6 && table.Columns[5].ColumnName == "Variant")
+            if (table.Columns is [_, _, _, _, _, { ColumnName: "Variant" }])
             {
                 string columnName = Path.GetFileNameWithoutExtension(path);
                 table.Columns[5].ColumnName = columnName;

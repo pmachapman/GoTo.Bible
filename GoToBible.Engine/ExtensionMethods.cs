@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -17,15 +17,24 @@ using GoToBible.Model;
 /// <summary>
 /// General Extension Methods.
 /// </summary>
-public static class ExtensionMethods
+public static partial class ExtensionMethods
 {
+    /// <summary>
+    /// The HTML tag regular expression.
+    /// </summary>
+    /// <returns>The regular expression to find HTML tags.</returns>
+    [GeneratedRegex("<.*?>", RegexOptions.Compiled)]
+    private static partial Regex HtmlTagRegex();
+
     /// <summary>
     /// The valid verse number regular expression.
     /// </summary>
+    /// <returns>The regular expression to validate a verse number.</returns>
     /// <remarks>
     /// This includes support for verses with letters, hypenated verses, and verses enclosed in brackets.
     /// </remarks>
-    private static readonly Regex VerseNumberRegex = new Regex(@"([\[]((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))[\]])|((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))", RegexOptions.Compiled);
+    [GeneratedRegex(@"([\[]((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))[\]])|((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 
     /// <summary>
     /// Returns the <see cref="CompareOptions"/> matching the <see cref="RenderingParameters"/>.
@@ -166,7 +175,7 @@ public static class ExtensionMethods
     /// </returns>
     public static bool IsValidVerseNumber(this string verseNumber)
     {
-        Match isValidVerseNumber = VerseNumberRegex.Match(verseNumber);
+        Match isValidVerseNumber = VerseNumberRegex().Match(verseNumber);
         return isValidVerseNumber.Success && isValidVerseNumber.Value.Length == verseNumber.Length;
     }
 
@@ -271,7 +280,7 @@ public static class ExtensionMethods
     /// <param name="input">The input string.</param>
     /// <returns>The input string without HTML tags.</returns>
     public static string StripHtml(this string input)
-        => Regex.Replace(input, "<.*?>", string.Empty, RegexOptions.Compiled);
+        => HtmlTagRegex().Replace(input, string.Empty);
 
     /// <summary>
     /// Renders the supplied words in normal type.

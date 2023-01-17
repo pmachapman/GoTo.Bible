@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="BibliaApi.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ public class BibliaApi : ApiProvider
     {
         string url = $"contents/{translation}.txt?key={this.options.ApiKey}";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {
@@ -139,7 +139,7 @@ public class BibliaApi : ApiProvider
         // Load the book
         string url = $"content/{translation}.txt?key={this.options.ApiKey}&passage={book}{chapterPart}&eachVerse=[VerseNum]++[VerseText]\\n";
         string cacheKey = this.GetCacheKey(url);
-        string output = await this.Cache.GetStringAsync(cacheKey);
+        string? output = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(output))
         {
@@ -202,7 +202,7 @@ public class BibliaApi : ApiProvider
     {
         string url = $"find?key={this.options.ApiKey}";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {

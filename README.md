@@ -10,7 +10,7 @@ The Windows App requires the following:
 ## NuGet Package Requirements
 
 The [NuGet Package](https://www.nuget.org/packages/GoToBible.Model/) requires the following:
- * [Microsoft .NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+ * [Microsoft .NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 
 ## Development Environment Requirements
@@ -20,6 +20,6 @@ The Windows App requires the following:
  * Windows 10
 
 ## Notes
- * This app is Copyright 2020-2022 Conglomo Limited. Please see [LICENSE.md](LICENSE.md) for license details.
+ * This app is Copyright 2020-2023 Conglomo Limited. Please see [LICENSE.md](LICENSE.md) for license details.
  * The app is still under development, so if you wish to add features, feel free to make a pull request.
  * I provide no warranty or support for this app or its code. Use at your own risk.

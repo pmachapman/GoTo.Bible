@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 /// Extension Methods to the Model.
 /// </summary>
-public static class ExtensionMethods
+public static partial class ExtensionMethods
 {
     /// <summary>
     /// The lengths of each chapter in each book.
@@ -204,17 +204,49 @@ public static class ExtensionMethods
     };
 
     /// <summary>
+    /// The book part regular expression.
+    /// </summary>
+    /// <returns>The regular expression to find the book part.</returns>
+    [GeneratedRegex(@"[\w\\(\\)]\d", RegexOptions.Compiled)]
+    private static partial Regex BookPartRegex();
+
+    /// <summary>
+    /// The dash replacement regular expression.
+    /// </summary>
+    /// <returns>The regular expression to find dashes.</returns>
+    [GeneratedRegex(@"[‐‑‒–—-]", RegexOptions.Compiled)]
+    private static partial Regex DashRegex();
+
+    /// <summary>
+    /// The number start regular expression.
+    /// </summary>
+    /// <returns>The regular expression to find the start of a number.</returns>
+    [GeneratedRegex(@"[\w\s]\d", RegexOptions.Compiled)]
+    private static partial Regex NumberStartRegex();
+
+    /// <summary>
+    /// The range part regular expression.
+    /// </summary>
+    /// <returns>The regular expression for finding a range part.</returns>
+    [GeneratedRegex(@"\d", RegexOptions.Compiled)]
+    private static partial Regex RangePartRegex();
+
+    /// <summary>
     /// The strip invalid characters regular expression.
     /// </summary>
-    private static readonly Regex StripInvalidCharactersRegex = new Regex(@"[^a-zA-Z0-9\. _~:,-]", RegexOptions.Compiled);
+    /// <returns>The strip invalid characters regular expression.</returns>
+    [GeneratedRegex(@"[^a-zA-Z0-9\. _~:,-]", RegexOptions.Compiled)]
+    private static partial Regex StripInvalidCharactersRegex();
 
     /// <summary>
     /// The verse number regular expression.
     /// </summary>
+    /// <returns>The verse number regular expression.</returns>
     /// <remarks>
     /// This includes support for verses with letters.
     /// </remarks>
-    private static readonly Regex VerseNumberRegex = new Regex(@"[0-9]+[a-z]?", RegexOptions.Compiled);
+    [GeneratedRegex(@"[0-9]+[a-z]?", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 
     /// <summary>
     /// Builds a <see cref="PassageReference" /> from a <see cref="ChapterReference" />.
@@ -298,7 +330,7 @@ public static class ExtensionMethods
                             string[] displayRangeParts = displayRange.Split(":", StringSplitOptions.RemoveEmptyEntries);
                             if (int.TryParse(displayRangeParts.First(), out int displayRangeChapter) && displayRangeChapter == chapter)
                             {
-                                Match verseNumberMatch = VerseNumberRegex.Match(displayRangeParts.Last().Trim());
+                                Match verseNumberMatch = VerseNumberRegex().Match(displayRangeParts.Last().Trim());
                                 if (verseNumberMatch.Success)
                                 {
                                     displayRangeVerse = verseNumberMatch.Value;
@@ -317,7 +349,7 @@ public static class ExtensionMethods
                         }
                         else
                         {
-                            Match verseNumberMatch = VerseNumberRegex.Match(displayRange.Trim());
+                            Match verseNumberMatch = VerseNumberRegex().Match(displayRange.Trim());
                             if (verseNumberMatch.Success)
                             {
                                 displayRangeVerse = verseNumberMatch.Value;
@@ -423,7 +455,7 @@ public static class ExtensionMethods
         }
 
         // Strip invalid characters
-        string passage = StripInvalidCharactersRegex.Replace(segment, string.Empty);
+        string passage = StripInvalidCharactersRegex().Replace(segment, string.Empty);
         passage = passage.Replace(".", " ", StringComparison.OrdinalIgnoreCase);
         passage = passage.Replace("_", ":", StringComparison.OrdinalIgnoreCase);
         passage = passage.Replace("~", ",", StringComparison.OrdinalIgnoreCase);
@@ -449,7 +481,7 @@ public static class ExtensionMethods
         }
 
         // Strip invalid characters
-        string segment = StripInvalidCharactersRegex.Replace(passage, string.Empty);
+        string segment = StripInvalidCharactersRegex().Replace(passage, string.Empty);
         segment = segment.Replace(" ", ".", StringComparison.OrdinalIgnoreCase);
         segment = segment.Replace(":", "_", StringComparison.OrdinalIgnoreCase);
         segment = segment.Replace(",", "~", StringComparison.OrdinalIgnoreCase);
@@ -539,8 +571,7 @@ public static class ExtensionMethods
         passage = passage.Replace(":", string.Empty);
 
         // Get the book part from the passage reference
-        Regex bookPartRegex = new Regex(@"[\w\\(\\)]\d", RegexOptions.Compiled);
-        int index = bookPartRegex.Match(passage).Index;
+        int index = BookPartRegex().Match(passage).Index;
         if (index == 0)
         {
             // This is a book name
@@ -581,8 +612,7 @@ public static class ExtensionMethods
         }
 
         passage = passage[1..];
-        Regex rangePartRegex = new Regex(@"\d", RegexOptions.Compiled);
-        string rangePart = passage[rangePartRegex.Match(passage).Index..];
+        string rangePart = passage[RangePartRegex().Match(passage).Index..];
         rangePart = rangePart.NormaliseCommas();
         string[] semiParts = rangePart.Split(';');
         rangePart = semiParts[0];
@@ -674,8 +704,7 @@ public static class ExtensionMethods
         string[] semiParts = passage.Split(';');
         if (!semiParts[0].Contains(':'))
         {
-            Regex numberStartRegex = new Regex(@"[\w\s]\d", RegexOptions.Compiled);
-            int numberStart = numberStartRegex.Match(semiParts[0]).Index + 1;
+            int numberStart = NumberStartRegex().Match(semiParts[0]).Index + 1;
             if (numberStart > 1)
             {
                 string before = semiParts[0][..numberStart];
@@ -704,8 +733,5 @@ public static class ExtensionMethods
     /// The passage reference ready for cleaning.
     /// </returns>
     internal static string SanitisePassageReference(this string passage)
-    {
-        Regex dashRegex = new Regex(@"[‐‑‒–—-]", RegexOptions.Compiled);
-        return dashRegex.Replace(passage.Replace(" ", string.Empty).Replace('.', ':').ToLowerInvariant(), "-");
-    }
+        => DashRegex().Replace(passage.Replace(" ", string.Empty).Replace('.', ':').ToLowerInvariant(), "-");
 }

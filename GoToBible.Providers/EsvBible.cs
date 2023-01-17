@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="EsvBible.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -191,7 +191,7 @@ public class EsvBible : ApiProvider
         // Load the book
         string url = $"?q={book}{chapterPart}&include-passage-references=false&include-footnotes=false&include-headings=false&include-short-copyright=false&indent-poetry=false";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {

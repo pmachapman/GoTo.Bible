@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="BibleApi.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -22,12 +22,13 @@ using Microsoft.Extensions.Options;
 /// The API.Bible Provider.
 /// </summary>
 /// <seealso cref="IProvider" />
-public class BibleApi : ApiProvider
+public partial class BibleApi : ApiProvider
 {
     /// <summary>
     /// The regular expression to split verse lines.
     /// </summary>
-    private static readonly Regex VerseLinesRegex = new Regex("(^|[ ]{2,})\\[", RegexOptions.Compiled);
+    [GeneratedRegex("(^|[ ]{2,})\\[", RegexOptions.Compiled)]
+    private static partial Regex VerseLinesRegex();
 
     /// <summary>
     /// The regular expression to clean up verse numbers.
@@ -60,7 +61,7 @@ public class BibleApi : ApiProvider
     {
         string url = $"bibles/{translation}/books";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {
@@ -218,7 +219,7 @@ public class BibleApi : ApiProvider
         // Load the book
         string url = $"bibles/{translation}/chapters/{bookCode}.{chapterString}?content-type=text&include-titles=false";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {
@@ -262,7 +263,7 @@ public class BibleApi : ApiProvider
         {
             // Get the text
             string output = chapterJson.data.content.Trim().Replace("\n", " ");
-            output = VerseLinesRegex.Replace(output, Environment.NewLine);
+            output = VerseLinesRegex().Replace(output, Environment.NewLine);
             output = VerseNumberRegex.Replace(output, $"{Environment.NewLine}$1 ");
             chapter.Copyright = chapterJson.data.copyright.Trim().Replace("\n", " ") + chapterJson.meta.fumsNoScript;
             if (chapterNumber > 0
@@ -308,7 +309,7 @@ public class BibleApi : ApiProvider
     {
         string url = "bibles";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {

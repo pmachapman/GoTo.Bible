@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="NltBible.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ public class NltBible : ApiProvider
         // Load the book
         string url = $"passages?ref={queryBook}+{chapterNumber}&key={this.options.ApiKey}&version={translation}";
         string cacheKey = this.GetCacheKey(url);
-        string html = await this.Cache.GetStringAsync(cacheKey);
+        string? html = await this.Cache.GetStringAsync(cacheKey);
 
         // The NLT will return the first chapter for any invalid references
         if (!Canon.IsValidChapter(book, chapterNumber))

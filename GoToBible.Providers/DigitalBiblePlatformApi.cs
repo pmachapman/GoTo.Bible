@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="DigitalBiblePlatformApi.cs" company="Conglomo">
-// Copyright 2020-2022 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ public class DigitalBiblePlatformApi : ApiProvider
     {
         string url = $"bibles/{translation}/book?key={this.options.ApiKey}&v=4";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {
@@ -143,7 +143,7 @@ public class DigitalBiblePlatformApi : ApiProvider
         // Load the book
         string url = $"bibles/filesets/{damId}/{bookCode}/{chapterNumber}?key={this.options.ApiKey}&v=4";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {
@@ -240,7 +240,7 @@ public class DigitalBiblePlatformApi : ApiProvider
         {
             string url = $"bibles?key={this.options.ApiKey}&media=text_plain&page={page}&limit=50&v=4";
             string cacheKey = this.GetCacheKey(url);
-            string json = await this.Cache.GetStringAsync(cacheKey);
+            string? json = await this.Cache.GetStringAsync(cacheKey);
 
             if (string.IsNullOrWhiteSpace(json))
             {
@@ -364,7 +364,7 @@ public class DigitalBiblePlatformApi : ApiProvider
         // Get the copyright information for the volume
         string url = $"bibles/{id}/copyright?key={this.options.ApiKey}&v=4";
         string cacheKey = this.GetCacheKey(url);
-        string json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey);
 
         if (string.IsNullOrWhiteSpace(json))
         {
