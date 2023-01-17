@@ -15,8 +15,22 @@ using System.Text.RegularExpressions;
 /// A verse string comparer.
 /// </summary>
 /// <remarks>This handles numeric, hyphenated, and sub-verse numbers.</remarks>
-public class VerseComparer : IComparer<string>
+public partial class VerseComparer : IComparer<string>
 {
+    /// <summary>
+    /// Gets the verse number with letter regular expression.
+    /// </summary>
+    /// <returns>The regular expression for a verse number with a letter.</returns>
+    [GeneratedRegex("^[0-9]+[a-z]$", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberWithLetterRegex();
+
+    /// <summary>
+    /// Gets the verse range regular expression.
+    /// </summary>
+    /// <returns>The regular expression for a verse range.</returns>
+    [GeneratedRegex("^[0-9]+[a-z]?-[0-9]+[a-z]?$", RegexOptions.Compiled)]
+    private static partial Regex VerseRangeRegex();
+
     /// <inheritdoc />
     public int Compare(string? x, string? y)
     {
@@ -39,7 +53,7 @@ public class VerseComparer : IComparer<string>
         }
         else if (int.TryParse(x, out a))
         {
-            if (Regex.IsMatch(y!, "^[0-9]+[a-z]$"))
+            if (VerseNumberWithLetterRegex().IsMatch(y!))
             {
                 // Get the digit
                 if (!int.TryParse(y![..^1], out b))
@@ -55,7 +69,7 @@ public class VerseComparer : IComparer<string>
                     return a.CompareTo(b);
                 }
             }
-            else if (Regex.IsMatch(y!, "^[0-9]+[a-z]?-[0-9]+[a-z]?$"))
+            else if (VerseRangeRegex().IsMatch(y!))
             {
                 // Get the first digit
                 if (!int.TryParse(new string(y!.TakeWhile(char.IsDigit).ToArray()), out b))
@@ -79,7 +93,7 @@ public class VerseComparer : IComparer<string>
         }
         else if (int.TryParse(y, out b))
         {
-            if (Regex.IsMatch(x!, "^[0-9]+[a-z]$"))
+            if (VerseNumberWithLetterRegex().IsMatch(x!))
             {
                 // Get the digit
                 if (!int.TryParse(x![..^1], out a))
@@ -95,7 +109,7 @@ public class VerseComparer : IComparer<string>
                     return a.CompareTo(b);
                 }
             }
-            else if (Regex.IsMatch(x!, "^[0-9]+[a-z]?-[0-9]+[a-z]?$"))
+            else if (VerseRangeRegex().IsMatch(x!))
             {
                 // Get the first digit
                 if (!int.TryParse(new string(x!.TakeWhile(char.IsDigit).ToArray()), out a))
@@ -117,7 +131,7 @@ public class VerseComparer : IComparer<string>
                 return -1;
             }
         }
-        else if (Regex.IsMatch(x!, "^[0-9]+[a-z]$") && Regex.IsMatch(y!, "^[0-9]+[a-z]$"))
+        else if (VerseNumberWithLetterRegex().IsMatch(x!) && VerseNumberWithLetterRegex().IsMatch(y!))
         {
             if (!int.TryParse(x![..^1], out a) || !int.TryParse(y![..^1], out b))
             {
@@ -133,8 +147,8 @@ public class VerseComparer : IComparer<string>
                 return a.CompareTo(b);
             }
         }
-        else if (Regex.IsMatch(x!, "^[0-9]+[a-z]?-[0-9]+[a-z]?$")
-                 && Regex.IsMatch(y!, "^[0-9]+[a-z]?-[0-9]+[a-z]?$"))
+        else if (VerseRangeRegex().IsMatch(x!)
+                 && VerseRangeRegex().IsMatch(y!))
         {
             // Get the first digits
             if (!int.TryParse(new string(x!.TakeWhile(char.IsDigit).ToArray()), out a)

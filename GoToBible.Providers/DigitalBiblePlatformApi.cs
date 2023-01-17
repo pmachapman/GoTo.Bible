@@ -25,6 +25,16 @@ using Microsoft.Extensions.Options;
 public class DigitalBiblePlatformApi : ApiProvider
 {
     /// <summary>
+    /// The New Testament canon.
+    /// </summary>
+    private static readonly BookHelper NewTestamentCanon = new NewTestamentCanon();
+
+    /// <summary>
+    /// The Old Testament canon.
+    /// </summary>
+    private static readonly BookHelper OldTestamentCanon = new OldTestamentCanon();
+
+    /// <summary>
     /// The options.
     /// </summary>
     private readonly DigitalBiblePlatformApiOptions options;
@@ -137,8 +147,48 @@ public class DigitalBiblePlatformApi : ApiProvider
         string bookCode = BookCodeMap[bookName];
 
         // Select the DAM id
+        string damId;
         DigitalBiblePlatformTranslation digitalBiblePlatformTranslation = this.translations.Single(t => t.Code == translation);
-        string damId = digitalBiblePlatformTranslation.DamIds.FirstOrDefault() ?? translation;
+        if (digitalBiblePlatformTranslation.DamIds.Count > 1)
+        {
+            if (NewTestamentCanon.HasBook(bookName))
+            {
+                if (digitalBiblePlatformTranslation.DamIds.Any(
+                        d => d.Contains("N_", StringComparison.OrdinalIgnoreCase)))
+                {
+                    damId = digitalBiblePlatformTranslation.DamIds.First(d =>
+                        d.Contains("N_", StringComparison.OrdinalIgnoreCase));
+                }
+                else
+                {
+                    damId = digitalBiblePlatformTranslation.DamIds.First(d =>
+                        !d.Contains("O_", StringComparison.OrdinalIgnoreCase));
+                }
+            }
+            else if (OldTestamentCanon.HasBook(bookName))
+            {
+                if (digitalBiblePlatformTranslation.DamIds.Any(
+                        d => d.Contains("O_", StringComparison.OrdinalIgnoreCase)))
+                {
+                    damId = digitalBiblePlatformTranslation.DamIds.First(d =>
+                        d.Contains("O_", StringComparison.OrdinalIgnoreCase));
+                }
+                else
+                {
+                    damId = digitalBiblePlatformTranslation.DamIds.First(d =>
+                        !d.Contains("N_", StringComparison.OrdinalIgnoreCase));
+                }
+            }
+            else
+            {
+                // We do not know how to resolve this
+                damId = digitalBiblePlatformTranslation.DamIds.OrderBy(d => d).First();
+            }
+        }
+        else
+        {
+            damId = digitalBiblePlatformTranslation.DamIds.FirstOrDefault() ?? translation;
+        }
 
         // Load the book
         string url = $"bibles/filesets/{damId}/{bookCode}/{chapterNumber}?key={this.options.ApiKey}&v=4";

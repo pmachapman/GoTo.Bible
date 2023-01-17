@@ -87,9 +87,9 @@ public static class AutoSuggest
     /// <param name="controlHandle">The control handle.</param>
     /// <param name="items">The items.</param>
     /// <param name="options">The options.</param>
-    private static void Enable(IntPtr controlHandle, SourceCustomList items, AUTOCOMPLETEOPTIONS options)
+    private static void Enable(nint controlHandle, SourceCustomList items, AUTOCOMPLETEOPTIONS options)
     {
-        if (controlHandle == IntPtr.Zero)
+        if (controlHandle == nint.Zero)
         {
             return;
         }
@@ -115,9 +115,9 @@ public static class AutoSuggest
     /// Disables the specified control handle.
     /// </summary>
     /// <param name="controlHandle">The control handle.</param>
-    private static void Disable(IntPtr controlHandle)
+    private static void Disable(nint controlHandle)
     {
-        if (controlHandle == IntPtr.Zero)
+        if (controlHandle == nint.Zero)
         {
             return;
         }

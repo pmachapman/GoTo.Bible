@@ -13,7 +13,6 @@
 // ReSharper disable UnusedMember.Global
 namespace GoToBible.Windows.AutoComplete;
 
-using System;
 using System.Runtime.InteropServices;
 
 /// <summary>
@@ -59,7 +58,7 @@ public interface IAutoComplete2
     /// </returns>
     [PreserveSig]
     int Init(
-        IntPtr hwndEdit,
+        nint hwndEdit,
         [MarshalAs(UnmanagedType.IUnknown)] object punkACL,
         [MarshalAs(UnmanagedType.LPWStr)] string pwszRegKeyPath,
         [MarshalAs(UnmanagedType.LPWStr)] string pwszQuickComplete);

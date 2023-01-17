@@ -34,7 +34,7 @@ public class LegacyWebBrowser : WebBrowser, IWebBrowser
     /// <inheritdoc/>
     public Task SetInnerHtmlAsync(string innerHtml)
     {
-        if (this.Document is not null && this.Document.Body is not null)
+        if (this.Document?.Body is not null)
         {
             this.Document.Body.InnerHtml = innerHtml;
         }

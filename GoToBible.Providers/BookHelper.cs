@@ -191,6 +191,13 @@ internal class BookHelper
     }
 
     /// <summary>
+    /// Determines if this canon has the specified book.
+    /// </summary>
+    /// <param name="bookName">The book name.</param>
+    /// <returns><c>true</c> if this canon contains the book; otherwise, <c>false</c>.</returns>
+    public bool HasBook(string bookName) => this.BookNames.Contains(bookName);
+
+    /// <summary>
     /// Determines whether the specified book contains the specified chapter.
     /// </summary>
     /// <param name="book">The book name.</param>

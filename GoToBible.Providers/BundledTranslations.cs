@@ -20,7 +20,7 @@ using GoToBible.Model;
 /// The Bundled Translations Bible Provider.
 /// </summary>
 /// <seealso cref="IProvider" />
-public class BundledTranslations : IProvider
+public partial class BundledTranslations : IProvider
 {
     /// <summary>
     /// The SBL copyright messages.
@@ -92,6 +92,14 @@ public class BundledTranslations : IProvider
         { "SBLGNTAPP", false },
         { "TRWHAPP", false },
     };
+
+    /// <summary>
+    /// The regular express to determine if a line of text has a verse number bracketed in it.
+    /// </summary>
+    /// <returns>The mid-line verse number regular expression.</returns>
+    /// <remarks>See Acts 19:40 in the SBLGNT for an example of a verse like this.</remarks>
+    [GeneratedRegex(@"\[\d+\]", RegexOptions.Compiled)]
+    private static partial Regex HasVerseRegex();
 
     /// <summary>
     /// The renderer for apparatus generation.
@@ -167,7 +175,7 @@ public class BundledTranslations : IProvider
                         // Read each verse of the chapter
                         readingChapter = true;
                         string lineToAppend = line[lineStart.Length..].Replace("\t", "  ");
-                        Match hasVerse = Regex.Match(lineToAppend, @"\[\d+\]");
+                        Match hasVerse = HasVerseRegex().Match(lineToAppend);
                         if (hasVerse.Success)
                         {
                             // See SBLGNT Acts 19:40 for an example of a verse like this

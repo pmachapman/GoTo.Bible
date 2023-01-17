@@ -21,7 +21,7 @@ using Microsoft.Extensions.Options;
 /// The ESV Bible Provider.
 /// </summary>
 /// <seealso cref="GoToBible.Providers.ApiProvider" />
-public class EsvBible : ApiProvider
+public partial class EsvBible : ApiProvider
 {
     /// <summary>
     /// The copyright message.
@@ -109,12 +109,14 @@ public class EsvBible : ApiProvider
     /// <summary>
     /// The regular expression to find duplicate spaces.
     /// </summary>
-    private static readonly Regex DuplicateSpacesRegex = new Regex("[ ]{2,}", RegexOptions.Compiled);
+    [GeneratedRegex("[ ]{2,}", RegexOptions.Compiled)]
+    private static partial Regex DuplicateSpacesRegex();
 
     /// <summary>
     /// The regular expression to find verse numbers.
     /// </summary>
-    private static readonly Regex VerseNumberRegex = new Regex("\\[(\\d+)\\] ", RegexOptions.Compiled);
+    [GeneratedRegex("\\[(\\d+)\\] ", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 
     /// <summary>
     /// This translation.
@@ -234,8 +236,8 @@ public class EsvBible : ApiProvider
                 output = output[output.IndexOf('[')..];
             }
 
-            output = DuplicateSpacesRegex.Replace(output, " ");
-            output = VerseNumberRegex.Replace(output, $"{Environment.NewLine}$1  ");
+            output = DuplicateSpacesRegex().Replace(output, " ");
+            output = VerseNumberRegex().Replace(output, $"{Environment.NewLine}$1  ");
             chapter.Text = output;
 
             // Get the previous and next chapter references

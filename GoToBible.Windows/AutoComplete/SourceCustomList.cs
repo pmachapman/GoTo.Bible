@@ -30,7 +30,7 @@ public class SourceCustomList : IEnumString
     public string[] StringList { get; init; } = Array.Empty<string>();
 
     /// <inheritdoc/>
-    public int Next(int celt, string[] rgelt, IntPtr pceltFetched)
+    public int Next(int celt, string[] rgelt, nint pceltFetched)
     {
         int fetched = 0;
         while (this.currentPosition <= this.StringList.Length - 1 && fetched < celt)
@@ -40,7 +40,7 @@ public class SourceCustomList : IEnumString
             this.currentPosition++;
         }
 
-        if (pceltFetched != IntPtr.Zero)
+        if (pceltFetched != nint.Zero)
         {
             Marshal.WriteInt32(pceltFetched, fetched);
         }
