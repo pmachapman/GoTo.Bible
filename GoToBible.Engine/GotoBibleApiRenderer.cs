@@ -17,7 +17,7 @@ using GoToBible.Model;
 /// The GoTo.Bible API Renderer.
 /// </summary>
 /// <seealso cref="GoToBible.Model.IRenderer" />
-public class GotoBibleApiRenderer : IRenderer
+public sealed class GotoBibleApiRenderer : IRenderer
 {
     /// <summary>
     /// The HTTP client.
@@ -72,7 +72,7 @@ public class GotoBibleApiRenderer : IRenderer
     /// Releases unmanaged and - optionally - managed resources.
     /// </summary>
     /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (!this.disposedValue)
         {

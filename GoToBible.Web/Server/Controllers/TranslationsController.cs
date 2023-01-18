@@ -86,9 +86,9 @@ public class TranslationsController : ControllerBase
             await foreach (Translation translation in provider.GetTranslationsAsync())
             {
                 // Clean up any names we are displaying
-                if (NameSubstitutions.ContainsKey(translation.Name))
+                if (NameSubstitutions.TryGetValue(translation.Name, out string? translationName))
                 {
-                    translation.Name = NameSubstitutions[translation.Name];
+                    translation.Name = translationName;
                 }
 
                 // Make sure this isn't a blocked translation
