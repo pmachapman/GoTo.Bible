@@ -127,33 +127,31 @@ public class NltBible : ApiProvider
 
             // Strip out content we do not want
             bool endItalics = false;
+            StringBuilder strippedNode = new StringBuilder();
             foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//span[@class='vn']|//span[@class='tn']|//p[@class='psa-hebrew']|//hr[@class='text-critical']|//p[@class='text-critical']|//p[@class='psa-title']|//p[@class='chapter-number']|//p[@class='subhead']|//a[@class='a-tn']|//p[@class='poet1']|//p[@class='poet2']|//p[@class='sos-speaker']").ToArray())
             {
-                StringBuilder text = new StringBuilder();
+                strippedNode.Clear();
 
                 // Fix any unusual nodes
                 if (node.Name == "hr" && book.ToUpperInvariant() == "MARK")
                 {
                     // This is for the shorter ending in Mark
                     endItalics = true;
-                    text.Append(" [");
+                    strippedNode.Append(" [");
                 }
                 else if (node.HasClass("poet1") || node.HasClass("poet2"))
                 {
                     // This is for the Song of Solomon poetry lines
-                    foreach (HtmlNode innerNode in node.ChildNodes)
+                    foreach (HtmlNode innerNode in node.ChildNodes.Where(n => n.NodeType == HtmlNodeType.Text))
                     {
                         // Strip any HTML nodes (i.e. footnotes)
-                        if (innerNode.NodeType == HtmlNodeType.Text)
-                        {
-                            text.Append(' ');
-                            text.Append(innerNode.InnerText.Trim());
-                            text.Append(' ');
-                        }
+                        strippedNode.Append(' ');
+                        strippedNode.Append(innerNode.InnerText.Trim());
+                        strippedNode.Append(' ');
                     }
                 }
 
-                HtmlTextNode replacement = doc.CreateTextNode(text.ToString());
+                HtmlTextNode replacement = doc.CreateTextNode(strippedNode.ToString());
                 node.ParentNode.ReplaceChild(replacement, node);
             }
 

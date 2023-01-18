@@ -538,7 +538,6 @@ public partial class FormMain : Form
 
         // Create a list of blocked and enabled providers
         List<string> blockedProviders = new List<string>();
-        List<IProvider> enabledProviders = new List<IProvider>();
 
         if (this.IsDeveloper)
         {
@@ -610,13 +609,7 @@ public partial class FormMain : Form
         }
 
         // Set the providers for the renderer
-        foreach (IProvider provider in this.providers)
-        {
-            if (!blockedProviders.Contains(provider.Id))
-            {
-                enabledProviders.Add(provider);
-            }
-        }
+        List<IProvider> enabledProviders = this.providers.Where(p => !blockedProviders.Contains(p.Id)).ToList();
 
         // Set the renderer providers
         this.renderer.Providers = enabledProviders.AsReadOnly();
@@ -738,44 +731,40 @@ public partial class FormMain : Form
         int translationIndex = 0;
         string lastLanguage = string.Empty;
 
-        // Add the commentaries to resources
-        foreach (Translation commentary in this.commentaries)
+        // Add the commentaries that are not blocked to resources
+        foreach (Translation commentary in this.commentaries.Where(c => !blockedCommentaries.Contains(c.UniqueKey())))
         {
-            // If this translation is not blocked
-            if (!blockedCommentaries.Contains(commentary.UniqueKey()))
+            // Add the commentaries heading if required
+            if (resourceIndex == 0)
             {
-                // Add the commentaries heading if required
-                if (resourceIndex == 0)
+                ComboBoxItem commentariesComboBoxItem = new ComboBoxItem
                 {
-                    ComboBoxItem commentariesComboBoxItem = new ComboBoxItem
-                    {
-                        Bold = true,
-                        Selectable = false,
-                        Text = "Commentaries",
-                    };
-                    this.ToolStripComboBoxResource.Items.Add(commentariesComboBoxItem);
-                    resourceIndex++;
-                }
-
-                // Set up the combo box item
-                TranslationComboBoxItem comboBoxItem = new TranslationComboBoxItem
-                {
-                    Bold = false,
-                    Selectable = true,
-                    Text = commentary.UniqueName(this.translations),
-                    CanBeExported = commentary.CanBeExported,
-                    Code = commentary.Code,
-                    Language = commentary.Language,
-                    Provider = commentary.Provider,
+                    Bold = true,
+                    Selectable = false,
+                    Text = "Commentaries",
                 };
-                this.ToolStripComboBoxResource.Items.Add(comboBoxItem);
-                if (commentary.Code == resource)
-                {
-                    resourceSelectedIndex = resourceIndex + 1;
-                }
-
+                this.ToolStripComboBoxResource.Items.Add(commentariesComboBoxItem);
                 resourceIndex++;
             }
+
+            // Set up the combo box item
+            TranslationComboBoxItem comboBoxItem = new TranslationComboBoxItem
+            {
+                Bold = false,
+                Selectable = true,
+                Text = commentary.UniqueName(this.translations),
+                CanBeExported = commentary.CanBeExported,
+                Code = commentary.Code,
+                Language = commentary.Language,
+                Provider = commentary.Provider,
+            };
+            this.ToolStripComboBoxResource.Items.Add(comboBoxItem);
+            if (commentary.Code == resource)
+            {
+                resourceSelectedIndex = resourceIndex + 1;
+            }
+
+            resourceIndex++;
         }
 
         foreach (Translation translation in this.translations)
@@ -1196,15 +1185,13 @@ public partial class FormMain : Form
             if (screens.Length > 1)
             {
                 Screen thisScreen = Screen.FromControl(this);
-                foreach (Screen screen in screens)
+                Screen? screen = screens.FirstOrDefault(s => s.Bounds != thisScreen.Bounds);
+                if (screen is not null)
                 {
-                    if (screen.Bounds != thisScreen.Bounds)
-                    {
-                        formMain.Location = screen.WorkingArea.Location;
-                        formMain.Size = Settings.Default.WindowSize;
-                        formMain.WindowState = FormWindowState.Maximized;
-                        break;
-                    }
+                    formMain.Location = screen.WorkingArea.Location;
+                    formMain.Size = Settings.Default.WindowSize;
+                    formMain.WindowState = FormWindowState.Maximized;
+
                 }
             }
         }

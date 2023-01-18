@@ -81,7 +81,7 @@ public partial class FormCheckBoxList : Form
 #if DEBUG
         true;
 #else
-            false;
+        false;
 #endif
 
     /// <summary>

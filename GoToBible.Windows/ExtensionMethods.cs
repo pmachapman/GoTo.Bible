@@ -395,18 +395,12 @@ public static class ExtensionMethods
 
                     // Add the variant
                     bool variantFound = false;
-                    foreach (string key in variants.Keys)
+                    string? key = variants.Keys.FirstOrDefault(k =>
+                        string.Compare(k, variant, CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0);
+                    if (key is not null)
                     {
-                        if (string.Compare(
-                                key,
-                                variant,
-                                CultureInfo.InvariantCulture,
-                                parameters.AsCompareOptions()) == 0)
-                        {
-                            variants[key] += $" {dataTable.Columns[i].ColumnName}";
-                            variantFound = true;
-                            break;
-                        }
+                        variants[key] += $" {dataTable.Columns[i].ColumnName}";
+                        variantFound = true;
                     }
 
                     if (!variantFound)

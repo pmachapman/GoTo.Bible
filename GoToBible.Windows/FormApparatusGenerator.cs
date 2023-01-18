@@ -9,7 +9,6 @@ namespace GoToBible.Windows;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -225,16 +224,13 @@ public partial class FormApparatusGenerator : Form
             foreach (Book book in this.CheckedListBoxBooks.CheckedItems)
             {
                 // For every chapter in the book
-                foreach (ChapterReference chapter in book.Chapters)
+                foreach (SpreadsheetRenderingParameters parameters in book.Chapters.Select(c => apparatusParameters with
                 {
-                    // Setup the parameters for a spreadsheet
-                    SpreadsheetRenderingParameters parameters = apparatusParameters with
-                    {
-                        PassageReference = chapter.AsPassageReference(),
-                        SecondaryProvider = comboBoxItem.Provider,
-                        SecondaryTranslation = comboBoxItem.Code,
-                    };
-
+                    PassageReference = c.AsPassageReference(),
+                    SecondaryProvider = comboBoxItem.Provider,
+                    SecondaryTranslation = comboBoxItem.Code,
+                }))
+                {
                     // Render the output
                     RenderedPassage passage = await this.renderer.RenderAsync(parameters, true);
                     if (!string.IsNullOrWhiteSpace(passage.Content) && this.IsGenerating)
@@ -707,21 +703,20 @@ public partial class FormApparatusGenerator : Form
         if (this.ComboBoxBaseText.SelectedItem is TranslationComboBoxItem comboBoxItem)
         {
             // Add the other texts with the same language, or from Logos
-            foreach (Translation translation in this.translations.Where(t => t.Code != comboBoxItem.Code && (t.Language == comboBoxItem.Language || t.Provider == nameof(LogosProvider))))
+            foreach (TranslationComboBoxItem translationItem in this.translations
+                         .Where(t => t.Code != comboBoxItem.Code && (t.Language == comboBoxItem.Language || t.Provider == nameof(LogosProvider)))
+                         .Select(t => new TranslationComboBoxItem
+                         {
+                             Bold = false,
+                             Selectable = true,
+                             Text = t.UniqueName(this.translations),
+                             CanBeExported = t.CanBeExported,
+                             Code = t.Code,
+                             Language = t.Language,
+                             Provider = t.Provider,
+                         }))
             {
-                // Use the translation combo box item for display
-                TranslationComboBoxItem translationItem = new TranslationComboBoxItem
-                {
-                    Bold = false,
-                    Selectable = true,
-                    Text = translation.UniqueName(this.translations),
-                    CanBeExported = translation.CanBeExported,
-                    Code = translation.Code,
-                    Language = translation.Language,
-                    Provider = translation.Provider,
-                };
-
-                // Add the item
+                // Add the translation combo box item for display
                 this.CheckedListBoxComparisonTexts.Items.Add(translationItem, this.CheckBoxSelectAllComparisonTexts.CheckState == CheckState.Checked);
             }
         }
