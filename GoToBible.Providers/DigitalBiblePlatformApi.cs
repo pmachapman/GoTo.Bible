@@ -97,10 +97,9 @@ public class DigitalBiblePlatformApi : ApiProvider
         {
             foreach (var book in bookData.data)
             {
-                if (ReverseBookCodeMap.ContainsKey(book.book_id))
+                if (ReverseBookCodeMap.TryGetValue(book.book_id, out string? bookName))
                 {
-                    string bookName =
-                        CultureInfo.InvariantCulture.TextInfo.ToTitleCase(ReverseBookCodeMap[book.book_id]);
+                    bookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(bookName);
                     List<ChapterReference> chapterReferences = new List<ChapterReference>();
                     if (includeChapters)
                     {
@@ -138,13 +137,10 @@ public class DigitalBiblePlatformApi : ApiProvider
         }
 
         // Check that the book is supported
-        if (!BookCodeMap.ContainsKey(bookName))
+        if (!BookCodeMap.TryGetValue(bookName, out string? bookCode))
         {
             return chapter;
         }
-
-        // Get the book code
-        string bookCode = BookCodeMap[bookName];
 
         // Select the DAM id
         string damId;

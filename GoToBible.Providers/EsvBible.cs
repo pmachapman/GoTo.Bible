@@ -214,8 +214,8 @@ public partial class EsvBible : ApiProvider
         {
             passage_meta = EmptyListOf(new
             {
-                prev_chapter = (List<int>?)null,
-                next_chapter = (List<int>?)null,
+                prev_chapter = default(List<int>?),
+                next_chapter = default(List<int>?),
             }),
             passages = new List<string>(),
         });

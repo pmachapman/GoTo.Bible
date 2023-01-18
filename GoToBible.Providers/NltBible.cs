@@ -129,14 +129,14 @@ public class NltBible : ApiProvider
             bool endItalics = false;
             foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//span[@class='vn']|//span[@class='tn']|//p[@class='psa-hebrew']|//hr[@class='text-critical']|//p[@class='text-critical']|//p[@class='psa-title']|//p[@class='chapter-number']|//p[@class='subhead']|//a[@class='a-tn']|//p[@class='poet1']|//p[@class='poet2']|//p[@class='sos-speaker']").ToArray())
             {
-                string text = string.Empty;
+                StringBuilder text = new StringBuilder();
 
                 // Fix any unusual nodes
                 if (node.Name == "hr" && book.ToUpperInvariant() == "MARK")
                 {
                     // This is for the shorter ending in Mark
                     endItalics = true;
-                    text = " [";
+                    text.Append(" [");
                 }
                 else if (node.HasClass("poet1") || node.HasClass("poet2"))
                 {
@@ -146,12 +146,14 @@ public class NltBible : ApiProvider
                         // Strip any HTML nodes (i.e. footnotes)
                         if (innerNode.NodeType == HtmlNodeType.Text)
                         {
-                            text += " " + innerNode.InnerText.Trim() + " ";
+                            text.Append(' ');
+                            text.Append(innerNode.InnerText.Trim());
+                            text.Append(' ');
                         }
                     }
                 }
 
-                HtmlTextNode replacement = doc.CreateTextNode(text);
+                HtmlTextNode replacement = doc.CreateTextNode(text.ToString());
                 node.ParentNode.ReplaceChild(replacement, node);
             }
 

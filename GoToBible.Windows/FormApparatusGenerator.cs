@@ -9,6 +9,7 @@ namespace GoToBible.Windows;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -382,12 +383,9 @@ public partial class FormApparatusGenerator : Form
 
                 // Set up the final data table which will be sorted
                 finalDataTable = new DataTable();
-                foreach (DataColumn column in dataTable.Columns)
+                foreach (DataColumn column in dataTable.Columns.Cast<DataColumn>().Where(c => c.ColumnName != "RowNumber"))
                 {
-                    if (column.ColumnName != "RowNumber")
-                    {
-                        finalDataTable.Columns.Add(column.ColumnName, column.DataType);
-                    }
+                    finalDataTable.Columns.Add(column.ColumnName, column.DataType);
                 }
 
                 // Sort the output

@@ -245,15 +245,13 @@ public static class ExtensionMethods
                     {
                         // Two consecutive quotes indicate a user's quote
                         fields[f] = fields[f].Replace("\"\"", "\"", StringComparison.OrdinalIgnoreCase);
-                        if (fields[f].StartsWith("\"", StringComparison.OrdinalIgnoreCase))
+                        if (fields[f].StartsWith("\"", StringComparison.OrdinalIgnoreCase)
+                            && fields[f].EndsWith("\"", StringComparison.OrdinalIgnoreCase))
                         {
-                            if (fields[f].EndsWith("\"", StringComparison.OrdinalIgnoreCase))
+                            fields[f] = fields[f].Remove(0, 1);
+                            if (fields[f].Length > 0)
                             {
-                                fields[f] = fields[f].Remove(0, 1);
-                                if (fields[f].Length > 0)
-                                {
-                                    fields[f] = fields[f].Remove(fields[f].Length - 1, 1);
-                                }
+                                fields[f] = fields[f].Remove(fields[f].Length - 1, 1);
                             }
                         }
 
@@ -339,11 +337,7 @@ public static class ExtensionMethods
             {
                 // We are in a new chapter number
                 sb.Append("<sup>");
-                if (thisChapter.Book != "Obadiah"
-                    && thisChapter.Book != "Philemon"
-                    && thisChapter.Book != "2 John"
-                    && thisChapter.Book != "3 John"
-                    && thisChapter.Book != "Jude")
+                if (thisChapter.Book is not ("Obadiah" or "Philemon" or "2 John" or "3 John" or "Jude"))
                 {
                     // We don't show the chapter number in one chapter books
                     sb.Append($"{thisChapter.ChapterNumber}:");

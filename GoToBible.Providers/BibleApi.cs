@@ -188,13 +188,10 @@ public partial class BibleApi : ApiProvider
         }
 
         // Check that the book is supported
-        if (!BookCodeMap.ContainsKey(bookName))
+        if (!BookCodeMap.TryGetValue(bookName, out string? bookCode))
         {
             return chapter;
         }
-
-        // Get the book code
-        string bookCode = BookCodeMap[bookName];
 
         // See if that book is in the translation
         bool bookExists = false;
@@ -276,9 +273,9 @@ public partial class BibleApi : ApiProvider
             chapter.Text = output;
 
             // Get the previous chapter reference
-            if (chapterJson.data.previous is not null && ReverseBookCodeMap.ContainsKey(chapterJson.data.previous.bookId))
+            if (chapterJson.data.previous is not null
+                && ReverseBookCodeMap.TryGetValue(chapterJson.data.previous.bookId, out string? previousBook))
             {
-                string previousBook = ReverseBookCodeMap[chapterJson.data.previous.bookId];
                 if (!int.TryParse(chapterJson.data.previous.number, out int previousChapter))
                 {
                     previousChapter = 0;
@@ -288,9 +285,9 @@ public partial class BibleApi : ApiProvider
             }
 
             // Get the next chapter reference
-            if (chapterJson.data.next is not null && ReverseBookCodeMap.ContainsKey(chapterJson.data.next.bookId))
+            if (chapterJson.data.next is not null
+                && ReverseBookCodeMap.TryGetValue(chapterJson.data.next.bookId, out string? nextBook))
             {
-                string nextBook = ReverseBookCodeMap[chapterJson.data.next.bookId];
                 if (!int.TryParse(chapterJson.data.next.number, out int nextChapter))
                 {
                     nextChapter = 0;

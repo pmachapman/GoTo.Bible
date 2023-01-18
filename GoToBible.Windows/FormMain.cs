@@ -1115,31 +1115,28 @@ public partial class FormMain : Form
             renderedResource = await this.renderer.RenderAsync(this.parameters with { PrimaryProvider = resourceProvider, PrimaryTranslation = resource, SecondaryTranslation = null }, false);
         }
 
-        if (!string.IsNullOrWhiteSpace(this.renderedPassage.Content))
+        // Save settings
+        if (!string.IsNullOrWhiteSpace(this.renderedPassage.Content) && (this.primaryWindow || Program.Forms.Count == 1))
         {
-            // Save settings
-            if (this.primaryWindow || Program.Forms.Count == 1)
-            {
-                Settings.Default.InterlinearIgnoresCase = this.parameters.InterlinearIgnoresCase;
-                Settings.Default.InterlinearIgnoresDiacritics = this.parameters.InterlinearIgnoresDiacritics;
-                Settings.Default.InterlinearIgnoresPunctuation = this.parameters.InterlinearIgnoresPunctuation;
-                Settings.Default.IsDebug = this.parameters.IsDebug;
-                Settings.Default.IsDeveloper = this.IsDeveloper;
-                Settings.Default.IsLegacyBrowser = this.IsLegacyBrowser;
-                Settings.Default.RenderItalics = this.parameters.RenderItalics;
-                Settings.Default.Passage = this.parameters.PassageReference.Display;
-                Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
-                Settings.Default.SecondaryTranslation = this.parameters.SecondaryTranslation;
-                Settings.Default.Resource = resource;
-                Settings.Default.BackgroundCustomColours = string.Join(',', this.ColourDialogBackground.CustomColors.Select(c => c.ToString()));
-                Settings.Default.BackgroundColour = ColorTranslator.ToOle(this.ColourDialogBackground.Color);
-                Settings.Default.HighlightCustomColours = string.Join(',', this.ColourDialogHighlight.CustomColors.Select(c => c.ToString()));
-                Settings.Default.HighlightColour = ColorTranslator.ToOle(this.ColourDialogHighlight.Color);
-                Settings.Default.ForegroundColour = ColorTranslator.ToOle(this.FontDialogMain.Color);
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
-                Settings.Default.Font = converter.ConvertToString(this.FontDialogMain.Font);
-                Settings.Default.Save();
-            }
+            Settings.Default.InterlinearIgnoresCase = this.parameters.InterlinearIgnoresCase;
+            Settings.Default.InterlinearIgnoresDiacritics = this.parameters.InterlinearIgnoresDiacritics;
+            Settings.Default.InterlinearIgnoresPunctuation = this.parameters.InterlinearIgnoresPunctuation;
+            Settings.Default.IsDebug = this.parameters.IsDebug;
+            Settings.Default.IsDeveloper = this.IsDeveloper;
+            Settings.Default.IsLegacyBrowser = this.IsLegacyBrowser;
+            Settings.Default.RenderItalics = this.parameters.RenderItalics;
+            Settings.Default.Passage = this.parameters.PassageReference.Display;
+            Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
+            Settings.Default.SecondaryTranslation = this.parameters.SecondaryTranslation;
+            Settings.Default.Resource = resource;
+            Settings.Default.BackgroundCustomColours = string.Join(',', this.ColourDialogBackground.CustomColors.Select(c => c.ToString()));
+            Settings.Default.BackgroundColour = ColorTranslator.ToOle(this.ColourDialogBackground.Color);
+            Settings.Default.HighlightCustomColours = string.Join(',', this.ColourDialogHighlight.CustomColors.Select(c => c.ToString()));
+            Settings.Default.HighlightColour = ColorTranslator.ToOle(this.ColourDialogHighlight.Color);
+            Settings.Default.ForegroundColour = ColorTranslator.ToOle(this.FontDialogMain.Color);
+            TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
+            Settings.Default.Font = converter.ConvertToString(this.FontDialogMain.Font);
+            Settings.Default.Save();
         }
 
         // Show the content
@@ -1298,16 +1295,14 @@ public partial class FormMain : Form
         {
             // Make sure we are not showing an interlinear with the original language
             if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
-                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
-            {
-                if ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
+                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem
+                && ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
                     || (primaryItem.Language == "Hebrew" && secondaryItem.Language is not ("Hebrew" or null))
                     || (secondaryItem.Language == "Greek" && primaryItem.Language is not ("Greek" or null))
-                    || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null)))
-                {
-                    MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
-                }
+                    || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null))))
+            {
+                MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
             }
 
             // Show the passage
@@ -1347,16 +1342,14 @@ public partial class FormMain : Form
         {
             // Make sure we are not showing an interlinear with the original language
             if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
-                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
-            {
-                if ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
+                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem
+                && ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
                     || (primaryItem.Language == "Hebrew" && secondaryItem.Language is not ("Hebrew" or null))
                     || (secondaryItem.Language == "Greek" && primaryItem.Language is not ("Greek" or null))
-                    || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null)))
-                {
-                    MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
-                }
+                    || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null))))
+            {
+                MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
             }
 
             // Show the passage
