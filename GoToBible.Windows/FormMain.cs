@@ -703,6 +703,12 @@ public partial class FormMain : Form
                 }
                 else
                 {
+                    // Clean up any names we are displaying
+                    if (ApiProvider.NameSubstitutions.TryGetValue(translation.Name, out string? translationName))
+                    {
+                        translation.Name = translationName;
+                    }
+
                     unsortedTranslations.Add(translation);
                 }
             }
@@ -745,7 +751,7 @@ public partial class FormMain : Form
             {
                 Bold = false,
                 Selectable = true,
-                Text = commentary.UniqueName(this.translations),
+                Text = commentary.UniqueName(this.commentaries),
                 CanBeExported = commentary.CanBeExported,
                 Code = commentary.Code,
                 Language = commentary.Language,
@@ -760,6 +766,7 @@ public partial class FormMain : Form
             resourceIndex++;
         }
 
+        List<Translation> unblockedTranslations = this.translations.Where(t => !blockedTranslations.Contains(t.UniqueKey())).ToList();
         foreach (Translation translation in this.translations)
         {
             // If this translation is not blocked
@@ -788,12 +795,13 @@ public partial class FormMain : Form
                 {
                     Bold = false,
                     Selectable = true,
-                    Text = translation.UniqueName(this.translations),
+                    Text = translation.UniqueName(unblockedTranslations),
                     CanBeExported = translation.CanBeExported,
                     Code = translation.Code,
                     Language = translation.Language,
                     Provider = translation.Provider,
                 };
+
                 this.ToolStripComboBoxPrimaryTranslation.Items.Add(comboBoxItem);
                 if (translation.Code == primaryTranslation)
                 {
@@ -1470,6 +1478,29 @@ public partial class FormMain : Form
     }
 
     /// <summary>
+    /// Handles the Click event of the Load Blocked Translations List ToolStripMenuItem.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+    private async void ToolStripMenuItemBlockedTranslations_Click(object sender, EventArgs e)
+    {
+        // Generate the new list of blocked translations
+        string[] blockedTranslations =
+            (Settings.Default.BlockedTranslations?.Cast<string>() ?? new List<string>())
+            .Concat(ApiProvider.BlockedTranslations).Distinct().ToArray();
+
+        // Save the blocked translations
+        Settings.Default.BlockedTranslations?.Clear();
+        Settings.Default.BlockedTranslations ??= new StringCollection();
+
+        Settings.Default.BlockedTranslations.AddRange(blockedTranslations);
+        Settings.Default.Save();
+
+        // Reload the providers and translations
+        await this.LoadTranslationComboBoxes(this.renderer.Providers.ToList(), string.Empty, string.Empty, string.Empty);
+    }
+
+    /// <summary>
     /// Handles the Click event of the Commentaries ToolStripMenuItem.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
@@ -1823,6 +1854,7 @@ public partial class FormMain : Form
         this.ToolStripMenuItemProviders.Visible = this.IsDeveloper;
         this.ToolStripMenuItemDebugMode.Visible = this.IsDeveloper;
         this.ToolStripMenuItemLegacyBrowser.Visible = this.IsDeveloper;
+        this.ToolStripMenuItemBlockedTranslations.Visible = this.IsDeveloper;
         this.ToolStripMenuItemSettingsDirectory.Visible = this.IsDeveloper;
 
         // Reload the providers and translations

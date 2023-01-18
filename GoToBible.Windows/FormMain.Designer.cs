@@ -30,6 +30,7 @@ namespace GoToBible.Windows
             this.ToolStripSettings = new System.Windows.Forms.ToolStrip();
             this.ToolStripButtonNewWindow = new System.Windows.Forms.ToolStripButton();
             this.ToolStripButtonWebBrowser = new System.Windows.Forms.ToolStripButton();
+            this.ToolStripButtonApparatusGenerator = new System.Windows.Forms.ToolStripButton();
             this.ToolStripSplitButtonSettings = new System.Windows.Forms.ToolStripSplitButton();
             this.ToolStripMenuItemInterlinear = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemIgnoreCase = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,17 +56,11 @@ namespace GoToBible.Windows
             this.ToolStripMenuItemDebugMode = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemDeveloperMode = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemLegacyBrowser = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemBlockedTranslations = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemSettingsDirectory = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripNavigate = new System.Windows.Forms.ToolStrip();
             this.ToolStripButtonNavigateBack = new System.Windows.Forms.ToolStripButton();
             this.ToolStripButtonNavigateForward = new System.Windows.Forms.ToolStripButton();
-            this.ToolStripTranslation = new System.Windows.Forms.ToolStrip();
-            this.ToolStripLabelPrimaryTranslation = new System.Windows.Forms.ToolStripLabel();
-            this.ToolStripComboBoxPrimaryTranslation = new System.Windows.Forms.ToolStripComboBox();
-            this.ToolStripButtonExport = new System.Windows.Forms.ToolStripButton();
-            this.ToolStripLabelSecondaryTranslation = new System.Windows.Forms.ToolStripLabel();
-            this.ToolStripComboBoxSecondaryTranslation = new System.Windows.Forms.ToolStripComboBox();
-            this.ToolStripButtonSwap = new System.Windows.Forms.ToolStripButton();
             this.ToolStripPassage = new System.Windows.Forms.ToolStrip();
             this.ToolStripLabelPassage = new System.Windows.Forms.ToolStripLabel();
             this.ToolStripTextBoxPassage = new System.Windows.Forms.ToolStripTextBox();
@@ -73,13 +68,19 @@ namespace GoToBible.Windows
             this.ToolStripResource = new System.Windows.Forms.ToolStrip();
             this.ToolStripLabelResource = new System.Windows.Forms.ToolStripLabel();
             this.ToolStripComboBoxResource = new System.Windows.Forms.ToolStripComboBox();
+            this.ToolStripTranslation = new System.Windows.Forms.ToolStrip();
+            this.ToolStripLabelPrimaryTranslation = new System.Windows.Forms.ToolStripLabel();
+            this.ToolStripComboBoxPrimaryTranslation = new System.Windows.Forms.ToolStripComboBox();
+            this.ToolStripButtonExport = new System.Windows.Forms.ToolStripButton();
+            this.ToolStripLabelSecondaryTranslation = new System.Windows.Forms.ToolStripLabel();
+            this.ToolStripComboBoxSecondaryTranslation = new System.Windows.Forms.ToolStripComboBox();
+            this.ToolStripButtonSwap = new System.Windows.Forms.ToolStripButton();
             this.FontDialogMain = new System.Windows.Forms.FontDialog();
             this.ColourDialogBackground = new System.Windows.Forms.ColorDialog();
             this.ToolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.FolderBrowserDialogMain = new System.Windows.Forms.FolderBrowserDialog();
             this.SaveFileDialogMain = new System.Windows.Forms.SaveFileDialog();
             this.ColourDialogHighlight = new System.Windows.Forms.ColorDialog();
-            this.ToolStripButtonApparatusGenerator = new System.Windows.Forms.ToolStripButton();
             this.ToolStripContainerMain.ContentPanel.SuspendLayout();
             this.ToolStripContainerMain.TopToolStripPanel.SuspendLayout();
             this.ToolStripContainerMain.SuspendLayout();
@@ -88,9 +89,9 @@ namespace GoToBible.Windows
             this.ToolStripExtras.SuspendLayout();
             this.ToolStripSettings.SuspendLayout();
             this.ToolStripNavigate.SuspendLayout();
-            this.ToolStripTranslation.SuspendLayout();
             this.ToolStripPassage.SuspendLayout();
             this.ToolStripResource.SuspendLayout();
+            this.ToolStripTranslation.SuspendLayout();
             this.SuspendLayout();
             // 
             // ToolStripContainerMain
@@ -103,7 +104,7 @@ namespace GoToBible.Windows
             // 
             this.ToolStripContainerMain.ContentPanel.Controls.Add(this.SplitContainerMain);
             this.ToolStripContainerMain.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.ToolStripContainerMain.ContentPanel.Size = new System.Drawing.Size(1183, 439);
+            this.ToolStripContainerMain.ContentPanel.Size = new System.Drawing.Size(1183, 414);
             this.ToolStripContainerMain.Location = new System.Drawing.Point(-1, 0);
             this.ToolStripContainerMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ToolStripContainerMain.Name = "ToolStripContainerMain";
@@ -116,9 +117,9 @@ namespace GoToBible.Windows
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripExtras);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripSettings);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripNavigate);
-            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripResource);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripPassage);
             this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripTranslation);
+            this.ToolStripContainerMain.TopToolStripPanel.Controls.Add(this.ToolStripResource);
             // 
             // SplitContainerMain
             // 
@@ -127,7 +128,7 @@ namespace GoToBible.Windows
             this.SplitContainerMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.SplitContainerMain.Name = "SplitContainerMain";
             this.SplitContainerMain.Panel2Collapsed = true;
-            this.SplitContainerMain.Size = new System.Drawing.Size(1183, 439);
+            this.SplitContainerMain.Size = new System.Drawing.Size(1183, 414);
             this.SplitContainerMain.SplitterDistance = 615;
             this.SplitContainerMain.SplitterWidth = 7;
             this.SplitContainerMain.TabIndex = 0;
@@ -162,13 +163,13 @@ namespace GoToBible.Windows
             this.ToolStripSplitButtonSettings});
             this.ToolStripSettings.Location = new System.Drawing.Point(3, 25);
             this.ToolStripSettings.Name = "ToolStripSettings";
-            this.ToolStripSettings.Size = new System.Drawing.Size(144, 25);
+            this.ToolStripSettings.Size = new System.Drawing.Size(113, 25);
             this.ToolStripSettings.TabIndex = 3;
             // 
             // ToolStripButtonNewWindow
             // 
             this.ToolStripButtonNewWindow.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonNewWindow.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonNewWindow.Image")));
+            this.ToolStripButtonNewWindow.Image = global::GoToBible.Windows.Properties.Resources.NewWindow;
             this.ToolStripButtonNewWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ToolStripButtonNewWindow.Name = "ToolStripButtonNewWindow";
             this.ToolStripButtonNewWindow.Size = new System.Drawing.Size(23, 22);
@@ -179,12 +180,22 @@ namespace GoToBible.Windows
             // ToolStripButtonWebBrowser
             // 
             this.ToolStripButtonWebBrowser.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonWebBrowser.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonWebBrowser.Image")));
+            this.ToolStripButtonWebBrowser.Image = global::GoToBible.Windows.Properties.Resources.WebBrowser;
             this.ToolStripButtonWebBrowser.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ToolStripButtonWebBrowser.Name = "ToolStripButtonWebBrowser";
             this.ToolStripButtonWebBrowser.Size = new System.Drawing.Size(23, 22);
             this.ToolStripButtonWebBrowser.Text = "Open in &Web Browser";
             this.ToolStripButtonWebBrowser.Click += new System.EventHandler(this.ToolStripButtonWebBrowser_Click);
+            // 
+            // ToolStripButtonApparatusGenerator
+            // 
+            this.ToolStripButtonApparatusGenerator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ToolStripButtonApparatusGenerator.Image = global::GoToBible.Windows.Properties.Resources.ApparatusGenerator;
+            this.ToolStripButtonApparatusGenerator.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ToolStripButtonApparatusGenerator.Name = "ToolStripButtonApparatusGenerator";
+            this.ToolStripButtonApparatusGenerator.Size = new System.Drawing.Size(23, 22);
+            this.ToolStripButtonApparatusGenerator.Text = "&Apparatus Generator";
+            this.ToolStripButtonApparatusGenerator.Click += new System.EventHandler(this.ToolStripButtonApparatusGenerator_Click);
             // 
             // ToolStripSplitButtonSettings
             // 
@@ -197,7 +208,7 @@ namespace GoToBible.Windows
             this.ToolStripMenuItemBackgroundColour,
             this.ToolStripMenuItemEnterApiKeys,
             this.ToolStripMenuItemConfigure});
-            this.ToolStripSplitButtonSettings.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripSplitButtonSettings.Image")));
+            this.ToolStripSplitButtonSettings.Image = global::GoToBible.Windows.Properties.Resources.Settings;
             this.ToolStripSplitButtonSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ToolStripSplitButtonSettings.Name = "ToolStripSplitButtonSettings";
             this.ToolStripSplitButtonSettings.Size = new System.Drawing.Size(32, 22);
@@ -242,7 +253,7 @@ namespace GoToBible.Windows
             // ToolStripMenuItemShowItalics
             // 
             this.ToolStripMenuItemShowItalics.CheckOnClick = true;
-            this.ToolStripMenuItemShowItalics.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemShowItalics.Image")));
+            this.ToolStripMenuItemShowItalics.Image = global::GoToBible.Windows.Properties.Resources.Italic;
             this.ToolStripMenuItemShowItalics.Name = "ToolStripMenuItemShowItalics";
             this.ToolStripMenuItemShowItalics.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemShowItalics.Text = "&Show Italics";
@@ -251,7 +262,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemFontSettings
             // 
-            this.ToolStripMenuItemFontSettings.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemFontSettings.Image")));
+            this.ToolStripMenuItemFontSettings.Image = global::GoToBible.Windows.Properties.Resources.Font;
             this.ToolStripMenuItemFontSettings.Name = "ToolStripMenuItemFontSettings";
             this.ToolStripMenuItemFontSettings.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemFontSettings.Text = "&Font Settings";
@@ -260,7 +271,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemHighlightColour
             // 
-            this.ToolStripMenuItemHighlightColour.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemHighlightColour.Image")));
+            this.ToolStripMenuItemHighlightColour.Image = global::GoToBible.Windows.Properties.Resources.Highlight;
             this.ToolStripMenuItemHighlightColour.Name = "ToolStripMenuItemHighlightColour";
             this.ToolStripMenuItemHighlightColour.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemHighlightColour.Text = "&Highlight Colour";
@@ -269,7 +280,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemBackgroundColour
             // 
-            this.ToolStripMenuItemBackgroundColour.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemBackgroundColour.Image")));
+            this.ToolStripMenuItemBackgroundColour.Image = global::GoToBible.Windows.Properties.Resources.Color;
             this.ToolStripMenuItemBackgroundColour.Name = "ToolStripMenuItemBackgroundColour";
             this.ToolStripMenuItemBackgroundColour.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemBackgroundColour.Text = "Background &Colour";
@@ -285,7 +296,7 @@ namespace GoToBible.Windows
             this.ToolStripMenuItemEsv,
             this.ToolStripMenuItemNlt,
             this.ToolStripMenuItemSql});
-            this.ToolStripMenuItemEnterApiKeys.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemEnterApiKeys.Image")));
+            this.ToolStripMenuItemEnterApiKeys.Image = global::GoToBible.Windows.Properties.Resources.Languages;
             this.ToolStripMenuItemEnterApiKeys.Name = "ToolStripMenuItemEnterApiKeys";
             this.ToolStripMenuItemEnterApiKeys.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemEnterApiKeys.Text = "Enter &API Key...";
@@ -293,7 +304,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemBibleApi
             // 
-            this.ToolStripMenuItemBibleApi.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemBibleApi.Image")));
+            this.ToolStripMenuItemBibleApi.Image = global::GoToBible.Windows.Properties.Resources.BibleApi;
             this.ToolStripMenuItemBibleApi.Name = "ToolStripMenuItemBibleApi";
             this.ToolStripMenuItemBibleApi.Size = new System.Drawing.Size(186, 22);
             this.ToolStripMenuItemBibleApi.Text = "&API.Bible";
@@ -302,7 +313,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemBiblia
             // 
-            this.ToolStripMenuItemBiblia.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemBiblia.Image")));
+            this.ToolStripMenuItemBiblia.Image = global::GoToBible.Windows.Properties.Resources.Biblia;
             this.ToolStripMenuItemBiblia.Name = "ToolStripMenuItemBiblia";
             this.ToolStripMenuItemBiblia.Size = new System.Drawing.Size(186, 22);
             this.ToolStripMenuItemBiblia.Text = "&Biblia";
@@ -311,7 +322,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemDigitalBiblePlatform
             // 
-            this.ToolStripMenuItemDigitalBiblePlatform.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemDigitalBiblePlatform.Image")));
+            this.ToolStripMenuItemDigitalBiblePlatform.Image = global::GoToBible.Windows.Properties.Resources.DigitalBiblePlatform;
             this.ToolStripMenuItemDigitalBiblePlatform.Name = "ToolStripMenuItemDigitalBiblePlatform";
             this.ToolStripMenuItemDigitalBiblePlatform.Size = new System.Drawing.Size(186, 22);
             this.ToolStripMenuItemDigitalBiblePlatform.Text = "&Digital Bible Platform";
@@ -320,7 +331,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemEsv
             // 
-            this.ToolStripMenuItemEsv.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemEsv.Image")));
+            this.ToolStripMenuItemEsv.Image = global::GoToBible.Windows.Properties.Resources.Esv;
             this.ToolStripMenuItemEsv.Name = "ToolStripMenuItemEsv";
             this.ToolStripMenuItemEsv.Size = new System.Drawing.Size(186, 22);
             this.ToolStripMenuItemEsv.Text = "&ESV";
@@ -329,7 +340,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemNlt
             // 
-            this.ToolStripMenuItemNlt.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemNlt.Image")));
+            this.ToolStripMenuItemNlt.Image = global::GoToBible.Windows.Properties.Resources.Nlt;
             this.ToolStripMenuItemNlt.Name = "ToolStripMenuItemNlt";
             this.ToolStripMenuItemNlt.Size = new System.Drawing.Size(186, 22);
             this.ToolStripMenuItemNlt.Text = "&NLT";
@@ -338,7 +349,7 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemSql
             // 
-            this.ToolStripMenuItemSql.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemSql.Image")));
+            this.ToolStripMenuItemSql.Image = global::GoToBible.Windows.Properties.Resources.Sql;
             this.ToolStripMenuItemSql.Name = "ToolStripMenuItemSql";
             this.ToolStripMenuItemSql.Size = new System.Drawing.Size(186, 22);
             this.ToolStripMenuItemSql.Text = "&SQL Server";
@@ -356,8 +367,9 @@ namespace GoToBible.Windows
             this.ToolStripMenuItemDebugMode,
             this.ToolStripMenuItemDeveloperMode,
             this.ToolStripMenuItemLegacyBrowser,
+            this.ToolStripMenuItemBlockedTranslations,
             this.ToolStripMenuItemSettingsDirectory});
-            this.ToolStripMenuItemConfigure.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemConfigure.Image")));
+            this.ToolStripMenuItemConfigure.Image = global::GoToBible.Windows.Properties.Resources.Configure;
             this.ToolStripMenuItemConfigure.Name = "ToolStripMenuItemConfigure";
             this.ToolStripMenuItemConfigure.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemConfigure.Text = "C&onfigure...";
@@ -365,36 +377,36 @@ namespace GoToBible.Windows
             // 
             // ToolStripMenuItemCommentaries
             // 
-            this.ToolStripMenuItemCommentaries.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemCommentaries.Image")));
+            this.ToolStripMenuItemCommentaries.Image = global::GoToBible.Windows.Properties.Resources.Commentaries;
             this.ToolStripMenuItemCommentaries.Name = "ToolStripMenuItemCommentaries";
-            this.ToolStripMenuItemCommentaries.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemCommentaries.Size = new System.Drawing.Size(231, 22);
             this.ToolStripMenuItemCommentaries.Text = "&Commentaries";
             this.ToolStripMenuItemCommentaries.ToolTipText = "Enable or Disable Commentaries";
             this.ToolStripMenuItemCommentaries.Click += new System.EventHandler(this.ToolStripMenuItemCommentaries_Click);
             // 
             // ToolStripMenuItemLanguages
             // 
-            this.ToolStripMenuItemLanguages.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemLanguages.Image")));
+            this.ToolStripMenuItemLanguages.Image = global::GoToBible.Windows.Properties.Resources.Languages;
             this.ToolStripMenuItemLanguages.Name = "ToolStripMenuItemLanguages";
-            this.ToolStripMenuItemLanguages.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemLanguages.Size = new System.Drawing.Size(231, 22);
             this.ToolStripMenuItemLanguages.Text = "&Languages";
             this.ToolStripMenuItemLanguages.ToolTipText = "Enable or Disable Languages";
             this.ToolStripMenuItemLanguages.Click += new System.EventHandler(this.ToolStripMenuItemLanguages_Click);
             // 
             // ToolStripMenuItemTranslations
             // 
-            this.ToolStripMenuItemTranslations.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemTranslations.Image")));
+            this.ToolStripMenuItemTranslations.Image = global::GoToBible.Windows.Properties.Resources.Translations;
             this.ToolStripMenuItemTranslations.Name = "ToolStripMenuItemTranslations";
-            this.ToolStripMenuItemTranslations.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemTranslations.Size = new System.Drawing.Size(231, 22);
             this.ToolStripMenuItemTranslations.Text = "&Translations";
             this.ToolStripMenuItemTranslations.ToolTipText = "Enable or Disable Translations";
             this.ToolStripMenuItemTranslations.Click += new System.EventHandler(this.ToolStripMenuItemTranslations_Click);
             // 
             // ToolStripMenuItemProviders
             // 
-            this.ToolStripMenuItemProviders.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemProviders.Image")));
+            this.ToolStripMenuItemProviders.Image = global::GoToBible.Windows.Properties.Resources.Provider;
             this.ToolStripMenuItemProviders.Name = "ToolStripMenuItemProviders";
-            this.ToolStripMenuItemProviders.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemProviders.Size = new System.Drawing.Size(231, 22);
             this.ToolStripMenuItemProviders.Text = "&Providers";
             this.ToolStripMenuItemProviders.ToolTipText = "Enable or Disable Providers";
             this.ToolStripMenuItemProviders.Click += new System.EventHandler(this.ToolStripMenuItemProviders_Click);
@@ -402,14 +414,14 @@ namespace GoToBible.Windows
             // ToolStripSeparatorDebugMode
             // 
             this.ToolStripSeparatorDebugMode.Name = "ToolStripSeparatorDebugMode";
-            this.ToolStripSeparatorDebugMode.Size = new System.Drawing.Size(196, 6);
+            this.ToolStripSeparatorDebugMode.Size = new System.Drawing.Size(228, 6);
             // 
             // ToolStripMenuItemDebugMode
             // 
             this.ToolStripMenuItemDebugMode.CheckOnClick = true;
-            this.ToolStripMenuItemDebugMode.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemDebugMode.Image")));
+            this.ToolStripMenuItemDebugMode.Image = global::GoToBible.Windows.Properties.Resources.Debug;
             this.ToolStripMenuItemDebugMode.Name = "ToolStripMenuItemDebugMode";
-            this.ToolStripMenuItemDebugMode.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemDebugMode.Size = new System.Drawing.Size(231, 22);
             this.ToolStripMenuItemDebugMode.Text = "&Debug Mode";
             this.ToolStripMenuItemDebugMode.ToolTipText = "Enable or Disable Debug Mode";
             this.ToolStripMenuItemDebugMode.Click += new System.EventHandler(this.ToolStripMenuItemDebugMode_Click);
@@ -417,9 +429,9 @@ namespace GoToBible.Windows
             // ToolStripMenuItemDeveloperMode
             // 
             this.ToolStripMenuItemDeveloperMode.CheckOnClick = true;
-            this.ToolStripMenuItemDeveloperMode.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemDeveloperMode.Image")));
+            this.ToolStripMenuItemDeveloperMode.Image = global::GoToBible.Windows.Properties.Resources.Developer;
             this.ToolStripMenuItemDeveloperMode.Name = "ToolStripMenuItemDeveloperMode";
-            this.ToolStripMenuItemDeveloperMode.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemDeveloperMode.Size = new System.Drawing.Size(231, 22);
             this.ToolStripMenuItemDeveloperMode.Text = "De&veloper Mode";
             this.ToolStripMenuItemDeveloperMode.ToolTipText = "Enable or Disable Developer Mode";
             this.ToolStripMenuItemDeveloperMode.Click += new System.EventHandler(this.ToolStripMenuItemDeveloperMode_Click);
@@ -427,18 +439,26 @@ namespace GoToBible.Windows
             // ToolStripMenuItemLegacyBrowser
             // 
             this.ToolStripMenuItemLegacyBrowser.CheckOnClick = true;
-            this.ToolStripMenuItemLegacyBrowser.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemLegacyBrowser.Image")));
+            this.ToolStripMenuItemLegacyBrowser.Image = global::GoToBible.Windows.Properties.Resources.LegacyBrowser;
             this.ToolStripMenuItemLegacyBrowser.Name = "ToolStripMenuItemLegacyBrowser";
-            this.ToolStripMenuItemLegacyBrowser.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemLegacyBrowser.Size = new System.Drawing.Size(231, 22);
             this.ToolStripMenuItemLegacyBrowser.Text = "Le&gacy Browser";
             this.ToolStripMenuItemLegacyBrowser.ToolTipText = "Enable or Disable the Legacy Web Browser";
             this.ToolStripMenuItemLegacyBrowser.Click += new System.EventHandler(this.ToolStripMenuItemLegacyBrowser_Click);
             // 
+            // ToolStripMenuItemBlockedTranslations
+            // 
+            this.ToolStripMenuItemBlockedTranslations.Image = global::GoToBible.Windows.Properties.Resources.BlockedTranslations;
+            this.ToolStripMenuItemBlockedTranslations.Name = "ToolStripMenuItemBlockedTranslations";
+            this.ToolStripMenuItemBlockedTranslations.Size = new System.Drawing.Size(231, 22);
+            this.ToolStripMenuItemBlockedTranslations.Text = "Load &Blocked Translations List";
+            this.ToolStripMenuItemBlockedTranslations.Click += new System.EventHandler(this.ToolStripMenuItemBlockedTranslations_Click);
+            // 
             // ToolStripMenuItemSettingsDirectory
             // 
-            this.ToolStripMenuItemSettingsDirectory.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripMenuItemSettingsDirectory.Image")));
+            this.ToolStripMenuItemSettingsDirectory.Image = global::GoToBible.Windows.Properties.Resources.Directory;
             this.ToolStripMenuItemSettingsDirectory.Name = "ToolStripMenuItemSettingsDirectory";
-            this.ToolStripMenuItemSettingsDirectory.Size = new System.Drawing.Size(199, 22);
+            this.ToolStripMenuItemSettingsDirectory.Size = new System.Drawing.Size(231, 22);
             this.ToolStripMenuItemSettingsDirectory.Text = "Open &Settings Directory";
             this.ToolStripMenuItemSettingsDirectory.ToolTipText = "View the settings directory";
             this.ToolStripMenuItemSettingsDirectory.Click += new System.EventHandler(this.ToolStripMenuItemSettingsDirectory_Click);
@@ -449,7 +469,7 @@ namespace GoToBible.Windows
             this.ToolStripNavigate.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripButtonNavigateBack,
             this.ToolStripButtonNavigateForward});
-            this.ToolStripNavigate.Location = new System.Drawing.Point(147, 25);
+            this.ToolStripNavigate.Location = new System.Drawing.Point(116, 25);
             this.ToolStripNavigate.Name = "ToolStripNavigate";
             this.ToolStripNavigate.Size = new System.Drawing.Size(58, 25);
             this.ToolStripNavigate.TabIndex = 2;
@@ -457,7 +477,7 @@ namespace GoToBible.Windows
             // ToolStripButtonNavigateBack
             // 
             this.ToolStripButtonNavigateBack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonNavigateBack.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonNavigateBack.Image")));
+            this.ToolStripButtonNavigateBack.Image = global::GoToBible.Windows.Properties.Resources.Prev;
             this.ToolStripButtonNavigateBack.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ToolStripButtonNavigateBack.Name = "ToolStripButtonNavigateBack";
             this.ToolStripButtonNavigateBack.Size = new System.Drawing.Size(23, 22);
@@ -467,75 +487,12 @@ namespace GoToBible.Windows
             // ToolStripButtonNavigateForward
             // 
             this.ToolStripButtonNavigateForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonNavigateForward.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonNavigateForward.Image")));
+            this.ToolStripButtonNavigateForward.Image = global::GoToBible.Windows.Properties.Resources.Next;
             this.ToolStripButtonNavigateForward.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ToolStripButtonNavigateForward.Name = "ToolStripButtonNavigateForward";
             this.ToolStripButtonNavigateForward.Size = new System.Drawing.Size(23, 22);
             this.ToolStripButtonNavigateForward.Text = "Next Chapter";
             this.ToolStripButtonNavigateForward.Click += new System.EventHandler(this.ToolStripButtonNavigateForward_Click);
-            // 
-            // ToolStripTranslation
-            // 
-            this.ToolStripTranslation.Dock = System.Windows.Forms.DockStyle.None;
-            this.ToolStripTranslation.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripLabelPrimaryTranslation,
-            this.ToolStripComboBoxPrimaryTranslation,
-            this.ToolStripButtonExport,
-            this.ToolStripLabelSecondaryTranslation,
-            this.ToolStripComboBoxSecondaryTranslation,
-            this.ToolStripButtonSwap});
-            this.ToolStripTranslation.Location = new System.Drawing.Point(3, 75);
-            this.ToolStripTranslation.Name = "ToolStripTranslation";
-            this.ToolStripTranslation.Size = new System.Drawing.Size(642, 25);
-            this.ToolStripTranslation.TabIndex = 0;
-            // 
-            // ToolStripLabelPrimaryTranslation
-            // 
-            this.ToolStripLabelPrimaryTranslation.Name = "ToolStripLabelPrimaryTranslation";
-            this.ToolStripLabelPrimaryTranslation.Size = new System.Drawing.Size(108, 22);
-            this.ToolStripLabelPrimaryTranslation.Text = "Primary Translation";
-            // 
-            // ToolStripComboBoxPrimaryTranslation
-            // 
-            this.ToolStripComboBoxPrimaryTranslation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ToolStripComboBoxPrimaryTranslation.Name = "ToolStripComboBoxPrimaryTranslation";
-            this.ToolStripComboBoxPrimaryTranslation.Size = new System.Drawing.Size(175, 25);
-            this.ToolStripComboBoxPrimaryTranslation.SelectedIndexChanged += new System.EventHandler(this.ToolStripComboBoxPrimaryTranslation_SelectedIndexChanged);
-            // 
-            // ToolStripButtonExport
-            // 
-            this.ToolStripButtonExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonExport.Enabled = false;
-            this.ToolStripButtonExport.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonExport.Image")));
-            this.ToolStripButtonExport.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ToolStripButtonExport.Name = "ToolStripButtonExport";
-            this.ToolStripButtonExport.Size = new System.Drawing.Size(23, 22);
-            this.ToolStripButtonExport.Text = "&Export";
-            this.ToolStripButtonExport.ToolTipText = "Export Chapter in Primary Translation as Text";
-            this.ToolStripButtonExport.Click += new System.EventHandler(this.ToolStripButtonExport_Click);
-            // 
-            // ToolStripLabelSecondaryTranslation
-            // 
-            this.ToolStripLabelSecondaryTranslation.Name = "ToolStripLabelSecondaryTranslation";
-            this.ToolStripLabelSecondaryTranslation.Size = new System.Drawing.Size(122, 22);
-            this.ToolStripLabelSecondaryTranslation.Text = "Secondary Translation";
-            // 
-            // ToolStripComboBoxSecondaryTranslation
-            // 
-            this.ToolStripComboBoxSecondaryTranslation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ToolStripComboBoxSecondaryTranslation.Name = "ToolStripComboBoxSecondaryTranslation";
-            this.ToolStripComboBoxSecondaryTranslation.Size = new System.Drawing.Size(175, 25);
-            this.ToolStripComboBoxSecondaryTranslation.SelectedIndexChanged += new System.EventHandler(this.ToolStripComboBoxSecondaryTranslation_SelectedIndexChanged);
-            // 
-            // ToolStripButtonSwap
-            // 
-            this.ToolStripButtonSwap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonSwap.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonSwap.Image")));
-            this.ToolStripButtonSwap.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ToolStripButtonSwap.Name = "ToolStripButtonSwap";
-            this.ToolStripButtonSwap.Size = new System.Drawing.Size(23, 22);
-            this.ToolStripButtonSwap.Text = "Swap Translations";
-            this.ToolStripButtonSwap.Click += new System.EventHandler(this.ToolStripButtonSwap_Click);
             // 
             // ToolStripPassage
             // 
@@ -564,7 +521,7 @@ namespace GoToBible.Windows
             // ToolStripButtonPassageGo
             // 
             this.ToolStripButtonPassageGo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonPassageGo.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonPassageGo.Image")));
+            this.ToolStripButtonPassageGo.Image = global::GoToBible.Windows.Properties.Resources.Go;
             this.ToolStripButtonPassageGo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ToolStripButtonPassageGo.Name = "ToolStripButtonPassageGo";
             this.ToolStripButtonPassageGo.Size = new System.Drawing.Size(23, 22);
@@ -577,7 +534,7 @@ namespace GoToBible.Windows
             this.ToolStripResource.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripLabelResource,
             this.ToolStripComboBoxResource});
-            this.ToolStripResource.Location = new System.Drawing.Point(189, 50);
+            this.ToolStripResource.Location = new System.Drawing.Point(3, 100);
             this.ToolStripResource.Name = "ToolStripResource";
             this.ToolStripResource.Size = new System.Drawing.Size(244, 25);
             this.ToolStripResource.TabIndex = 4;
@@ -594,6 +551,69 @@ namespace GoToBible.Windows
             this.ToolStripComboBoxResource.Name = "ToolStripComboBoxResource";
             this.ToolStripComboBoxResource.Size = new System.Drawing.Size(175, 25);
             this.ToolStripComboBoxResource.SelectedIndexChanged += new System.EventHandler(this.ToolStripComboBoxResource_SelectedIndexChanged);
+            // 
+            // ToolStripTranslation
+            // 
+            this.ToolStripTranslation.Dock = System.Windows.Forms.DockStyle.None;
+            this.ToolStripTranslation.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripLabelPrimaryTranslation,
+            this.ToolStripComboBoxPrimaryTranslation,
+            this.ToolStripButtonExport,
+            this.ToolStripLabelSecondaryTranslation,
+            this.ToolStripComboBoxSecondaryTranslation,
+            this.ToolStripButtonSwap});
+            this.ToolStripTranslation.Location = new System.Drawing.Point(3, 75);
+            this.ToolStripTranslation.Name = "ToolStripTranslation";
+            this.ToolStripTranslation.Size = new System.Drawing.Size(775, 25);
+            this.ToolStripTranslation.TabIndex = 0;
+            // 
+            // ToolStripLabelPrimaryTranslation
+            // 
+            this.ToolStripLabelPrimaryTranslation.Name = "ToolStripLabelPrimaryTranslation";
+            this.ToolStripLabelPrimaryTranslation.Size = new System.Drawing.Size(108, 22);
+            this.ToolStripLabelPrimaryTranslation.Text = "Primary Translation";
+            // 
+            // ToolStripComboBoxPrimaryTranslation
+            // 
+            this.ToolStripComboBoxPrimaryTranslation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ToolStripComboBoxPrimaryTranslation.Name = "ToolStripComboBoxPrimaryTranslation";
+            this.ToolStripComboBoxPrimaryTranslation.Size = new System.Drawing.Size(225, 25);
+            this.ToolStripComboBoxPrimaryTranslation.SelectedIndexChanged += new System.EventHandler(this.ToolStripComboBoxPrimaryTranslation_SelectedIndexChanged);
+            // 
+            // ToolStripButtonExport
+            // 
+            this.ToolStripButtonExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ToolStripButtonExport.Enabled = false;
+            this.ToolStripButtonExport.Image = global::GoToBible.Windows.Properties.Resources.Export;
+            this.ToolStripButtonExport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ToolStripButtonExport.Name = "ToolStripButtonExport";
+            this.ToolStripButtonExport.Size = new System.Drawing.Size(23, 22);
+            this.ToolStripButtonExport.Text = "&Export";
+            this.ToolStripButtonExport.ToolTipText = "Export Chapter in Primary Translation as Text";
+            this.ToolStripButtonExport.Click += new System.EventHandler(this.ToolStripButtonExport_Click);
+            // 
+            // ToolStripLabelSecondaryTranslation
+            // 
+            this.ToolStripLabelSecondaryTranslation.Name = "ToolStripLabelSecondaryTranslation";
+            this.ToolStripLabelSecondaryTranslation.Size = new System.Drawing.Size(122, 22);
+            this.ToolStripLabelSecondaryTranslation.Text = "Secondary Translation";
+            // 
+            // ToolStripComboBoxSecondaryTranslation
+            // 
+            this.ToolStripComboBoxSecondaryTranslation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ToolStripComboBoxSecondaryTranslation.Name = "ToolStripComboBoxSecondaryTranslation";
+            this.ToolStripComboBoxSecondaryTranslation.Size = new System.Drawing.Size(225, 25);
+            this.ToolStripComboBoxSecondaryTranslation.SelectedIndexChanged += new System.EventHandler(this.ToolStripComboBoxSecondaryTranslation_SelectedIndexChanged);
+            // 
+            // ToolStripButtonSwap
+            // 
+            this.ToolStripButtonSwap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ToolStripButtonSwap.Image = global::GoToBible.Windows.Properties.Resources.Swap;
+            this.ToolStripButtonSwap.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ToolStripButtonSwap.Name = "ToolStripButtonSwap";
+            this.ToolStripButtonSwap.Size = new System.Drawing.Size(23, 22);
+            this.ToolStripButtonSwap.Text = "Swap Translations";
+            this.ToolStripButtonSwap.Click += new System.EventHandler(this.ToolStripButtonSwap_Click);
             // 
             // FontDialogMain
             // 
@@ -617,16 +637,6 @@ namespace GoToBible.Windows
             // ColourDialogHighlight
             // 
             this.ColourDialogHighlight.AnyColor = true;
-            // 
-            // ToolStripButtonApparatusGenerator
-            // 
-            this.ToolStripButtonApparatusGenerator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ToolStripButtonApparatusGenerator.Image = ((System.Drawing.Image)(resources.GetObject("ToolStripButtonApparatusGenerator.Image")));
-            this.ToolStripButtonApparatusGenerator.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ToolStripButtonApparatusGenerator.Name = "ToolStripButtonApparatusGenerator";
-            this.ToolStripButtonApparatusGenerator.Size = new System.Drawing.Size(23, 22);
-            this.ToolStripButtonApparatusGenerator.Text = "&Apparatus Generator";
-            this.ToolStripButtonApparatusGenerator.Click += new System.EventHandler(this.ToolStripButtonApparatusGenerator_Click);
             // 
             // FormMain
             // 
@@ -654,12 +664,12 @@ namespace GoToBible.Windows
             this.ToolStripSettings.PerformLayout();
             this.ToolStripNavigate.ResumeLayout(false);
             this.ToolStripNavigate.PerformLayout();
-            this.ToolStripTranslation.ResumeLayout(false);
-            this.ToolStripTranslation.PerformLayout();
             this.ToolStripPassage.ResumeLayout(false);
             this.ToolStripPassage.PerformLayout();
             this.ToolStripResource.ResumeLayout(false);
             this.ToolStripResource.PerformLayout();
+            this.ToolStripTranslation.ResumeLayout(false);
+            this.ToolStripTranslation.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -723,6 +733,7 @@ namespace GoToBible.Windows
         private System.Windows.Forms.ToolStrip ToolStripExtras;
         private System.Windows.Forms.ToolStripButton ToolStripButtonGitHub;
         private System.Windows.Forms.ToolStripButton ToolStripButtonApparatusGenerator;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemBlockedTranslations;
     }
 }
 

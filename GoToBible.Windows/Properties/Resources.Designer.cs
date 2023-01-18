@@ -131,11 +131,31 @@ namespace GoToBible.Windows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BlockedTranslations {
+            get {
+                object obj = ResourceManager.GetObject("BlockedTranslations", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorry, you cannot show this translation interlinear with an original language.
         /// </summary>
         internal static string CannotShowInterlinear {
             get {
                 return ResourceManager.GetString("CannotShowInterlinear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Color {
+            get {
+                object obj = ResourceManager.GetObject("Color", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -336,6 +356,26 @@ namespace GoToBible.Windows.Properties {
             get {
                 object obj = ResourceManager.GetObject("LanguagesIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LegacyBrowser {
+            get {
+                object obj = ResourceManager.GetObject("LegacyBrowser", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NewWindow {
+            get {
+                object obj = ResourceManager.GetObject("NewWindow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

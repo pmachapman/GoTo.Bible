@@ -8,6 +8,7 @@ namespace GoToBible.Providers;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -22,6 +23,48 @@ using Microsoft.Extensions.Caching.Distributed;
 /// <seealso cref="IProvider" />
 public abstract class ApiProvider : IProvider
 {
+    /// <summary>
+    /// A list of blocked translations that cause unnecessary duplicates.
+    /// </summary>
+    public static readonly ReadOnlyCollection<string> BlockedTranslations = new List<string>
+    {
+        "BibleApi-685d1470fe4d5c3b-01",
+        "BibleApi-6bab4d6c61b31b80-01",
+        "BibleApi-7142879509583d59-02",
+        "BibleApi-7142879509583d59-03",
+        "BibleApi-7142879509583d59-04",
+        "BibleApi-926aa5efbc5e04e2-01",
+        "BibleApi-9879dbb7cfe39e4d-02",
+        "BibleApi-9879dbb7cfe39e4d-03",
+        "BibleApi-9879dbb7cfe39e4d-04",
+        "BibleApi-bba9f40183526463-01",
+        "BibleApi-de4e12af7f28f599-02",
+        "BibleApi-f72b840c855f362c-04",
+        "BibliaApi-asv",
+        "BibliaApi-kjv",
+        "BibliaApi-kjv1900",
+        "BibliaApi-kjvapoc",
+        "DigitalBiblePlatformApi-AAHWBTN2ET",
+        "DigitalBiblePlatformApi-EN1ESV",
+        "DigitalBiblePlatformApi-ENGASV",
+        "DigitalBiblePlatformApi-ENGESH",
+        "DigitalBiblePlatformApi-ENGKJV",
+        "DigitalBiblePlatformApi-ENGREV",
+        "DigitalBiblePlatformApi-ENGWEB",
+    }.AsReadOnly();
+
+    /// <summary>
+    /// Name substitutions to help users of the web application.
+    /// </summary>
+    public static readonly IReadOnlyDictionary<string, string> NameSubstitutions = new Dictionary<string, string>
+    {
+        { "The Holy Bible, American Standard Version", "American Standard Version" },
+        { "English Standard Version®", "English Standard Version (2007)" },
+        { "New American Standard Bible (NASB)", "New American Standard Bible (1995)" },
+        { "King James (Authorised) Version (Ecumenical)", "King James Version" },
+        { "TCENT", "Text-Critical English New Testament" },
+    };
+
     /// <summary>
     /// A map of the Bible book codes to the Passage Reference book names.
     /// </summary>

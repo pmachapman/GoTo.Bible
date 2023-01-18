@@ -137,14 +137,7 @@ internal class BookHelper
     public int GetNumberOfChapters(string book)
     {
         string bookLower = book.ToLowerInvariant();
-        if (this.BookChapters.Contains(bookLower) && this.BookChapters[bookLower] is int chapters)
-        {
-            return chapters;
-        }
-        else
-        {
-            return 0;
-        }
+        return this.BookChapters.Contains(bookLower) && this.BookChapters[bookLower] is int chapters ? chapters : 0;
     }
 
     /// <summary>

@@ -237,7 +237,7 @@ Would you like to download and install it now?</value>
 This will affect future interlinear comparisons, however you can customise this in Settings.</value>
   </data>
   <data name="WebBrowser" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\webbrowser.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\webbrowser.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Developer" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Developer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -253,5 +253,17 @@ This will affect future interlinear comparisons, however you can customise this 
   </data>
   <data name="ApparatusGeneratorIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ApparatusGenerator.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Color" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Color.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NewWindow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NewWindow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LegacyBrowser" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LegacyBrowser.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BlockedTranslations" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BlockedTranslations.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
