@@ -70,14 +70,9 @@ ServerVersion serverVersion;
 switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
 {
     case "MARIADB":
-        if (string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion))
-        {
-            serverVersion = MariaDbServerVersion.LatestSupportedServerVersion;
-        }
-        else
-        {
-            serverVersion = new MariaDbServerVersion(statisticsConfig.DatabaseVersion);
-        }
+        serverVersion = string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion)
+            ? MariaDbServerVersion.LatestSupportedServerVersion
+            : new MariaDbServerVersion(statisticsConfig.DatabaseVersion);
 
         if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
         {
@@ -95,14 +90,9 @@ switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
 
         break;
     case "MYSQL":
-        if (string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion))
-        {
-            serverVersion = MySqlServerVersion.LatestSupportedServerVersion;
-        }
-        else
-        {
-            serverVersion = new MySqlServerVersion(statisticsConfig.DatabaseVersion);
-        }
+        serverVersion = string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion)
+            ? MySqlServerVersion.LatestSupportedServerVersion
+            : new MySqlServerVersion(statisticsConfig.DatabaseVersion);
 
         if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
         {

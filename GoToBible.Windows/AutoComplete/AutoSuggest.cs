@@ -71,14 +71,7 @@ public static class AutoSuggest
     private static object? GetAutoComplete()
     {
         Type? autocompleteType = Type.GetTypeFromCLSID(AutoCompleteClsId);
-        if (autocompleteType is not null)
-        {
-            return Activator.CreateInstance(autocompleteType);
-        }
-        else
-        {
-            return null;
-        }
+        return autocompleteType is not null ? Activator.CreateInstance(autocompleteType) : null;
     }
 
     /// <summary>

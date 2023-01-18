@@ -45,30 +45,15 @@ public class SourceCustomList : IEnumString
             Marshal.WriteInt32(pceltFetched, fetched);
         }
 
-        if (fetched == celt)
-        {
-            // S_OK
-            return 0;
-        }
-        else
-        {
-            // S_FALSE
-            return 1;
-        }
+        // S_OK = 0, S_FALSE = 1
+        return fetched == celt ? 0 : 1;
     }
 
     /// <inheritdoc/>
     public int Skip(int celt)
     {
         this.currentPosition += celt;
-        if (this.currentPosition <= this.StringList.Length - 1)
-        {
-            return 0;
-        }
-        else
-        {
-            return 1;
-        }
+        return this.currentPosition <= this.StringList.Length - 1 ? 0 : 1;
     }
 
     /// <inheritdoc/>

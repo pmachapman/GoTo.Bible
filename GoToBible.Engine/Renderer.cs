@@ -91,24 +91,12 @@ public partial class Renderer : IRenderer
         Chapter firstChapter = await firstProvider.GetChapterAsync(parameters.PrimaryTranslation, parameters.PassageReference.ChapterReference);
 
         // Setup the previous chapter reference
-        if (firstChapter.PreviousChapterReference.IsValid)
-        {
-            renderedPassage.PreviousPassage = firstChapter.PreviousChapterReference.AsPassageReference();
-        }
-        else
-        {
-            renderedPassage.PreviousPassage = new PassageReference();
-        }
+        renderedPassage.PreviousPassage = firstChapter.PreviousChapterReference.IsValid ? firstChapter.PreviousChapterReference.AsPassageReference() : new PassageReference();
 
         // Setup the next chapter reference
-        if (firstChapter.NextChapterReference.IsValid)
-        {
-            renderedPassage.NextPassage = firstChapter.NextChapterReference.AsPassageReference();
-        }
-        else
-        {
-            renderedPassage.NextPassage = new PassageReference();
-        }
+        renderedPassage.NextPassage = firstChapter.NextChapterReference.IsValid
+            ? firstChapter.NextChapterReference.AsPassageReference()
+            : new PassageReference();
 
         // If we do not have content, we will suggest another passage
         bool hasContent = false;

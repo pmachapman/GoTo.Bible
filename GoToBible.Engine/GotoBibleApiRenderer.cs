@@ -63,14 +63,9 @@ public class GotoBibleApiRenderer : IRenderer
     {
         string url = $"RenderPassage?renderCompleteHtmlPage={renderCompleteHtmlPage}";
         HttpResponseMessage response = await this.httpClient.PostAsJsonAsync(url, parameters);
-        if (response.IsSuccessStatusCode)
-        {
-            return await response.Content.ReadFromJsonAsync<RenderedPassage>() ?? new RenderedPassage();
-        }
-        else
-        {
-            return new RenderedPassage();
-        }
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<RenderedPassage>() ?? new RenderedPassage()
+            : new RenderedPassage();
     }
 
     /// <summary>

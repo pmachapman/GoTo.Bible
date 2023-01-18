@@ -308,14 +308,7 @@ public partial class FormMain : Form
             .ToArray();
         this.FontDialogMain.Color = ColorTranslator.FromOle(Settings.Default.ForegroundColour);
         TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
-        if (converter.ConvertFromString(Settings.Default.Font) is Font font)
-        {
-            this.FontDialogMain.Font = font;
-        }
-        else
-        {
-            this.FontDialogMain.Font = Default.Font.AsFont();
-        }
+        this.FontDialogMain.Font = converter.ConvertFromString(Settings.Default.Font) as Font ?? Default.Font.AsFont();
 
         // Setup the rendering parameters for CSS
         this.parameters = new RenderingParameters
@@ -880,16 +873,7 @@ public partial class FormMain : Form
     {
         try
         {
-            string body;
-            if (this.translationsLoaded && !this.translations.Any())
-            {
-                body = string.Empty;
-            }
-            else
-            {
-                body = Html.LoadingCodeBody;
-            }
-
+            string body = this.translationsLoaded && !this.translations.Any() ? string.Empty : Html.LoadingCodeBody;
             webView.NavigateToString($"<!DOCTYPE html>\n<html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><style type=\"text/css\">{this.parameters.RenderCss()}{Html.LoadingCodeCss}</style></head><body>{body}</body></html>");
         }
         catch (InvalidOperationException)

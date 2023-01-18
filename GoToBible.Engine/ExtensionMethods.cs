@@ -318,14 +318,7 @@ public static partial class ExtensionMethods
         else if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Language == translation.Language) == 1)
         {
             // English translation names (i.e. King James Version) have priority
-            if (translation.Language == "English")
-            {
-                return translation.Name;
-            }
-            else
-            {
-                return $"{translation.Language} {translation.Name}";
-            }
+            return translation.Language == "English" ? translation.Name : $"{translation.Language} {translation.Name}";
         }
         else if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
                                        && t.Dialect == translation.Dialect && !string.IsNullOrWhiteSpace(t.Dialect)) == 1)
