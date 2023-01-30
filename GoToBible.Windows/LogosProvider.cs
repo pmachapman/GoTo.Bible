@@ -8,9 +8,11 @@ namespace GoToBible.Windows;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Threading.Tasks;
 using GoToBible.Model;
 
@@ -128,6 +130,25 @@ public class LogosProvider : IProvider
     };
 
     /// <summary>
+    /// The books with only one chapter.
+    /// </summary>
+    private static readonly string[] OneChapterBooks =
+    {
+        "Obadiah",
+        "Letter of Jeremiah",
+        "Song of Three Youths",
+        "Susanna",
+        "Bel and the Dragon",
+        "Prayer of Manasseh",
+        "Psalm 151",
+        "Epistle to the Laodiceans",
+        "Philemon",
+        "2 John",
+        "3 John",
+        "Jude",
+    };
+
+    /// <summary>
     /// This translation.
     /// </summary>
     private static readonly Translation Translation = new Translation
@@ -211,8 +232,35 @@ public class LogosProvider : IProvider
             dynamic? request = this.launcher.Application.CopyBibleVerses.CreateRequest();
             if (request is not null)
             {
-                request.Reference = this.launcher.Application.DataTypes.GetDataType("bible").ParseReference($"{book} {chapterNumber}");
-                chapter.Text = this.launcher.Application.CopyBibleVerses.GetText(request);
+                string reference = OneChapterBooks.Contains(book) ? book : $"{book} {chapterNumber}";
+                request.Reference = this.launcher.Application.DataTypes.GetDataType("bible").ParseReference(reference);
+
+                // Sometimes we get extra verses at the start or end. These are bugs in the Logos COM API
+                string text = this.launcher.Application.CopyBibleVerses.GetText(request);
+                StringBuilder sb = new StringBuilder();
+                bool addLine = false;
+                foreach (string line in text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (!addLine && line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Start at the first verse
+                        addLine = true;
+                    }
+                    else if (addLine && line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // We have found a verse 1 after the first verse
+                        addLine = false;
+                    }
+
+                    if (addLine)
+                    {
+                        sb.AppendLine(line);
+                    }
+                }
+
+                // If something went wrong, perhaps the starting verse was not supposed to be 1
+                chapter.Text = sb.Length == 0 ? text : sb.ToString();
+
                 dynamic referenceDetails = request.Reference.Details;
                 if (referenceDetails?.NextChapter?.Details is not null)
                 {

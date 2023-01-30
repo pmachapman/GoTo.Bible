@@ -26,5 +26,5 @@ public class WordComparer : IComparer<string>
 
     /// <inheritdoc />
     public int Compare(string? x, string? y)
-        => string.Compare(x, y, CultureInfo.InvariantCulture, this.parameters.AsCompareOptions());
+        => string.Compare(x?.Clean(), y?.Clean(), CultureInfo.InvariantCulture, this.parameters.AsCompareOptions());
 }

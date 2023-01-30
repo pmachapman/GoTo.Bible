@@ -845,7 +845,7 @@ public partial class Renderer : IRenderer
                         word2 = words2[i];
                     }
 
-                    if (string.Compare(word1, word2, CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0)
+                    if (string.Compare(word1.Clean(), word2.Clean(), CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0)
                     {
                         // If we are in interlinear mode, return to non-interlinear mode
                         if (interlinear)
@@ -927,7 +927,7 @@ public partial class Renderer : IRenderer
                             {
                                 for (int l = i; l < words2.Count; l++)
                                 {
-                                    if (string.Compare(words1[k], words2[l], CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0)
+                                    if (string.Compare(words1[k].Clean(), words2[l].Clean(), CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0)
                                     {
                                         matches.Add(k, l);
                                         break;

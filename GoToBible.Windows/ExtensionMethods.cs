@@ -396,7 +396,7 @@ public static class ExtensionMethods
                     // Add the variant
                     bool variantFound = false;
                     string? key = variants.Keys.FirstOrDefault(k =>
-                        string.Compare(k, variant, CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0);
+                        string.Compare(k.Clean(), variant.Clean(), CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0);
                     if (key is not null)
                     {
                         variants[key] += $" {dataTable.Columns[i].ColumnName}";

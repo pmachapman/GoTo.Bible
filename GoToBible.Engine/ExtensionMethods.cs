@@ -63,6 +63,16 @@ public static partial class ExtensionMethods
     }
 
     /// <summary>
+    /// Cleans a string for comparison.
+    /// </summary>
+    /// <param name="text">THe string to clean.</param>
+    /// <returns>The string suitable for comparison.</returns>
+    /// <remarks>
+    /// This is necessary as some punctuation characters are not recognised as such.
+    /// </remarks>
+    public static string Clean(this string text) => text.Replace('ʼ', '\'');
+
+    /// <summary>
     /// Counts the number of occurrences of a substirng within another string.
     /// </summary>
     /// <param name="text">The string to check within.</param>
