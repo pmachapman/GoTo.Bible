@@ -353,7 +353,7 @@ public partial class FormApparatusGenerator : Form
                         && (int)row["Chapter"] == (int)lastRow["Chapter"]
                         && (string)row["Verse"] == (string)lastRow["Verse"]
                         && (int)row["Occurrence"] == (int)lastRow["Occurrence"]
-                        && string.Compare((string)row["Phrase"], (string)lastRow["Phrase"], CultureInfo.InvariantCulture, apparatusParameters.AsCompareOptions()) == 0)
+                        && string.Compare(((string)row["Phrase"]).Clean(), ((string)lastRow["Phrase"]).Clean(), CultureInfo.InvariantCulture, apparatusParameters.AsCompareOptions()) == 0)
                     {
                         // Fill in the empty fields
                         for (int i = 5; i < row.ItemArray.Length - 1; i++)
