@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Versioning;
 using System.Security;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ using Microsoft.Web.WebView2.WinForms;
 /// </summary>
 /// <seealso cref="Form" />
 [SupportedOSPlatform("windows")]
-public partial class FormMain : Form
+public sealed partial class FormMain : Form
 {
     /// <summary>
     /// The commentaries.
@@ -53,6 +54,11 @@ public partial class FormMain : Form
     /// The providers.
     /// </summary>
     private readonly List<IProvider> providers = new List<IProvider>();
+
+    /// <summary>
+    /// The system menu.
+    /// </summary>
+    private readonly SystemMenu systemMenu;
 
     /// <summary>
     /// The translations.
@@ -100,6 +106,14 @@ public partial class FormMain : Form
 
         // Setup the GUI via the designer file
         this.InitializeComponent();
+
+        // Set the program caption
+        object[] productAttributes = typeof(FormMain).Assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+        this.Text = (productAttributes.FirstOrDefault() as AssemblyProductAttribute)?.Product ?? "GoTo.Bible";
+
+        // Setup the system menu
+        this.systemMenu = new SystemMenu(this);
+        this.systemMenu.AddMenuItem($"&About {this.Text}…", this.SystemMenuAbout_Click, true);
 
         // Clean up the tool strips
         this.ToolStripContainerMain.SuspendLayout();
@@ -226,6 +240,16 @@ public partial class FormMain : Form
         }
 
         base.Dispose(disposing);
+    }
+
+    /// <summary>
+    /// Processes Windows messages.
+    /// </summary>
+    /// <param name="msg">The Windows <see cref="Message"/> to process.</param>
+    protected override void WndProc(ref Message msg)
+    {
+        base.WndProc(ref msg);
+        this.systemMenu.HandleMessage(ref msg);
     }
 
     /// <summary>
@@ -1153,6 +1177,27 @@ public partial class FormMain : Form
             // Show/hide the export button
             this.ToolStripButtonExport.Enabled = translationItem.CanBeExported;
         }
+    }
+
+    /// <summary>
+    /// Handles the Click event of the ToolStripButtonNewWindow control.
+    /// </summary>
+    private void SystemMenuAbout_Click()
+    {
+        Assembly assembly = typeof(FormMain).Assembly;
+        object[] titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
+        string title = (titleAttributes.FirstOrDefault() as AssemblyTitleAttribute)?.Title ?? "GoTo.Bible";
+        object[] versionAttributes = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+        Version version =
+            new Version((versionAttributes.FirstOrDefault() as AssemblyFileVersionAttribute)?.Version ?? "1.0");
+        object[] copyrightAttributes = assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), true);
+        string copyright = (copyrightAttributes.FirstOrDefault() as AssemblyCopyrightAttribute)?.Copyright ?? string.Empty;
+        NativeMethods.ShellAbout(
+            this.Handle,
+            "Windows",
+            $"{title} {version.Major}.{version.Minor}.{version.Build}{Environment.NewLine}{copyright}",
+            this.Icon?.Handle ?? 0
+        );
     }
 
     /// <summary>
