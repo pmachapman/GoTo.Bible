@@ -473,10 +473,27 @@ public partial class Renderer : IRenderer
                     sb.Append(RenderLineAsHtml(line, parameters, firstChapter.SupportsItalics));
                 }
 
-                // Display copyright
-                if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) && parameters.Format != RenderFormat.Spreadsheet)
+                // We do not display copyright for a spreadsheet
+                if (parameters.Format != RenderFormat.Spreadsheet)
                 {
-                    sb.AppendLine($"<p class=\"copyright\">{firstChapter.Copyright}</p>");
+                    // Use the translation copyright if the chapter copyright is missing
+                    if (string.IsNullOrWhiteSpace(firstChapter.Copyright))
+                    {
+                        await foreach (Translation translation in firstProvider.GetTranslationsAsync())
+                        {
+                            if (translation.Code == parameters.PrimaryTranslation)
+                            {
+                                firstChapter.Copyright = translation.Copyright ?? string.Empty;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Display copyright
+                    if (!string.IsNullOrWhiteSpace(firstChapter.Copyright))
+                    {
+                        sb.AppendLine($"<p class=\"copyright\">{firstChapter.Copyright}</p>");
+                    }
                 }
             }
 
