@@ -15,6 +15,7 @@
     <AssemblyOriginatorKeyFile>GoToBible.Windows.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

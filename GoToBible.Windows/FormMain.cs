@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Versioning;
 using System.Security;
 using System.Threading.Tasks;
@@ -53,6 +54,11 @@ public partial class FormMain : Form
     /// The providers.
     /// </summary>
     private readonly List<IProvider> providers = new List<IProvider>();
+
+    /// <summary>
+    /// The system menu.
+    /// </summary>
+    private readonly SystemMenu systemMenu;
 
     /// <summary>
     /// The translations.
@@ -97,6 +103,10 @@ public partial class FormMain : Form
     {
         // Specify primary window
         this.primaryWindow = primaryWindow;
+
+        // Setup the system menu
+        this.systemMenu = new SystemMenu(this);
+        this.systemMenu.AddMenuItem("&About GoTo.Bible…", this.SystemMenuAbout_Click, true);
 
         // Setup the GUI via the designer file
         this.InitializeComponent();
@@ -226,6 +236,16 @@ public partial class FormMain : Form
         }
 
         base.Dispose(disposing);
+    }
+
+    /// <summary>
+    /// Processes Windows messages.
+    /// </summary>
+    /// <param name="msg">The Windows <see cref="Message"/> to process.</param>
+    protected override void WndProc(ref Message msg)
+    {
+        base.WndProc(ref msg);
+        this.systemMenu.HandleMessage(ref msg);
     }
 
     /// <summary>
@@ -1153,6 +1173,23 @@ public partial class FormMain : Form
             // Show/hide the export button
             this.ToolStripButtonExport.Enabled = translationItem.CanBeExported;
         }
+    }
+
+    /// <summary>
+    /// Handles the Click event of the ToolStripButtonNewWindow control.
+    /// </summary>
+    private void SystemMenuAbout_Click()
+    {
+        Assembly assembly = typeof(FormMain).Assembly;
+        Version version = assembly.GetName().Version ?? new Version(1, 0);
+        object[] attribs = assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), true);
+        string copyright = (attribs.FirstOrDefault() as AssemblyCopyrightAttribute)?.Copyright ?? string.Empty;
+        NativeMethods.ShellAbout(
+            this.Handle,
+            "Windows",
+            $"{this.Text} for Windows {version.Major}.{version.Minor}.{version.Build}{Environment.NewLine}{copyright}",
+            this.Icon?.Handle ?? 0
+        );
     }
 
     /// <summary>
