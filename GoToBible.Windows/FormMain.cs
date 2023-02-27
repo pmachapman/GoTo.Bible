@@ -38,7 +38,7 @@ using Microsoft.Web.WebView2.WinForms;
 /// </summary>
 /// <seealso cref="Form" />
 [SupportedOSPlatform("windows")]
-public partial class FormMain : Form
+public sealed partial class FormMain : Form
 {
     /// <summary>
     /// The commentaries.
@@ -104,12 +104,16 @@ public partial class FormMain : Form
         // Specify primary window
         this.primaryWindow = primaryWindow;
 
-        // Setup the system menu
-        this.systemMenu = new SystemMenu(this);
-        this.systemMenu.AddMenuItem("&About GoTo.Bible…", this.SystemMenuAbout_Click, true);
-
         // Setup the GUI via the designer file
         this.InitializeComponent();
+
+        // Set the program caption
+        object[] productAttributes = typeof(FormMain).Assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+        this.Text = (productAttributes.FirstOrDefault() as AssemblyProductAttribute)?.Product ?? "GoTo.Bible";
+
+        // Setup the system menu
+        this.systemMenu = new SystemMenu(this);
+        this.systemMenu.AddMenuItem($"&About {this.Text}…", this.SystemMenuAbout_Click, true);
 
         // Clean up the tool strips
         this.ToolStripContainerMain.SuspendLayout();
@@ -1181,13 +1185,17 @@ public partial class FormMain : Form
     private void SystemMenuAbout_Click()
     {
         Assembly assembly = typeof(FormMain).Assembly;
-        Version version = assembly.GetName().Version ?? new Version(1, 0);
-        object[] attribs = assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), true);
-        string copyright = (attribs.FirstOrDefault() as AssemblyCopyrightAttribute)?.Copyright ?? string.Empty;
+        object[] titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
+        string title = (titleAttributes.FirstOrDefault() as AssemblyTitleAttribute)?.Title ?? "GoTo.Bible";
+        object[] versionAttributes = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+        Version version =
+            new Version((versionAttributes.FirstOrDefault() as AssemblyFileVersionAttribute)?.Version ?? "1.0");
+        object[] copyrightAttributes = assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), true);
+        string copyright = (copyrightAttributes.FirstOrDefault() as AssemblyCopyrightAttribute)?.Copyright ?? string.Empty;
         NativeMethods.ShellAbout(
             this.Handle,
             "Windows",
-            $"{this.Text} for Windows {version.Major}.{version.Minor}.{version.Build}{Environment.NewLine}{copyright}",
+            $"{title} {version.Major}.{version.Minor}.{version.Build}{Environment.NewLine}{copyright}",
             this.Icon?.Handle ?? 0
         );
     }
