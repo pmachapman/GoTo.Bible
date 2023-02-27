@@ -235,8 +235,11 @@ public class LogosProvider : IProvider
                 string reference = OneChapterBooks.Contains(book) ? book : $"{book} {chapterNumber}";
                 request.Reference = this.launcher.Application.DataTypes.GetDataType("bible").ParseReference(reference);
 
-                // Sometimes we get extra verses at the start or end. These are bugs in the Logos COM API
+                // Get the text and fix nbsp (Alt+0160) characters
                 string text = this.launcher.Application.CopyBibleVerses.GetText(request);
+                text = text.Replace(" ", " ", StringComparison.OrdinalIgnoreCase);
+
+                // Sometimes we get extra verses at the start or end. These are bugs in the Logos COM API
                 StringBuilder sb = new StringBuilder();
                 bool addLine = false;
                 foreach (string line in text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
