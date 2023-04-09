@@ -128,7 +128,7 @@ app.UseDefaultFiles(new DefaultFilesOptions
 app.UseStaticFiles();
 
 // Allow static files within the about directory to allow for automatic SSL renewal
-app.UseStaticFiles(new StaticFileOptions()
+app.UseStaticFiles(new StaticFileOptions
 {
     ServeUnknownFileTypes = true, // this was needed as IIS would not serve extensionless URLs from the directory without it
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "about")),

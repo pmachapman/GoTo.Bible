@@ -8,7 +8,6 @@
 
 namespace GoToBible.Windows;
 
-using System;
 using System.Runtime.InteropServices;
 
 /// <summary>

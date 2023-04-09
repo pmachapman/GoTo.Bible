@@ -18,19 +18,13 @@ using System.Text.Json.Serialization;
 public class StringConverter : JsonConverter<string?>
 {
     /// <inheritdoc/>
-    public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        if (reader.TokenType == JsonTokenType.Number)
+    public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        reader.TokenType switch
         {
-            return reader.GetInt32().ToString();
-        }
-        else if (reader.TokenType == JsonTokenType.String)
-        {
-            return reader.GetString();
-        }
-
-        throw new JsonException();
-    }
+            JsonTokenType.Number => reader.GetInt32().ToString(),
+            JsonTokenType.String => reader.GetString(),
+            _ => throw new JsonException(),
+        };
 
     /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, string? value, JsonSerializerOptions options)

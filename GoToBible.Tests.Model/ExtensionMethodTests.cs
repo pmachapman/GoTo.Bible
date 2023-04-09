@@ -24,7 +24,7 @@ public class ExtensionMethodTests
     public void TestChapterReferenceAsPassageReference()
     {
         ChapterReference chapterReference = new ChapterReference("1 John", 1);
-        PassageReference expected = new PassageReference()
+        PassageReference expected = new PassageReference
         {
             ChapterReference = chapterReference,
             Display = "1 John 1",
@@ -40,7 +40,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestStringAsPassageReference()
     {
-        PassageReference expected = new PassageReference()
+        PassageReference expected = new PassageReference
         {
             ChapterReference = new ChapterReference("1 John", 1),
             Display = "1 John 1:3,6-7,9-12",
@@ -56,7 +56,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestStringAsPassageReferenceOneChapterBookIntroduction()
     {
-        PassageReference expected = new PassageReference()
+        PassageReference expected = new PassageReference
         {
             ChapterReference = new ChapterReference("2 John", 0),
             Display = "2 John 0",
@@ -71,7 +71,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestStringAsPassageReferenceOneChapterBookNoColon()
     {
-        PassageReference expected = new PassageReference()
+        PassageReference expected = new PassageReference
         {
             ChapterReference = new ChapterReference("2 John", 1),
             Display = "2 John 1",
@@ -86,7 +86,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestStringAsPassageReferenceOneChapterBookNoColonWithVerse()
     {
-        PassageReference expected = new PassageReference()
+        PassageReference expected = new PassageReference
         {
             ChapterReference = new ChapterReference("2 John", 1),
             Display = "2 John 1:2",
@@ -102,7 +102,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestStringAsPassageReferenceOneChapterBookNoColonWithRange()
     {
-        PassageReference expected = new PassageReference()
+        PassageReference expected = new PassageReference
         {
             ChapterReference = new ChapterReference("2 John", 1),
             Display = "2 John 1:1-2",
@@ -118,7 +118,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestStringAsPassageReferenceOneChapterBookWithColon()
     {
-        PassageReference expected = new PassageReference()
+        PassageReference expected = new PassageReference
         {
             ChapterReference = new ChapterReference("2 John", 1),
             Display = "2 John 1:1",
@@ -134,7 +134,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestStringAsPassageReferenceWithLetters()
     {
-        PassageReference expected = new PassageReference()
+        PassageReference expected = new PassageReference
         {
             ChapterReference = new ChapterReference("1 Kings", 12),
             Display = "1 Kings 12:24b-24g,24y-25",
@@ -248,7 +248,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestGetRanges()
     {
-        string[] expected = new string[] { "1:1", "1:2", "...", "1:3", "1:4", "1:5", "...", "1:6" };
+        string[] expected = { "1:1", "1:2", "...", "1:3", "1:4", "1:5", "...", "1:6" };
         Assert.IsTrue("1john1:1,2-3,4,5-6".GetRanges().SequenceEqual(expected));
     }
 

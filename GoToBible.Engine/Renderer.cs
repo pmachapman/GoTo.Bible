@@ -281,7 +281,7 @@ public partial class Renderer : IRenderer
                             string verseStatistics1 = $" <span style=\"font-family:consolas,courier\">[DivergentPhrases={firstAttempt.DivergentPhrases},TotalWordsLine1={firstAttempt.TotalWordsLine1},TotalWordsLine2={firstAttempt.TotalWordsLine2},WordsInCommon={firstAttempt.WordsInCommon}]</span><br>";
                             string verseStatistics2 = $" <span style=\"font-family:consolas,courier\">[DivergentPhrases={secondAttempt.DivergentPhrases},TotalWordsLine1={secondAttempt.TotalWordsLine1},TotalWordsLine2={secondAttempt.TotalWordsLine2},WordsInCommon={secondAttempt.WordsInCommon}]</span><br>";
 
-                            string bestNote = " title=\"This is the method selected as the best by the renderer\"";
+                            const string bestNote = " title=\"This is the method selected as the best by the renderer\"";
                             if (useFirstAttempt)
                             {
                                 sb.Append($"<strong style=\"font-family:consolas,courier\"{bestNote}>Reverse Scan*</strong>{verseStatistics1} {firstAttempt.Content}");

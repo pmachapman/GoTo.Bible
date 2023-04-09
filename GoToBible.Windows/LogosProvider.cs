@@ -244,16 +244,12 @@ public class LogosProvider : IProvider
                 bool addLine = false;
                 foreach (string line in text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (!addLine && line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase))
+                    addLine = addLine switch
                     {
-                        // Start at the first verse
-                        addLine = true;
-                    }
-                    else if (addLine && line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // We have found a verse 1 after the first verse
-                        addLine = false;
-                    }
+                        false when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase) => true,
+                        true when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase) => false,
+                        _ => addLine,
+                    };
 
                     if (addLine)
                     {

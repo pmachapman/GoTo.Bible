@@ -18,7 +18,7 @@ public class TranslationComboBoxItem : ComboBoxItem
     /// <value>
     ///   <c>true</c> if the translation can be exported; otherwise, <c>false</c>.
     /// </value>
-    public bool CanBeExported { get; set; } = false;
+    public bool CanBeExported { get; set; }
 
     /// <summary>
     /// Gets or sets the translation code.

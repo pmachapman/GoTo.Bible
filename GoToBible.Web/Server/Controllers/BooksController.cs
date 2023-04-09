@@ -43,12 +43,14 @@ public class BooksController : ControllerBase
     public async IAsyncEnumerable<Book> Get(string provider, string translation, bool includeChapters)
     {
         IProvider? bookProvider = this.providers.SingleOrDefault(p => p.Id == provider);
-        if (bookProvider is not null)
+        if (bookProvider is null)
         {
-            await foreach (Book book in bookProvider.GetBooksAsync(translation, includeChapters))
-            {
-                yield return book;
-            }
+            yield break;
+        }
+
+        await foreach (Book book in bookProvider.GetBooksAsync(translation, includeChapters))
+        {
+            yield return book;
         }
     }
 }

@@ -191,11 +191,8 @@ public static class ExtensionMethods
 
                         if (singleLeftquota.Count == singleRightquota.Count)
                         {
-                            int insideCommas = 0;
-                            for (int indexN = 0; indexN < singleLeftquota.Count; indexN++)
-                            {
-                                insideCommas += singleRightquota[indexN] - singleLeftquota[indexN];
-                            }
+                            int insideCommas = 
+                                singleLeftquota.Select((t, indexN) => singleRightquota[indexN] - t).Sum();
 
                             // Probabaly matched
                             if (fields.Length - cols >= insideCommas)

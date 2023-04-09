@@ -75,7 +75,7 @@ public class SystemMenu
             {
                 Id = id,
                 Text = text,
-                Separator = separatorBeforeCommand
+                Separator = separatorBeforeCommand,
             });
         }
         else

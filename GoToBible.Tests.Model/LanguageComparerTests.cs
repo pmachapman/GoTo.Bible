@@ -23,7 +23,7 @@ public class LanguageComparerTests
     [TestMethod]
     public void TestSortOrder()
     {
-        string[] actual = new string[]
+        string[] actual =
         {
             "German",
             "Latin",
@@ -34,7 +34,7 @@ public class LanguageComparerTests
             "Ugaritic",
             "Hebrew",
         };
-        string[] expected = new string[]
+        string[] expected =
         {
             "English",
             "Greek",

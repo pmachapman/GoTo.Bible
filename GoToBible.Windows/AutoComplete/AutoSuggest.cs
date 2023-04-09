@@ -47,8 +47,8 @@ public static class AutoSuggest
 
             // For options descriptions see:
             // https://docs.microsoft.com/en-us/windows/win32/api/shldisp/ne-shldisp-autocompleteoptions
-            AUTOCOMPLETEOPTIONS options = AUTOCOMPLETEOPTIONS.ACO_UPDOWNKEYDROPSLIST | AUTOCOMPLETEOPTIONS.ACO_USETAB |
-                                          AUTOCOMPLETEOPTIONS.ACO_AUTOAPPEND | AUTOCOMPLETEOPTIONS.ACO_AUTOSUGGEST;
+            const AUTOCOMPLETEOPTIONS options = AUTOCOMPLETEOPTIONS.ACO_UPDOWNKEYDROPSLIST | AUTOCOMPLETEOPTIONS.ACO_USETAB |
+                                                AUTOCOMPLETEOPTIONS.ACO_AUTOAPPEND | AUTOCOMPLETEOPTIONS.ACO_AUTOSUGGEST;
             Enable(textBox.Handle, source, options);
         }
         catch (Exception)
