@@ -304,7 +304,7 @@ public partial class BibleApi : ApiProvider
     /// <inheritdoc/>
     public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
     {
-        string url = "bibles";
+        const string url = "bibles";
         string cacheKey = this.GetCacheKey(url);
         string? json = await this.Cache.GetStringAsync(cacheKey);
 
@@ -348,14 +348,12 @@ public partial class BibleApi : ApiProvider
 
                 // Standardise the language
                 string language = translation.language.name;
-                if (language == "Greek, Ancient")
+                language = language switch
                 {
-                    language = "Greek";
-                }
-                else if (language == "German, Standard")
-                {
-                    language = "German";
-                }
+                    "Greek, Ancient" => "Greek",
+                    "German, Standard" => "German",
+                    _ => language,
+                };
 
                 yield return new Translation
                 {

@@ -44,7 +44,7 @@ public static class ExtensionMethods
     }
 
     /// <summary>
-    /// Converts CSV data to a Datatable.
+    /// Converts CSV data to a DataTable.
     /// </summary>
     /// <param name="csvData">The CSV data.</param>
     /// <param name="columnTypes">The suggested column types. The last type will be recurring.</param>
@@ -64,11 +64,11 @@ public static class ExtensionMethods
             dt.Columns.Add(fields[i].Trim('"'), i < columnTypes.Length ? columnTypes[i] : columnTypes.Last());
         }
 
-        int rowcount = 0;
+        int rowCount = 0;
         try
         {
             string[] toBeContinued = Array.Empty<string>();
-            bool linetoBeContinued = false;
+            bool lineToBeContinued = false;
             for (int i = 1; i < lines.Length; i++)
             {
                 if (!string.IsNullOrEmpty(lines[i]))
@@ -77,7 +77,7 @@ public static class ExtensionMethods
                     int quoteCount = string.Join(string.Empty, fields)
                         .Replace("\"\"", string.Empty, StringComparison.OrdinalIgnoreCase)
                         .Count(c => c == '"');
-                    if (fields.Length < cols || linetoBeContinued || quoteCount % 2 != 0)
+                    if (fields.Length < cols || lineToBeContinued || quoteCount % 2 != 0)
                     {
                         if (toBeContinued.Length > 0)
                         {
@@ -96,11 +96,11 @@ public static class ExtensionMethods
                         {
                             fields = toBeContinued;
                             toBeContinued = Array.Empty<string>();
-                            linetoBeContinued = false;
+                            lineToBeContinued = false;
                         }
                         else
                         {
-                            linetoBeContinued = true;
+                            lineToBeContinued = true;
                             continue;
                         }
                     }
@@ -108,8 +108,8 @@ public static class ExtensionMethods
                     // Deserialize CSV following Excel's rule:
                     // 1: If there are commas in a field, quote the field.
                     // 2: Two consecutive quotes indicate a user's quote.
-                    List<int> singleLeftquota = new List<int>();
-                    List<int> singleRightquota = new List<int>();
+                    List<int> singleLeftQuota = new List<int>();
+                    List<int> singleRightQuota = new List<int>();
 
                     // Combine fields if the number of commas match
                     if (fields.Length > cols)
@@ -167,12 +167,12 @@ public static class ExtensionMethods
 
                             if (leftOddQuote && !rightOddQuote)
                             {
-                                singleLeftquota.Add(j);
+                                singleLeftQuota.Add(j);
                                 lastSingleQuoteIsLeft = true;
                             }
                             else if (!leftOddQuote && rightOddQuote)
                             {
-                                singleRightquota.Add(j);
+                                singleRightQuota.Add(j);
                                 lastSingleQuoteIsLeft = false;
                             }
                             else if (fields[j] == "\"")
@@ -180,37 +180,34 @@ public static class ExtensionMethods
                                 // Only one quote in a field
                                 if (lastSingleQuoteIsLeft)
                                 {
-                                    singleRightquota.Add(j);
+                                    singleRightQuota.Add(j);
                                 }
                                 else
                                 {
-                                    singleLeftquota.Add(j);
+                                    singleLeftQuota.Add(j);
                                 }
                             }
                         }
 
-                        if (singleLeftquota.Count == singleRightquota.Count)
+                        if (singleLeftQuota.Count == singleRightQuota.Count)
                         {
-                            int insideCommas = 0;
-                            for (int indexN = 0; indexN < singleLeftquota.Count; indexN++)
-                            {
-                                insideCommas += singleRightquota[indexN] - singleLeftquota[indexN];
-                            }
+                            int insideCommas = 
+                                singleLeftQuota.Select((t, indexN) => singleRightQuota[indexN] - t).Sum();
 
-                            // Probabaly matched
+                            // Probably matched
                             if (fields.Length - cols >= insideCommas)
                             {
                                 // (fields.Length - insideCommas) may be exceed the Cols
-                                int validFildsCount = insideCommas + cols;
-                                string[] temp = new string[validFildsCount];
+                                int validFieldsCount = insideCommas + cols;
+                                string[] temp = new string[validFieldsCount];
                                 int totalOffSet = 0;
-                                for (int j = 0; j < validFildsCount - totalOffSet; j++)
+                                for (int j = 0; j < validFieldsCount - totalOffSet; j++)
                                 {
                                     bool combine = false;
                                     int storedIndex = 0;
-                                    for (int iInLeft = 0; iInLeft < singleLeftquota.Count; iInLeft++)
+                                    for (int iInLeft = 0; iInLeft < singleLeftQuota.Count; iInLeft++)
                                     {
-                                        if (j + totalOffSet == singleLeftquota[iInLeft])
+                                        if (j + totalOffSet == singleLeftQuota[iInLeft])
                                         {
                                             combine = true;
                                             storedIndex = iInLeft;
@@ -220,7 +217,7 @@ public static class ExtensionMethods
 
                                     if (combine)
                                     {
-                                        int offset = singleRightquota[storedIndex] - singleLeftquota[storedIndex];
+                                        int offset = singleRightQuota[storedIndex] - singleLeftQuota[storedIndex];
                                         for (int combineI = 0; combineI <= offset; combineI++)
                                         {
                                             temp[j] += fields[j + totalOffSet + combineI] + ",";
@@ -259,13 +256,13 @@ public static class ExtensionMethods
                     }
 
                     dt.Rows.Add(row);
-                    rowcount++;
+                    rowCount++;
                 }
             }
         }
         catch (Exception ex)
         {
-            throw new ArgumentException("Error on row: " + (rowcount + 2) + "; " + ex.Message);
+            throw new ArgumentException("Error on row: " + (rowCount + 2) + "; " + ex.Message);
         }
 
         return dt;
@@ -354,7 +351,7 @@ public static class ExtensionMethods
             // Show the word
             sb.Append($"<strong>{row["Phrase"]}</strong>");
 
-            // Show the occurence
+            // Show the occurrence
             int occurrence = (int)row["Occurrence"];
             if (occurrence > 0)
             {
@@ -368,7 +365,7 @@ public static class ExtensionMethods
             Dictionary<string, string> variants = new Dictionary<string, string>();
             for (int i = 5; i < dataTable.Columns.Count; i++)
             {
-                // Format based on interlinear paramters
+                // Format based on interlinear parameters
                 string? variant = row[i].ToString();
                 if (!string.IsNullOrEmpty(variant))
                 {
@@ -466,7 +463,7 @@ public static class ExtensionMethods
     };
 
     /// <summary>
-    /// Removes extra whitepace, and changes all white space to a simple space.
+    /// Removes extra whitespace, and changes all white space to a simple space.
     /// </summary>
     /// <param name="value">The value to normalise.</param>
     /// <returns>The normalised value.</returns>

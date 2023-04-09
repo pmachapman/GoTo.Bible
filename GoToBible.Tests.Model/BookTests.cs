@@ -33,7 +33,7 @@ public class BookTests
     [TestMethod]
     public void TestName()
     {
-        Book book = new Book()
+        Book book = new Book
         {
             Name = "Genesis",
         };

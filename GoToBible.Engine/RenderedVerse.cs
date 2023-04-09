@@ -28,7 +28,7 @@ internal class RenderedVerse
     /// <value>
     /// The number of divergent phrases.
     /// </value>
-    public int DivergentPhrases { get; set; } = 0;
+    public int DivergentPhrases { get; set; }
 
     /// <summary>
     /// Gets or sets the total number of words in line one.
@@ -36,7 +36,7 @@ internal class RenderedVerse
     /// <value>
     /// The total number of words in line one.
     /// </value>
-    public int TotalWordsLine1 { get; set; } = 0;
+    public int TotalWordsLine1 { get; set; }
 
     /// <summary>
     /// Gets or sets the total number of words in line two.
@@ -44,7 +44,7 @@ internal class RenderedVerse
     /// <value>
     /// The total number of words in line two.
     /// </value>
-    public int TotalWordsLine2 { get; set; } = 0;
+    public int TotalWordsLine2 { get; set; }
 
     /// <summary>
     /// Gets or sets the number of words in common.
@@ -52,5 +52,5 @@ internal class RenderedVerse
     /// <value>
     /// The number of words in common.
     /// </value>
-    public int WordsInCommon { get; set; } = 0;
+    public int WordsInCommon { get; set; }
 }

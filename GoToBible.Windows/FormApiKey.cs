@@ -96,18 +96,12 @@ public partial class FormApiKey : Form
         else
         {
             this.Text = $@"Enter {this.Provider} Key";
-            if (this.Provider.Length > 15)
+            this.LabelEnterKey.Text = this.Provider.Length switch
             {
-                this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your resources.";
-            }
-            else if (this.Provider.Length > 10)
-            {
-                this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your resources with GoToBible.";
-            }
-            else
-            {
-                this.LabelEnterKey.Text = $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.";
-            }
+                > 15 => $@"Enter your {this.Provider} key below to use your resources.",
+                > 10 => $@"Enter your {this.Provider} key below to use your resources with GoToBible.",
+                _ => $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible."
+            };
 
             this.LinkLabelSignup.Text = @"&Sign up for an API key";
         }

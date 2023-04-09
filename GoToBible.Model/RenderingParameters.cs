@@ -57,7 +57,7 @@ public record RenderingParameters
     /// <value>
     ///   <c>true</c> if the interlinear ignores case; otherwise, <c>false</c>.
     /// </value>
-    public bool InterlinearIgnoresCase { get; set; } = false;
+    public bool InterlinearIgnoresCase { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the interlinear ignores diacritics.
@@ -65,7 +65,7 @@ public record RenderingParameters
     /// <value>
     ///   <c>true</c> if the interlinear ignores diacritics; otherwise, <c>false</c>.
     /// </value>
-    public bool InterlinearIgnoresDiacritics { get; set; } = false;
+    public bool InterlinearIgnoresDiacritics { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the interlinear ignores punctuation.
@@ -73,7 +73,7 @@ public record RenderingParameters
     /// <value>
     ///   <c>true</c> if the interlinear ignores punctuation; otherwise, <c>false</c>.
     /// </value>
-    public bool InterlinearIgnoresPunctuation { get; set; } = false;
+    public bool InterlinearIgnoresPunctuation { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this <see cref="RenderingParameters" /> is in debugging mode.
@@ -84,7 +84,7 @@ public record RenderingParameters
     /// <remarks>
     /// Debug mode will display extra developer information. It is not suitable for general use.
     /// </remarks>
-    public bool IsDebug { get; set; } = false;
+    public bool IsDebug { get; set; }
 
     /// <summary>
     /// Gets or sets the passage reference.

@@ -670,7 +670,7 @@ public sealed partial class FormMain : Form
     /// <param name="primaryTranslation">The primary translation.</param>
     /// <param name="secondaryTranslation">The secondary translation.</param>
     /// <param name="resource">The open resource.</param>
-    private async Task LoadTranslationComboBoxes(IList<IProvider> translationProviders, string primaryTranslation, string secondaryTranslation, string resource)
+    private async Task LoadTranslationComboBoxes(IEnumerable<IProvider> translationProviders, string primaryTranslation, string secondaryTranslation, string resource)
     {
         // If we do not have a primary translation, secondary translation, or resource, see if we can get them
         if (string.IsNullOrWhiteSpace(primaryTranslation)

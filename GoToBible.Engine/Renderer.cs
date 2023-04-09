@@ -281,7 +281,7 @@ public partial class Renderer : IRenderer
                             string verseStatistics1 = $" <span style=\"font-family:consolas,courier\">[DivergentPhrases={firstAttempt.DivergentPhrases},TotalWordsLine1={firstAttempt.TotalWordsLine1},TotalWordsLine2={firstAttempt.TotalWordsLine2},WordsInCommon={firstAttempt.WordsInCommon}]</span><br>";
                             string verseStatistics2 = $" <span style=\"font-family:consolas,courier\">[DivergentPhrases={secondAttempt.DivergentPhrases},TotalWordsLine1={secondAttempt.TotalWordsLine1},TotalWordsLine2={secondAttempt.TotalWordsLine2},WordsInCommon={secondAttempt.WordsInCommon}]</span><br>";
 
-                            string bestNote = " title=\"This is the method selected as the best by the renderer\"";
+                            const string bestNote = " title=\"This is the method selected as the best by the renderer\"";
                             if (useFirstAttempt)
                             {
                                 sb.Append($"<strong style=\"font-family:consolas,courier\"{bestNote}>Reverse Scan*</strong>{verseStatistics1} {firstAttempt.Content}");
@@ -385,7 +385,7 @@ public partial class Renderer : IRenderer
                     Translation? secondaryTranslation =
                         translations.FirstOrDefault(t => t.Code == parameters.SecondaryTranslation);
 
-                    // If we are rendering as HTML or an apparatu
+                    // If we are rendering as HTML or an apparatus
                     if (parameters.Format != RenderFormat.Spreadsheet)
                     {
                         // Fix up the tooltips
@@ -574,7 +574,7 @@ public partial class Renderer : IRenderer
     /// <param name="insertAt">The index to insert at. If -1, the segments are appended.</param>
     /// <param name="baseLine">The line which <c>param1</c> sits within.Used for apparatus calculations.</param>
     /// <param name="verseNumber">The verse number. This should be the verse number of the base line.</param>
-    /// <param name="approximatePosition">The approximate position of this phrase. Use for occurrence number calulations.</param>
+    /// <param name="approximatePosition">The approximate position of this phrase. Use for occurrence number calculations.</param>
     private static void RenderInterlinearLineSegmentsAsHtml(StringBuilder sb, string line1, string line2, RenderingParameters parameters, int insertAt, string baseLine, string verseNumber, int approximatePosition)
     {
         // Do not allow empty lines
@@ -912,7 +912,7 @@ public partial class Renderer : IRenderer
                             approximatePosition = count < 1 ? 0 : words1.GetRange(index, count).Sum(w => w.Length + 1);
                         }
 
-                        // Remember the last word in common for the RenderNeighboutForAddition setting
+                        // Remember the last word in common for the RenderNeighbourForAddition setting
                         // when generating an apparatus. This may be used if the last phrase of a pair
                         // of lines is divergent.
                         lastWordInCommon = word1;
@@ -920,7 +920,7 @@ public partial class Renderer : IRenderer
                         // The following word is not divergent
                         renderedVerse.WordsInCommon++;
 
-                        // If we are renderering as HTML, render this word
+                        // If we are rendering as HTML, render this word
                         if (parameters.Format == RenderFormat.Html)
                         {
                             if (reverseScan)

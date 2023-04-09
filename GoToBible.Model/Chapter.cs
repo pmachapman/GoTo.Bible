@@ -25,7 +25,7 @@ public class Chapter
     /// <value>
     /// The chapter number.
     /// </value>
-    public int ChapterNumber { get; set; } = 0;
+    public int ChapterNumber { get; set; }
 
     /// <summary>
     /// Gets or sets the copyright message.

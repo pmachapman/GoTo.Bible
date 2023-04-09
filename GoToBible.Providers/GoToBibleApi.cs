@@ -82,7 +82,7 @@ public class GoToBibleApi : ApiProvider
     /// <inheritdoc/>
     public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
     {
-        string url = "Translations";
+        const string url = "Translations";
         string cacheKey = this.GetCacheKey(url);
         string? json = await this.Cache.GetStringAsync(cacheKey);
 

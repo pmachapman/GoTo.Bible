@@ -103,10 +103,7 @@ public class DigitalBiblePlatformApi : ApiProvider
                     List<ChapterReference> chapterReferences = new List<ChapterReference>();
                     if (includeChapters)
                     {
-                        foreach (int chapter in book.chapters)
-                        {
-                            chapterReferences.Add(new ChapterReference(bookName, chapter));
-                        }
+                        chapterReferences.AddRange(book.chapters.Select(chapter => new ChapterReference(bookName, chapter)));
                     }
 
                     yield return new Book { Chapters = chapterReferences.AsReadOnly(), Name = bookName, };
