@@ -11,7 +11,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// A JSON string converter that suports integers.
+/// A JSON string converter that supports integers.
 /// </summary>
 /// <seealso cref="JsonConverter" />
 /// <remarks>This is required for 1.0-1.1 API clients to access the 1.2+ API.</remarks>

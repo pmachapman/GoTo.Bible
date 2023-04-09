@@ -65,7 +65,7 @@ public static partial class ExtensionMethods
     /// <summary>
     /// Cleans a string for comparison.
     /// </summary>
-    /// <param name="text">THe string to clean.</param>
+    /// <param name="text">The string to clean.</param>
     /// <returns>The string suitable for comparison.</returns>
     /// <remarks>
     /// This is necessary as some punctuation characters are not recognised as such.
@@ -73,7 +73,7 @@ public static partial class ExtensionMethods
     public static string Clean(this string text) => text.Replace('ʼ', '\'');
 
     /// <summary>
-    /// Counts the number of occurrences of a substirng within another string.
+    /// Counts the number of occurrences of a substring within another string.
     /// </summary>
     /// <param name="text">The string to check within.</param>
     /// <param name="value">The substring to count.</param>
@@ -276,7 +276,7 @@ public static partial class ExtensionMethods
     /// The line with the supplied words rendered in italics.
     /// </returns>
     /// <remarks>
-    /// Full-width square brakets are replaced with regular square brackets.
+    /// Full-width square brackets are replaced with regular square brackets.
     /// </remarks>
     public static string RenderItalics(this string line, string italicsTag = "em")
         => line.Replace("[[", "<pre>").Replace("]]", "</pre>")
@@ -300,7 +300,7 @@ public static partial class ExtensionMethods
     /// The line with the supplied words rendered in normal type.
     /// </returns>
     /// <remarks>
-    /// Full-width square brakets are replaced with regular square brackets.
+    /// Full-width square brackets are replaced with regular square brackets.
     /// </remarks>
     public static string StripItalics(this string line)
         => line.Replace("[", string.Empty).Replace("]", string.Empty)

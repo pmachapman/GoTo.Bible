@@ -39,7 +39,7 @@ public record PassageReference
     /// <remarks>
     /// This may be in the format of individual verse numbers (v1.0 format),
     ///     i.e. <c>1,2,3,4,5</c>
-    /// or a starting number, followed by a hypen, then an ending number (v1.2 format),
+    /// or a starting number, followed by a hyphen, then an ending number (v1.2 format),
     ///     i.e. <c>1,-,5</c>
     /// The values may include letters,
     ///     i.e. <c>24g,-,25</c>
