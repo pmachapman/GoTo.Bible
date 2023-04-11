@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -47,7 +47,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="7.0.4" />
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.1661.34</Version>
+      <Version>1.0.1722.32</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
