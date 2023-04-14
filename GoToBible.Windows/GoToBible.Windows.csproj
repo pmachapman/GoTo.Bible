@@ -47,7 +47,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="7.0.5" />
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.1722.32</Version>
+      <Version>1.0.1722.45</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
