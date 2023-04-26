@@ -346,19 +346,10 @@ public partial class BibleApi : ApiProvider
                     name += $" ({translation.description})";
                 }
 
-                // Standardise the language
-                string language = translation.language.name;
-                language = language switch
-                {
-                    "Greek, Ancient" => "Greek",
-                    "German, Standard" => "German",
-                    _ => language,
-                };
-
                 yield return new Translation
                 {
                     Code = translation.id,
-                    Language = language,
+                    Language = translation.language.name.NormaliseLanguage(),
                     Name = name,
                     Provider = this.Id,
                 };

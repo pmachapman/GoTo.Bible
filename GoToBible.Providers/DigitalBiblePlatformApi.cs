@@ -243,7 +243,8 @@ public class DigitalBiblePlatformApi : ApiProvider
                     chapter.NextChapterReference = new ChapterReference(nextChapter);
                     break;
                 }
-                else if (string.Compare(nextChapter, thisChapter, StringComparison.OrdinalIgnoreCase) == 0)
+                
+                if (string.Compare(nextChapter, thisChapter, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     chapter.PreviousChapterReference = new ChapterReference(previousChapter);
                     getNextChapter = true;
@@ -344,13 +345,13 @@ public class DigitalBiblePlatformApi : ApiProvider
                     {
                         name = translation.abbr;
                     }
-
+                    
                     List<string> damIds = translation.filesets?.dbp_prod.Select(t => t.id).ToList() ?? new List<string>();
                     DigitalBiblePlatformTranslation digitalBiblePlatformTranslation = new DigitalBiblePlatformTranslation
                     {
                         Code = translation.abbr,
                         DamIds = damIds,
-                        Language = translation.language,
+                        Language = translation.language.NormaliseLanguage(),
                         Name = name,
                         Provider = this.Id,
                     };

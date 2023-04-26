@@ -14,6 +14,20 @@ using System;
 public static class ExtensionMethods
 {
     /// <summary>
+    /// Normalises the language name.
+    /// </summary>
+    /// <param name="language">The language</param>
+    /// <returns>The language, suitable for display and grouping.</returns>
+    public static string NormaliseLanguage(this string language)
+        => language switch
+        {
+            "Arabic, Standard" => "Arabic",
+            "German, Standard" => "German",
+            "Greek, Ancient" => "Greek",
+            _ => language,
+        };
+
+    /// <summary>
     /// Normalises the line endings.
     /// </summary>
     /// <param name="value">The value.</param>
