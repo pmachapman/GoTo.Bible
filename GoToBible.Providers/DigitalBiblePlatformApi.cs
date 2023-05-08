@@ -207,7 +207,7 @@ public class DigitalBiblePlatformApi : ApiProvider
             {
                 foreach (var verse in chapterJson.data)
                 {
-                    string verseText = verse.verse_text.Trim();
+                    string verseText = verse.verse_text.Trim().Replace("\n", " ").RemoveDuplicateSpaces();
 
                     // Allow multi-verse lines, i.e. "1-2  In the beginning"
                     if (verse.verse_start != verse.verse_end)
