@@ -7,12 +7,26 @@
 namespace GoToBible.Providers;
 
 using System;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// Extension methods.
 /// </summary>
-public static class ExtensionMethods
+public static partial class ExtensionMethods
 {
+    /// <summary>
+    /// The regular expression to find duplicate spaces.
+    /// </summary>
+    [GeneratedRegex("[ ]{2,}", RegexOptions.Compiled)]
+    private static partial Regex DuplicateSpacesRegex();
+
+    /// <summary>
+    /// Replaces duplicate spaces with one space.
+    /// </summary>
+    /// <param name="value">The value to remove duplicates spaces from.</param>
+    /// <returns>The value with duplicate spaces removed.</returns>
+    public static string RemoveDuplicateSpaces(this string value) => DuplicateSpacesRegex().Replace(value, " ");
+
     /// <summary>
     /// Normalises the language name.
     /// </summary>

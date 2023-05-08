@@ -107,12 +107,6 @@ public partial class EsvBible : ApiProvider
     private static readonly BookHelper Canon = new ProtestantCanon();
 
     /// <summary>
-    /// The regular expression to find duplicate spaces.
-    /// </summary>
-    [GeneratedRegex("[ ]{2,}", RegexOptions.Compiled)]
-    private static partial Regex DuplicateSpacesRegex();
-
-    /// <summary>
     /// The regular expression to find verse numbers.
     /// </summary>
     [GeneratedRegex("\\[(\\d+)\\] ", RegexOptions.Compiled)]
@@ -236,7 +230,7 @@ public partial class EsvBible : ApiProvider
                 output = output[output.IndexOf('[')..];
             }
 
-            output = DuplicateSpacesRegex().Replace(output, " ");
+            output = output.RemoveDuplicateSpaces();
             output = VerseNumberRegex().Replace(output, $"{Environment.NewLine}$1  ");
             chapter.Text = output;
 
