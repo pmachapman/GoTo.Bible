@@ -26,8 +26,8 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>.NET 7.0 Support</PackageReleaseNotes>
-    <Version>1.4.2</Version>
+    <PackageReleaseNotes>Minor bug fixes</PackageReleaseNotes>
+    <Version>1.4.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
