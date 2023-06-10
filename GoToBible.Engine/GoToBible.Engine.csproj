@@ -5,7 +5,6 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>GoToBible.Engine.snk</AssemblyOriginatorKeyFile>
     <Nullable>enable</Nullable>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 

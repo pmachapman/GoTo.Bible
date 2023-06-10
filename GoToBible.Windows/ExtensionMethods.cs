@@ -191,7 +191,7 @@ public static class ExtensionMethods
 
                         if (singleLeftQuota.Count == singleRightQuota.Count)
                         {
-                            int insideCommas = 
+                            int insideCommas =
                                 singleLeftQuota.Select((t, indexN) => singleRightQuota[indexN] - t).Sum();
 
                             // Probably matched

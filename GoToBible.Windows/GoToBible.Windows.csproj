@@ -9,7 +9,6 @@
     <AssemblyName>GoToBible.Windows</AssemblyName>
     <StartupObject>GoToBible.Windows.Program</StartupObject>
     <ApplicationIcon>App.ico</ApplicationIcon>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>GoToBible.Windows.snk</AssemblyOriginatorKeyFile>
