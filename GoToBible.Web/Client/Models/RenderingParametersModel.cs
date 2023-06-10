@@ -35,7 +35,7 @@ public class RenderingParametersModel
     /// <value>
     ///   <c>true</c> if the interlinear ignores punctuation; otherwise, <c>false</c>.
     /// </value>
-    public bool InterlinearIgnoresPunctuation { get; set; } 
+    public bool InterlinearIgnoresPunctuation { get; set; }
 
     /// <summary>
     /// Gets or sets the passage reference.

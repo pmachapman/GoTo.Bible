@@ -243,7 +243,7 @@ public class DigitalBiblePlatformApi : ApiProvider
                     chapter.NextChapterReference = new ChapterReference(nextChapter);
                     break;
                 }
-                
+
                 if (string.Compare(nextChapter, thisChapter, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     chapter.PreviousChapterReference = new ChapterReference(previousChapter);
@@ -345,7 +345,7 @@ public class DigitalBiblePlatformApi : ApiProvider
                     {
                         name = translation.abbr;
                     }
-                    
+
                     List<string> damIds = translation.filesets?.dbp_prod.Select(t => t.id).ToList() ?? new List<string>();
                     DigitalBiblePlatformTranslation digitalBiblePlatformTranslation = new DigitalBiblePlatformTranslation
                     {

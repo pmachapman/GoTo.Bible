@@ -9,8 +9,6 @@
 
     <AssemblyOriginatorKeyFile>GoToBible.Tests.Model.snk</AssemblyOriginatorKeyFile>
 
-    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
-
     <OutputType>Library</OutputType>
   </PropertyGroup>
 

@@ -6,7 +6,6 @@
     <AssemblyOriginatorKeyFile>GoToBible.Model.snk</AssemblyOriginatorKeyFile>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <Authors>Peter Chapman</Authors>
     <Company>Conglomo Limited</Company>
