@@ -128,7 +128,7 @@ public class NltBible : ApiProvider
             // Strip out content we do not want
             bool endItalics = false;
             StringBuilder strippedNode = new StringBuilder();
-            foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//span[@class='vn']|//span[@class='tn']|//p[@class='psa-hebrew']|//hr[@class='text-critical']|//p[@class='text-critical']|//p[@class='psa-title']|//p[@class='chapter-number']|//p[@class='subhead']|//a[@class='a-tn']|//p[@class='poet1']|//p[@class='poet2']|//p[@class='sos-speaker']").ToArray())
+            foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//span[@class='vn']|//span[@class='tn']|//p[@class='psa-hebrew']|//hr[@class='text-critical']|//p[@class='text-critical']|//p[@class='psa-title']|//p[@class='chapter-number']|//p[@class='subhead']|//a[@class='a-tn']|//p[@class='poet1']|//p[@class='poet2']|//p[@class='sos-speaker']|//p[@class='selah']|//h1|//h2|//h3|//h4").ToArray())
             {
                 strippedNode.Clear();
 
@@ -139,10 +139,21 @@ public class NltBible : ApiProvider
                     endItalics = true;
                     strippedNode.Append(" [");
                 }
+                else if (node.HasClass("selah"))
+                {
+                    // Show "Interlude." in italics
+                    foreach (HtmlNode innerNode in node.ChildNodes.Where(n => n.NodeType == HtmlNodeType.Text))
+                    {
+                        // Strip any HTML nodes (i.e. footnotes)
+                        strippedNode.Append('[');
+                        strippedNode.Append(innerNode.InnerText.Trim());
+                        strippedNode.Append(']');
+                    }
+                }
                 else if (node.HasClass("poet1") || node.HasClass("poet2"))
                 {
                     // This is for the Song of Solomon poetry lines
-                    foreach (HtmlNode innerNode in node.ChildNodes.Where(n => n.NodeType == HtmlNodeType.Text))
+                    foreach (HtmlNode innerNode in node.ChildNodes.Where(n => n.NodeType == HtmlNodeType.Text || n.HasClass("sc")))
                     {
                         // Strip any HTML nodes (i.e. footnotes)
                         strippedNode.Append(' ');
