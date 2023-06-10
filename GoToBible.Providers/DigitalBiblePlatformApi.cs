@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="DigitalBiblePlatformApi.cs" company="Conglomo">
 // Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
@@ -21,8 +21,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The Digital Bible Platform API Provider.
 /// </summary>
-/// <seealso cref="GoToBible.Providers.ApiProvider" />
-public class DigitalBiblePlatformApi : ApiProvider
+/// <seealso cref="WebApiProvider" />
+public class DigitalBiblePlatformApi : WebApiProvider
 {
     /// <summary>
     /// The New Testament canon.
@@ -233,27 +233,7 @@ public class DigitalBiblePlatformApi : ApiProvider
             chapter.Copyright = await this.GetCopyright(translation);
 
             // Get the next/previous chapters
-            bool getNextChapter = false;
-            string previousChapter = string.Empty;
-            string thisChapter = $"{book} {chapterNumber}";
-            await foreach (string nextChapter in this.GetChaptersAsync(translation))
-            {
-                if (getNextChapter)
-                {
-                    chapter.NextChapterReference = new ChapterReference(nextChapter);
-                    break;
-                }
-
-                if (string.Compare(nextChapter, thisChapter, StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    chapter.PreviousChapterReference = new ChapterReference(previousChapter);
-                    getNextChapter = true;
-                    continue;
-                }
-
-                // Set the previous chapter for the next iteration (if it needs it)
-                previousChapter = nextChapter;
-            }
+            await this.GetPreviousAndNextChaptersAsync(chapter);
         }
 
         // Return the chapter

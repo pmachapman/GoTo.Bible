@@ -586,6 +586,13 @@ public sealed partial class FormMain : Form
                 this.providers.Add(new EsvBible(Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }), this.cache));
             }
 
+            // Load the providers that use Local Resources
+            string localResourcesDirectory = Settings.Default.LocalResourcesDirectory;
+            if (!string.IsNullOrWhiteSpace(localResourcesDirectory))
+            {
+                this.providers.Add(new Zefania(Options.Create(new LocalResourceOptions { ResourceDirectory = localResourcesDirectory })));
+            }
+
             // Load the Logos Provider
             this.providers.Add(new LogosProvider());
 

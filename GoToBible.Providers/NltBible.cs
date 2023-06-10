@@ -21,8 +21,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The NLT Bible Provider.
 /// </summary>
-/// <seealso cref="GoToBible.Providers.ApiProvider" />
-public class NltBible : ApiProvider
+/// <seealso cref="WebApiProvider" />
+public class NltBible : WebApiProvider
 {
     /// <summary>
     /// The NLT copyright message.

@@ -20,8 +20,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The ESV Bible Provider.
 /// </summary>
-/// <seealso cref="GoToBible.Providers.ApiProvider" />
-public partial class EsvBible : ApiProvider
+/// <seealso cref="WebApiProvider" />
+public partial class EsvBible : WebApiProvider
 {
     /// <summary>
     /// The copyright message.

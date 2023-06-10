@@ -21,8 +21,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The API.Bible Provider.
 /// </summary>
-/// <seealso cref="IProvider" />
-public partial class BibleApi : ApiProvider
+/// <seealso cref="WebApiProvider" />
+public partial class BibleApi : WebApiProvider
 {
     /// <summary>
     /// The regular expression to split verse lines.

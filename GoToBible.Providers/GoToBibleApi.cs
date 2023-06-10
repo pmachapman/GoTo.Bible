@@ -19,9 +19,9 @@ using Microsoft.Extensions.Caching.Distributed;
 /// <summary>
 /// The GoTo.Bible API Provider.
 /// </summary>
-/// <seealso cref="GoToBible.Providers.ApiProvider" />
+/// <seealso cref="WebApiProvider" />
 /// <remarks>The GoTo.Bible API only provides translations via this class at this time.</remarks>
-public class GoToBibleApi : ApiProvider
+public class GoToBibleApi : WebApiProvider
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="GoToBibleApi" /> class.
