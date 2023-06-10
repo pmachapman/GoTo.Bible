@@ -31,7 +31,7 @@ public partial class BundledTranslations : IProvider
         { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
         { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
         { "BCPPSALMSVUL", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
-        { "BSB", "Copyright &copy;2016, 2020 by Bible Hub. All Rights Reserved Worldwide. Free Licensing for use in Websites, Apps, Software, and Audio: <a href=\"http://berean.bible/licensing.htm\" target=\"_blank\">http://berean.bible/licensing.htm</a>" },
+        { "BSB", "The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href=\"//biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"//discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"//openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>." },
         { "LAOANG", "Public Domain" },
         { "LAOGRK", "Public Domain" },
         { "LAOLAT", "Public Domain" },
@@ -281,7 +281,7 @@ public partial class BundledTranslations : IProvider
             Code = "BSB",
             Copyright = Copyright["BSB"],
             Language = "English",
-            Name = "Berean Study Bible",
+            Name = "Berean Standard Bible",
             Provider = this.Id,
             Year = 2020,
         });
