@@ -7,6 +7,7 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <Authors>Peter Chapman</Authors>
     <Company>Conglomo Limited</Company>
     <Product>GoTo.Bible Model</Product>
