@@ -5,7 +5,6 @@
 // -----------------------------------------------------------------------
 
 // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-
 using System.IO;
 using GoToBible.Model;
 using GoToBible.Providers;

@@ -20,8 +20,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The ESV Bible Provider.
 /// </summary>
-/// <seealso cref="GoToBible.Providers.ApiProvider" />
-public partial class EsvBible : ApiProvider
+/// <seealso cref="WebApiProvider" />
+public partial class EsvBible : WebApiProvider
 {
     /// <summary>
     /// The copyright message.
@@ -105,12 +105,6 @@ public partial class EsvBible : ApiProvider
     /// The canon.
     /// </summary>
     private static readonly BookHelper Canon = new ProtestantCanon();
-
-    /// <summary>
-    /// The regular expression to find verse numbers.
-    /// </summary>
-    [GeneratedRegex("\\[(\\d+)\\] ", RegexOptions.Compiled)]
-    private static partial Regex VerseNumberRegex();
 
     /// <summary>
     /// This translation.
@@ -285,4 +279,10 @@ public partial class EsvBible : ApiProvider
         // Default to invalid reference
         return new ChapterReference();
     }
+
+    /// <summary>
+    /// The regular expression to find verse numbers.
+    /// </summary>
+    [GeneratedRegex("\\[(\\d+)\\] ", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 }

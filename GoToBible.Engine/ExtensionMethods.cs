@@ -20,23 +20,6 @@ using GoToBible.Model;
 public static partial class ExtensionMethods
 {
     /// <summary>
-    /// The HTML tag regular expression.
-    /// </summary>
-    /// <returns>The regular expression to find HTML tags.</returns>
-    [GeneratedRegex("<.*?>", RegexOptions.Compiled)]
-    private static partial Regex HtmlTagRegex();
-
-    /// <summary>
-    /// The valid verse number regular expression.
-    /// </summary>
-    /// <returns>The regular expression to validate a verse number.</returns>
-    /// <remarks>
-    /// This includes support for verses with letters, hypenated verses, and verses enclosed in brackets.
-    /// </remarks>
-    [GeneratedRegex(@"([\[]((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))[\]])|((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))", RegexOptions.Compiled)]
-    private static partial Regex VerseNumberRegex();
-
-    /// <summary>
     /// Returns the <see cref="CompareOptions"/> matching the <see cref="RenderingParameters"/>.
     /// </summary>
     /// <param name="parameters">The rendering parameters.</param>
@@ -340,4 +323,21 @@ public static partial class ExtensionMethods
             return $"{translation.Name} ({translation.Provider})";
         }
     }
+
+    /// <summary>
+    /// The HTML tag regular expression.
+    /// </summary>
+    /// <returns>The regular expression to find HTML tags.</returns>
+    [GeneratedRegex("<.*?>", RegexOptions.Compiled)]
+    private static partial Regex HtmlTagRegex();
+
+    /// <summary>
+    /// The valid verse number regular expression.
+    /// </summary>
+    /// <returns>The regular expression to validate a verse number.</returns>
+    /// <remarks>
+    /// This includes support for verses with letters, hypenated verses, and verses enclosed in brackets.
+    /// </remarks>
+    [GeneratedRegex(@"([\[]((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))[\]])|((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 }

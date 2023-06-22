@@ -20,9 +20,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The Biblia API Provider.
 /// </summary>
-/// <seealso cref="GoToBible.Providers.ApiProvider" />
-/// <seealso cref="GoToBible.Model.IProvider" />
-public class BibliaApi : ApiProvider
+/// <seealso cref="WebApiProvider" />
+public class BibliaApi : WebApiProvider
 {
     /// <summary>
     /// The copyright message.
@@ -171,26 +170,7 @@ public class BibliaApi : ApiProvider
             chapter.Text = chapter.Text.Replace("ʼ", "᾿");
 
             // Get the next/previous chapters
-            bool getNextChapter = false;
-            string previousChapter = string.Empty;
-            string thisChapter = $"{book} {chapterNumber}";
-            await foreach (string nextChapter in this.GetChaptersAsync(translation))
-            {
-                if (getNextChapter)
-                {
-                    chapter.NextChapterReference = new ChapterReference(nextChapter);
-                    break;
-                }
-                else if (string.Compare(nextChapter, thisChapter, StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    chapter.PreviousChapterReference = new ChapterReference(previousChapter);
-                    getNextChapter = true;
-                    continue;
-                }
-
-                // Set the previous chapter for the next iteration (if it needs it)
-                previousChapter = nextChapter;
-            }
+            await this.GetPreviousAndNextChaptersAsync(chapter);
         }
 
         // Return the chapter

@@ -17,20 +17,6 @@ using System.Text.RegularExpressions;
 /// <remarks>This handles numeric, hyphenated, and sub-verse numbers.</remarks>
 public partial class VerseComparer : IComparer<string>
 {
-    /// <summary>
-    /// Gets the verse number with letter regular expression.
-    /// </summary>
-    /// <returns>The regular expression for a verse number with a letter.</returns>
-    [GeneratedRegex("^[0-9]+[a-z]$", RegexOptions.Compiled)]
-    private static partial Regex VerseNumberWithLetterRegex();
-
-    /// <summary>
-    /// Gets the verse range regular expression.
-    /// </summary>
-    /// <returns>The regular expression for a verse range.</returns>
-    [GeneratedRegex("^[0-9]+[a-z]?-[0-9]+[a-z]?$", RegexOptions.Compiled)]
-    private static partial Regex VerseRangeRegex();
-
     /// <inheritdoc />
     public int Compare(string? x, string? y)
     {
@@ -173,4 +159,18 @@ public partial class VerseComparer : IComparer<string>
             return string.Compare(x, y, StringComparison.Ordinal);
         }
     }
+
+    /// <summary>
+    /// Gets the verse number with letter regular expression.
+    /// </summary>
+    /// <returns>The regular expression for a verse number with a letter.</returns>
+    [GeneratedRegex("^[0-9]+[a-z]$", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberWithLetterRegex();
+
+    /// <summary>
+    /// Gets the verse range regular expression.
+    /// </summary>
+    /// <returns>The regular expression for a verse range.</returns>
+    [GeneratedRegex("^[0-9]+[a-z]?-[0-9]+[a-z]?$", RegexOptions.Compiled)]
+    private static partial Regex VerseRangeRegex();
 }

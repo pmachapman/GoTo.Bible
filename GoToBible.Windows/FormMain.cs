@@ -586,6 +586,13 @@ public sealed partial class FormMain : Form
                 this.providers.Add(new EsvBible(Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }), this.cache));
             }
 
+            // Load the providers that use Local Resources
+            string localResourcesDirectory = Settings.Default.LocalResourcesDirectory;
+            if (!string.IsNullOrWhiteSpace(localResourcesDirectory))
+            {
+                this.providers.Add(new Zefania(Options.Create(new LocalResourceOptions { ResourceDirectory = localResourcesDirectory })));
+            }
+
             // Load the Logos Provider
             this.providers.Add(new LogosProvider());
 
@@ -1196,8 +1203,7 @@ public sealed partial class FormMain : Form
             this.Handle,
             "Windows",
             $"{title} {version.Major}.{version.Minor}.{version.Build}{Environment.NewLine}{copyright}",
-            this.Icon?.Handle ?? 0
-        );
+            this.Icon?.Handle ?? 0);
     }
 
     /// <summary>
@@ -1228,7 +1234,6 @@ public sealed partial class FormMain : Form
                     formMain.Location = screen.WorkingArea.Location;
                     formMain.Size = Settings.Default.WindowSize;
                     formMain.WindowState = FormWindowState.Maximized;
-
                 }
             }
         }
@@ -1746,6 +1751,29 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemLegacyBrowser_Click(object sender, EventArgs e) => await this.InitialiseWebBrowser(true);
 
     /// <summary>
+    /// Handles the Click event of the Local Resources ToolStripMenuItem.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+    private async void ToolStripMenuItemLocalResources_Click(object sender, EventArgs e)
+    {
+        // Show the Local Resources Folder Picker
+        string localResourcesDirectory = Settings.Default.LocalResourcesDirectory;
+        this.FolderBrowserDialogMain.Description = Resources.LocalResourcesDialogDescription;
+        this.FolderBrowserDialogMain.AutoUpgradeEnabled = false;
+        this.FolderBrowserDialogMain.SelectedPath = localResourcesDirectory;
+        if (this.FolderBrowserDialogMain.ShowDialog() == DialogResult.OK && localResourcesDirectory != this.FolderBrowserDialogMain.SelectedPath)
+        {
+            // Save the directory
+            Settings.Default.LocalResourcesDirectory = this.FolderBrowserDialogMain.SelectedPath;
+            Settings.Default.Save();
+
+            // Reload the providers and translations
+            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+        }
+    }
+
+    /// <summary>
     /// Handles the Click event of the NLT ToolStripMenuItem.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
@@ -1896,6 +1924,7 @@ public sealed partial class FormMain : Form
     {
         // Update the menus
         this.ToolStripMenuItemEnterApiKeys.Visible = this.IsDeveloper;
+        this.ToolStripMenuItemLocalResources.Visible = this.IsDeveloper;
         this.ToolStripMenuItemProviders.Visible = this.IsDeveloper;
         this.ToolStripMenuItemDebugMode.Visible = this.IsDeveloper;
         this.ToolStripMenuItemLegacyBrowser.Visible = this.IsDeveloper;

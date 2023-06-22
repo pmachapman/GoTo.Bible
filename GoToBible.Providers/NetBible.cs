@@ -18,8 +18,8 @@ using Microsoft.Extensions.Caching.Distributed;
 /// <summary>
 /// The NET Bible Provider.
 /// </summary>
-/// <seealso cref="GoToBible.Providers.ApiProvider" />
-public class NetBible : ApiProvider
+/// <seealso cref="WebApiProvider" />
+public class NetBible : WebApiProvider
 {
     /// <summary>
     /// The copyright message.
