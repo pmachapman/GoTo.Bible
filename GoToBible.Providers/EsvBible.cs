@@ -107,12 +107,6 @@ public partial class EsvBible : WebApiProvider
     private static readonly BookHelper Canon = new ProtestantCanon();
 
     /// <summary>
-    /// The regular expression to find verse numbers.
-    /// </summary>
-    [GeneratedRegex("\\[(\\d+)\\] ", RegexOptions.Compiled)]
-    private static partial Regex VerseNumberRegex();
-
-    /// <summary>
     /// This translation.
     /// </summary>
     private static readonly Translation Translation = new Translation
@@ -285,4 +279,10 @@ public partial class EsvBible : WebApiProvider
         // Default to invalid reference
         return new ChapterReference();
     }
+
+    /// <summary>
+    /// The regular expression to find verse numbers.
+    /// </summary>
+    [GeneratedRegex("\\[(\\d+)\\] ", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 }

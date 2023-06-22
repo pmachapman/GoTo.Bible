@@ -106,6 +106,7 @@ public abstract class ApiProvider : IProvider
     /// Gets the next and previous chapters for the specified chapter.
     /// </summary>
     /// <param name="chapter">The chapter to get the previosu and next chapters for.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     protected async Task GetPreviousAndNextChaptersAsync(Chapter chapter)
     {
         // Get the next/previous chapters

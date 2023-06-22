@@ -204,51 +204,6 @@ public static partial class ExtensionMethods
     };
 
     /// <summary>
-    /// The book part regular expression.
-    /// </summary>
-    /// <returns>The regular expression to find the book part.</returns>
-    [GeneratedRegex(@"[\w\\(\\)]\d", RegexOptions.Compiled)]
-    private static partial Regex BookPartRegex();
-
-    /// <summary>
-    /// The dash replacement regular expression.
-    /// </summary>
-    /// <returns>The regular expression to find dashes.</returns>
-    [GeneratedRegex(@"[‐‑‒–—-]", RegexOptions.Compiled)]
-    private static partial Regex DashRegex();
-
-    /// <summary>
-    /// The number start regular expression.
-    /// </summary>
-    /// <returns>The regular expression to find the start of a number.</returns>
-    [GeneratedRegex(@"[\w\s]\d", RegexOptions.Compiled)]
-    private static partial Regex NumberStartRegex();
-
-    /// <summary>
-    /// The range part regular expression.
-    /// </summary>
-    /// <returns>The regular expression for finding a range part.</returns>
-    [GeneratedRegex(@"\d", RegexOptions.Compiled)]
-    private static partial Regex RangePartRegex();
-
-    /// <summary>
-    /// The strip invalid characters regular expression.
-    /// </summary>
-    /// <returns>The strip invalid characters regular expression.</returns>
-    [GeneratedRegex(@"[^a-zA-Z0-9\. _~:,-]", RegexOptions.Compiled)]
-    private static partial Regex StripInvalidCharactersRegex();
-
-    /// <summary>
-    /// The verse number regular expression.
-    /// </summary>
-    /// <returns>The verse number regular expression.</returns>
-    /// <remarks>
-    /// This includes support for verses with letters.
-    /// </remarks>
-    [GeneratedRegex(@"[0-9]+[a-z]?", RegexOptions.Compiled)]
-    private static partial Regex VerseNumberRegex();
-
-    /// <summary>
     /// Builds a <see cref="PassageReference" /> from a <see cref="ChapterReference" />.
     /// </summary>
     /// <param name="chapterReference">The chapter reference.</param>
@@ -429,7 +384,6 @@ public static partial class ExtensionMethods
                     sb.Append($"?settings={(int)mode}");
                 }
             }
-
         }
 
         return new Uri(sb.ToString(), uriKind);
@@ -723,4 +677,49 @@ public static partial class ExtensionMethods
     /// </returns>
     internal static string SanitisePassageReference(this string passage)
         => DashRegex().Replace(passage.Replace(" ", string.Empty).Replace('.', ':').ToLowerInvariant(), "-");
+
+    /// <summary>
+    /// The book part regular expression.
+    /// </summary>
+    /// <returns>The regular expression to find the book part.</returns>
+    [GeneratedRegex(@"[\w\\(\\)]\d", RegexOptions.Compiled)]
+    private static partial Regex BookPartRegex();
+
+    /// <summary>
+    /// The dash replacement regular expression.
+    /// </summary>
+    /// <returns>The regular expression to find dashes.</returns>
+    [GeneratedRegex(@"[‐‑‒–—-]", RegexOptions.Compiled)]
+    private static partial Regex DashRegex();
+
+    /// <summary>
+    /// The number start regular expression.
+    /// </summary>
+    /// <returns>The regular expression to find the start of a number.</returns>
+    [GeneratedRegex(@"[\w\s]\d", RegexOptions.Compiled)]
+    private static partial Regex NumberStartRegex();
+
+    /// <summary>
+    /// The range part regular expression.
+    /// </summary>
+    /// <returns>The regular expression for finding a range part.</returns>
+    [GeneratedRegex(@"\d", RegexOptions.Compiled)]
+    private static partial Regex RangePartRegex();
+
+    /// <summary>
+    /// The strip invalid characters regular expression.
+    /// </summary>
+    /// <returns>The strip invalid characters regular expression.</returns>
+    [GeneratedRegex(@"[^a-zA-Z0-9\. _~:,-]", RegexOptions.Compiled)]
+    private static partial Regex StripInvalidCharactersRegex();
+
+    /// <summary>
+    /// The verse number regular expression.
+    /// </summary>
+    /// <returns>The verse number regular expression.</returns>
+    /// <remarks>
+    /// This includes support for verses with letters.
+    /// </remarks>
+    [GeneratedRegex(@"[0-9]+[a-z]?", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 }

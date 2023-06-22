@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ApiProvider.cs" company="Conglomo">
+// <copyright file="WebApiProvider.cs" company="PlaceholderCompany">
 // Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------

@@ -94,14 +94,6 @@ public partial class BundledTranslations : IProvider
     };
 
     /// <summary>
-    /// The regular express to determine if a line of text has a verse number bracketed in it.
-    /// </summary>
-    /// <returns>The mid-line verse number regular expression.</returns>
-    /// <remarks>See Acts 19:40 in the SBLGNT for an example of a verse like this.</remarks>
-    [GeneratedRegex(@"\[\d+\]", RegexOptions.Compiled)]
-    private static partial Regex HasVerseRegex();
-
-    /// <summary>
     /// The renderer for apparatus generation.
     /// </summary>
     private readonly IRenderer? renderer;
@@ -377,4 +369,12 @@ public partial class BundledTranslations : IProvider
             });
         }
     }
+
+    /// <summary>
+    /// The regular express to determine if a line of text has a verse number bracketed in it.
+    /// </summary>
+    /// <returns>The mid-line verse number regular expression.</returns>
+    /// <remarks>See Acts 19:40 in the SBLGNT for an example of a verse like this.</remarks>
+    [GeneratedRegex(@"\[\d+\]", RegexOptions.Compiled)]
+    private static partial Regex HasVerseRegex();
 }

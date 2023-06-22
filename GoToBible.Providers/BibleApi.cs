@@ -25,12 +25,6 @@ using Microsoft.Extensions.Options;
 public partial class BibleApi : WebApiProvider
 {
     /// <summary>
-    /// The regular expression to split verse lines.
-    /// </summary>
-    [GeneratedRegex("(^|[ ]{2,})\\[", RegexOptions.Compiled)]
-    private static partial Regex VerseLinesRegex();
-
-    /// <summary>
     /// The regular expression to clean up verse numbers.
     /// </summary>
     private static readonly Regex VerseNumberRegex = new Regex($"{Regex.Escape(Environment.NewLine)}(\\d+|\\d+\\-\\d+|\\d+[a-z])\\]", RegexOptions.Compiled);
@@ -356,4 +350,10 @@ public partial class BibleApi : WebApiProvider
             }
         }
     }
+
+    /// <summary>
+    /// The regular expression to split verse lines.
+    /// </summary>
+    [GeneratedRegex("(^|[ ]{2,})\\[", RegexOptions.Compiled)]
+    private static partial Regex VerseLinesRegex();
 }

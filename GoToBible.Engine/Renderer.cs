@@ -5,7 +5,6 @@
 // -----------------------------------------------------------------------
 
 // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-
 namespace GoToBible.Engine;
 
 using System;
@@ -26,20 +25,6 @@ public partial class Renderer : IRenderer
     /// A horizontal line.
     /// </summary>
     private const string HorizontalLine = "<hr style=\"padding:0;border:none;width:100%;height:1px;color:#000;background-color:#000\">";
-
-    /// <summary>
-    /// The regular expression to italicise words.
-    /// </summary>
-    /// <returns>The italicise words regular expression.</returns>
-    [GeneratedRegex("(<em>[^<]+)([ ])([^<]+</em>)", RegexOptions.Compiled)]
-    private static partial Regex ItaliciseWordsRegex();
-
-    /// <summary>
-    /// The regular expression to find verse numbers.
-    /// </summary>
-    /// <returns>The verse number regular expression.</returns>
-    [GeneratedRegex("^[\\-0-9]+$", RegexOptions.Compiled)]
-    private static partial Regex VerseNumberRegex();
 
     /// <summary>
     /// A value indicating whether or not this instance has been disposed.
@@ -563,6 +548,13 @@ public partial class Renderer : IRenderer
 
         return sb.ToString();
     }
+
+    /// <summary>
+    /// The regular expression to italicise words.
+    /// </summary>
+    /// <returns>The italicise words regular expression.</returns>
+    [GeneratedRegex("(<em>[^<]+)([ ])([^<]+</em>)", RegexOptions.Compiled)]
+    private static partial Regex ItaliciseWordsRegex();
 
     /// <summary>
     /// Renders the interlinear line as HTML.
@@ -1235,4 +1227,11 @@ public partial class Renderer : IRenderer
 
         return renderedVerse;
     }
+
+    /// <summary>
+    /// The regular expression to find verse numbers.
+    /// </summary>
+    /// <returns>The verse number regular expression.</returns>
+    [GeneratedRegex("^[\\-0-9]+$", RegexOptions.Compiled)]
+    private static partial Regex VerseNumberRegex();
 }

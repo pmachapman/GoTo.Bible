@@ -1203,8 +1203,7 @@ public sealed partial class FormMain : Form
             this.Handle,
             "Windows",
             $"{title} {version.Major}.{version.Minor}.{version.Build}{Environment.NewLine}{copyright}",
-            this.Icon?.Handle ?? 0
-        );
+            this.Icon?.Handle ?? 0);
     }
 
     /// <summary>
@@ -1235,7 +1234,6 @@ public sealed partial class FormMain : Form
                     formMain.Location = screen.WorkingArea.Location;
                     formMain.Size = Settings.Default.WindowSize;
                     formMain.WindowState = FormWindowState.Maximized;
-
                 }
             }
         }

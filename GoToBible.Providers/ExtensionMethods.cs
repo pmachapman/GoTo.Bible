@@ -15,12 +15,6 @@ using System.Text.RegularExpressions;
 public static partial class ExtensionMethods
 {
     /// <summary>
-    /// The regular expression to find duplicate spaces.
-    /// </summary>
-    [GeneratedRegex("[ ]{2,}", RegexOptions.Compiled)]
-    private static partial Regex DuplicateSpacesRegex();
-
-    /// <summary>
     /// Replaces duplicate spaces with one space.
     /// </summary>
     /// <param name="value">The value to remove duplicates spaces from.</param>
@@ -30,7 +24,7 @@ public static partial class ExtensionMethods
     /// <summary>
     /// Normalises the language name.
     /// </summary>
-    /// <param name="language">The language</param>
+    /// <param name="language">The language.</param>
     /// <returns>The language, suitable for display and grouping.</returns>
     public static string NormaliseLanguage(this string language)
         => language switch
@@ -51,4 +45,10 @@ public static partial class ExtensionMethods
     /// </returns>
     public static string NormaliseLineEndings(this string value, string lineEnding = "\n")
         => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal).Replace("\n", lineEnding, StringComparison.Ordinal);
+
+    /// <summary>
+    /// The regular expression to find duplicate spaces.
+    /// </summary>
+    [GeneratedRegex("[ ]{2,}", RegexOptions.Compiled)]
+    private static partial Regex DuplicateSpacesRegex();
 }

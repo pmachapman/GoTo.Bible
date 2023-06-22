@@ -5,7 +5,6 @@
 // -----------------------------------------------------------------------
 
 // ReSharper disable InconsistentNaming
-
 namespace GoToBible.Windows;
 
 using System.Runtime.InteropServices;

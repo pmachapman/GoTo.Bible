@@ -42,16 +42,17 @@ public class Zefania : ApiProvider
     private readonly bool isValidPath;
 
     /// <summary>
-    /// A value indicating whether or not this instance has been disposed.
-    /// </summary>
-    private bool disposedValue;
-
-    /// <summary>
     /// The translations cache.
     /// </summary>
     private readonly List<LocalTranslation> translations = new List<LocalTranslation>();
 
     /// <summary>
+    /// A value indicating whether or not this instance has been disposed.
+    /// </summary>
+    private bool disposedValue;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Zefania"/> class.
     /// Initialises a new instance of the <see cref="Zefania" /> class.
     /// </summary>
     /// <param name="options">The options.</param>
@@ -66,6 +67,7 @@ public class Zefania : ApiProvider
     }
 
     /// <summary>
+    /// Finalizes an instance of the <see cref="Zefania"/> class.
     /// Finalises an instance of the <see cref="Zefania"/> class.
     /// </summary>
     /// <remarks>

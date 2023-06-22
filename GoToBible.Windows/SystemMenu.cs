@@ -150,19 +150,19 @@ public class SystemMenu
     private class MenuItem
     {
         /// <summary>
-        /// Gets or sets the menu item identifier.
+        /// Gets the menu item identifier.
         /// </summary>
         /// <value>The menu item identifier.</value>
         public int Id { get; init; }
 
         /// <summary>
-        /// Gets or sets the menu item text.
+        /// Gets the menu item text.
         /// </summary>
         /// <value>The menu item text.</value>
         public string Text { get; init; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the whether this is a menu item separator.
+        /// Gets a value indicating whether gets or sets the whether this is a menu item separator.
         /// </summary>
         /// <value><c>true</c> if this is a menu item separator; otherwise, <c>false</c>.</value>
         public bool Separator { get; init; }
