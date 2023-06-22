@@ -10,11 +10,12 @@
     <AssemblyName>GoToBible.Windows</AssemblyName>
     <StartupObject>GoToBible.Windows.Program</StartupObject>
     <ApplicationIcon>App.ico</ApplicationIcon>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>GoToBible.Windows.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 

@@ -5,6 +5,8 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>GoToBible.Web.Server.snk</AssemblyOriginatorKeyFile>
     <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <UserSecretsId>d9048d70-a88f-4bff-8d32-d85cce3a23c1</UserSecretsId>
   </PropertyGroup>
 

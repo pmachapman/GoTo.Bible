@@ -6,6 +6,7 @@
     <AssemblyOriginatorKeyFile>GoToBible.Engine.snk</AssemblyOriginatorKeyFile>
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
