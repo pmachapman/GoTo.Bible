@@ -225,10 +225,22 @@ public class ExtensionMethodTests
     public void TestDecodePassageFromUrl() => Assert.AreEqual("1 John 1:3,6-7", "/1.John.1_3~6-7/".DecodePassageFromUrl());
 
     /// <summary>
+    /// Tests <see cref="ExtensionMethods.DecodePassageFromUrl"/> with brackets.
+    /// </summary>
+    [TestMethod]
+    public void TestDecodePassageWithBracketsFromUrl() => Assert.AreEqual("Daniel (Greek) 1", "/Daniel.(Greek).1/".DecodePassageFromUrl());
+
+    /// <summary>
     /// Tests <see cref="ExtensionMethods.EncodePassageForUrl"/>.
     /// </summary>
     [TestMethod]
     public void TestEncodePassageFromUrl() => Assert.AreEqual("1.John.1_3~6-7", "1 John 1:3,6-7".EncodePassageForUrl());
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.EncodePassageForUrl"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestEncodePassageWithBracketsFromUrl() => Assert.AreEqual("Daniel.(Greek).1", "Daniel (Greek) 1".EncodePassageForUrl());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.GetBook"/>.

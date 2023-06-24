@@ -189,13 +189,32 @@ public partial class BibleApi : WebApiProvider
 
         // See if that book is in the translation
         bool bookExists = false;
+        string alternateBookName = string.Empty;
         await foreach (Book translationBook in this.GetBooksAsync(translation, false))
         {
-            if (translationBook.Name.ToLowerInvariant() == bookName)
+            string translationBookName = translationBook.Name.ToLowerInvariant();
+            if (translationBookName == bookName)
             {
                 bookExists = true;
                 break;
             }
+
+            // Handle alternate book names (i.e. the Greek variants for Esther and Daniel)
+            alternateBookName = bookName switch
+            {
+                "esther" when translationBookName == "esther (greek)" => translationBookName,
+                "daniel" when translationBookName == "daniel (greek)" => translationBookName,
+                "esther (greek)" when translationBookName == "esther" => translationBookName,
+                "daniel (greek)" when translationBookName == "daniel" => translationBookName,
+                _ => alternateBookName,
+            };
+        }
+
+        // Update the book name and code to the alternate book, if we didn't find the specified book name
+        if (!bookExists && !string.IsNullOrWhiteSpace(alternateBookName))
+        {
+            bookExists = BookCodeMap.TryGetValue(alternateBookName, out string? alternateBookCode);
+            bookCode = alternateBookCode;
         }
 
         // The book does not exist in this translation
