@@ -7,7 +7,6 @@
 namespace GoToBible.Providers;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -16,36 +15,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using CsvHelper;
 using GoToBible.Model;
 using Microsoft.Extensions.Options;
 
 /// <summary>
 /// The Zefania XML Provider.
 /// </summary>
-/// <seealso cref="ApiProvider" />
-public class Zefania : ApiProvider
+/// <seealso cref="LocalResourceProvider" />
+public class Zefania : LocalResourceProvider
 {
-    /// <summary>
-    /// The scripture cache.
-    /// </summary>
-    private readonly ConcurrentDictionary<string, Chapter> cache = new ConcurrentDictionary<string, Chapter>();
-
-    /// <summary>
-    /// The options.
-    /// </summary>
-    private readonly LocalResourceOptions options;
-
-    /// <summary>
-    /// A value indicating whether or not the path to Zefania is valid.
-    /// </summary>
-    private readonly bool isValidPath;
-
-    /// <summary>
-    /// The translations cache.
-    /// </summary>
-    private readonly List<LocalTranslation> translations = new List<LocalTranslation>();
-
     /// <summary>
     /// A value indicating whether or not this instance has been disposed.
     /// </summary>
@@ -53,22 +31,15 @@ public class Zefania : ApiProvider
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Zefania"/> class.
-    /// Initialises a new instance of the <see cref="Zefania" /> class.
     /// </summary>
     /// <param name="options">The options.</param>
-    /// <exception cref="ArgumentException">Invalid Zefania Directory - options.</exception>
-    public Zefania(IOptions<LocalResourceOptions> options)
+    /// <exception cref="ArgumentException">Invalid Resource Directory - options.</exception>
+    public Zefania(IOptions<LocalResourceOptions> options) : base(options)
     {
-        // Set the options
-        this.options = options.Value;
-
-        // Check the path
-        this.isValidPath = Directory.Exists(this.options.ResourceDirectory) && File.Exists(Path.Combine(this.options.ResourceDirectory, "index.csv"));
     }
 
     /// <summary>
     /// Finalizes an instance of the <see cref="Zefania"/> class.
-    /// Finalises an instance of the <see cref="Zefania"/> class.
     /// </summary>
     /// <remarks>
     /// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -79,7 +50,7 @@ public class Zefania : ApiProvider
     public override string Id => nameof(Zefania);
 
     /// <inheritdoc/>
-    public override string Name => "Zefania";
+    public override string Name => nameof(Zefania);
 
     /// <inheritdoc/>
     public override void Dispose()
@@ -95,16 +66,16 @@ public class Zefania : ApiProvider
         await this.EnsureTranslationsAreCachedAsync();
 
         // Ensure we have translations
-        if (this.translations.Any())
+        if (this.Translations.Any())
         {
             // Get the translation
-            LocalTranslation? zefaniaTranslation = this.translations.FirstOrDefault(t => t.Code == translation);
+            LocalTranslation? zefaniaTranslation = this.Translations.FirstOrDefault(t => t.Code == translation);
             if (zefaniaTranslation is not null)
             {
                 // Make sure the file is extracted, if it is a zip file
                 string fileName = this.ExtractFile(zefaniaTranslation.Filename);
                 XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(Path.Combine(this.options.ResourceDirectory, fileName));
+                xmlDocument.Load(Path.Combine(this.Options.Directory, fileName));
                 if (xmlDocument.DocumentElement?.HasChildNodes ?? false)
                 {
                     foreach (XmlNode bookNode in xmlDocument.DocumentElement.ChildNodes)
@@ -144,17 +115,17 @@ public class Zefania : ApiProvider
         await this.EnsureTranslationsAreCachedAsync();
 
         // Ensure we have translations
-        if (this.translations.Any())
+        if (this.Translations.Any())
         {
             // Generate the cache key
             string cacheKey = $"{translation}-{book}-{chapterNumber}";
-            if (this.cache.TryGetValue(cacheKey, out Chapter? cacheChapter))
+            if (this.Cache.TryGetValue(cacheKey, out Chapter? cacheChapter))
             {
                 return cacheChapter;
             }
 
             // Get the translation
-            LocalTranslation? zefaniaTranslation = this.translations.FirstOrDefault(t => t.Code == translation);
+            LocalTranslation? zefaniaTranslation = this.Translations.FirstOrDefault(t => t.Code == translation);
             if (zefaniaTranslation is not null)
             {
                 // Make sure the file is extracted, if it is a zip file
@@ -164,7 +135,7 @@ public class Zefania : ApiProvider
                 if (!string.IsNullOrWhiteSpace(book) && chapterNumber > 0)
                 {
                     XmlDocument xmlDocument = new XmlDocument();
-                    xmlDocument.Load(Path.Combine(this.options.ResourceDirectory, fileName));
+                    xmlDocument.Load(Path.Combine(this.Options.Directory, fileName));
                     if (xmlDocument.DocumentElement?.HasChildNodes ?? false)
                     {
                         foreach (XmlNode bookNode in xmlDocument.DocumentElement.ChildNodes)
@@ -185,7 +156,7 @@ public class Zefania : ApiProvider
                                                 {
                                                     sb.Append(verseNode.Attributes?["vnumber"]?.InnerText);
                                                     sb.Append("  ");
-                                                    sb.Append(verseNode.InnerText.Trim());
+                                                    sb.Append(verseNode.InnerText.Replace("-- ", "–").Trim());
                                                     sb.AppendLine(" ");
                                                 }
 
@@ -197,7 +168,7 @@ public class Zefania : ApiProvider
                                                     Translation = translation,
                                                 };
                                                 await this.GetPreviousAndNextChaptersAsync(chapter);
-                                                this.cache.TryAdd(cacheKey, chapter);
+                                                this.Cache.TryAdd(cacheKey, chapter);
                                                 return chapter;
                                             }
 
@@ -223,30 +194,6 @@ public class Zefania : ApiProvider
         };
     }
 
-    /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
-    {
-        if (this.isValidPath)
-        {
-            using StreamReader reader = new StreamReader(Path.Combine(this.options.ResourceDirectory, "index.csv"));
-            using CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
-            bool initialiseCache = !this.translations.Any();
-            await foreach (LocalTranslation translation in csvReader.GetRecordsAsync<LocalTranslation>())
-            {
-                if (translation.Provider == "Zefania")
-                {
-                    translation.Provider = this.Id;
-                    if (initialiseCache)
-                    {
-                        this.translations.Add(translation);
-                    }
-
-                    yield return translation;
-                }
-            }
-        }
-    }
-
     /// <inheritdoc cref="IDisposable" />
     protected virtual void Dispose(bool disposing)
     {
@@ -257,9 +204,9 @@ public class Zefania : ApiProvider
                 // dispose managed state (managed objects)
 
                 // Make sure we have the translations cache set up
-                if (this.translations.Any())
+                if (this.Translations.Any())
                 {
-                    foreach (LocalTranslation translation in this.translations)
+                    foreach (LocalTranslation translation in this.Translations)
                     {
                         // Make sure the translation file is is a zip file
                         string fileExtension = Path.GetExtension(translation.Filename).ToUpperInvariant();
@@ -267,13 +214,13 @@ public class Zefania : ApiProvider
                         {
                             // Check if a non-strongs version is in a strongs file
                             string xmlFilename = Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
-                            if (translation.Filename.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.options.ResourceDirectory, xmlFilename)))
+                            if (translation.Filename.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
                             {
                                 xmlFilename = xmlFilename.Replace("_strong", string.Empty, StringComparison.OrdinalIgnoreCase);
                             }
 
                             // Clean up the file
-                            string xmlFilePath = Path.Combine(this.options.ResourceDirectory, xmlFilename);
+                            string xmlFilePath = Path.Combine(this.Options.Directory, xmlFilename);
                             if (File.Exists(xmlFilePath))
                             {
                                 File.Delete(xmlFilePath);
@@ -290,24 +237,6 @@ public class Zefania : ApiProvider
     }
 
     /// <summary>
-    /// Ensures the translations are cached asynchronously.
-    /// </summary>
-    /// <returns>
-    /// The task.
-    /// </returns>
-    private async Task EnsureTranslationsAreCachedAsync()
-    {
-        // Make sure we have the translations cache set up
-        if (!this.translations.Any())
-        {
-            // This is just so we can have some async code to cancel the error
-            await foreach (Translation? _ in this.GetTranslationsAsync())
-            {
-            }
-        }
-    }
-
-    /// <summary>
     /// Extracts the file.
     /// </summary>
     /// <param name="fileName">Name of the file.</param>
@@ -320,11 +249,11 @@ public class Zefania : ApiProvider
         if (fileExtension == ".ZIP")
         {
             string xmlFilename = Path.GetFileNameWithoutExtension(fileName) + ".xml";
-            if (!File.Exists(Path.Combine(this.options.ResourceDirectory, xmlFilename)))
+            if (!File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
             {
                 try
                 {
-                    ZipFile.ExtractToDirectory(Path.Combine(this.options.ResourceDirectory, fileName), this.options.ResourceDirectory);
+                    ZipFile.ExtractToDirectory(Path.Combine(this.Options.Directory, fileName), this.Options.Directory);
                 }
                 catch (IOException)
                 {
@@ -333,7 +262,7 @@ public class Zefania : ApiProvider
             }
 
             // Check if a non-strongs version is in a strongs file
-            if (fileName.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.options.ResourceDirectory, xmlFilename)))
+            if (fileName.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
             {
                 xmlFilename = xmlFilename.Replace("_strong", string.Empty, StringComparison.OrdinalIgnoreCase);
             }

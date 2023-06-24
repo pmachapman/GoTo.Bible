@@ -12,10 +12,10 @@ namespace GoToBible.Providers;
 public class LocalResourceOptions
 {
     /// <summary>
-    /// Gets or sets the Resource directory.
+    /// Gets or sets the resource directory.
     /// </summary>
     /// <value>
-    /// The Resource directory.
+    /// The resource directory.
     /// </value>
-    public string ResourceDirectory { get; set; } = string.Empty;
+    public string Directory { get; set; } = string.Empty;
 }

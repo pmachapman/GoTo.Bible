@@ -35,14 +35,17 @@ builder.Services.AddSingleton<IProvider, BibliaApi>();
 builder.Services.AddSingleton<IProvider, BundledTranslations>();
 builder.Services.AddSingleton<IProvider, DigitalBiblePlatformApi>();
 builder.Services.AddSingleton<IProvider, EsvBible>();
+builder.Services.AddSingleton<IProvider, LegacyStandardBible>();
 builder.Services.AddSingleton<IProvider, NetBible>();
 builder.Services.AddSingleton<IProvider, NltBible>();
+builder.Services.AddSingleton<IProvider, Zefania>();
 
 // Add options for providers that require them
 builder.Services.Configure<BibleApiOptions>(builder.Configuration.GetSection("Providers:BibleApi"));
 builder.Services.Configure<BibliaApiOptions>(builder.Configuration.GetSection("Providers:BibliaApi"));
 builder.Services.Configure<DigitalBiblePlatformApiOptions>(builder.Configuration.GetSection("Providers:DigitalBiblePlatformApi"));
 builder.Services.Configure<EsvBibleOptions>(builder.Configuration.GetSection("Providers:EsvBible"));
+builder.Services.Configure<LocalResourceOptions>(builder.Configuration.GetSection("Providers:LocalResource"));
 builder.Services.Configure<NltBibleOptions>(builder.Configuration.GetSection("Providers:NltBible"));
 
 // Load the caching provider

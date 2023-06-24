@@ -49,6 +49,13 @@ internal class BookHelper
     private ReadOnlyCollection<string> BookNames => this.BookChapters.Keys.Cast<string>().ToList().AsReadOnly();
 
     /// <summary>
+    /// Gets the book number.
+    /// </summary>
+    /// <param name="book">The name of the book.</param>
+    /// <returns>The number of the book</returns>
+    public int GetBookNum(string book) => this.BookNames.IndexOf(book.ToLowerInvariant()) + 1;
+
+    /// <summary>
     /// Gets the books in the Protestant canon.
     /// </summary>
     /// <param name="includeChapters">If set to <c>true</c>, include chapters.</param>
