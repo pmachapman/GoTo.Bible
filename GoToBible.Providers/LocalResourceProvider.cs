@@ -40,7 +40,7 @@ public abstract class LocalResourceProvider : ApiProvider
         this.Options = options.Value;
 
         // Check the path
-        this.isValidPath = Directory.Exists(this.Options.ResourceDirectory) && File.Exists(Path.Combine(this.Options.ResourceDirectory, "index.csv"));
+        this.isValidPath = Directory.Exists(this.Options.Directory) && File.Exists(Path.Combine(this.Options.Directory, "index.csv"));
     }
 
     /// <inheritdoc/>
@@ -48,7 +48,7 @@ public abstract class LocalResourceProvider : ApiProvider
     {
         if (this.isValidPath)
         {
-            using StreamReader reader = new StreamReader(Path.Combine(this.Options.ResourceDirectory, "index.csv"));
+            using StreamReader reader = new StreamReader(Path.Combine(this.Options.Directory, "index.csv"));
             using CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
             bool initialiseCache = !this.Translations.Any();
             await foreach (LocalTranslation translation in csvReader.GetRecordsAsync<LocalTranslation>())

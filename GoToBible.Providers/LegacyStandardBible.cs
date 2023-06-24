@@ -82,7 +82,7 @@ public partial class LegacyStandardBible : LocalResourceProvider
                 // The next chapter codes are used to stop processing
                 string[] nextChapter = { $"{{{{{bookNum}::{chapterNumber + 1}}}}}", $"{{{{{bookNum + 1}::1}}}}" };
                 StringBuilder sb = new StringBuilder();
-                await foreach (string line in File.ReadLinesAsync(Path.Combine(this.Options.ResourceDirectory, zefaniaTranslation.Filename)))
+                await foreach (string line in File.ReadLinesAsync(Path.Combine(this.Options.Directory, zefaniaTranslation.Filename)))
                 {
                     if (getSuperscription && line.StartsWith("<SS>", StringComparison.OrdinalIgnoreCase))
                     {

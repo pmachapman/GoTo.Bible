@@ -75,7 +75,7 @@ public class Zefania : LocalResourceProvider
                 // Make sure the file is extracted, if it is a zip file
                 string fileName = this.ExtractFile(zefaniaTranslation.Filename);
                 XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(Path.Combine(this.Options.ResourceDirectory, fileName));
+                xmlDocument.Load(Path.Combine(this.Options.Directory, fileName));
                 if (xmlDocument.DocumentElement?.HasChildNodes ?? false)
                 {
                     foreach (XmlNode bookNode in xmlDocument.DocumentElement.ChildNodes)
@@ -135,7 +135,7 @@ public class Zefania : LocalResourceProvider
                 if (!string.IsNullOrWhiteSpace(book) && chapterNumber > 0)
                 {
                     XmlDocument xmlDocument = new XmlDocument();
-                    xmlDocument.Load(Path.Combine(this.Options.ResourceDirectory, fileName));
+                    xmlDocument.Load(Path.Combine(this.Options.Directory, fileName));
                     if (xmlDocument.DocumentElement?.HasChildNodes ?? false)
                     {
                         foreach (XmlNode bookNode in xmlDocument.DocumentElement.ChildNodes)
@@ -214,13 +214,13 @@ public class Zefania : LocalResourceProvider
                         {
                             // Check if a non-strongs version is in a strongs file
                             string xmlFilename = Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
-                            if (translation.Filename.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.Options.ResourceDirectory, xmlFilename)))
+                            if (translation.Filename.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
                             {
                                 xmlFilename = xmlFilename.Replace("_strong", string.Empty, StringComparison.OrdinalIgnoreCase);
                             }
 
                             // Clean up the file
-                            string xmlFilePath = Path.Combine(this.Options.ResourceDirectory, xmlFilename);
+                            string xmlFilePath = Path.Combine(this.Options.Directory, xmlFilename);
                             if (File.Exists(xmlFilePath))
                             {
                                 File.Delete(xmlFilePath);
@@ -249,11 +249,11 @@ public class Zefania : LocalResourceProvider
         if (fileExtension == ".ZIP")
         {
             string xmlFilename = Path.GetFileNameWithoutExtension(fileName) + ".xml";
-            if (!File.Exists(Path.Combine(this.Options.ResourceDirectory, xmlFilename)))
+            if (!File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
             {
                 try
                 {
-                    ZipFile.ExtractToDirectory(Path.Combine(this.Options.ResourceDirectory, fileName), this.Options.ResourceDirectory);
+                    ZipFile.ExtractToDirectory(Path.Combine(this.Options.Directory, fileName), this.Options.Directory);
                 }
                 catch (IOException)
                 {
@@ -262,7 +262,7 @@ public class Zefania : LocalResourceProvider
             }
 
             // Check if a non-strongs version is in a strongs file
-            if (fileName.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.Options.ResourceDirectory, xmlFilename)))
+            if (fileName.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
             {
                 xmlFilename = xmlFilename.Replace("_strong", string.Empty, StringComparison.OrdinalIgnoreCase);
             }

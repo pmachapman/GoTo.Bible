@@ -590,8 +590,8 @@ public sealed partial class FormMain : Form
             string localResourcesDirectory = Settings.Default.LocalResourcesDirectory;
             if (!string.IsNullOrWhiteSpace(localResourcesDirectory))
             {
-                this.providers.Add(new Zefania(Options.Create(new LocalResourceOptions { ResourceDirectory = localResourcesDirectory })));
-                this.providers.Add(new LegacyStandardBible(Options.Create(new LocalResourceOptions { ResourceDirectory = localResourcesDirectory })));
+                this.providers.Add(new Zefania(Options.Create(new LocalResourceOptions { Directory = localResourcesDirectory })));
+                this.providers.Add(new LegacyStandardBible(Options.Create(new LocalResourceOptions { Directory = localResourcesDirectory })));
             }
 
             // Load the Logos Provider
