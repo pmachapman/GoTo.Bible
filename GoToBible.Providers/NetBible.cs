@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 using Microsoft.Extensions.Caching.Distributed;
@@ -58,7 +60,7 @@ public class NetBible : WebApiProvider
     public override string Name => "NET Bible API";
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         foreach (Book book in Canon.GetBooks(includeChapters))
         {
@@ -67,7 +69,7 @@ public class NetBible : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber)
+    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -83,7 +85,7 @@ public class NetBible : WebApiProvider
         // Load the book
         string url = $"?passage={book}+{chapterNumber}&formatting=plain&type=json";
         string cacheKey = this.GetCacheKey(url);
-        string? json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
         // The NET will return the first chapter for any invalid references
         if (!Canon.IsValidChapter(book, chapterNumber))
@@ -93,11 +95,11 @@ public class NetBible : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                json = await response.Content.ReadAsStringAsync();
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions);
+                json = await response.Content.ReadAsStringAsync(cancellationToken);
+                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
             }
             else
             {
@@ -119,16 +121,13 @@ public class NetBible : WebApiProvider
             chapter.Text = string.Join(Environment.NewLine, data.Select(d => $"{d.verse}  {d.text}"));
             chapter.PreviousChapterReference = Canon.GetPreviousChapter(book, chapterNumber);
             chapter.NextChapterReference = Canon.GetNextChapter(book, chapterNumber);
-            return chapter;
         }
-        else
-        {
-            return chapter;
-        }
+
+        return chapter;
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         yield return await Task.FromResult(Translation);
     }

@@ -10,9 +10,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 
@@ -205,14 +207,14 @@ public class LogosProvider : IProvider
     public void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
+    public async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await Task.CompletedTask;
         yield break;
     }
 
     /// <inheritdoc/>
-    public Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber)
+    public Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -289,7 +291,7 @@ public class LogosProvider : IProvider
     }
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Translation> GetTranslationsAsync()
+    public async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         if (this.launcher?.Application is not null)
         {

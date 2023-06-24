@@ -11,8 +11,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 
@@ -122,7 +124,7 @@ public partial class BundledTranslations : IProvider
     public void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
+    public async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         foreach (Book book in Canon[translation].GetBooks(includeChapters))
         {
@@ -131,7 +133,7 @@ public partial class BundledTranslations : IProvider
     }
 
     /// <inheritdoc/>
-    public async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber)
+    public async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -160,7 +162,7 @@ public partial class BundledTranslations : IProvider
                 bool readingChapter = false;
                 string lineStart = $"{book} {chapterNumber}:";
                 StringBuilder sb = new StringBuilder();
-                while (await reader.ReadLineAsync() is { } line)
+                while (await reader.ReadLineAsync(cancellationToken) is { } line)
                 {
                     if (line.StartsWith(lineStart, StringComparison.OrdinalIgnoreCase))
                     {
@@ -207,7 +209,7 @@ public partial class BundledTranslations : IProvider
                     SecondaryProvider = "BibliaApi",
                     SecondaryTranslation = "wh1881mr",
                 };
-                RenderedPassage renderedPassage = await this.renderer.RenderAsync(parameters, false);
+                RenderedPassage renderedPassage = await this.renderer.RenderAsync(parameters, false, cancellationToken);
                 chapter.Text = renderedPassage.Content;
             }
         }
@@ -225,7 +227,7 @@ public partial class BundledTranslations : IProvider
     }
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Translation> GetTranslationsAsync()
+    public async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         yield return await Task.FromResult(new Translation
         {

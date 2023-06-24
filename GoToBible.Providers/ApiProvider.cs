@@ -9,6 +9,8 @@ namespace GoToBible.Providers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 
@@ -70,50 +72,27 @@ public abstract class ApiProvider : IProvider
     public abstract void Dispose();
 
     /// <inheritdoc/>
-    public abstract IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters);
+    public abstract IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, CancellationToken cancellationToken = default);
 
     /// <inheritdoc/>
-    public abstract Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber);
+    public abstract Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default);
 
     /// <inheritdoc/>
-    public abstract IAsyncEnumerable<Translation> GetTranslationsAsync();
-
-    /// <summary>
-    /// Gets all of the books and chapters in a translation asynchronously.
-    /// </summary>
-    /// <param name="translation">The translation.</param>
-    /// <returns>
-    /// The list of chapters.
-    /// </returns>
-    protected async IAsyncEnumerable<string> GetChaptersAsync(string translation)
-    {
-        await foreach (Book book in this.GetBooksAsync(translation, true))
-        {
-            foreach (ChapterReference chapter in book.Chapters)
-            {
-                // Handle one chapter books
-                if (chapter.ChapterNumber == 0)
-                {
-                    chapter.ChapterNumber = 1;
-                }
-
-                yield return chapter.ToString();
-            }
-        }
-    }
+    public abstract IAsyncEnumerable<Translation> GetTranslationsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets the next and previous chapters for the specified chapter.
     /// </summary>
-    /// <param name="chapter">The chapter to get the previosu and next chapters for.</param>
+    /// <param name="chapter">The chapter to get the previous and next chapters for.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    protected async Task GetPreviousAndNextChaptersAsync(Chapter chapter)
+    protected async Task GetPreviousAndNextChaptersAsync(Chapter chapter, CancellationToken cancellationToken = default)
     {
         // Get the next/previous chapters
         bool getNextChapter = false;
         string previousChapter = string.Empty;
         string thisChapter = $"{chapter.Book} {chapter.ChapterNumber}";
-        await foreach (string nextChapter in this.GetChaptersAsync(chapter.Translation))
+        await foreach (string nextChapter in this.GetChaptersAsync(chapter.Translation, cancellationToken))
         {
             if (getNextChapter)
             {
@@ -130,6 +109,31 @@ public abstract class ApiProvider : IProvider
 
             // Set the previous chapter for the next iteration (if it needs it)
             previousChapter = nextChapter;
+        }
+    }
+
+    /// <summary>
+    /// Gets all of the books and chapters in a translation asynchronously.
+    /// </summary>
+    /// <param name="translation">The translation.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    /// The list of chapters.
+    /// </returns>
+    private async IAsyncEnumerable<string> GetChaptersAsync(string translation, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await foreach (Book book in this.GetBooksAsync(translation, true, cancellationToken))
+        {
+            foreach (ChapterReference chapter in book.Chapters)
+            {
+                // Handle one chapter books
+                if (chapter.ChapterNumber == 0)
+                {
+                    chapter.ChapterNumber = 1;
+                }
+
+                yield return chapter.ToString();
+            }
         }
     }
 }

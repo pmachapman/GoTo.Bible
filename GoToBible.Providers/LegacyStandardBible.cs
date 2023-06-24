@@ -10,8 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 using Microsoft.Extensions.Options;
@@ -47,7 +49,7 @@ public partial class LegacyStandardBible : LocalResourceProvider
     public override void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         foreach (Book book in Canon.GetBooks(includeChapters))
         {
@@ -56,9 +58,9 @@ public partial class LegacyStandardBible : LocalResourceProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber)
+    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
     {
-        await this.EnsureTranslationsAreCachedAsync();
+        await this.EnsureTranslationsAreCachedAsync(cancellationToken);
 
         // Ensure we have translations
         if (this.Translations.Any())
@@ -82,7 +84,7 @@ public partial class LegacyStandardBible : LocalResourceProvider
                 // The next chapter codes are used to stop processing
                 string[] nextChapter = { $"{{{{{bookNum}::{chapterNumber + 1}}}}}", $"{{{{{bookNum + 1}::1}}}}" };
                 StringBuilder sb = new StringBuilder();
-                await foreach (string line in File.ReadLinesAsync(Path.Combine(this.Options.Directory, zefaniaTranslation.Filename)))
+                await foreach (string line in File.ReadLinesAsync(Path.Combine(this.Options.Directory, zefaniaTranslation.Filename), cancellationToken))
                 {
                     if (getSuperscription && line.StartsWith("<SS>", StringComparison.OrdinalIgnoreCase))
                     {
@@ -114,7 +116,7 @@ public partial class LegacyStandardBible : LocalResourceProvider
                     Text = sb.ToString(),
                     Translation = translation,
                 };
-                await this.GetPreviousAndNextChaptersAsync(chapter);
+                await this.GetPreviousAndNextChaptersAsync(chapter, cancellationToken);
                 this.Cache.TryAdd(cacheKey, chapter);
                 return chapter;
             }

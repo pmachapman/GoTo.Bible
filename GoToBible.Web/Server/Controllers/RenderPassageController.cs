@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Engine;
 using GoToBible.Model;
@@ -63,11 +64,12 @@ public class RenderPassageController : ControllerBase
     /// </summary>
     /// <param name="parameters">The parameters.</param>
     /// <param name="renderCompleteHtmlPage">If set to <c>true</c>, render the complete HTML page.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The task containing an action result.
     /// </returns>
     [HttpPost]
-    public async Task<IActionResult> Post(RenderingParameters parameters, bool renderCompleteHtmlPage = false)
+    public async Task<IActionResult> Post(RenderingParameters parameters, bool renderCompleteHtmlPage = false, CancellationToken cancellationToken = default)
     {
         // If we can record statistics
         if (this.context is not null)
@@ -86,8 +88,8 @@ public class RenderPassageController : ControllerBase
                     SecondaryProvider = parameters.SecondaryProvider,
                     SecondaryTranslation = parameters.SecondaryTranslation,
                 };
-                await statisticsContext.Statistics.AddAsync(statistics);
-                await statisticsContext.SaveChangesAsync();
+                await statisticsContext.Statistics.AddAsync(statistics, cancellationToken);
+                await statisticsContext.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -100,7 +102,7 @@ public class RenderPassageController : ControllerBase
 
         try
         {
-            return this.Ok(await this.renderer.RenderAsync(parameters, renderCompleteHtmlPage));
+            return this.Ok(await this.renderer.RenderAsync(parameters, renderCompleteHtmlPage, cancellationToken));
         }
         catch (Exception ex)
         {

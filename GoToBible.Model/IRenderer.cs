@@ -8,6 +8,7 @@ namespace GoToBible.Model;
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -31,8 +32,9 @@ public interface IRenderer : IDisposable
     /// </summary>
     /// <param name="parameters">The rendering parameters.</param>
     /// <param name="renderCompleteHtmlPage">If set to <c>true</c>, render the complete HTML page.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The output of the rendering.
     /// </returns>
-    Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage);
+    Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage, CancellationToken cancellationToken = default);
 }

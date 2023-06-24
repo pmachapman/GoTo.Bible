@@ -8,6 +8,8 @@ namespace GoToBible.Web.Server.Controllers;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using GoToBible.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,11 +38,12 @@ public class BooksController : ControllerBase
     /// <param name="provider">The provider.</param>
     /// <param name="translation">The translation.</param>
     /// <param name="includeChapters">If set to <c>true</c>, include chapters. This can include significantly more data.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The list of the books in the translation.
     /// </returns>
     [HttpGet]
-    public async IAsyncEnumerable<Book> Get(string provider, string translation, bool includeChapters)
+    public async IAsyncEnumerable<Book> Get(string provider, string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         IProvider? bookProvider = this.providers.SingleOrDefault(p => p.Id == provider);
         if (bookProvider is null)
@@ -48,7 +51,7 @@ public class BooksController : ControllerBase
             yield break;
         }
 
-        await foreach (Book book in bookProvider.GetBooksAsync(translation, includeChapters))
+        await foreach (Book book in bookProvider.GetBooksAsync(translation, includeChapters, cancellationToken))
         {
             yield return book;
         }
