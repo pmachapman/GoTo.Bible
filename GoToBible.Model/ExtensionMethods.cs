@@ -710,7 +710,7 @@ public static partial class ExtensionMethods
     /// The strip invalid characters regular expression.
     /// </summary>
     /// <returns>The strip invalid characters regular expression.</returns>
-    [GeneratedRegex(@"[^a-zA-Z0-9\. _~:,-]", RegexOptions.Compiled)]
+    [GeneratedRegex(@"[^a-zA-Z0-9()\. _~:,-]", RegexOptions.Compiled)]
     private static partial Regex StripInvalidCharactersRegex();
 
     /// <summary>
