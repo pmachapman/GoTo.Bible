@@ -156,7 +156,7 @@ public class Zefania : LocalResourceProvider
                                                 {
                                                     sb.Append(verseNode.Attributes?["vnumber"]?.InnerText);
                                                     sb.Append("  ");
-                                                    sb.Append(verseNode.InnerText.Trim());
+                                                    sb.Append(verseNode.InnerText.Replace("-- ", "–").Trim());
                                                     sb.AppendLine(" ");
                                                 }
 

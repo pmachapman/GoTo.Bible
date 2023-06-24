@@ -591,6 +591,7 @@ public sealed partial class FormMain : Form
             if (!string.IsNullOrWhiteSpace(localResourcesDirectory))
             {
                 this.providers.Add(new Zefania(Options.Create(new LocalResourceOptions { ResourceDirectory = localResourcesDirectory })));
+                this.providers.Add(new LegacyStandardBible(Options.Create(new LocalResourceOptions { ResourceDirectory = localResourcesDirectory })));
             }
 
             // Load the Logos Provider
