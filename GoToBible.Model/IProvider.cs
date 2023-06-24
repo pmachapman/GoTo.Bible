@@ -8,6 +8,7 @@ namespace GoToBible.Model;
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -36,13 +37,14 @@ public interface IProvider : IDisposable
     /// </summary>
     /// <param name="translation">The translation code.</param>
     /// <param name="includeChapters">If set to <c>true</c> include chapters.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The books.
     /// </returns>
     /// <remarks>
     /// Excluding chapters will often speed up the function.
     /// </remarks>
-    IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters);
+    IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets a chapter from the bible.
@@ -50,20 +52,22 @@ public interface IProvider : IDisposable
     /// <param name="translation">The translation code.</param>
     /// <param name="book">The book name.</param>
     /// <param name="chapterNumber">The chapter number.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The chapter for rendering.
     /// </returns>
-    Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber);
+    Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets a chapter from the bible.
     /// </summary>
     /// <param name="translation">The translation code.</param>
     /// <param name="chapterReference">The chapter reference.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The chapter for rendering.
     /// </returns>
-    Task<Chapter> GetChapterAsync(string translation, ChapterReference chapterReference) => this.GetChapterAsync(translation, chapterReference.Book, chapterReference.ChapterNumber);
+    Task<Chapter> GetChapterAsync(string translation, ChapterReference chapterReference, CancellationToken cancellationToken = default) => this.GetChapterAsync(translation, chapterReference.Book, chapterReference.ChapterNumber, cancellationToken);
 
     /// <summary>
     /// Gets the translations available from the provider asynchronously.
@@ -71,5 +75,5 @@ public interface IProvider : IDisposable
     /// <returns>
     /// The available translations.
     /// </returns>
-    IAsyncEnumerable<Translation> GetTranslationsAsync();
+    IAsyncEnumerable<Translation> GetTranslationsAsync(CancellationToken cancellationToken = default);
 }

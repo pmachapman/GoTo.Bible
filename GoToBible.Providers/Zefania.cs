@@ -12,7 +12,9 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using GoToBible.Model;
@@ -61,9 +63,9 @@ public class Zefania : LocalResourceProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await this.EnsureTranslationsAreCachedAsync();
+        await this.EnsureTranslationsAreCachedAsync(cancellationToken);
 
         // Ensure we have translations
         if (this.Translations.Any())
@@ -110,9 +112,9 @@ public class Zefania : LocalResourceProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber)
+    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
     {
-        await this.EnsureTranslationsAreCachedAsync();
+        await this.EnsureTranslationsAreCachedAsync(cancellationToken);
 
         // Ensure we have translations
         if (this.Translations.Any())
@@ -167,7 +169,7 @@ public class Zefania : LocalResourceProvider
                                                     Text = sb.ToString(),
                                                     Translation = translation,
                                                 };
-                                                await this.GetPreviousAndNextChaptersAsync(chapter);
+                                                await this.GetPreviousAndNextChaptersAsync(chapter, cancellationToken);
                                                 this.Cache.TryAdd(cacheKey, chapter);
                                                 return chapter;
                                             }

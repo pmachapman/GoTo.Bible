@@ -11,7 +11,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 using HtmlAgilityPack;
@@ -63,7 +65,7 @@ public class NltBible : WebApiProvider
     public override string Name => "NLT API";
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         foreach (Book book in Canon.GetBooks(includeChapters))
         {
@@ -72,7 +74,7 @@ public class NltBible : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber)
+    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -95,7 +97,7 @@ public class NltBible : WebApiProvider
         // Load the book
         string url = $"passages?ref={queryBook}+{chapterNumber}&key={this.options.ApiKey}&version={translation}";
         string cacheKey = this.GetCacheKey(url);
-        string? html = await this.Cache.GetStringAsync(cacheKey);
+        string? html = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
         // The NLT will return the first chapter for any invalid references
         if (!Canon.IsValidChapter(book, chapterNumber))
@@ -105,11 +107,11 @@ public class NltBible : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(html))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                html = await response.Content.ReadAsStringAsync();
-                await this.Cache.SetStringAsync(cacheKey, html, CacheEntryOptions);
+                html = await response.Content.ReadAsStringAsync(cancellationToken);
+                await this.Cache.SetStringAsync(cacheKey, html, CacheEntryOptions, cancellationToken);
             }
             else
             {
@@ -191,7 +193,7 @@ public class NltBible : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         if (!string.IsNullOrWhiteSpace(this.options.ApiKey))
         {

@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 
@@ -60,7 +61,7 @@ public partial class Renderer : IRenderer
     }
 
     /// <inheritdoc/>
-    public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage)
+    public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage, CancellationToken cancellationToken = default)
     {
         // Set up the rendered passage
         RenderedPassage renderedPassage = new RenderedPassage();
@@ -73,7 +74,7 @@ public partial class Renderer : IRenderer
         }
 
         // Get the first translation
-        Chapter firstChapter = await firstProvider.GetChapterAsync(parameters.PrimaryTranslation, parameters.PassageReference.ChapterReference);
+        Chapter firstChapter = await firstProvider.GetChapterAsync(parameters.PrimaryTranslation, parameters.PassageReference.ChapterReference, cancellationToken);
 
         // Setup the previous chapter reference
         renderedPassage.PreviousPassage = firstChapter.PreviousChapterReference.IsValid ? firstChapter.PreviousChapterReference.AsPassageReference() : new PassageReference();
@@ -166,7 +167,7 @@ public partial class Renderer : IRenderer
                 IProvider secondProvider = this.Providers.FirstOrDefault(p => p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider)) ?? firstProvider;
 
                 // Get the second translation, if specified
-                Chapter secondChapter = await secondProvider.GetChapterAsync(parameters.SecondaryTranslation, parameters.PassageReference.ChapterReference);
+                Chapter secondChapter = await secondProvider.GetChapterAsync(parameters.SecondaryTranslation, parameters.PassageReference.ChapterReference, cancellationToken);
 
                 // If the next chapter reference is invalid, see if this chapter has a valid reference
                 if (!renderedPassage.NextPassage.IsValid && secondChapter.NextChapterReference.IsValid)
@@ -351,14 +352,14 @@ public partial class Renderer : IRenderer
                 {
                     // Get all of the translations
                     List<Translation> translations = new List<Translation>();
-                    await foreach (Translation translation in firstProvider.GetTranslationsAsync())
+                    await foreach (Translation translation in firstProvider.GetTranslationsAsync(cancellationToken))
                     {
                         translations.Add(translation);
                     }
 
                     if (secondProvider.Id != firstProvider.Id)
                     {
-                        await foreach (Translation translation in secondProvider.GetTranslationsAsync())
+                        await foreach (Translation translation in secondProvider.GetTranslationsAsync(cancellationToken))
                         {
                             translations.Add(translation);
                         }
@@ -464,7 +465,7 @@ public partial class Renderer : IRenderer
                     // Use the translation copyright if the chapter copyright is missing
                     if (string.IsNullOrWhiteSpace(firstChapter.Copyright))
                     {
-                        await foreach (Translation translation in firstProvider.GetTranslationsAsync())
+                        await foreach (Translation translation in firstProvider.GetTranslationsAsync(cancellationToken))
                         {
                             if (translation.Code == parameters.PrimaryTranslation)
                             {
@@ -494,7 +495,7 @@ public partial class Renderer : IRenderer
         // If we do not have content, make a suggestion
         if (!hasContent)
         {
-            await foreach (Book book in firstProvider.GetBooksAsync(parameters.PrimaryTranslation, true))
+            await foreach (Book book in firstProvider.GetBooksAsync(parameters.PrimaryTranslation, true, cancellationToken))
             {
                 renderedPassage.Suggestions.NavigateToChapter = book.Chapters.First();
                 break;

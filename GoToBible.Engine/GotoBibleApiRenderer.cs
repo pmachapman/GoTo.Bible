@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 
@@ -59,12 +60,12 @@ public sealed class GotoBibleApiRenderer : IRenderer
     }
 
     /// <inheritdoc/>
-    public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage)
+    public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage, CancellationToken cancellationToken = default)
     {
         string url = $"RenderPassage?renderCompleteHtmlPage={renderCompleteHtmlPage}";
-        HttpResponseMessage response = await this.httpClient.PostAsJsonAsync(url, parameters);
+        HttpResponseMessage response = await this.httpClient.PostAsJsonAsync(url, parameters, cancellationToken);
         return response.IsSuccessStatusCode
-            ? await response.Content.ReadFromJsonAsync<RenderedPassage>() ?? new RenderedPassage()
+            ? await response.Content.ReadFromJsonAsync<RenderedPassage>(cancellationToken: cancellationToken) ?? new RenderedPassage()
             : new RenderedPassage();
     }
 

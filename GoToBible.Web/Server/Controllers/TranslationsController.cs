@@ -7,6 +7,8 @@
 namespace GoToBible.Web.Server.Controllers;
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using GoToBible.Model;
 using GoToBible.Providers;
 using Microsoft.AspNetCore.Mvc;
@@ -34,15 +36,16 @@ public class TranslationsController : ControllerBase
     /// <summary>
     /// GET: <c>/v1/Translations</c>.
     /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The list of available translations.
     /// </returns>
     [HttpGet]
-    public async IAsyncEnumerable<Translation> Get()
+    public async IAsyncEnumerable<Translation> Get([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         foreach (IProvider provider in this.providers)
         {
-            await foreach (Translation translation in provider.GetTranslationsAsync())
+            await foreach (Translation translation in provider.GetTranslationsAsync(cancellationToken))
             {
                 // Clean up any names we are displaying
                 if (ApiProvider.NameSubstitutions.TryGetValue(translation.Name, out string? translationName))

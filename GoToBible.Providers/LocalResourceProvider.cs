@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
 using GoToBible.Model;
@@ -44,14 +46,14 @@ public abstract class LocalResourceProvider : ApiProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         if (this.isValidPath)
         {
             using StreamReader reader = new StreamReader(Path.Combine(this.Options.Directory, "index.csv"));
             using CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
             bool initialiseCache = !this.Translations.Any();
-            await foreach (LocalTranslation translation in csvReader.GetRecordsAsync<LocalTranslation>())
+            await foreach (LocalTranslation translation in csvReader.GetRecordsAsync<LocalTranslation>(cancellationToken))
             {
                 if (translation.Provider == this.Id)
                 {
@@ -91,13 +93,13 @@ public abstract class LocalResourceProvider : ApiProvider
     /// <returns>
     /// The task.
     /// </returns>
-    protected async Task EnsureTranslationsAreCachedAsync()
+    protected async Task EnsureTranslationsAreCachedAsync(CancellationToken cancellationToken = default)
     {
         // Make sure we have the translations cache set up
         if (!this.Translations.Any())
         {
             // This is just so we can have some async code to cancel the error
-            await foreach (Translation? _ in this.GetTranslationsAsync())
+            await foreach (Translation? _ in this.GetTranslationsAsync(cancellationToken))
             {
             }
         }

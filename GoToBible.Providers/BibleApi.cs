@@ -12,7 +12,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
 using Microsoft.Extensions.Caching.Distributed;
@@ -51,19 +53,19 @@ public partial class BibleApi : WebApiProvider
     public override string Name => "Bible.API";
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         string url = $"bibles/{translation}/books";
         string cacheKey = this.GetCacheKey(url);
-        string? json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                json = await response.Content.ReadAsStringAsync();
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions);
+                json = await response.Content.ReadAsStringAsync(cancellationToken);
+                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
             }
             else
             {
@@ -101,15 +103,15 @@ public partial class BibleApi : WebApiProvider
                     // Get the chapters in the book
                     url = $"bibles/{translation}/books/{bookData.id}/chapters";
                     cacheKey = this.GetCacheKey(url);
-                    json = await this.Cache.GetStringAsync(cacheKey);
+                    json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
                     if (string.IsNullOrWhiteSpace(json))
                     {
-                        using HttpResponseMessage response = await this.HttpClient.GetAsync(url);
+                        using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
                         if (response.IsSuccessStatusCode)
                         {
-                            json = await response.Content.ReadAsStringAsync();
-                            await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions);
+                            json = await response.Content.ReadAsStringAsync(cancellationToken);
+                            await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
                         }
                         else
                         {
@@ -161,7 +163,7 @@ public partial class BibleApi : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber)
+    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -190,7 +192,7 @@ public partial class BibleApi : WebApiProvider
         // See if that book is in the translation
         bool bookExists = false;
         string alternateBookName = string.Empty;
-        await foreach (Book translationBook in this.GetBooksAsync(translation, false))
+        await foreach (Book translationBook in this.GetBooksAsync(translation, false, cancellationToken))
         {
             string translationBookName = translationBook.Name.ToLowerInvariant();
             if (translationBookName == bookName)
@@ -229,15 +231,15 @@ public partial class BibleApi : WebApiProvider
         // Load the book
         string url = $"bibles/{translation}/chapters/{bookCode}.{chapterString}?content-type=text&include-titles=false";
         string cacheKey = this.GetCacheKey(url);
-        string? json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                json = await response.Content.ReadAsStringAsync();
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions);
+                json = await response.Content.ReadAsStringAsync(cancellationToken);
+                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
             }
             else
             {
@@ -315,19 +317,19 @@ public partial class BibleApi : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync()
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         const string url = "bibles";
         string cacheKey = this.GetCacheKey(url);
-        string? json = await this.Cache.GetStringAsync(cacheKey);
+        string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                json = await response.Content.ReadAsStringAsync();
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions);
+                json = await response.Content.ReadAsStringAsync(cancellationToken);
+                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
             }
             else
             {
