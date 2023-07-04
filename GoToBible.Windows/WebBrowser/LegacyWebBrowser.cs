@@ -22,8 +22,6 @@ public class LegacyWebBrowser : WebBrowser, IWebBrowser
         get => this.IsWebBrowserContextMenuEnabled;
         set
         {
-            this.IsWebBrowserContextMenuEnabled = value;
-
             // Set keyboard shortcuts and right click
             this.WebBrowserShortcutsEnabled = value;
             this.IsWebBrowserContextMenuEnabled = value;

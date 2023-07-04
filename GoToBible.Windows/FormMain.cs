@@ -184,7 +184,7 @@ public sealed partial class FormMain : Form
 #if DEBUG
         true;
 #else
-            false;
+        false;
 #endif
 
     /// <summary>
@@ -515,7 +515,7 @@ public sealed partial class FormMain : Form
             }
             catch (Exception)
             {
-                if (MessageBox.Show(string.Format(Resources.WebViewNotFound), $@"Cannot Start {Program.Title}", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (MessageBox.Show(Resources.WebViewNotFound, $@"Cannot Start {Program.Title}", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 {
                     // Download WebView2
                     Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
