@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="7.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="7.0.9" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     <PackageReference Include="Pomelo.Extensions.Caching.MySql" Version="2.1.4" />
   </ItemGroup>
