@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="PassageReference.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ public record PassageReference
     ///     i.e. <c>24g,-,25</c>
     /// but not colons, commas, or any other characters.
     /// </remarks>
-    public string[] HighlightedVerses { get; init; } = Array.Empty<string>();
+    public string[] HighlightedVerses { get; init; } = [];
 
     /// <summary>
     /// Gets a value indicating whether this instance is valid.
@@ -59,12 +59,12 @@ public record PassageReference
     public bool IsValid => this.ChapterReference.IsValid;
 
     /// <inheritdoc/>
-    public virtual bool Equals(PassageReference? other)
-        => other is not null
-           && this.ChapterReference == other.ChapterReference
-           && this.Display == other.Display
-           && this.HighlightedVerses.SequenceEqual(other.HighlightedVerses)
-           && this.IsValid == other.IsValid;
+    public virtual bool Equals(PassageReference? other) =>
+        other is not null
+        && this.ChapterReference == other.ChapterReference
+        && this.Display == other.Display
+        && this.HighlightedVerses.SequenceEqual(other.HighlightedVerses)
+        && this.IsValid == other.IsValid;
 
     /// <inheritdoc/>
     public override int GetHashCode()

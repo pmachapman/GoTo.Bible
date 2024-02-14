@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ApiProvider.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -53,7 +53,10 @@ public abstract class ApiProvider : IProvider
     /// <summary>
     /// Name substitutions to help users of the web application.
     /// </summary>
-    public static readonly IReadOnlyDictionary<string, string> NameSubstitutions = new Dictionary<string, string>
+    public static readonly IReadOnlyDictionary<string, string> NameSubstitutions = new Dictionary<
+        string,
+        string
+    >
     {
         { "The Holy Bible, American Standard Version", "American Standard Version" },
         { "English Standard Version®", "English Standard Version (2007)" },
@@ -72,13 +75,24 @@ public abstract class ApiProvider : IProvider
     public abstract void Dispose();
 
     /// <inheritdoc/>
-    public abstract IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, CancellationToken cancellationToken = default);
+    public abstract IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        CancellationToken cancellationToken = default
+    );
 
     /// <inheritdoc/>
-    public abstract Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default);
+    public abstract Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    );
 
     /// <inheritdoc/>
-    public abstract IAsyncEnumerable<Translation> GetTranslationsAsync(CancellationToken cancellationToken = default);
+    public abstract IAsyncEnumerable<Translation> GetTranslationsAsync(
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
     /// Gets the next and previous chapters for the specified chapter.
@@ -86,13 +100,18 @@ public abstract class ApiProvider : IProvider
     /// <param name="chapter">The chapter to get the previous and next chapters for.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    protected async Task GetPreviousAndNextChaptersAsync(Chapter chapter, CancellationToken cancellationToken = default)
+    protected async Task GetPreviousAndNextChaptersAsync(
+        Chapter chapter,
+        CancellationToken cancellationToken = default
+    )
     {
         // Get the next/previous chapters
         bool getNextChapter = false;
         string previousChapter = string.Empty;
         string thisChapter = $"{chapter.Book} {chapter.ChapterNumber}";
-        await foreach (string nextChapter in this.GetChaptersAsync(chapter.Translation, cancellationToken))
+        await foreach (
+            string nextChapter in this.GetChaptersAsync(chapter.Translation, cancellationToken)
+        )
         {
             if (getNextChapter)
             {
@@ -120,7 +139,10 @@ public abstract class ApiProvider : IProvider
     /// <returns>
     /// The list of chapters.
     /// </returns>
-    private async IAsyncEnumerable<string> GetChaptersAsync(string translation, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    private async IAsyncEnumerable<string> GetChaptersAsync(
+        string translation,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         await foreach (Book book in this.GetBooksAsync(translation, true, cancellationToken))
         {

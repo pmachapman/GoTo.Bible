@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="LocalResourceProvider.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -11,7 +11,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,18 +41,28 @@ public abstract class LocalResourceProvider : ApiProvider
         this.Options = options.Value;
 
         // Check the path
-        this.isValidPath = Directory.Exists(this.Options.Directory) && File.Exists(Path.Combine(this.Options.Directory, "index.csv"));
+        this.isValidPath =
+            Directory.Exists(this.Options.Directory)
+            && File.Exists(Path.Combine(this.Options.Directory, "index.csv"));
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         if (this.isValidPath)
         {
-            using StreamReader reader = new StreamReader(Path.Combine(this.Options.Directory, "index.csv"));
+            using StreamReader reader = new StreamReader(
+                Path.Combine(this.Options.Directory, "index.csv")
+            );
             using CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
-            bool initialiseCache = !this.Translations.Any();
-            await foreach (LocalTranslation translation in csvReader.GetRecordsAsync<LocalTranslation>(cancellationToken))
+            bool initialiseCache = this.Translations.Count == 0;
+            await foreach (
+                LocalTranslation translation in csvReader.GetRecordsAsync<LocalTranslation>(
+                    cancellationToken
+                )
+            )
             {
                 if (translation.Provider == this.Id)
                 {
@@ -73,7 +82,8 @@ public abstract class LocalResourceProvider : ApiProvider
     /// Gets the Scripture cache.
     /// </summary>
     /// <value>The Scripure cache.</value>
-    protected ConcurrentDictionary<string, Chapter> Cache { get; } = new ConcurrentDictionary<string, Chapter>();
+    protected ConcurrentDictionary<string, Chapter> Cache { get; } =
+        new ConcurrentDictionary<string, Chapter>();
 
     /// <summary>
     /// Gets the local resource options.
@@ -85,7 +95,7 @@ public abstract class LocalResourceProvider : ApiProvider
     /// Gets the translations.
     /// </summary>
     /// <value>The translations.</value>
-    protected List<LocalTranslation> Translations { get; } = new List<LocalTranslation>();
+    protected List<LocalTranslation> Translations { get; } = [];
 
     /// <summary>
     /// Ensures the translations are cached asynchronously.
@@ -93,15 +103,15 @@ public abstract class LocalResourceProvider : ApiProvider
     /// <returns>
     /// The task.
     /// </returns>
-    protected async Task EnsureTranslationsAreCachedAsync(CancellationToken cancellationToken = default)
+    protected async Task EnsureTranslationsAreCachedAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         // Make sure we have the translations cache set up
-        if (!this.Translations.Any())
+        if (this.Translations.Count == 0)
         {
             // This is just so we can have some async code to cancel the error
-            await foreach (Translation? _ in this.GetTranslationsAsync(cancellationToken))
-            {
-            }
+            await foreach (Translation? _ in this.GetTranslationsAsync(cancellationToken)) { }
         }
     }
 }

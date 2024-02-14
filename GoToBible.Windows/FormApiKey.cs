@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FormApiKey.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -9,12 +9,14 @@ namespace GoToBible.Windows;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 
 /// <summary>
 /// The Enter API Key Form.
 /// </summary>
 /// <seealso cref="Form" />
+[SupportedOSPlatform("windows")]
 public partial class FormApiKey : Form
 {
     /// <summary>
@@ -99,8 +101,10 @@ public partial class FormApiKey : Form
             this.LabelEnterKey.Text = this.Provider.Length switch
             {
                 > 15 => $@"Enter your {this.Provider} key below to use your resources.",
-                > 10 => $@"Enter your {this.Provider} key below to use your resources with GoToBible.",
-                _ => $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.",
+                > 10
+                    => $@"Enter your {this.Provider} key below to use your resources with GoToBible.",
+                _
+                    => $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.",
             };
 
             this.LinkLabelSignup.Text = @"&Sign up for an API key";
@@ -114,10 +118,12 @@ public partial class FormApiKey : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="LinkLabelLinkClickedEventArgs"/> instance containing the event data.</param>
-    private void LinkLabelSignup_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        => Process.Start(new ProcessStartInfo(this.SignUpUrl.ToString())
-        {
-            UseShellExecute = true,
-            Verb = "open",
-        });
+    private void LinkLabelSignup_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+        Process.Start(
+            new ProcessStartInfo(this.SignUpUrl.ToString())
+            {
+                UseShellExecute = true,
+                Verb = "open",
+            }
+        );
 }

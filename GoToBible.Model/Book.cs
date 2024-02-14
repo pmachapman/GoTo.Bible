@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Book.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -19,7 +19,8 @@ public class Book
     /// <value>
     /// The chapters.
     /// </value>
-    public IReadOnlyCollection<ChapterReference> Chapters { get; init; } = new List<ChapterReference>();
+    public IReadOnlyCollection<ChapterReference> Chapters { get; init; } =
+        new List<ChapterReference>();
 
     /// <summary>
     /// Gets or sets the name of the book.

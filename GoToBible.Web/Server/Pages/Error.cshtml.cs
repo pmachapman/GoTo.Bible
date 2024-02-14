@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Error.cshtml.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -17,18 +17,12 @@ using Microsoft.Extensions.Logging;
 /// <seealso cref="PageModel" />
 [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 [IgnoreAntiforgeryToken]
-public class ErrorModel : PageModel
+public class ErrorModel(ILogger<ErrorModel> logger) : PageModel
 {
     /// <summary>
     /// The logger.
     /// </summary>
-    private readonly ILogger<ErrorModel> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ErrorModel"/> class.
-    /// </summary>
-    /// <param name="logger">The logger.</param>
-    public ErrorModel(ILogger<ErrorModel> logger) => this.logger = logger;
+    private readonly ILogger<ErrorModel> logger = logger;
 
     /// <summary>
     /// Gets or sets the request identifier.

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="EmptyWebBrowser.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -22,14 +22,10 @@ public class EmptyWebBrowser : IWebBrowser
     public void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc/>
-    public void Initialise(string name, int tabIndex)
-    {
-    }
+    public void Initialise(string name, int tabIndex) { }
 
     /// <inheritdoc/>
-    public void NavigateToString(string htmlContent)
-    {
-    }
+    public void NavigateToString(string htmlContent) { }
 
     /// <inheritdoc/>
     public Task SetInnerHtmlAsync(string htmlContent) => Task.CompletedTask;

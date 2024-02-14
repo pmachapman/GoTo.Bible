@@ -1,11 +1,12 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="EdgeWebBrowser.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace GoToBible.Windows.WebBrowser;
 
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Web.WebView2.WinForms;
@@ -15,6 +16,7 @@ using Microsoft.Web.WebView2.WinForms;
 /// </summary>
 /// <seealso cref="Microsoft.Web.WebView2.WinForms.WebView2" />
 /// <seealso cref="GoToBible.Windows.WebBrowser.IWebBrowser" />
+[SupportedOSPlatform("windows")]
 public class EdgeWebBrowser : WebView2, IWebBrowser
 {
     /// <inheritdoc />
@@ -45,6 +47,8 @@ public class EdgeWebBrowser : WebView2, IWebBrowser
     }
 
     /// <inheritdoc />
-    public async Task SetInnerHtmlAsync(string htmlContent)
-        => await this.ExecuteScriptAsync($"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(htmlContent)}\";");
+    public async Task SetInnerHtmlAsync(string htmlContent) =>
+        await this.ExecuteScriptAsync(
+            $"document.body.innerHTML=\"{HttpUtility.JavaScriptStringEncode(htmlContent)}\";"
+        );
 }

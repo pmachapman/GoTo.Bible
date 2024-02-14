@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SourceCustomList.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -27,7 +27,7 @@ public class SourceCustomList : IEnumString
     /// <value>
     /// The string list.
     /// </value>
-    public string[] StringList { get; init; } = Array.Empty<string>();
+    public string[] StringList { get; init; } = [];
 
     /// <inheritdoc/>
     public int Next(int celt, string[] rgelt, nint pceltFetched)

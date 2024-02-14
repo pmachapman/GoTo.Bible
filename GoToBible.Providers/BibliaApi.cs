@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="BibliaApi.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -28,7 +28,8 @@ public class BibliaApi : WebApiProvider
     /// <summary>
     /// The copyright message.
     /// </summary>
-    private const string Copyright = "This site uses the <a href=\"http://biblia.com/\" target=\"_blank\">Biblia</a> web services from <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>.";
+    private const string Copyright =
+        "This site uses the <a href=\"http://biblia.com/\" target=\"_blank\">Biblia</a> web services from <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>.";
 
     /// <summary>
     /// The canon.
@@ -59,7 +60,11 @@ public class BibliaApi : WebApiProvider
     public override string Name => "Biblia API";
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         string url = $"contents/{translation}.txt?key={this.options.ApiKey}";
         string cacheKey = this.GetCacheKey(url);
@@ -67,11 +72,19 @@ public class BibliaApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    json,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -80,23 +93,25 @@ public class BibliaApi : WebApiProvider
             }
         }
 
-        var chapters = DeserializeAnonymousType(json, new
-        {
-            books = EmptyListOf(new
+        var chapters = DeserializeAnonymousType(
+            json,
+            new
             {
-                passage = string.Empty,
-                chapters = EmptyListOf(new
-                {
-                    passage = string.Empty,
-                }),
-            }),
-        });
+                books = EmptyListOf(
+                    new
+                    {
+                        passage = string.Empty,
+                        chapters = EmptyListOf(new { passage = string.Empty, }),
+                    }
+                ),
+            }
+        );
 
-        if (chapters?.books.Any() ?? false)
+        if (chapters is not null && chapters.books.Count > 0)
         {
             foreach (var book in chapters.books)
             {
-                List<ChapterReference> chapterReferences = new List<ChapterReference>();
+                List<ChapterReference> chapterReferences = [];
                 if (includeChapters)
                 {
                     foreach (string bookAndChapter in book.chapters.Select(c => c.passage))
@@ -122,7 +137,12 @@ public class BibliaApi : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
+    public override async Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    )
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -135,20 +155,30 @@ public class BibliaApi : WebApiProvider
         };
 
         // If there is only one chapter, do not use a chapter number
-        string chapterPart = Canon.GetNumberOfChapters(book) == 1 ? string.Empty : $"+{chapterNumber}";
+        string chapterPart =
+            Canon.GetNumberOfChapters(book) == 1 ? string.Empty : $"+{chapterNumber}";
 
         // Load the book
-        string url = $"content/{translation}.txt?key={this.options.ApiKey}&passage={book}{chapterPart}&eachVerse=[VerseNum]++[VerseText]\\n";
+        string url =
+            $"content/{translation}.txt?key={this.options.ApiKey}&passage={book}{chapterPart}&eachVerse=[VerseNum]++[VerseText]\\n";
         string cacheKey = this.GetCacheKey(url);
         string? output = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(output))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 output = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, output, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    output,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -160,10 +190,19 @@ public class BibliaApi : WebApiProvider
         if (!string.IsNullOrWhiteSpace(output))
         {
             // Get the text
-            chapter.Text = output.NormaliseLineEndings().Replace("\n", string.Empty).Replace("\\n", Environment.NewLine, StringComparison.OrdinalIgnoreCase).Trim();
+            chapter.Text = output
+                .NormaliseLineEndings()
+                .Replace("\n", string.Empty)
+                .Replace("\\n", Environment.NewLine, StringComparison.OrdinalIgnoreCase)
+                .Trim();
 
             // Clean up Stephanus' Textus Receptus
-            if (chapter.Text.StartsWith($"1  {Environment.NewLine}1", StringComparison.OrdinalIgnoreCase))
+            if (
+                chapter.Text.StartsWith(
+                    $"1  {Environment.NewLine}1",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
             {
                 chapter.Text = chapter.Text[5..];
             }
@@ -180,7 +219,9 @@ public class BibliaApi : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         string url = $"find?key={this.options.ApiKey}";
         string cacheKey = this.GetCacheKey(url);
@@ -188,11 +229,19 @@ public class BibliaApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    json,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -201,18 +250,23 @@ public class BibliaApi : WebApiProvider
             }
         }
 
-        var translations = DeserializeAnonymousType(json, new
-        {
-            bibles = EmptyListOf(new
+        var translations = DeserializeAnonymousType(
+            json,
+            new
             {
-                bible = string.Empty,
-                title = string.Empty,
-                publicationDate = string.Empty,
-                languages = new List<string>(),
-                copyright = string.Empty,
-                extendedCopyright = string.Empty,
-            }),
-        });
+                bibles = EmptyListOf(
+                    new
+                    {
+                        bible = string.Empty,
+                        title = string.Empty,
+                        publicationDate = string.Empty,
+                        languages = new List<string>(),
+                        copyright = string.Empty,
+                        extendedCopyright = string.Empty,
+                    }
+                ),
+            }
+        );
         if (translations is not null)
         {
             foreach (var translation in translations.bibles)
@@ -223,7 +277,7 @@ public class BibliaApi : WebApiProvider
                 }
 
                 string? language = null;
-                if (translation.languages.Any())
+                if (translation.languages.Count > 0)
                 {
                     language = new CultureInfo(translation.languages.First()).DisplayName;
                 }

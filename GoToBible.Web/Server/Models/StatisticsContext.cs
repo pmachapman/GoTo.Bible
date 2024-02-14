@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="StatisticsContext.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -11,17 +11,8 @@ using Microsoft.EntityFrameworkCore;
 /// <summary>
 /// The statistics data context.
 /// </summary>
-public class StatisticsContext : DbContext
+public class StatisticsContext(DbContextOptions<StatisticsContext> options) : DbContext(options)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StatisticsContext"/> class.
-    /// </summary>
-    /// <param name="options">The options.</param>
-    public StatisticsContext(DbContextOptions<StatisticsContext> options)
-        : base(options)
-    {
-    }
-
     /// <summary>
     /// Gets or sets the statistics.
     /// </summary>

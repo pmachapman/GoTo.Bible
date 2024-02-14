@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="LogosProvider.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -34,7 +34,10 @@ public class LogosProvider : IProvider
     /// <remarks>
     /// See https://wiki.logos.com/COM_API_Bible_Book_Abbreviations for this list.
     /// </remarks>
-    private static readonly IReadOnlyDictionary<string, string> BookMapping = new Dictionary<string, string>
+    private static readonly IReadOnlyDictionary<string, string> BookMapping = new Dictionary<
+        string,
+        string
+    >
     {
         ["Ge"] = "Genesis",
         ["Ex"] = "Exodus",
@@ -135,7 +138,7 @@ public class LogosProvider : IProvider
     /// The books with only one chapter.
     /// </summary>
     private static readonly string[] OneChapterBooks =
-    {
+    [
         "Obadiah",
         "Letter of Jeremiah",
         "Song of Three Youths",
@@ -148,7 +151,7 @@ public class LogosProvider : IProvider
         "2 John",
         "3 John",
         "Jude",
-    };
+    ];
 
     /// <summary>
     /// This translation.
@@ -181,16 +184,21 @@ public class LogosProvider : IProvider
         }
         catch (Exception ex)
         {
-            if (ex is not (ArgumentException
-                or ArgumentNullException
-                or COMException
-                or InvalidComObjectException
-                or MemberAccessException
-                or MethodAccessException
-                or MissingMethodException
-                or NotSupportedException
-                or TargetInvocationException
-                or TypeLoadException))
+            if (
+                ex
+                is not (
+                    ArgumentException
+                    or ArgumentNullException
+                    or COMException
+                    or InvalidComObjectException
+                    or MemberAccessException
+                    or MethodAccessException
+                    or MissingMethodException
+                    or NotSupportedException
+                    or TargetInvocationException
+                    or TypeLoadException
+                )
+            )
             {
                 throw;
             }
@@ -207,14 +215,23 @@ public class LogosProvider : IProvider
     public void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         await Task.CompletedTask;
         yield break;
     }
 
     /// <inheritdoc/>
-    public Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
+    public Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    )
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -234,8 +251,12 @@ public class LogosProvider : IProvider
             dynamic? request = this.launcher.Application.CopyBibleVerses.CreateRequest();
             if (request is not null)
             {
-                string reference = OneChapterBooks.Contains(book) ? book : $"{book} {chapterNumber}";
-                request.Reference = this.launcher.Application.DataTypes.GetDataType("bible").ParseReference(reference);
+                string reference = OneChapterBooks.Contains(book)
+                    ? book
+                    : $"{book} {chapterNumber}";
+                request.Reference = this
+                    .launcher.Application.DataTypes.GetDataType("bible")
+                    .ParseReference(reference);
 
                 // Get the text and fix nbsp (Alt+0160) characters
                 string text = this.launcher.Application.CopyBibleVerses.GetText(request);
@@ -244,12 +265,19 @@ public class LogosProvider : IProvider
                 // Sometimes we get extra verses at the start or end. These are bugs in the Logos COM API
                 StringBuilder sb = new StringBuilder();
                 bool addLine = false;
-                foreach (string line in text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
+                foreach (
+                    string line in text.Split(
+                        Environment.NewLine,
+                        StringSplitOptions.RemoveEmptyEntries
+                    )
+                )
                 {
                     addLine = addLine switch
                     {
-                        false when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase) => true,
-                        true when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase) => false,
+                        false when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase)
+                            => true,
+                        true when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase)
+                            => false,
                         _ => addLine,
                     };
 
@@ -266,23 +294,39 @@ public class LogosProvider : IProvider
                 if (referenceDetails?.NextChapter?.Details is not null)
                 {
                     // This is usually an integer (e.g. 1), but could be a letter (e.g. A) or a number-letter (e.g. 1A) or a special value like Title
-                    if (!int.TryParse(referenceDetails.NextChapter.Details.Chapter, out int nextChapter))
+                    if (
+                        !int.TryParse(
+                            referenceDetails.NextChapter.Details.Chapter,
+                            out int nextChapter
+                        )
+                    )
                     {
                         nextChapter = 0;
                     }
 
-                    chapter.NextChapterReference = new ChapterReference(BookMapping[referenceDetails.NextChapter.Details.Book], nextChapter);
+                    chapter.NextChapterReference = new ChapterReference(
+                        BookMapping[referenceDetails.NextChapter.Details.Book],
+                        nextChapter
+                    );
                 }
 
                 if (referenceDetails?.PreviousChapter?.Details is not null)
                 {
                     // This is usually an integer (e.g. 1), but could be a letter (e.g. A) or a number-letter (e.g. 1A) or a special value like Title
-                    if (!int.TryParse(referenceDetails.PreviousChapter.Details.Chapter, out int previousChapter))
+                    if (
+                        !int.TryParse(
+                            referenceDetails.PreviousChapter.Details.Chapter,
+                            out int previousChapter
+                        )
+                    )
                     {
                         previousChapter = 0;
                     }
 
-                    chapter.PreviousChapterReference = new ChapterReference(BookMapping[referenceDetails.PreviousChapter.Details.Book], previousChapter);
+                    chapter.PreviousChapterReference = new ChapterReference(
+                        BookMapping[referenceDetails.PreviousChapter.Details.Book],
+                        previousChapter
+                    );
                 }
             }
         }
@@ -291,7 +335,9 @@ public class LogosProvider : IProvider
     }
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Translation> GetTranslationsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         if (this.launcher?.Application is not null)
         {

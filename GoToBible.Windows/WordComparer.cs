@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="WordComparer.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -14,17 +14,19 @@ using GoToBible.Model;
 /// <summary>
 /// A word/phrase string comparer.
 /// </summary>
-public class WordComparer : IComparer<string>
+public class WordComparer(RenderingParameters parameters) : IComparer<string>
 {
-    private readonly RenderingParameters parameters;
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="WordComparer" /> class.
+    /// The rendering parameters.
     /// </summary>
-    /// <param name="parameters">The rendering parameters.</param>
-    public WordComparer(RenderingParameters parameters) => this.parameters = parameters;
+    private readonly RenderingParameters parameters = parameters;
 
     /// <inheritdoc />
-    public int Compare(string? x, string? y)
-        => string.Compare(x?.Clean(), y?.Clean(), CultureInfo.InvariantCulture, this.parameters.AsCompareOptions());
+    public int Compare(string? x, string? y) =>
+        string.Compare(
+            x?.Clean(),
+            y?.Clean(),
+            CultureInfo.InvariantCulture,
+            this.parameters.AsCompareOptions()
+        );
 }

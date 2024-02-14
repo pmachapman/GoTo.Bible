@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="EsvBible.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -28,13 +28,14 @@ public partial class EsvBible : WebApiProvider
     /// <summary>
     /// The copyright message.
     /// </summary>
-    private const string Copyright = "Scripture quotations are from the ESV&reg; Bible (The Holy Bible, English Standard Version&reg;), copyright &copy; 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. You may not copy or download more than 500 consecutive verses of the ESV Bible or more than one half of any book of the ESV Bible.";
+    private const string Copyright =
+        "Scripture quotations are from the ESV&reg; Bible (The Holy Bible, English Standard Version&reg;), copyright &copy; 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. You may not copy or download more than 500 consecutive verses of the ESV Bible or more than one half of any book of the ESV Bible.";
 
     /// <summary>
     /// The books of the bible.
     /// </summary>
     private static readonly string[] Books =
-    {
+    [
         "Genesis",
         "Exodus",
         "Leviticus",
@@ -101,7 +102,7 @@ public partial class EsvBible : WebApiProvider
         "3 John",
         "Jude",
         "Revelation",
-    };
+    ];
 
     /// <summary>
     /// The canon.
@@ -134,7 +135,10 @@ public partial class EsvBible : WebApiProvider
     public EsvBible(IOptions<EsvBibleOptions> options, IDistributedCache cache)
         : base(cache)
     {
-        this.HttpClient.BaseAddress = new Uri("https://api.esv.org/v3/passage/text/", UriKind.Absolute);
+        this.HttpClient.BaseAddress = new Uri(
+            "https://api.esv.org/v3/passage/text/",
+            UriKind.Absolute
+        );
         this.options = options.Value;
         if (!string.IsNullOrWhiteSpace(this.options.ApiKey))
         {
@@ -155,7 +159,11 @@ public partial class EsvBible : WebApiProvider
     public override string Name => "ESV API";
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         foreach (Book book in Canon.GetBooks(includeChapters))
         {
@@ -164,7 +172,12 @@ public partial class EsvBible : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
+    public override async Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    )
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -178,20 +191,30 @@ public partial class EsvBible : WebApiProvider
         };
 
         // If there is only one chapter, do not use a chapter number
-        string chapterPart = Canon.GetNumberOfChapters(book) == 1 ? string.Empty : $"+{chapterNumber}";
+        string chapterPart =
+            Canon.GetNumberOfChapters(book) == 1 ? string.Empty : $"+{chapterNumber}";
 
         // Load the book
-        string url = $"?q={book}{chapterPart}&include-passage-references=false&include-footnotes=false&include-headings=false&include-short-copyright=false&indent-poetry=false";
+        string url =
+            $"?q={book}{chapterPart}&include-passage-references=false&include-footnotes=false&include-headings=false&include-short-copyright=false&indent-poetry=false";
         string cacheKey = this.GetCacheKey(url);
         string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    json,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -200,22 +223,26 @@ public partial class EsvBible : WebApiProvider
             }
         }
 
-        var data = DeserializeAnonymousType(json, new
-        {
-            passage_meta = EmptyListOf(new
+        var data = DeserializeAnonymousType(
+            json,
+            new
             {
-                prev_chapter = default(List<int>?),
-                next_chapter = default(List<int>?),
-            }),
-            passages = new List<string>(),
-        });
-        if (data is not null && data.passages.Any())
+                passage_meta = EmptyListOf(
+                    new { prev_chapter = default(List<int>?), next_chapter = default(List<int>?), }
+                ),
+                passages = new List<string>(),
+            }
+        );
+        if (data is not null && data.passages.Count > 0)
         {
             // Get the text
             string output = data.passages.First();
 
             // Clean up the Song of Solomon
-            output = output.Replace("\n\nHe\n\n", "\n").Replace("\n\nShe\n\n", "\n").Replace("\n\nOthers\n\n", "\n");
+            output = output
+                .Replace("\n\nHe\n\n", "\n")
+                .Replace("\n\nShe\n\n", "\n")
+                .Replace("\n\nOthers\n\n", "\n");
 
             // Final clean up
             output = output.Trim().Replace("\n", " ").Replace("  ", " ");
@@ -231,16 +258,20 @@ public partial class EsvBible : WebApiProvider
             chapter.Text = output;
 
             // Get the previous and next chapter references
-            if (data.passage_meta.Any())
+            if (data.passage_meta.Count > 0)
             {
-                if (data.passage_meta.First().prev_chapter?.Any() ?? false)
+                if ((data.passage_meta.First().prev_chapter?.Count ?? 0) > 0)
                 {
-                    chapter.PreviousChapterReference = GetChapterReference(data.passage_meta.First().prev_chapter?.First() ?? 0);
+                    chapter.PreviousChapterReference = GetChapterReference(
+                        data.passage_meta.First().prev_chapter?.First() ?? 0
+                    );
                 }
 
-                if (data.passage_meta.First().next_chapter?.Any() ?? false)
+                if ((data.passage_meta.First().next_chapter?.Count ?? 0) > 0)
                 {
-                    chapter.NextChapterReference = GetChapterReference(data.passage_meta.First().next_chapter?.First() ?? 0);
+                    chapter.NextChapterReference = GetChapterReference(
+                        data.passage_meta.First().next_chapter?.First() ?? 0
+                    );
                 }
             }
         }
@@ -250,7 +281,9 @@ public partial class EsvBible : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         if (!string.IsNullOrWhiteSpace(this.options.ApiKey))
         {

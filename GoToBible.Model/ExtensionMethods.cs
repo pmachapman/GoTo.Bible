@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 /// </summary>
 public static partial class ExtensionMethods
 {
+#pragma warning disable format
     /// <summary>
     /// The lengths of each chapter in each book.
     /// </summary>
@@ -116,92 +117,93 @@ public static partial class ExtensionMethods
     /// </summary>
     private static readonly IReadOnlyDictionary<string, string[]> BookNameMap = new Dictionary<string, string[]>
     {
-        ["genesis"] = new[] { "ge", "gn", "gen", "genesis" },
-        ["exodus"] = new[] { "ex", "exo", "exd", "exod", "exodus" },
-        ["leviticus"] = new[] { "leviticus", "levi", "le", "lv", "lev" },
-        ["numbers"] = new[] { "nb", "num", "nm", "numbers", "nu", "numb", "number" },
-        ["deuteronomy"] = new[] { "de", "deut", "dueteronomy", "du", "deu", "dt", "deuteronomy" },
-        ["joshua"] = new[] { "josh", "js", "jos", "joshua", "jsh" },
-        ["judges"] = new[] { "juges", "jdg", "jg", "jgs", "jdgs", "judgs", "judg", "judges" },
-        ["ruth"] = new[] { "rt", "rth", "ru", "ruth", "rh" },
-        ["1 samuel"] = new[] { "1saml", "firstsam", "isamuel", "1samuel", "ism", "1sm", "firsts", "isam", "sa", "1stsam", "1stsamuel", "firstsamuel", "fstsam", "fstsaml", "firstsm", "frstsam", "1sa", "1stsm", "sam", "1sam", "1stsaml", "frstsa", "saml", "frstsamuel", "firstsa", "1sts", "1s", "1stsa", "firstsaml", "samuel", "isaml", "fstsa", "frstsm", "fsts", "frstsaml", "fstsm", "frsts", "sm", "fstsamuel" },
-        ["2 samuel"] = new[] { "scsamuel", "secs", "secsam", "iis", "scndsam", "secondsm", "secondsaml", "seconds", "2ndsaml", "2nds", "2samuel", "sesm", "scndsamuel", "2ndsamuel", "iism", "secsm", "secsa", "2sm", "scsam", "iisam", "scsaml", "scndsa", "scs", "2ndsam", "secondsam", "iisaml", "2ndsm", "2saml", "scnds", "2sam", "secsamuel", "secsaml", "scndsaml", "2sa", "sesaml", "sesa", "secondsamuel", "scsm", "iisa", "scsa", "ses", "iisamuel", "sesamuel", "2ndsa", "2s", "scndsm", "sesam", "secondsa" },
-        ["1 kings"] = new[] { "fstking", "1stks", "kg", "1stking", "frstk", "kgs", "1kgs", "frstkgs", "1stkings", "fstkg", "firstkn", "1kings", "fstk", "1stkgs", "1kg", "1stkn", "iki", "firstkgs", "1king", "frstkings", "iking", "frstks", "ikings", "1ki", "king", "kn", "frstkg", "firstk", "kings", "ikgs", "1k", "fstki", "1stkg", "fstkn", "ki", "ikn", "firstks", "k", "1stki", "fstkings", "1kn", "firstkg", "frstki", "firstki", "fstkgs", "frstkn", "fstks", "1ks", "firstking", "firstkings", "ikg", "iks", "ik", "ks", "1stk", "frstking" },
-        ["2 kings"] = new[] { "iikg", "iikn", "seks", "scndkings", "2ks", "scndki", "secki", "scndk", "seki", "secondks", "scndkg", "secondki", "2ndk", "sckgs", "secondking", "seckings", "scks", "scking", "iiki", "2ki", "seckg", "2ndkg", "secks", "sek", "2ndkings", "iikings", "2kg", "seck", "secondkg", "secondk", "scndkn", "scndks", "iiking", "2ndkgs", "2ndking", "secondkgs", "iik", "sekgs", "secondkings", "sekg", "sckings", "secking", "iiks", "2kings", "secondkn", "sekings", "scndking", "seking", "scki", "2ndks", "2kgs", "sckg", "2king", "iikgs", "sekn", "sckn", "2kn", "2k", "seckgs", "scndkgs", "2ndki", "seckn", "2ndkn", "sck" },
-        ["1 chronicles"] = new[] { "firstch", "ichrs", "frstchronicles", "firstchro", "chro", "firstchronicle", "1chr", "firstchron", "1chronicl", "fstchs", "1chro", "fstchronic", "frstchro", "1chronicles", "1ch", "fstchrs", "ichron", "frstchronicle", "ichronicl", "1stchronicle", "firstchrs", "fstchronicl", "1stchro", "1stchroni", "1stchr", "ich", "1stchs", "1chronicle", "ichronicle", "ichro", "fstchr", "chr", "firstchr", "fstchronicle", "chronicl", "frstchronic", "chron", "1chs", "firstchroni", "1stchronicles", "fstchron", "fstchronicles", "ichronic", "firstchronicles", "1chronic", "frstchron", "firstchronicl", "1stchrs", "chrs", "ichroni", "fstchroni", "chronic", "frstchrs", "firstchs", "1stchronic", "frstchr", "chs", "fstch", "frstch", "1stchron", "fstchro", "ichr", "firstchronic", "frstchs", "1chroni", "frstchroni", "1stch", "frstchronicl", "1chrs", "ichronicles", "chronicle", "1stchronicl", "1chron", "chronicles", "chroni", "ichs" },
-        ["2 chronicles"] = new[] { "iich", "scchronicles", "scndchronicl", "iichronicl", "2chro", "2chronicles", "secchs", "iichrs", "sechr", "2chronicle", "iichro", "sechron", "scndchro", "2chr", "secondchron", "sech", "sechronicle", "scchronic", "secch", "secondchronicle", "scchs", "scchronicl", "scndchroni", "scndchron", "2chron", "secchr", "2chs", "2ndchron", "scchrs", "scndchr", "secchronic", "secchron", "scndchrs", "sechronic", "2ndchronicl", "sechrs", "sechronicles", "scchronicle", "secondchro", "scndchronic", "sechro", "secondch", "secchronicl", "2ndchronic", "2ndchronicle", "scndchronicle", "2ndchronicles", "secondchronicl", "sechronicl", "2chronicl", "scchr", "secondchrs", "iichron", "scchroni", "2ndchro", "secondchs", "iichronic", "scchron", "sechs", "iichr", "scch", "2chronic", "secchronicle", "secchronicles", "secondchr", "iichronicles", "2chrs", "scndch", "secondchroni", "secondchronicles", "2ndch", "secchroni", "secchro", "2ch", "2ndchr", "iichs", "2chroni", "scchro", "iichroni", "secondchronic", "secchrs", "scndchs", "2ndchs", "2ndchroni", "scndchronicles", "iichronicle", "sechroni", "2ndchrs" },
-        ["ezra"] = new[] { "ezra", "ezr", "1ezra", "1ezr" },
-        ["nehemiah"] = new[] { "ne", "nehemiah", "neh", "2ezra", "2ezr" },
-        ["esther"] = new[] { "esth", "est", "es", "esther" },
-        ["job"] = new[] { "job", "jb" },
-        ["psalm"] = new[] { "psalms", "psm", "psalm", "pslm", "pss", "ps", "psa" },
-        ["proverbs"] = new[] { "proverbs", "proverb", "pro", "pr", "prv", "prov", "prvbs" },
-        ["ecclesiastes"] = new[] { "ecclesiaste", "ecll", "q", "ecl", "eccl", "qoh", "ecclesiastes", "eclesiastes", "ecc", "ec", "eccles", "qoheleth", "qo" },
-        ["song of solomon"] = new[] { "song of solomon", "songofsolomon", "song of sol", "songofsol", "the song of solomon", "thesongofsolomon", "the song of sol", "thesongofsol", "ss", "canticle of canticles", "conticleofcanticles", "canticles", "song of songs", "songofsongs", "song of", "songof", "solomon", "song", "sng", "sos", "so", "sg" },
-        ["isaiah"] = new[] { "isah", "isai", "isaiah", "isa" },
-        ["jeremiah"] = new[] { "je", "jer", "jere", "jr", "jeremaih", "jeremiah" },
-        ["lamentations"] = new[] { "lamentations", "la", "lam", "lamentation", "lm" },
-        ["ezekiel"] = new[] { "ezk", "ezekiel", "ez", "ezek", "eze" },
-        ["daniel"] = new[] { "dn", "dan", "da", "daniel" },
-        ["hosea"] = new[] { "hos", "hs", "ho", "hosea" },
-        ["joel"] = new[] { "joe", "joel", "jo", "jl" },
-        ["amos"] = new[] { "am", "ams", "amos", "amo" },
-        ["obadiah"] = new[] { "obadaiah", "ob", "obad", "obadiah", "obd", "oba", "obadaih" },
-        ["jonah"] = new[] { "jonah", "jnh", "jon" },
-        ["micah"] = new[] { "mica", "mic", "mi", "micah" },
-        ["nahum"] = new[] { "nah", "na", "nahum" },
-        ["habakkuk"] = new[] { "hbk", "habbakkuk", "hab", "habakuk", "habbakuk", "hk", "habakkuk" },
-        ["zephaniah"] = new[] { "zp", "zep", "zephaniah", "zeph" },
-        ["haggai"] = new[] { "hagai", "haggai", "haggia", "hagg", "hag", "hg" },
-        ["zechariah"] = new[] { "zc", "zachariah", "zechariah", "zecharaiah", "zech", "zec" },
-        ["malachi"] = new[] { "mal", "ml", "malachi", "ma" },
-        ["matthew"] = new[] { "matthew", "matt", "mt", "mat", "mathew" },
-        ["mark"] = new[] { "mk", "mar", "mark", "mr", "mrk" },
-        ["luke"] = new[] { "lk", "lu", "luke", "luk" },
-        ["john"] = new[] { "jn", "joh", "john", "j", "jhn" },
-        ["acts"] = new[] { "act", "ac", "acts" },
-        ["romans"] = new[] { "rm", "roman", "romans", "ro", "rom" },
-        ["1 corinthians"] = new[] { "1stcorinthian", "frstcorinth", "icortn", "frstcortn", "fstcori", "fstcorinth", "frstcorinthians", "icorin", "frstco", "corinthi", "icorinthians", "icorinthian", "frstcorinthi", "1stcori", "corin", "frstcorinthian", "firstcorinthian", "corinthians", "1stcor", "firstcorinth", "fstcorinthi", "cor", "fstcor", "corinth", "firstcorin", "fstcorinthians", "firstco", "1stcorinthians", "1corth", "1cortn", "corinthian", "corth", "firstcori", "ico", "icorinthi", "frstcorin", "cori", "icori", "firstcorth", "fstcortn", "co", "1cor", "firstcor", "1stcorinth", "fstcorin", "frstcorth", "icorth", "fstco", "1stcortn", "1stcorin", "1cori", "fstcorth", "icorinth", "firstcorinthi", "icor", "fstcorinthian", "1stcorth", "firstcorinthians", "1corinth", "frstcor", "firstcortn", "cortn", "1stcorinthi", "1corinthians", "1corinthi", "1stco", "1corin", "frstcori", "1co", "1corinthian" },
-        ["2 corinthians"] = new[] { "2corinth", "seccorinthian", "secondcorinthi", "secondcorinthians", "sccorinthians", "sccorinth", "2corinthi", "secorinth", "2corin", "2cor", "scndcorth", "scndco", "secondcor", "scndcorinthi", "scndcorin", "seccorin", "iicori", "secondcorinth", "iicorinth", "2ndcorinth", "sccorth", "2co", "sccori", "secor", "secco", "secondco", "iicor", "secori", "2ndcorin", "secortn", "scndcori", "secondcorin", "iicorth", "2cortn", "iicorinthian", "2ndcorinthi", "seccorinthians", "2ndco", "secondcori", "secorinthi", "iicorin", "2corth", "scndcorinthians", "sccor", "2ndcorinthians", "2ndcortn", "seccorinth", "2ndcorinthian", "iicorinthians", "seccortn", "2ndcor", "seccorinthi", "2ndcori", "seco", "secondcortn", "scndcortn", "2corinthian", "secondcorinthian", "scndcor", "secorinthian", "sccorin", "iico", "sccorinthian", "2corinthians", "secorth", "secorin", "scndcorinthian", "2cori", "seccor", "2ndcorth", "scndcorinth", "iicorinthi", "iicortn", "secondcorth", "sccortn", "scco", "seccori", "sccorinthi", "secorinthians", "seccorth" },
-        ["galatians"] = new[] { "galat", "galatians", "ga", "galatian", "gal", "galations", "gl" },
-        ["ephesians"] = new[] { "ephe", "ephesians", "eph", "ephs", "ephesian", "ephes", "ep" },
-        ["philippians"] = new[] { "ph", "philipians", "php", "phi", "phillippians", "philippians", "phl", "pp", "philip", "phil", "phillipians", "philipp" },
-        ["colossians"] = new[] { "cl", "co", "colossian", "col", "colosians", "cs", "colossians" },
-        ["1 thessalonians"] = new[] { "1stthessalonions", "1stth", "firstthessalonians", "thessalonians", "1thessalonions", "firstthessalonions", "firstthessal", "frstthes", "thessalonions", "frstthess", "firstth", "frstthessal", "fstthessalonians", "1thessalonians", "ithessalonions", "fstthes", "fstthessalonions", "frstth", "1stthess", "thessal", "1stthessal", "ithes", "1thessal", "1thess", "1thes", "fstth", "ith", "frstthessalonions", "ithessalonians", "th", "frstthessalonians", "1stthessalonians", "thes", "fstthessal", "ithessal", "firstthes", "1stthes", "firstthess", "ithess", "1th", "fstthess", "thess" },
-        ["2 thessalonians"] = new[] { "scthess", "scthes", "iith", "secthess", "sethessal", "2thes", "scndth", "secondthessalonions", "secondthess", "secondthessal", "secondthes", "iithessalonions", "secthessalonians", "secondth", "sethessalonians", "2thess", "scndthessalonions", "iithessal", "scthessal", "seth", "2ndthess", "2thessalonians", "secthessalonions", "scth", "2ndthessalonians", "scthessalonians", "scndthessalonians", "iithessalonians", "scndthessal", "iithes", "2thessal", "2ndth", "secthes", "scndthes", "sethess", "2ndthessalonions", "2ndthessal", "2ndthes", "2thessalonions", "secondthessalonians", "secth", "secthessal", "scthessalonions", "iithess", "sethes", "sethessalonions", "scndthess", "2th" },
-        ["1 timothy"] = new[] { "tim", "1sttimothy", "firsttimoth", "itimoth", "itimothy", "iti", "fsttimothy", "frstti", "fsttm", "tm", "1sttimoth", "timoth", "1stti", "itim", "1ti", "frsttimothy", "fsttimoth", "firstti", "1tim", "fsttim", "1timothy", "itm", "timothy", "firsttimothy", "firsttm", "1sttm", "1tm", "firsttim", "frsttm", "1sttim", "fstti", "frsttim", "1timoth", "frsttimoth" },
-        ["2 timothy"] = new[] { "sctim", "sectimothy", "2ndtimoth", "iitimoth", "scndtm", "2ti", "sctimothy", "secondti", "seti", "iiti", "setim", "2ndtm", "secti", "sectimoth", "scndtimoth", "iitimothy", "scti", "setimothy", "sectim", "sectm", "2ndtimothy", "iitm", "2tim", "2timoth", "setimoth", "2ndtim", "sctimoth", "secondtimothy", "2ndti", "setm", "iitim", "scndti", "scndtimothy", "scndtim", "secondtim", "2tm", "secondtm", "2timothy", "secondtimoth", "sctm" },
-        ["titus"] = new[] { "tit", "titus", "ti", "tt" },
-        ["philemon"] = new[] { "phillemon", "phlm", "pm", "phm", "philemon", "philem", "philm", "phile" },
-        ["hebrews"] = new[] { "hebrew", "hebrews", "he", "hb", "heb" },
-        ["james"] = new[] { "jms", "jm", "ja", "jas", "jam", "james", "jame" },
-        ["1 peter"] = new[] { "ptr", "1p", "frstpete", "firstpe", "1stpet", "firstp", "1peter", "1stpete", "1stpetr", "fstpete", "petr", "firstpete", "fstpeter", "pet", "fstpe", "pete", "frstpe", "firstpetr", "frstptr", "iptr", "1pt", "ipe", "firstptr", "fstpt", "pe", "ip", "1stpt", "ipt", "fstptr", "1ptr", "frstpetr", "1stp", "fstpet", "peter", "frstpeter", "1pe", "frstpet", "1petr", "fstp", "1stpe", "pt", "ipet", "fstpetr", "1stptr", "frstp", "firstpeter", "firstpt", "firstpet", "frstpt", "1pete", "ipeter", "1stpeter", "ipete", "p", "ipetr", "1pet" },
-        ["2 peter"] = new[] { "secpe", "scptr", "2pt", "sepeter", "secptr", "iipete", "2ndptr", "secpetr", "secondp", "scpe", "scndpt", "2ndpe", "sep", "scp", "secondpeter", "iipetr", "2ndpt", "2petr", "sept", "scndpeter", "scpete", "scndpete", "sepete", "scpetr", "scpet", "secpet", "scpeter", "2ndpetr", "septr", "sepetr", "2ndpet", "sepe", "scndpet", "secpt", "scndpetr", "sepet", "2p", "scndpe", "2peter", "2pete", "2ndp", "scndptr", "secpeter", "secp", "2pe", "iipt", "iipeter", "scndp", "iiptr", "2ptr", "2pet", "secondpt", "secondpetr", "2ndpete", "secondpete", "2ndpeter", "iipet", "secpete", "scpt", "iip", "secondpet", "secondpe", "secondptr", "iipe" },
-        ["1 john"] = new[] { "1jn", "frstj", "1stjo", "1jhn", "firstj", "firstjn", "frstjo", "1stjoh", "1john", "1stjn", "firstjoh", "frstjoh", "fstjohn", "1stjohn", "firstjo", "fstj", "ijo", "fstjhn", "1stjhn", "1joh", "firstjhn", "frstjn", "fstjn", "ijhn", "ijn", "frstjohn", "firstjohn", "1jo", "ijohn", "fstjo", "1stj", "frstjhn", "ij", "fstjoh", "1j", "ijoh" },
-        ["2 john"] = new[] { "sejhn", "scndjhn", "scj", "sejoh", "2ndjhn", "secondjohn", "secondjo", "secjhn", "2jhn", "sejo", "secondjn", "scjhn", "sej", "iijoh", "iij", "2ndjo", "2jn", "iijhn", "2jo", "scjo", "scjoh", "secondjhn", "secjn", "scndjn", "iijn", "scjohn", "2ndjoh", "2j", "2ndj", "secondj", "iijohn", "secjohn", "2joh", "iijo", "2ndjohn", "scndjohn", "scndj", "scndjoh", "scjn", "secjoh", "sejohn", "secj", "scndjo", "2ndjn", "2john", "sejn", "secondjoh", "secjo" },
-        ["3 john"] = new[] { "iiijoh", "3rdj", "3jn", "iiijn", "3joh", "iiijohn", "3rdjo", "thjoh", "3rdjohn", "thirjohn", "thijo", "thirdj", "thirjn", "thirjoh", "thirdjohn", "thijoh", "iiijhn", "3jo", "thijn", "thijohn", "thjo", "thirj", "3john", "thijhn", "thirdjoh", "thirdjn", "thirjo", "3rdjhn", "3rdjoh", "thij", "thirjhn", "thjhn", "3j", "thjohn", "3rdjn", "thirdjo", "iiijo", "iiij", "thirdjhn", "thjn", "3jhn", "thj" },
-        ["jude"] = new[] { "ju", "jude", "jd", "jud" },
-        ["revelation"] = new[] { "rv", "revelations", "therevelation", "re", "rev", "revelation" },
-        ["1 esdras"] = new[] { "1es", "1esdras", "3ezra", "3ezr" },
-        ["2 esdras"] = new[] { "2es", "2esdras", "4ezra", "4ezr" },
-        ["tobit"] = new[] { "tob", "tobit" },
-        ["judith"] = new[] { "jdt", "judith", "judit" },
-        ["esther (greek)"] = new[] { "esg", "esther(greek)", "est(greek)" },
-        ["wisdom"] = new[] { "wis", "wisdom", "wisdomofsolomon" },
-        ["ecclesiasticus"] = new[] { "sir", "ecclesiasticus", "sirach", "wisdomofbensirach" },
-        ["baruch"] = new[] { "bar", "baruch", "1baruch", "1bar" },
-        ["epistle of jeremy"] = new[] { "lje", "epistleofjeremy", "letterofjeremiah" },
-        ["daniel (greek)"] = new[] { "dag", "daniel(greek)", "dan(greek)" },
-        ["song of the three"] = new[] { "s3y", "songofthethree", "songofthethreechildren", "songofthe3children", "songofthethreeyoungmen", "songofthe3youngmen" },
-        ["susanna"] = new[] { "sus", "susanna" },
-        ["bel and the dragon"] = new[] { "bel", "belandthedragon" },
-        ["manasseh"] = new[] { "man", "manasseh", "prayerofmanasseh" },
-        ["1 maccabees"] = new[] { "1ma", "1maccabees", "1mac", "1macc", "ima", "imaccabees", "imac", "imacc" },
-        ["2 maccabees"] = new[] { "2ma", "2maccabees", "2mac", "2macc", "iima", "iimaccabees", "iimac", "iimacc" },
-        ["3 maccabees"] = new[] { "3ma", "3maccabees", "3mac", "3macc", "iiima", "iiimaccabees", "iiimac", "iiimacc" },
-        ["4 maccabees"] = new[] { "4ma", "4maccabees", "4mac", "4macc", "ivma", "ivmaccabees", "ivmac", "icmacc" },
-        ["laodiceans"] = new[] { "lao", "laodiceans" },
+        ["genesis"] = ["ge", "gn", "gen", "genesis"],
+        ["exodus"] = ["ex", "exo", "exd", "exod", "exodus"],
+        ["leviticus"] = ["leviticus", "levi", "le", "lv", "lev"],
+        ["numbers"] = ["nb", "num", "nm", "numbers", "nu", "numb", "number"],
+        ["deuteronomy"] = ["de", "deut", "dueteronomy", "du", "deu", "dt", "deuteronomy"],
+        ["joshua"] = ["josh", "js", "jos", "joshua", "jsh"],
+        ["judges"] = ["juges", "jdg", "jg", "jgs", "jdgs", "judgs", "judg", "judges"],
+        ["ruth"] = ["rt", "rth", "ru", "ruth", "rh"],
+        ["1 samuel"] = ["1saml", "firstsam", "isamuel", "1samuel", "ism", "1sm", "firsts", "isam", "sa", "1stsam", "1stsamuel", "firstsamuel", "fstsam", "fstsaml", "firstsm", "frstsam", "1sa", "1stsm", "sam", "1sam", "1stsaml", "frstsa", "saml", "frstsamuel", "firstsa", "1sts", "1s", "1stsa", "firstsaml", "samuel", "isaml", "fstsa", "frstsm", "fsts", "frstsaml", "fstsm", "frsts", "sm", "fstsamuel"],
+        ["2 samuel"] = ["scsamuel", "secs", "secsam", "iis", "scndsam", "secondsm", "secondsaml", "seconds", "2ndsaml", "2nds", "2samuel", "sesm", "scndsamuel", "2ndsamuel", "iism", "secsm", "secsa", "2sm", "scsam", "iisam", "scsaml", "scndsa", "scs", "2ndsam", "secondsam", "iisaml", "2ndsm", "2saml", "scnds", "2sam", "secsamuel", "secsaml", "scndsaml", "2sa", "sesaml", "sesa", "secondsamuel", "scsm", "iisa", "scsa", "ses", "iisamuel", "sesamuel", "2ndsa", "2s", "scndsm", "sesam", "secondsa"],
+        ["1 kings"] = ["fstking", "1stks", "kg", "1stking", "frstk", "kgs", "1kgs", "frstkgs", "1stkings", "fstkg", "firstkn", "1kings", "fstk", "1stkgs", "1kg", "1stkn", "iki", "firstkgs", "1king", "frstkings", "iking", "frstks", "ikings", "1ki", "king", "kn", "frstkg", "firstk", "kings", "ikgs", "1k", "fstki", "1stkg", "fstkn", "ki", "ikn", "firstks", "k", "1stki", "fstkings", "1kn", "firstkg", "frstki", "firstki", "fstkgs", "frstkn", "fstks", "1ks", "firstking", "firstkings", "ikg", "iks", "ik", "ks", "1stk", "frstking"],
+        ["2 kings"] = ["iikg", "iikn", "seks", "scndkings", "2ks", "scndki", "secki", "scndk", "seki", "secondks", "scndkg", "secondki", "2ndk", "sckgs", "secondking", "seckings", "scks", "scking", "iiki", "2ki", "seckg", "2ndkg", "secks", "sek", "2ndkings", "iikings", "2kg", "seck", "secondkg", "secondk", "scndkn", "scndks", "iiking", "2ndkgs", "2ndking", "secondkgs", "iik", "sekgs", "secondkings", "sekg", "sckings", "secking", "iiks", "2kings", "secondkn", "sekings", "scndking", "seking", "scki", "2ndks", "2kgs", "sckg", "2king", "iikgs", "sekn", "sckn", "2kn", "2k", "seckgs", "scndkgs", "2ndki", "seckn", "2ndkn", "sck"],
+        ["1 chronicles"] = ["firstch", "ichrs", "frstchronicles", "firstchro", "chro", "firstchronicle", "1chr", "firstchron", "1chronicl", "fstchs", "1chro", "fstchronic", "frstchro", "1chronicles", "1ch", "fstchrs", "ichron", "frstchronicle", "ichronicl", "1stchronicle", "firstchrs", "fstchronicl", "1stchro", "1stchroni", "1stchr", "ich", "1stchs", "1chronicle", "ichronicle", "ichro", "fstchr", "chr", "firstchr", "fstchronicle", "chronicl", "frstchronic", "chron", "1chs", "firstchroni", "1stchronicles", "fstchron", "fstchronicles", "ichronic", "firstchronicles", "1chronic", "frstchron", "firstchronicl", "1stchrs", "chrs", "ichroni", "fstchroni", "chronic", "frstchrs", "firstchs", "1stchronic", "frstchr", "chs", "fstch", "frstch", "1stchron", "fstchro", "ichr", "firstchronic", "frstchs", "1chroni", "frstchroni", "1stch", "frstchronicl", "1chrs", "ichronicles", "chronicle", "1stchronicl", "1chron", "chronicles", "chroni", "ichs"],
+        ["2 chronicles"] = ["iich", "scchronicles", "scndchronicl", "iichronicl", "2chro", "2chronicles", "secchs", "iichrs", "sechr", "2chronicle", "iichro", "sechron", "scndchro", "2chr", "secondchron", "sech", "sechronicle", "scchronic", "secch", "secondchronicle", "scchs", "scchronicl", "scndchroni", "scndchron", "2chron", "secchr", "2chs", "2ndchron", "scchrs", "scndchr", "secchronic", "secchron", "scndchrs", "sechronic", "2ndchronicl", "sechrs", "sechronicles", "scchronicle", "secondchro", "scndchronic", "sechro", "secondch", "secchronicl", "2ndchronic", "2ndchronicle", "scndchronicle", "2ndchronicles", "secondchronicl", "sechronicl", "2chronicl", "scchr", "secondchrs", "iichron", "scchroni", "2ndchro", "secondchs", "iichronic", "scchron", "sechs", "iichr", "scch", "2chronic", "secchronicle", "secchronicles", "secondchr", "iichronicles", "2chrs", "scndch", "secondchroni", "secondchronicles", "2ndch", "secchroni", "secchro", "2ch", "2ndchr", "iichs", "2chroni", "scchro", "iichroni", "secondchronic", "secchrs", "scndchs", "2ndchs", "2ndchroni", "scndchronicles", "iichronicle", "sechroni", "2ndchrs"],
+        ["ezra"] = ["ezra", "ezr", "1ezra", "1ezr"],
+        ["nehemiah"] = ["ne", "nehemiah", "neh", "2ezra", "2ezr"],
+        ["esther"] = ["esth", "est", "es", "esther"],
+        ["job"] = ["job", "jb"],
+        ["psalm"] = ["psalms", "psm", "psalm", "pslm", "pss", "ps", "psa"],
+        ["proverbs"] = ["proverbs", "proverb", "pro", "pr", "prv", "prov", "prvbs"],
+        ["ecclesiastes"] = ["ecclesiaste", "ecll", "q", "ecl", "eccl", "qoh", "ecclesiastes", "eclesiastes", "ecc", "ec", "eccles", "qoheleth", "qo"],
+        ["song of solomon"] = ["song of solomon", "songofsolomon", "song of sol", "songofsol", "the song of solomon", "thesongofsolomon", "the song of sol", "thesongofsol", "ss", "canticle of canticles", "conticleofcanticles", "canticles", "song of songs", "songofsongs", "song of", "songof", "solomon", "song", "sng", "sos", "so", "sg"],
+        ["isaiah"] = ["isah", "isai", "isaiah", "isa"],
+        ["jeremiah"] = ["je", "jer", "jere", "jr", "jeremaih", "jeremiah"],
+        ["lamentations"] = ["lamentations", "la", "lam", "lamentation", "lm"],
+        ["ezekiel"] = ["ezk", "ezekiel", "ez", "ezek", "eze"],
+        ["daniel"] = ["dn", "dan", "da", "daniel"],
+        ["hosea"] = ["hos", "hs", "ho", "hosea"],
+        ["joel"] = ["joe", "joel", "jo", "jl"],
+        ["amos"] = ["am", "ams", "amos", "amo"],
+        ["obadiah"] = ["obadaiah", "ob", "obad", "obadiah", "obd", "oba", "obadaih"],
+        ["jonah"] = ["jonah", "jnh", "jon"],
+        ["micah"] = ["mica", "mic", "mi", "micah"],
+        ["nahum"] = ["nah", "na", "nahum"],
+        ["habakkuk"] = ["hbk", "habbakkuk", "hab", "habakuk", "habbakuk", "hk", "habakkuk"],
+        ["zephaniah"] = ["zp", "zep", "zephaniah", "zeph"],
+        ["haggai"] = ["hagai", "haggai", "haggia", "hagg", "hag", "hg"],
+        ["zechariah"] = ["zc", "zachariah", "zechariah", "zecharaiah", "zech", "zec"],
+        ["malachi"] = ["mal", "ml", "malachi", "ma"],
+        ["matthew"] = ["matthew", "matt", "mt", "mat", "mathew"],
+        ["mark"] = ["mk", "mar", "mark", "mr", "mrk"],
+        ["luke"] = ["lk", "lu", "luke", "luk"],
+        ["john"] = ["jn", "joh", "john", "j", "jhn"],
+        ["acts"] = ["act", "ac", "acts"],
+        ["romans"] = ["rm", "roman", "romans", "ro", "rom"],
+        ["1 corinthians"] = ["1stcorinthian", "frstcorinth", "icortn", "frstcortn", "fstcori", "fstcorinth", "frstcorinthians", "icorin", "frstco", "corinthi", "icorinthians", "icorinthian", "frstcorinthi", "1stcori", "corin", "frstcorinthian", "firstcorinthian", "corinthians", "1stcor", "firstcorinth", "fstcorinthi", "cor", "fstcor", "corinth", "firstcorin", "fstcorinthians", "firstco", "1stcorinthians", "1corth", "1cortn", "corinthian", "corth", "firstcori", "ico", "icorinthi", "frstcorin", "cori", "icori", "firstcorth", "fstcortn", "co", "1cor", "firstcor", "1stcorinth", "fstcorin", "frstcorth", "icorth", "fstco", "1stcortn", "1stcorin", "1cori", "fstcorth", "icorinth", "firstcorinthi", "icor", "fstcorinthian", "1stcorth", "firstcorinthians", "1corinth", "frstcor", "firstcortn", "cortn", "1stcorinthi", "1corinthians", "1corinthi", "1stco", "1corin", "frstcori", "1co", "1corinthian"],
+        ["2 corinthians"] = ["2corinth", "seccorinthian", "secondcorinthi", "secondcorinthians", "sccorinthians", "sccorinth", "2corinthi", "secorinth", "2corin", "2cor", "scndcorth", "scndco", "secondcor", "scndcorinthi", "scndcorin", "seccorin", "iicori", "secondcorinth", "iicorinth", "2ndcorinth", "sccorth", "2co", "sccori", "secor", "secco", "secondco", "iicor", "secori", "2ndcorin", "secortn", "scndcori", "secondcorin", "iicorth", "2cortn", "iicorinthian", "2ndcorinthi", "seccorinthians", "2ndco", "secondcori", "secorinthi", "iicorin", "2corth", "scndcorinthians", "sccor", "2ndcorinthians", "2ndcortn", "seccorinth", "2ndcorinthian", "iicorinthians", "seccortn", "2ndcor", "seccorinthi", "2ndcori", "seco", "secondcortn", "scndcortn", "2corinthian", "secondcorinthian", "scndcor", "secorinthian", "sccorin", "iico", "sccorinthian", "2corinthians", "secorth", "secorin", "scndcorinthian", "2cori", "seccor", "2ndcorth", "scndcorinth", "iicorinthi", "iicortn", "secondcorth", "sccortn", "scco", "seccori", "sccorinthi", "secorinthians", "seccorth"],
+        ["galatians"] = ["galat", "galatians", "ga", "galatian", "gal", "galations", "gl"],
+        ["ephesians"] = ["ephe", "ephesians", "eph", "ephs", "ephesian", "ephes", "ep"],
+        ["philippians"] = ["ph", "philipians", "php", "phi", "phillippians", "philippians", "phl", "pp", "philip", "phil", "phillipians", "philipp"],
+        ["colossians"] = ["cl", "co", "colossian", "col", "colosians", "cs", "colossians"],
+        ["1 thessalonians"] = ["1stthessalonions", "1stth", "firstthessalonians", "thessalonians", "1thessalonions", "firstthessalonions", "firstthessal", "frstthes", "thessalonions", "frstthess", "firstth", "frstthessal", "fstthessalonians", "1thessalonians", "ithessalonions", "fstthes", "fstthessalonions", "frstth", "1stthess", "thessal", "1stthessal", "ithes", "1thessal", "1thess", "1thes", "fstth", "ith", "frstthessalonions", "ithessalonians", "th", "frstthessalonians", "1stthessalonians", "thes", "fstthessal", "ithessal", "firstthes", "1stthes", "firstthess", "ithess", "1th", "fstthess", "thess"],
+        ["2 thessalonians"] = ["scthess", "scthes", "iith", "secthess", "sethessal", "2thes", "scndth", "secondthessalonions", "secondthess", "secondthessal", "secondthes", "iithessalonions", "secthessalonians", "secondth", "sethessalonians", "2thess", "scndthessalonions", "iithessal", "scthessal", "seth", "2ndthess", "2thessalonians", "secthessalonions", "scth", "2ndthessalonians", "scthessalonians", "scndthessalonians", "iithessalonians", "scndthessal", "iithes", "2thessal", "2ndth", "secthes", "scndthes", "sethess", "2ndthessalonions", "2ndthessal", "2ndthes", "2thessalonions", "secondthessalonians", "secth", "secthessal", "scthessalonions", "iithess", "sethes", "sethessalonions", "scndthess", "2th"],
+        ["1 timothy"] = ["tim", "1sttimothy", "firsttimoth", "itimoth", "itimothy", "iti", "fsttimothy", "frstti", "fsttm", "tm", "1sttimoth", "timoth", "1stti", "itim", "1ti", "frsttimothy", "fsttimoth", "firstti", "1tim", "fsttim", "1timothy", "itm", "timothy", "firsttimothy", "firsttm", "1sttm", "1tm", "firsttim", "frsttm", "1sttim", "fstti", "frsttim", "1timoth", "frsttimoth"],
+        ["2 timothy"] = ["sctim", "sectimothy", "2ndtimoth", "iitimoth", "scndtm", "2ti", "sctimothy", "secondti", "seti", "iiti", "setim", "2ndtm", "secti", "sectimoth", "scndtimoth", "iitimothy", "scti", "setimothy", "sectim", "sectm", "2ndtimothy", "iitm", "2tim", "2timoth", "setimoth", "2ndtim", "sctimoth", "secondtimothy", "2ndti", "setm", "iitim", "scndti", "scndtimothy", "scndtim", "secondtim", "2tm", "secondtm", "2timothy", "secondtimoth", "sctm"],
+        ["titus"] = ["tit", "titus", "ti", "tt"],
+        ["philemon"] = ["phillemon", "phlm", "pm", "phm", "philemon", "philem", "philm", "phile"],
+        ["hebrews"] = ["hebrew", "hebrews", "he", "hb", "heb"],
+        ["james"] = ["jms", "jm", "ja", "jas", "jam", "james", "jame"],
+        ["1 peter"] = ["ptr", "1p", "frstpete", "firstpe", "1stpet", "firstp", "1peter", "1stpete", "1stpetr", "fstpete", "petr", "firstpete", "fstpeter", "pet", "fstpe", "pete", "frstpe", "firstpetr", "frstptr", "iptr", "1pt", "ipe", "firstptr", "fstpt", "pe", "ip", "1stpt", "ipt", "fstptr", "1ptr", "frstpetr", "1stp", "fstpet", "peter", "frstpeter", "1pe", "frstpet", "1petr", "fstp", "1stpe", "pt", "ipet", "fstpetr", "1stptr", "frstp", "firstpeter", "firstpt", "firstpet", "frstpt", "1pete", "ipeter", "1stpeter", "ipete", "p", "ipetr", "1pet"],
+        ["2 peter"] = ["secpe", "scptr", "2pt", "sepeter", "secptr", "iipete", "2ndptr", "secpetr", "secondp", "scpe", "scndpt", "2ndpe", "sep", "scp", "secondpeter", "iipetr", "2ndpt", "2petr", "sept", "scndpeter", "scpete", "scndpete", "sepete", "scpetr", "scpet", "secpet", "scpeter", "2ndpetr", "septr", "sepetr", "2ndpet", "sepe", "scndpet", "secpt", "scndpetr", "sepet", "2p", "scndpe", "2peter", "2pete", "2ndp", "scndptr", "secpeter", "secp", "2pe", "iipt", "iipeter", "scndp", "iiptr", "2ptr", "2pet", "secondpt", "secondpetr", "2ndpete", "secondpete", "2ndpeter", "iipet", "secpete", "scpt", "iip", "secondpet", "secondpe", "secondptr", "iipe"],
+        ["1 john"] = ["1jn", "frstj", "1stjo", "1jhn", "firstj", "firstjn", "frstjo", "1stjoh", "1john", "1stjn", "firstjoh", "frstjoh", "fstjohn", "1stjohn", "firstjo", "fstj", "ijo", "fstjhn", "1stjhn", "1joh", "firstjhn", "frstjn", "fstjn", "ijhn", "ijn", "frstjohn", "firstjohn", "1jo", "ijohn", "fstjo", "1stj", "frstjhn", "ij", "fstjoh", "1j", "ijoh"],
+        ["2 john"] = ["sejhn", "scndjhn", "scj", "sejoh", "2ndjhn", "secondjohn", "secondjo", "secjhn", "2jhn", "sejo", "secondjn", "scjhn", "sej", "iijoh", "iij", "2ndjo", "2jn", "iijhn", "2jo", "scjo", "scjoh", "secondjhn", "secjn", "scndjn", "iijn", "scjohn", "2ndjoh", "2j", "2ndj", "secondj", "iijohn", "secjohn", "2joh", "iijo", "2ndjohn", "scndjohn", "scndj", "scndjoh", "scjn", "secjoh", "sejohn", "secj", "scndjo", "2ndjn", "2john", "sejn", "secondjoh", "secjo"],
+        ["3 john"] = ["iiijoh", "3rdj", "3jn", "iiijn", "3joh", "iiijohn", "3rdjo", "thjoh", "3rdjohn", "thirjohn", "thijo", "thirdj", "thirjn", "thirjoh", "thirdjohn", "thijoh", "iiijhn", "3jo", "thijn", "thijohn", "thjo", "thirj", "3john", "thijhn", "thirdjoh", "thirdjn", "thirjo", "3rdjhn", "3rdjoh", "thij", "thirjhn", "thjhn", "3j", "thjohn", "3rdjn", "thirdjo", "iiijo", "iiij", "thirdjhn", "thjn", "3jhn", "thj"],
+        ["jude"] = ["ju", "jude", "jd", "jud"],
+        ["revelation"] = ["rv", "revelations", "therevelation", "re", "rev", "revelation"],
+        ["1 esdras"] = ["1es", "1esdras", "3ezra", "3ezr"],
+        ["2 esdras"] = ["2es", "2esdras", "4ezra", "4ezr"],
+        ["tobit"] = ["tob", "tobit"],
+        ["judith"] = ["jdt", "judith", "judit"],
+        ["esther (greek)"] = ["esg", "esther(greek)", "est(greek)"],
+        ["wisdom"] = ["wis", "wisdom", "wisdomofsolomon"],
+        ["ecclesiasticus"] = ["sir", "ecclesiasticus", "sirach", "wisdomofbensirach"],
+        ["baruch"] = ["bar", "baruch", "1baruch", "1bar"],
+        ["epistle of jeremy"] = ["lje", "epistleofjeremy", "letterofjeremiah"],
+        ["daniel (greek)"] = ["dag", "daniel(greek)", "dan(greek)"],
+        ["song of the three"] = ["s3y", "songofthethree", "songofthethreechildren", "songofthe3children", "songofthethreeyoungmen", "songofthe3youngmen"],
+        ["susanna"] = ["sus", "susanna"],
+        ["bel and the dragon"] = ["bel", "belandthedragon"],
+        ["manasseh"] = ["man", "manasseh", "prayerofmanasseh"],
+        ["1 maccabees"] = ["1ma", "1maccabees", "1mac", "1macc", "ima", "imaccabees", "imac", "imacc"],
+        ["2 maccabees"] = ["2ma", "2maccabees", "2mac", "2macc", "iima", "iimaccabees", "iimac", "iimacc"],
+        ["3 maccabees"] = ["3ma", "3maccabees", "3mac", "3macc", "iiima", "iiimaccabees", "iiimac", "iiimacc"],
+        ["4 maccabees"] = ["4ma", "4maccabees", "4mac", "4macc", "ivma", "ivmaccabees", "ivmac", "icmacc"],
+        ["laodiceans"] = ["lao", "laodiceans"],
     };
+#pragma warning restore format
 
     /// <summary>
     /// Builds a <see cref="PassageReference" /> from a <see cref="ChapterReference" />.
@@ -210,7 +212,8 @@ public static partial class ExtensionMethods
     /// <returns>
     /// The passage reference.
     /// </returns>
-    public static PassageReference AsPassageReference(this ChapterReference chapterReference) => chapterReference.ToString().AsPassageReference();
+    public static PassageReference AsPassageReference(this ChapterReference chapterReference) =>
+        chapterReference.ToString().AsPassageReference();
 
     /// <summary>
     /// Builds a <see cref="PassageReference" /> from a <see cref="string" />.
@@ -253,13 +256,23 @@ public static partial class ExtensionMethods
 
                 // Set the chapter reference
                 book = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(book);
-                passageReference = new PassageReference { ChapterReference = new ChapterReference(book, chapter) };
+                passageReference = new PassageReference
+                {
+                    ChapterReference = new ChapterReference(book, chapter)
+                };
 
                 // Do not highlight the first verse of a one chapter book if there is no colon and there is not a range of verses
-                bool highlightVerses = sanitisedPassage.Contains(':', StringComparison.OrdinalIgnoreCase) && chapter > 0;
-                if (ranges.Length == 1 && chapters.Length == 1 && chapter == 1
+                bool highlightVerses =
+                    sanitisedPassage.Contains(':', StringComparison.OrdinalIgnoreCase)
+                    && chapter > 0;
+                if (
+                    ranges.Length == 1
+                    && chapters.Length == 1
+                    && chapter == 1
                     && !passage.Contains(':', StringComparison.OrdinalIgnoreCase)
-                    && int.TryParse(range.Split(':').Last(), out int verse) && verse == 1)
+                    && int.TryParse(range.Split(':').Last(), out int verse)
+                    && verse == 1
+                )
                 {
                     // We can highlight verses other than 1 if there is no colon
                     highlightVerses = false;
@@ -267,7 +280,7 @@ public static partial class ExtensionMethods
 
                 if (highlightVerses)
                 {
-                    List<string> highlightedVerses = new List<string>();
+                    List<string> highlightedVerses = [];
                     StringBuilder sb = new StringBuilder();
                     foreach (string displayRange in ranges)
                     {
@@ -281,10 +294,17 @@ public static partial class ExtensionMethods
                         }
                         else if (displayRange.Contains(':'))
                         {
-                            string[] displayRangeParts = displayRange.Split(":", StringSplitOptions.RemoveEmptyEntries);
-                            if (int.TryParse(displayRangeParts.First(), out int displayRangeChapter) && displayRangeChapter == chapter)
+                            string[] displayRangeParts = displayRange.Split(
+                                ":",
+                                StringSplitOptions.RemoveEmptyEntries
+                            );
+                            if (
+                                int.TryParse(displayRangeParts.First(), out int displayRangeChapter)
+                                && displayRangeChapter == chapter
+                            )
                             {
-                                Match verseNumberMatch = VerseNumberRegex().Match(displayRangeParts.Last().Trim());
+                                Match verseNumberMatch = VerseNumberRegex()
+                                    .Match(displayRangeParts.Last().Trim());
                                 if (verseNumberMatch.Success)
                                 {
                                     displayRangeVerse = verseNumberMatch.Value;
@@ -329,7 +349,7 @@ public static partial class ExtensionMethods
                     {
                         ChapterReference = passageReference.ChapterReference,
                         Display = $"{book} {chapter}:{sb}",
-                        HighlightedVerses = highlightedVerses.ToArray(),
+                        HighlightedVerses = [..highlightedVerses],
                     };
                 }
                 else
@@ -448,9 +468,15 @@ public static partial class ExtensionMethods
     /// <returns>The interlinear mode.</returns>
     public static InterlinearMode GetInterlinearMode(this RenderingParameters parameters)
     {
-        InterlinearMode result = parameters.InterlinearIgnoresCase ? InterlinearMode.IgnoresCase : InterlinearMode.None;
-        result |= parameters.InterlinearIgnoresDiacritics ? InterlinearMode.IgnoresDiacritics : InterlinearMode.None;
-        result |= parameters.InterlinearIgnoresPunctuation ? InterlinearMode.IgnoresPunctuation : InterlinearMode.None;
+        InterlinearMode result = parameters.InterlinearIgnoresCase
+            ? InterlinearMode.IgnoresCase
+            : InterlinearMode.None;
+        result |= parameters.InterlinearIgnoresDiacritics
+            ? InterlinearMode.IgnoresDiacritics
+            : InterlinearMode.None;
+        result |= parameters.InterlinearIgnoresPunctuation
+            ? InterlinearMode.IgnoresPunctuation
+            : InterlinearMode.None;
         return result;
     }
 
@@ -494,10 +520,16 @@ public static partial class ExtensionMethods
             sb.Append("em{font-style:normal}");
         }
 
-        sb.Append($"sup{{font-size:{parameters.Font.SizeInPoints * 0.75f}pt;font-weight:bold}}.sup{{font-weight:bold}}");
+        sb.Append(
+            $"sup{{font-size:{parameters.Font.SizeInPoints * 0.75f}pt;font-weight:bold}}.sup{{font-weight:bold}}"
+        );
         sb.Append(".occurrence{vertical-align:super;font-size:smaller}");
-        sb.Append($".copyright{{border-top:1px solid {parameters.ForegroundColour.ToHtml()};font-size:{Math.Round(parameters.Font.SizeInPoints * 0.75, 2)}pt}}");
-        sb.Append(".supsub{display:inline-flex;flex-direction:column;justify-content:space-between;vertical-align:middle;font-size:50%}");
+        sb.Append(
+            $".copyright{{border-top:1px solid {parameters.ForegroundColour.ToHtml()};font-size:{Math.Round(parameters.Font.SizeInPoints * 0.75, 2)}pt}}"
+        );
+        sb.Append(
+            ".supsub{display:inline-flex;flex-direction:column;justify-content:space-between;vertical-align:middle;font-size:50%}"
+        );
         sb.Append($"mark{{background-color:{parameters.HighlightColour.ToHtml()}}}");
         return sb.ToString();
     }
@@ -509,7 +541,8 @@ public static partial class ExtensionMethods
     /// <returns>
     /// The HTML colour value.
     /// </returns>
-    public static string ToHtml(this RenderColour colour) => "#" + colour.R.ToString("X2") + colour.G.ToString("X2") + colour.B.ToString("X2");
+    public static string ToHtml(this RenderColour colour) =>
+        "#" + colour.R.ToString("X2") + colour.G.ToString("X2") + colour.B.ToString("X2");
 
     /// <summary>
     /// Gets the name of the book from a passage reference string.
@@ -561,7 +594,7 @@ public static partial class ExtensionMethods
         // Validate input
         if (string.IsNullOrWhiteSpace(passage) || passage.Length == 1)
         {
-            return Array.Empty<string>();
+            return [];
         }
 
         passage = passage[1..];
@@ -571,7 +604,7 @@ public static partial class ExtensionMethods
         rangePart = semiParts[0];
         semiParts = semiParts.Skip(1).ToArray();
 
-        List<string> ranges = new List<string>();
+        List<string> ranges = [];
 
         string[] dashParts = rangePart.Split('-');
         string[] startParts = dashParts[0].Split(':');
@@ -605,7 +638,7 @@ public static partial class ExtensionMethods
             ranges.AddRange($"Book{semiParts[i]}".GetRanges());
         }
 
-        return ranges.ToArray();
+        return [..ranges];
     }
 
     /// <summary>
@@ -661,7 +694,8 @@ public static partial class ExtensionMethods
                 string after = semiParts[0][numberStart..];
 
                 // A special exemption for the introduction
-                semiParts[0] = semiParts[0][numberStart] == '0' ? $"{before}0:{after}" : $"{before}1:{after}";
+                semiParts[0] =
+                    semiParts[0][numberStart] == '0' ? $"{before}0:{after}" : $"{before}1:{after}";
             }
         }
 
@@ -675,8 +709,9 @@ public static partial class ExtensionMethods
     /// <returns>
     /// The passage reference ready for cleaning.
     /// </returns>
-    internal static string SanitisePassageReference(this string passage)
-        => DashRegex().Replace(passage.Replace(" ", string.Empty).Replace('.', ':').ToLowerInvariant(), "-");
+    internal static string SanitisePassageReference(this string passage) =>
+        DashRegex()
+            .Replace(passage.Replace(" ", string.Empty).Replace('.', ':').ToLowerInvariant(), "-");
 
     /// <summary>
     /// The book part regular expression.

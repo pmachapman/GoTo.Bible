@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
 // <copyright file="LanguageComparerTests.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ public class LanguageComparerTests
     public void TestSortOrder()
     {
         string[] actual =
-        {
+        [
             "German",
             "Latin",
             "Aramaic",
@@ -33,9 +33,9 @@ public class LanguageComparerTests
             "English",
             "Ugaritic",
             "Hebrew",
-        };
+        ];
         string[] expected =
-        {
+        [
             "English",
             "Greek",
             "Hebrew",
@@ -44,7 +44,7 @@ public class LanguageComparerTests
             "French",
             "German",
             "Ugaritic",
-        };
+        ];
         Array.Sort(actual, new LanguageComparer());
         Assert.IsTrue(actual.SequenceEqual(expected));
     }

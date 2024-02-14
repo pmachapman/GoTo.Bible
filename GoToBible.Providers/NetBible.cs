@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="NetBible.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -26,7 +26,8 @@ public class NetBible : WebApiProvider
     /// <summary>
     /// The copyright message.
     /// </summary>
-    private const string Copyright = "The Scriptures quoted are from the NET Bible&reg; <a href=\"http://netbible.com\" target=\"_blank\">http://netbible.com</a> copyright &copy;1996, 2019 used with permission from Biblical Studies Press, L.L.C. All rights reserved.";
+    private const string Copyright =
+        "The Scriptures quoted are from the NET Bible&reg; <a href=\"http://netbible.com\" target=\"_blank\">http://netbible.com</a> copyright &copy;1996, 2019 used with permission from Biblical Studies Press, L.L.C. All rights reserved.";
 
     /// <summary>
     /// The canon.
@@ -51,7 +52,8 @@ public class NetBible : WebApiProvider
     /// </summary>
     /// <param name="cache">The cache.</param>
     public NetBible(IDistributedCache cache)
-        : base(cache) => this.HttpClient.BaseAddress = new Uri("https://labs.bible.org/api/", UriKind.Absolute);
+        : base(cache) =>
+        this.HttpClient.BaseAddress = new Uri("https://labs.bible.org/api/", UriKind.Absolute);
 
     /// <inheritdoc/>
     public override string Id => nameof(NetBible);
@@ -60,7 +62,11 @@ public class NetBible : WebApiProvider
     public override string Name => "NET Bible API";
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         foreach (Book book in Canon.GetBooks(includeChapters))
         {
@@ -69,7 +75,12 @@ public class NetBible : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
+    public override async Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    )
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -95,11 +106,19 @@ public class NetBible : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    json,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -108,17 +127,24 @@ public class NetBible : WebApiProvider
             }
         }
 
-        var data = DeserializeAnonymousType(json, EmptyListOf(
-            new
-            {
-                bookname = string.Empty,
-                chapter = string.Empty,
-                verse = string.Empty,
-                text = string.Empty,
-            }));
-        if (data is not null && data.Any())
+        var data = DeserializeAnonymousType(
+            json,
+            EmptyListOf(
+                new
+                {
+                    bookname = string.Empty,
+                    chapter = string.Empty,
+                    verse = string.Empty,
+                    text = string.Empty,
+                }
+            )
+        );
+        if (data is not null && data.Count > 0)
         {
-            chapter.Text = string.Join(Environment.NewLine, data.Select(d => $"{d.verse}  {d.text}"));
+            chapter.Text = string.Join(
+                Environment.NewLine,
+                data.Select(d => $"{d.verse}  {d.text}")
+            );
             chapter.PreviousChapterReference = Canon.GetPreviousChapter(book, chapterNumber);
             chapter.NextChapterReference = Canon.GetNextChapter(book, chapterNumber);
         }
@@ -127,7 +153,9 @@ public class NetBible : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         yield return await Task.FromResult(Translation);
     }

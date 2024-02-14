@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="LanguageComparer.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -15,16 +15,20 @@ using System.Collections.Generic;
 public class LanguageComparer : IComparer<string?>
 {
     /// <inheritdoc/>
-    public int Compare(string? x, string? y)
-        => string.Compare(GetCustomSortValue(x), GetCustomSortValue(y), StringComparison.InvariantCultureIgnoreCase);
+    public int Compare(string? x, string? y) =>
+        string.Compare(
+            GetCustomSortValue(x),
+            GetCustomSortValue(y),
+            StringComparison.InvariantCultureIgnoreCase
+        );
 
     /// <summary>
     /// Gets the custom sort value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>The custom sort value.</returns>
-    private static string GetCustomSortValue(string? value)
-        => value?.ToUpperInvariant() switch
+    private static string GetCustomSortValue(string? value) =>
+        value?.ToUpperInvariant() switch
         {
             "ENGLISH" => $"!1-{value}",
             "GREEK" => $"!2-{value}",

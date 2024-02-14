@@ -1,13 +1,12 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="AutoSuggest.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace GoToBible.Windows.AutoComplete;
 
 using System;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Windows.Forms;
@@ -43,18 +42,21 @@ public static class AutoSuggest
         // Try to enable a more advanced settings for AutoComplete via the WinShell interface
         try
         {
-            SourceCustomList source = new SourceCustomList { StringList = suggestions.ToArray() };
+            SourceCustomList source = new SourceCustomList { StringList = [.. suggestions] };
 
             // For options descriptions see:
             // https://docs.microsoft.com/en-us/windows/win32/api/shldisp/ne-shldisp-autocompleteoptions
-            const AUTOCOMPLETEOPTIONS options = AUTOCOMPLETEOPTIONS.ACO_UPDOWNKEYDROPSLIST | AUTOCOMPLETEOPTIONS.ACO_USETAB |
-                                                AUTOCOMPLETEOPTIONS.ACO_AUTOAPPEND | AUTOCOMPLETEOPTIONS.ACO_AUTOSUGGEST;
+            const AUTOCOMPLETEOPTIONS options =
+                AUTOCOMPLETEOPTIONS.ACO_UPDOWNKEYDROPSLIST
+                | AUTOCOMPLETEOPTIONS.ACO_USETAB
+                | AUTOCOMPLETEOPTIONS.ACO_AUTOAPPEND
+                | AUTOCOMPLETEOPTIONS.ACO_AUTOSUGGEST;
             Enable(textBox.Handle, source, options);
         }
         catch (Exception)
         {
             // In case of an error, let's fall back to the default
-            AutoCompleteStringCollection source = new AutoCompleteStringCollection();
+            AutoCompleteStringCollection source = [];
             source.AddRange(suggestions);
             textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
@@ -80,7 +82,11 @@ public static class AutoSuggest
     /// <param name="controlHandle">The control handle.</param>
     /// <param name="items">The items.</param>
     /// <param name="options">The options.</param>
-    private static void Enable(nint controlHandle, SourceCustomList items, AUTOCOMPLETEOPTIONS options)
+    private static void Enable(
+        nint controlHandle,
+        SourceCustomList items,
+        AUTOCOMPLETEOPTIONS options
+    )
     {
         if (controlHandle == nint.Zero)
         {

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="NativeMethods.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -46,7 +46,12 @@ internal static partial class NativeMethods
     /// If the function succeeds, the return value is nonzero. If the function fails, the return value is zero.
     /// To get extended error information, call <c>GetLastError</c>.
     /// </returns>
-    [LibraryImport("user32.dll", EntryPoint = "AppendMenuW", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+    [LibraryImport(
+        "user32.dll",
+        EntryPoint = "AppendMenuW",
+        StringMarshalling = StringMarshalling.Utf16,
+        SetLastError = true
+    )]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool AppendMenu(nint hMenu, int uFlags, int uIdNewItem, string lpNewItem);
 
@@ -63,8 +68,16 @@ internal static partial class NativeMethods
     /// If the bRevert parameter is <c>false</c>, the return value is a handle to a copy of the window menu.
     /// If the bRevert parameter is <c>true</c>, the return value is 0.
     /// </returns>
-    [LibraryImport("user32.dll", EntryPoint = "GetSystemMenu", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
-    public static partial nint GetSystemMenu(nint hWnd, [MarshalAs(UnmanagedType.Bool)] bool bRevert);
+    [LibraryImport(
+        "user32.dll",
+        EntryPoint = "GetSystemMenu",
+        SetLastError = true,
+        StringMarshalling = StringMarshalling.Utf16
+    )]
+    public static partial nint GetSystemMenu(
+        nint hWnd,
+        [MarshalAs(UnmanagedType.Bool)] bool bRevert
+    );
 
     /// <summary>
     /// Displays a ShellAbout dialog box.
@@ -81,6 +94,11 @@ internal static partial class NativeMethods
     /// </param>
     /// <param name="hIcon">The handle of an icon that the function displays in the dialog box.</param>
     /// <returns><c>true</c> if successful; otherwise, <c>false</c>.</returns>
-    [LibraryImport("shell32.dll", EntryPoint = "ShellAboutW", SetLastError = false, StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport(
+        "shell32.dll",
+        EntryPoint = "ShellAboutW",
+        SetLastError = false,
+        StringMarshalling = StringMarshalling.Utf16
+    )]
     public static partial int ShellAbout(nint hWnd, string szApp, string szOtherStuff, nint hIcon);
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FormCheckBoxList.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -11,12 +11,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 
 /// <summary>
 /// The checkbox list form.
 /// </summary>
 /// <seealso cref="Form" />
+[SupportedOSPlatform("windows")]
 public partial class FormCheckBoxList : Form
 {
     /// <summary>
@@ -46,7 +48,12 @@ public partial class FormCheckBoxList : Form
     /// <param name="uncheckedItems">The unchecked items.</param>
     /// <param name="title">The form title.</param>
     /// <param name="icon">The icon.</param>
-    public FormCheckBoxList(Dictionary<string, string> items, List<string> uncheckedItems, string title, Icon icon)
+    public FormCheckBoxList(
+        Dictionary<string, string> items,
+        List<string> uncheckedItems,
+        string title,
+        Icon icon
+    )
     {
         this.InitializeComponent();
         this.Icon = icon;
@@ -102,10 +109,13 @@ public partial class FormCheckBoxList : Form
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
     private void ButtonOk_Click(object sender, EventArgs e)
     {
-        List<string> uncheckedItems = new List<string>();
+        List<string> uncheckedItems = [];
         foreach (object item in this.CheckedListBoxItems.Items)
         {
-            if (!this.CheckedListBoxItems.CheckedItems.Contains(item) && item is KeyValuePair<string, string> kvp)
+            if (
+                !this.CheckedListBoxItems.CheckedItems.Contains(item)
+                && item is KeyValuePair<string, string> kvp
+            )
             {
                 uncheckedItems.Add(kvp.Key);
             }
@@ -129,7 +139,10 @@ public partial class FormCheckBoxList : Form
             this.checkBoxListIsUpdating = true;
             for (int i = 0; i < this.CheckedListBoxItems.Items.Count; i++)
             {
-                this.CheckedListBoxItems.SetItemChecked(i, this.CheckBoxSelectAll.Text == @"&Select All");
+                this.CheckedListBoxItems.SetItemChecked(
+                    i,
+                    this.CheckBoxSelectAll.Text == @"&Select All"
+                );
             }
 
             this.CheckedListBoxItems.EndUpdate();
@@ -143,7 +156,8 @@ public partial class FormCheckBoxList : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="ItemCheckEventArgs"/> instance containing the event data.</param>
-    private void CheckedListBoxItems_ItemCheck(object sender, ItemCheckEventArgs e) => this.UpdateCheckBoxSelectAll(e.NewValue == CheckState.Checked);
+    private void CheckedListBoxItems_ItemCheck(object sender, ItemCheckEventArgs e) =>
+        this.UpdateCheckBoxSelectAll(e.NewValue == CheckState.Checked);
 
     /// <summary>
     /// Handles the MouseMove event of the Items CheckedListBox.
@@ -155,10 +169,15 @@ public partial class FormCheckBoxList : Form
         // We only want the tooltip in debug mode, as it is very specific to the development environment
         if (IsDebug && this.toolTipIndex != this.CheckedListBoxItems.IndexFromPoint(e.Location))
         {
-            this.toolTipIndex = this.CheckedListBoxItems.IndexFromPoint(this.CheckedListBoxItems.PointToClient(MousePosition));
-            if (this.toolTipIndex > -1
+            this.toolTipIndex = this.CheckedListBoxItems.IndexFromPoint(
+                this.CheckedListBoxItems.PointToClient(MousePosition)
+            );
+            if (
+                this.toolTipIndex > -1
                 && this.toolTipIndex < this.CheckedListBoxItems.Items.Count
-                && this.CheckedListBoxItems.Items[this.toolTipIndex] is KeyValuePair<string, string> item)
+                && this.CheckedListBoxItems.Items[this.toolTipIndex]
+                    is KeyValuePair<string, string> item
+            )
             {
                 this.ToolTipItem.SetToolTip(this.CheckedListBoxItems, item.Key);
             }
@@ -175,10 +194,14 @@ public partial class FormCheckBoxList : Form
         // We only want to copy the ID in debug mode, as this feature is very specific to the development environment
         if (IsDebug && e.Button == MouseButtons.Right)
         {
-            int itemIndex = this.CheckedListBoxItems.IndexFromPoint(this.CheckedListBoxItems.PointToClient(MousePosition));
-            if (itemIndex > -1
+            int itemIndex = this.CheckedListBoxItems.IndexFromPoint(
+                this.CheckedListBoxItems.PointToClient(MousePosition)
+            );
+            if (
+                itemIndex > -1
                 && itemIndex < this.CheckedListBoxItems.Items.Count
-                && this.CheckedListBoxItems.Items[itemIndex] is KeyValuePair<string, string> item)
+                && this.CheckedListBoxItems.Items[itemIndex] is KeyValuePair<string, string> item
+            )
             {
                 Clipboard.SetText(item.Key);
             }
@@ -193,7 +216,8 @@ public partial class FormCheckBoxList : Form
     private void FormCheckBoxList_Load(object sender, EventArgs e)
     {
         this.CheckedListBoxItems.FormattingEnabled = true;
-        this.CheckedListBoxItems.Format += (_, eventArgs) => eventArgs.Value = (eventArgs.ListItem as KeyValuePair<string, string>?)?.Value;
+        this.CheckedListBoxItems.Format += (_, eventArgs) =>
+            eventArgs.Value = (eventArgs.ListItem as KeyValuePair<string, string>?)?.Value;
         this.CheckedListBoxItems.BeginUpdate();
         this.checkBoxListIsUpdating = true;
         foreach (KeyValuePair<string, string> item in this.items)
@@ -228,14 +252,21 @@ public partial class FormCheckBoxList : Form
             if (checkedCount == this.CheckedListBoxItems.Items.Count)
             {
                 this.CheckBoxSelectAll.Text = @"De&select All";
-                this.ToolTipItem.SetToolTip(this.CheckBoxSelectAll, $"{checkedCount} items selected");
+                this.ToolTipItem.SetToolTip(
+                    this.CheckBoxSelectAll,
+                    $"{checkedCount} items selected"
+                );
                 this.CheckBoxSelectAll.CheckState = CheckState.Checked;
             }
             else
             {
                 this.CheckBoxSelectAll.Text = @"&Select All";
-                this.ToolTipItem.SetToolTip(this.CheckBoxSelectAll, $"{this.CheckedListBoxItems.Items.Count} items");
-                this.CheckBoxSelectAll.CheckState = checkedCount == 0 ? CheckState.Unchecked : CheckState.Indeterminate;
+                this.ToolTipItem.SetToolTip(
+                    this.CheckBoxSelectAll,
+                    $"{this.CheckedListBoxItems.Items.Count} items"
+                );
+                this.CheckBoxSelectAll.CheckState =
+                    checkedCount == 0 ? CheckState.Unchecked : CheckState.Indeterminate;
             }
 
             this.selectAllCheckBoxIsUpdating = false;

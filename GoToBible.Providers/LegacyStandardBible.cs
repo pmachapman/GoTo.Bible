@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="LegacyStandardBible.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -34,9 +34,8 @@ public partial class LegacyStandardBible : LocalResourceProvider
     /// </summary>
     /// <param name="options">The options.</param>
     /// <exception cref="ArgumentException">Invalid Resource Directory - options.</exception>
-    public LegacyStandardBible(IOptions<LocalResourceOptions> options) : base(options)
-    {
-    }
+    public LegacyStandardBible(IOptions<LocalResourceOptions> options)
+        : base(options) { }
 
     /// <inheritdoc/>
     public override string Id => nameof(LegacyStandardBible);
@@ -49,7 +48,11 @@ public partial class LegacyStandardBible : LocalResourceProvider
     public override void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         foreach (Book book in Canon.GetBooks(includeChapters))
         {
@@ -58,12 +61,17 @@ public partial class LegacyStandardBible : LocalResourceProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
+    public override async Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    )
     {
         await this.EnsureTranslationsAreCachedAsync(cancellationToken);
 
         // Ensure we have translations
-        if (this.Translations.Any())
+        if (this.Translations.Count > 0)
         {
             // Generate the cache key
             string bookNum = Canon.GetBookNum(book).ToString().PadLeft(2, '0');
@@ -74,7 +82,9 @@ public partial class LegacyStandardBible : LocalResourceProvider
             }
 
             // Get the translation
-            LocalTranslation? zefaniaTranslation = this.Translations.FirstOrDefault(t => t.Code == translation);
+            LocalTranslation? zefaniaTranslation = this.Translations.FirstOrDefault(t =>
+                t.Code == translation
+            );
             if (zefaniaTranslation is not null)
             {
                 // We use this to get the Psalm Superscription
@@ -82,11 +92,23 @@ public partial class LegacyStandardBible : LocalResourceProvider
                 bool getSuperscription = false;
 
                 // The next chapter codes are used to stop processing
-                string[] nextChapter = { $"{{{{{bookNum}::{chapterNumber + 1}}}}}", $"{{{{{bookNum + 1}::1}}}}" };
+                string[] nextChapter =
+                [
+                    $"{{{{{bookNum}::{chapterNumber + 1}}}}}",
+                    $"{{{{{bookNum + 1}::1}}}}"
+                ];
                 StringBuilder sb = new StringBuilder();
-                await foreach (string line in File.ReadLinesAsync(Path.Combine(this.Options.Directory, zefaniaTranslation.Filename), cancellationToken))
+                await foreach (
+                    string line in File.ReadLinesAsync(
+                        Path.Combine(this.Options.Directory, zefaniaTranslation.Filename),
+                        cancellationToken
+                    )
+                )
                 {
-                    if (getSuperscription && line.StartsWith("<SS>", StringComparison.OrdinalIgnoreCase))
+                    if (
+                        getSuperscription
+                        && line.StartsWith("<SS>", StringComparison.OrdinalIgnoreCase)
+                    )
                     {
                         sb.AppendLine($"{FormatLine(line)}");
                     }
@@ -95,8 +117,10 @@ public partial class LegacyStandardBible : LocalResourceProvider
                         sb.AppendLine(FormatLine(line));
                         getSuperscription = false;
                     }
-                    else if (line.Contains(nextChapter.First(), StringComparison.OrdinalIgnoreCase)
-                             || line.Contains(nextChapter.Last(), StringComparison.OrdinalIgnoreCase))
+                    else if (
+                        line.Contains(nextChapter.First(), StringComparison.OrdinalIgnoreCase)
+                        || line.Contains(nextChapter.Last(), StringComparison.OrdinalIgnoreCase)
+                    )
                     {
                         // We have retrieved the last line of the chapter
                         break;
@@ -120,7 +144,6 @@ public partial class LegacyStandardBible : LocalResourceProvider
                 this.Cache.TryAdd(cacheKey, chapter);
                 return chapter;
             }
-
         }
 
         // Default to an empty chapter
@@ -153,9 +176,12 @@ public partial class LegacyStandardBible : LocalResourceProvider
     /// <returns>The line for display.</returns>
     private static string FormatLine(string line)
     {
-        line = VerseNumberRegex().Replace(line, "$1  ")
-            .Replace("[", "［").Replace("]", "］")
-            .Replace("{", "[").Replace("}", "]")
+        line = VerseNumberRegex()
+            .Replace(line, "$1  ")
+            .Replace("[", "［")
+            .Replace("]", "］")
+            .Replace("{", "[")
+            .Replace("}", "]")
             .Replace("--", "–")
             .Replace("+", string.Empty);
         line = UnusedCodesRegex().Replace(line, string.Empty);

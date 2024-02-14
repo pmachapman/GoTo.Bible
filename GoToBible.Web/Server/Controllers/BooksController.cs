@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="BooksController.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -19,18 +19,12 @@ using Microsoft.AspNetCore.Mvc;
 /// <seealso cref="ControllerBase" />
 [ApiController]
 [Route("v1/[controller]")]
-public class BooksController : ControllerBase
+public class BooksController(IEnumerable<IProvider> providers) : ControllerBase
 {
     /// <summary>
     /// The providers.
     /// </summary>
-    private readonly IEnumerable<IProvider> providers;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BooksController" /> class.
-    /// </summary>
-    /// <param name="providers">The providers.</param>
-    public BooksController(IEnumerable<IProvider> providers) => this.providers = providers;
+    private readonly IEnumerable<IProvider> providers = providers;
 
     /// <summary>
     /// GET: <c>/v1/Books?translation={translation_id}&amp;provider={provider_id}&amp;includeChapters={true_or_false}</c>.
@@ -43,7 +37,12 @@ public class BooksController : ControllerBase
     /// The list of the books in the translation.
     /// </returns>
     [HttpGet]
-    public async IAsyncEnumerable<Book> Get(string provider, string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Book> Get(
+        string provider,
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         IProvider? bookProvider = this.providers.SingleOrDefault(p => p.Id == provider);
         if (bookProvider is null)
@@ -51,7 +50,9 @@ public class BooksController : ControllerBase
             yield break;
         }
 
-        await foreach (Book book in bookProvider.GetBooksAsync(translation, includeChapters, cancellationToken))
+        await foreach (
+            Book book in bookProvider.GetBooksAsync(translation, includeChapters, cancellationToken)
+        )
         {
             yield return book;
         }
