@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -62,7 +62,11 @@ public static partial class ExtensionMethods
     /// <param name="value">The substring to count.</param>
     /// <param name="stringComparison">The string comparison type.</param>
     /// <returns>The number of occurrences of the substring within the string.</returns>
-    public static int CountOccurrences(this string text, string value, StringComparison stringComparison)
+    public static int CountOccurrences(
+        this string text,
+        string value,
+        StringComparison stringComparison
+    )
     {
         // Clean up the text and value
         text = $" {text.Trim()} ";
@@ -94,7 +98,8 @@ public static partial class ExtensionMethods
         StringBuilder sb = new StringBuilder(field);
 
         // Fields with leading/trailing whitespace must be embedded in double quotes
-        bool embedInQuotes = sb.Length > 0 && (sb[0] == ' ' || sb[0] == '\t' || sb[^1] == ' ' || sb[^1] == '\t');
+        bool embedInQuotes =
+            sb.Length > 0 && (sb[0] == ' ' || sb[0] == '\t' || sb[^1] == ' ' || sb[^1] == '\t');
 
         // If we have not yet found a reason to embed in quotes
         if (!embedInQuotes)
@@ -122,7 +127,12 @@ public static partial class ExtensionMethods
     /// <param name="approximatePosition">The approximate position of this occurrence. This should be an underestimate at worst.</param>
     /// <param name="stringComparison">The string comparison type.</param>
     /// <returns>The occurrence number of the substring within the string.</returns>
-    public static int GetOccurrence(this string text, string value, int approximatePosition, StringComparison stringComparison)
+    public static int GetOccurrence(
+        this string text,
+        string value,
+        int approximatePosition,
+        StringComparison stringComparison
+    )
     {
         // Clean up the text and value
         text = $" {text.Trim()} ";
@@ -157,7 +167,8 @@ public static partial class ExtensionMethods
     ///  - brackets, see https://goto.bible/Acts.19_41/SBLGNT (SBL Greek New Testament)
     /// NOTE: The input must be directly from a translation.
     /// </returns>
-    public static string GetVerseNumber(this string line) => line.Contains(' ') ? line[..line.IndexOf(' ')].Trim() : string.Empty;
+    public static string GetVerseNumber(this string line) =>
+        line.Contains(' ') ? line[..line.IndexOf(' ')].Trim() : string.Empty;
 
     /// <summary>
     /// Determines whether this is a valid verse number.
@@ -183,7 +194,11 @@ public static partial class ExtensionMethods
     public static bool MatchesHighlightedVerses(this string verseNumber, string[] highlightedVerses)
     {
         // Ensure that the verse number is valid, and there are highlighted verses
-        if (string.IsNullOrWhiteSpace(verseNumber) || !highlightedVerses.Any() || !verseNumber.IsValidVerseNumber())
+        if (
+            string.IsNullOrWhiteSpace(verseNumber)
+            || highlightedVerses is []
+            || !verseNumber.IsValidVerseNumber()
+        )
         {
             return false;
         }
@@ -196,7 +211,7 @@ public static partial class ExtensionMethods
         {
             string[] verseNumbers = verseNumber.Split('-', StringSplitOptions.RemoveEmptyEntries);
             return verseNumbers.First().MatchesHighlightedVerses(highlightedVerses)
-                   || verseNumbers.Last().MatchesHighlightedVerses(highlightedVerses);
+                || verseNumbers.Last().MatchesHighlightedVerses(highlightedVerses);
         }
 
         // We need to pad the numbers to account for letters
@@ -233,7 +248,9 @@ public static partial class ExtensionMethods
             else if (highlightedVerses[i] == "-" && i > 0 && i < highlightedVerses.Length - 1)
             {
                 // Check inside this range
-                bool matches = string.CompareOrdinal(verseNumber, highlightedVerses[i - 1]) > 0 && string.CompareOrdinal(verseNumber, highlightedVerses[i + 1]) < 0;
+                bool matches =
+                    string.CompareOrdinal(verseNumber, highlightedVerses[i - 1]) > 0
+                    && string.CompareOrdinal(verseNumber, highlightedVerses[i + 1]) < 0;
                 if (matches)
                 {
                     return matches;
@@ -261,19 +278,23 @@ public static partial class ExtensionMethods
     /// <remarks>
     /// Full-width square brackets are replaced with regular square brackets.
     /// </remarks>
-    public static string RenderItalics(this string line, string italicsTag = "em")
-        => line.Replace("[[", "<pre>").Replace("]]", "</pre>")
-            .Replace("[", $"<{italicsTag}>").Replace("]", $"</{italicsTag}>")
-            .Replace("<pre>", "[[").Replace("</pre>", "]]")
-            .Replace("［", "[").Replace("］", "]");
+    public static string RenderItalics(this string line, string italicsTag = "em") =>
+        line.Replace("[[", "<pre>")
+            .Replace("]]", "</pre>")
+            .Replace("[", $"<{italicsTag}>")
+            .Replace("]", $"</{italicsTag}>")
+            .Replace("<pre>", "[[")
+            .Replace("</pre>", "]]")
+            .Replace("［", "[")
+            .Replace("］", "]");
 
     /// <summary>
     /// Strips the HTML tags from the string.
     /// </summary>
     /// <param name="input">The input string.</param>
     /// <returns>The input string without HTML tags.</returns>
-    public static string StripHtml(this string input)
-        => HtmlTagRegex().Replace(input, string.Empty);
+    public static string StripHtml(this string input) =>
+        HtmlTagRegex().Replace(input, string.Empty);
 
     /// <summary>
     /// Renders the supplied words in normal type.
@@ -285,9 +306,11 @@ public static partial class ExtensionMethods
     /// <remarks>
     /// Full-width square brackets are replaced with regular square brackets.
     /// </remarks>
-    public static string StripItalics(this string line)
-        => line.Replace("[", string.Empty).Replace("]", string.Empty)
-            .Replace("［", "[").Replace("］", "]");
+    public static string StripItalics(this string line) =>
+        line.Replace("[", string.Empty)
+            .Replace("]", string.Empty)
+            .Replace("［", "[")
+            .Replace("］", "]");
 
     /// <summary>
     /// Gets a unique name for the translation.
@@ -297,24 +320,50 @@ public static partial class ExtensionMethods
     /// <returns>
     /// The unique name.
     /// </returns>
-    public static string UniqueName(this Translation translation, IEnumerable<Translation> translations)
+    public static string UniqueName(
+        this Translation translation,
+        IEnumerable<Translation> translations
+    )
     {
-        IEnumerable<Translation> enumerable = translations as Translation[] ?? translations.ToArray();
-        if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)) <= 1)
+        IEnumerable<Translation> enumerable =
+            translations as Translation[] ?? translations.ToArray();
+        if (
+            enumerable.Count(t =>
+                string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
+            ) <= 1
+        )
         {
             return translation.Name;
         }
-        else if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Year == translation.Year && t.Year > 0) == 1)
+        else if (
+            enumerable.Count(t =>
+                string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
+                && t.Year == translation.Year
+                && t.Year > 0
+            ) == 1
+        )
         {
             return $"{translation.Name} ({translation.Year})";
         }
-        else if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase) && t.Language == translation.Language) == 1)
+        else if (
+            enumerable.Count(t =>
+                string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
+                && t.Language == translation.Language
+            ) == 1
+        )
         {
             // English translation names (i.e. King James Version) have priority
-            return translation.Language == "English" ? translation.Name : $"{translation.Language} {translation.Name}";
+            return translation.Language == "English"
+                ? translation.Name
+                : $"{translation.Language} {translation.Name}";
         }
-        else if (enumerable.Count(t => string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
-                                       && t.Dialect == translation.Dialect && !string.IsNullOrWhiteSpace(t.Dialect)) == 1)
+        else if (
+            enumerable.Count(t =>
+                string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)
+                && t.Dialect == translation.Dialect
+                && !string.IsNullOrWhiteSpace(t.Dialect)
+            ) == 1
+        )
         {
             return $"{translation.Name} ({translation.Dialect})";
         }
@@ -338,6 +387,9 @@ public static partial class ExtensionMethods
     /// <remarks>
     /// This includes support for verses with letters, hypenated verses, and verses enclosed in brackets.
     /// </remarks>
-    [GeneratedRegex(@"([\[]((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))[\]])|((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))", RegexOptions.Compiled)]
+    [GeneratedRegex(
+        @"([\[]((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))[\]])|((([0-9]+[a-z]?)-([0-9]+[a-z]?))|([0-9]+[a-z]?))",
+        RegexOptions.Compiled
+    )]
     private static partial Regex VerseNumberRegex();
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ChapterReference.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -19,9 +19,7 @@ public record ChapterReference
     /// <remarks>
     /// This returns an invalid chapter reference.
     /// </remarks>
-    public ChapterReference()
-    {
-    }
+    public ChapterReference() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ChapterReference"/> class.
@@ -31,7 +29,13 @@ public record ChapterReference
     public ChapterReference(string book, int chapter)
     {
         // Special case for Psalm 151, as it is often a separate book
-        if (book.Replace(" ", string.Empty).ToLowerInvariant() == "psalm151")
+        if (
+            string.Equals(
+                book.Replace(" ", string.Empty),
+                "psalm151",
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
         {
             this.Book = "Psalm";
             this.ChapterNumber = 151;
@@ -51,7 +55,10 @@ public record ChapterReference
     {
         if (!string.IsNullOrWhiteSpace(bookAndChapter))
         {
-            int lastSpaceIndex = bookAndChapter.LastIndexOf(" ", StringComparison.OrdinalIgnoreCase);
+            int lastSpaceIndex = bookAndChapter.LastIndexOf(
+                " ",
+                StringComparison.OrdinalIgnoreCase
+            );
             if (lastSpaceIndex > -1)
             {
                 this.Book = bookAndChapter[..lastSpaceIndex];
@@ -106,5 +113,6 @@ public record ChapterReference
     public bool IsValid => !string.IsNullOrWhiteSpace(this.Book);
 
     /// <inheritdoc/>
-    public override string ToString() => this.IsValid ? $"{this.Book} {this.ChapterNumber}" : string.Empty;
+    public override string ToString() =>
+        this.IsValid ? $"{this.Book} {this.ChapterNumber}" : string.Empty;
 }

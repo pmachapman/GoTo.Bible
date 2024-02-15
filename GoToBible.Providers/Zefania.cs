@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Zefania.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -24,21 +24,12 @@ using Microsoft.Extensions.Options;
 /// The Zefania XML Provider.
 /// </summary>
 /// <seealso cref="LocalResourceProvider" />
-public class Zefania : LocalResourceProvider
+public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProvider(options)
 {
     /// <summary>
     /// A value indicating whether or not this instance has been disposed.
     /// </summary>
     private bool disposedValue;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Zefania"/> class.
-    /// </summary>
-    /// <param name="options">The options.</param>
-    /// <exception cref="ArgumentException">Invalid Resource Directory - options.</exception>
-    public Zefania(IOptions<LocalResourceOptions> options) : base(options)
-    {
-    }
 
     /// <summary>
     /// Finalizes an instance of the <see cref="Zefania"/> class.
@@ -63,15 +54,21 @@ public class Zefania : LocalResourceProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         await this.EnsureTranslationsAreCachedAsync(cancellationToken);
 
         // Ensure we have translations
-        if (this.Translations.Any())
+        if (this.Translations.Count > 0)
         {
             // Get the translation
-            LocalTranslation? zefaniaTranslation = this.Translations.FirstOrDefault(t => t.Code == translation);
+            LocalTranslation? zefaniaTranslation = this.Translations.FirstOrDefault(t =>
+                t.Code == translation
+            );
             if (zefaniaTranslation is not null)
             {
                 // Make sure the file is extracted, if it is a zip file
@@ -86,12 +83,17 @@ public class Zefania : LocalResourceProvider
                         if (!string.IsNullOrWhiteSpace(bookName))
                         {
                             // Create the list of chapters
-                            List<ChapterReference> chapters = new List<ChapterReference>();
+                            List<ChapterReference> chapters = [];
                             if (includeChapters)
                             {
                                 foreach (XmlNode chapterNode in bookNode.ChildNodes)
                                 {
-                                    if (int.TryParse(chapterNode.Attributes?["cnumber"]?.InnerText, out int chapterNumber))
+                                    if (
+                                        int.TryParse(
+                                            chapterNode.Attributes?["cnumber"]?.InnerText,
+                                            out int chapterNumber
+                                        )
+                                    )
                                     {
                                         chapters.Add(new ChapterReference(bookName, chapterNumber));
                                     }
@@ -112,12 +114,17 @@ public class Zefania : LocalResourceProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
+    public override async Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    )
     {
         await this.EnsureTranslationsAreCachedAsync(cancellationToken);
 
         // Ensure we have translations
-        if (this.Translations.Any())
+        if (this.Translations.Count > 0)
         {
             // Generate the cache key
             string cacheKey = $"{translation}-{book}-{chapterNumber}";
@@ -127,7 +134,9 @@ public class Zefania : LocalResourceProvider
             }
 
             // Get the translation
-            LocalTranslation? zefaniaTranslation = this.Translations.FirstOrDefault(t => t.Code == translation);
+            LocalTranslation? zefaniaTranslation = this.Translations.FirstOrDefault(t =>
+                t.Code == translation
+            );
             if (zefaniaTranslation is not null)
             {
                 // Make sure the file is extracted, if it is a zip file
@@ -142,23 +151,40 @@ public class Zefania : LocalResourceProvider
                     {
                         foreach (XmlNode bookNode in xmlDocument.DocumentElement.ChildNodes)
                         {
-                            if (string.Equals(bookNode.Attributes?["bname"]?.InnerText, book, StringComparison.InvariantCultureIgnoreCase))
+                            if (
+                                string.Equals(
+                                    bookNode.Attributes?["bname"]?.InnerText,
+                                    book,
+                                    StringComparison.InvariantCultureIgnoreCase
+                                )
+                            )
                             {
                                 if (bookNode.HasChildNodes)
                                 {
                                     foreach (XmlNode chapterNode in bookNode.ChildNodes)
                                     {
-                                        if (chapterNode.Attributes?["cnumber"]?.InnerText == chapterNumber.ToString(CultureInfo.InvariantCulture))
+                                        if (
+                                            chapterNode.Attributes?["cnumber"]?.InnerText
+                                            == chapterNumber.ToString(CultureInfo.InvariantCulture)
+                                        )
                                         {
                                             if (chapterNode.HasChildNodes)
                                             {
                                                 // Get all verses in this chapter
                                                 StringBuilder sb = new StringBuilder();
-                                                foreach (XmlNode verseNode in chapterNode.ChildNodes)
+                                                foreach (
+                                                    XmlNode verseNode in chapterNode.ChildNodes
+                                                )
                                                 {
-                                                    sb.Append(verseNode.Attributes?["vnumber"]?.InnerText);
+                                                    sb.Append(
+                                                        verseNode.Attributes?["vnumber"]?.InnerText
+                                                    );
                                                     sb.Append("  ");
-                                                    sb.Append(verseNode.InnerText.Replace("-- ", "–").Trim());
+                                                    sb.Append(
+                                                        verseNode
+                                                            .InnerText.Replace("-- ", "–")
+                                                            .Trim()
+                                                    );
                                                     sb.AppendLine(" ");
                                                 }
 
@@ -169,7 +195,10 @@ public class Zefania : LocalResourceProvider
                                                     Text = sb.ToString(),
                                                     Translation = translation,
                                                 };
-                                                await this.GetPreviousAndNextChaptersAsync(chapter, cancellationToken);
+                                                await this.GetPreviousAndNextChaptersAsync(
+                                                    chapter,
+                                                    cancellationToken
+                                                );
                                                 this.Cache.TryAdd(cacheKey, chapter);
                                                 return chapter;
                                             }
@@ -206,19 +235,30 @@ public class Zefania : LocalResourceProvider
                 // dispose managed state (managed objects)
 
                 // Make sure we have the translations cache set up
-                if (this.Translations.Any())
+                if (this.Translations.Count > 0)
                 {
                     foreach (LocalTranslation translation in this.Translations)
                     {
                         // Make sure the translation file is is a zip file
-                        string fileExtension = Path.GetExtension(translation.Filename).ToUpperInvariant();
+                        string fileExtension = Path.GetExtension(translation.Filename)
+                            .ToUpperInvariant();
                         if (fileExtension == ".ZIP")
                         {
                             // Check if a non-strongs version is in a strongs file
-                            string xmlFilename = Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
-                            if (translation.Filename.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
+                            string xmlFilename =
+                                Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
+                            if (
+                                translation.Filename.Contains(
+                                    "_STRONG",
+                                    StringComparison.OrdinalIgnoreCase
+                                ) && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename))
+                            )
                             {
-                                xmlFilename = xmlFilename.Replace("_strong", string.Empty, StringComparison.OrdinalIgnoreCase);
+                                xmlFilename = xmlFilename.Replace(
+                                    "_strong",
+                                    string.Empty,
+                                    StringComparison.OrdinalIgnoreCase
+                                );
                             }
 
                             // Clean up the file
@@ -255,7 +295,10 @@ public class Zefania : LocalResourceProvider
             {
                 try
                 {
-                    ZipFile.ExtractToDirectory(Path.Combine(this.Options.Directory, fileName), this.Options.Directory);
+                    ZipFile.ExtractToDirectory(
+                        Path.Combine(this.Options.Directory, fileName),
+                        this.Options.Directory
+                    );
                 }
                 catch (IOException)
                 {
@@ -264,9 +307,16 @@ public class Zefania : LocalResourceProvider
             }
 
             // Check if a non-strongs version is in a strongs file
-            if (fileName.ToUpperInvariant().Contains("_STRONG") && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
+            if (
+                fileName.Contains("_STRONG", StringComparison.OrdinalIgnoreCase)
+                && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename))
+            )
             {
-                xmlFilename = xmlFilename.Replace("_strong", string.Empty, StringComparison.OrdinalIgnoreCase);
+                xmlFilename = xmlFilename.Replace(
+                    "_strong",
+                    string.Empty,
+                    StringComparison.OrdinalIgnoreCase
+                );
             }
 
             // Update the filename in our copy of the object

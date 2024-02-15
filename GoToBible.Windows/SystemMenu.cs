@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SystemMenu.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -25,12 +25,12 @@ public class SystemMenu
     /// <summary>
     /// The actions.
     /// </summary>
-    private readonly IList<Action> actions = new List<Action>();
+    private readonly List<Action> actions = [];
 
     /// <summary>
     /// The pending menu items.
     /// </summary>
-    private readonly List<MenuItem> pendingMenuItems = new List<MenuItem>();
+    private readonly List<MenuItem> pendingMenuItems = [];
 
     /// <summary>
     /// The handle on the system menu.
@@ -71,19 +71,26 @@ public class SystemMenu
         if (!this.form.IsHandleCreated)
         {
             // The form is not yet created, queue the command for later addition
-            this.pendingMenuItems.Add(new MenuItem
-            {
-                Id = id,
-                Text = text,
-                Separator = separatorBeforeCommand,
-            });
+            this.pendingMenuItems.Add(
+                new MenuItem
+                {
+                    Id = id,
+                    Text = text,
+                    Separator = separatorBeforeCommand,
+                }
+            );
         }
         else
         {
             // The form is created, add the command now
             if (separatorBeforeCommand)
             {
-                NativeMethods.AppendMenu(this.hSysMenu, NativeMethods.MF_SEPARATOR, 0, string.Empty);
+                NativeMethods.AppendMenu(
+                    this.hSysMenu,
+                    NativeMethods.MF_SEPARATOR,
+                    0,
+                    string.Empty
+                );
             }
 
             NativeMethods.AppendMenu(this.hSysMenu, NativeMethods.MF_STRING, id, text);
@@ -123,10 +130,20 @@ public class SystemMenu
         {
             if (menuItem.Separator)
             {
-                NativeMethods.AppendMenu(this.hSysMenu, NativeMethods.MF_SEPARATOR, 0, string.Empty);
+                NativeMethods.AppendMenu(
+                    this.hSysMenu,
+                    NativeMethods.MF_SEPARATOR,
+                    0,
+                    string.Empty
+                );
             }
 
-            NativeMethods.AppendMenu(this.hSysMenu, NativeMethods.MF_STRING, menuItem.Id, menuItem.Text);
+            NativeMethods.AppendMenu(
+                this.hSysMenu,
+                NativeMethods.MF_STRING,
+                menuItem.Id,
+                menuItem.Text
+            );
         }
 
         this.pendingMenuItems.Clear();

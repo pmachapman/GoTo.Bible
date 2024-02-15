@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="GoToBibleApi.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -30,7 +30,8 @@ public class GoToBibleApi : WebApiProvider
     /// </summary>
     /// <param name="cache">The cache.</param>
     public GoToBibleApi(IDistributedCache cache)
-        : base(cache) => this.HttpClient.BaseAddress = new Uri("https://api.goto.bible/v1/", UriKind.Absolute);
+        : base(cache) =>
+        this.HttpClient.BaseAddress = new Uri("https://api.goto.bible/v1/", UriKind.Absolute);
 
     /// <inheritdoc/>
     public override string Id => nameof(GoToBibleApi);
@@ -39,25 +40,40 @@ public class GoToBibleApi : WebApiProvider
     public override string Name => "GoTo.Bible API";
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
-        await foreach (Translation providerTranslation in this.GetTranslationsAsync(cancellationToken))
+        await foreach (
+            Translation providerTranslation in this.GetTranslationsAsync(cancellationToken)
+        )
         {
             if (providerTranslation.Code == translation)
             {
                 string urlProvider = HttpUtility.UrlEncode(providerTranslation.Provider);
                 string urlTranslation = HttpUtility.UrlEncode(providerTranslation.Code);
-                string url = $"Books?provider={urlProvider}&translation={urlTranslation}&includeChapters=false";
+                string url =
+                    $"Books?provider={urlProvider}&translation={urlTranslation}&includeChapters=false";
                 string cacheKey = this.GetCacheKey(url);
                 string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
                 if (string.IsNullOrWhiteSpace(json))
                 {
-                    using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+                    using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                        url,
+                        cancellationToken
+                    );
                     if (response.IsSuccessStatusCode)
                     {
                         json = await response.Content.ReadAsStringAsync(cancellationToken);
-                        await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                        await this.Cache.SetStringAsync(
+                            cacheKey,
+                            json,
+                            CacheEntryOptions,
+                            cancellationToken
+                        );
                     }
                     else
                     {
@@ -66,8 +82,11 @@ public class GoToBibleApi : WebApiProvider
                     }
                 }
 
-                JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                foreach (Book book in JsonSerializer.Deserialize<Book[]>(json, options) ?? Array.Empty<Book>())
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                foreach (Book book in JsonSerializer.Deserialize<Book[]>(json, options) ?? [])
                 {
                     yield return book;
                 }
@@ -79,10 +98,17 @@ public class GoToBibleApi : WebApiProvider
 
     /// <inheritdoc/>
     /// <remarks>This method is not implemented, and only for use with the GotoBibleApiRenderer.</remarks>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default) => await Task.FromResult(new Chapter());
+    public override async Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    ) => await Task.FromResult(new Chapter());
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         const string url = "Translations";
         string cacheKey = this.GetCacheKey(url);
@@ -90,11 +116,19 @@ public class GoToBibleApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    json,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -103,8 +137,14 @@ public class GoToBibleApi : WebApiProvider
             }
         }
 
-        JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        foreach (Translation translation in JsonSerializer.Deserialize<Translation[]>(json, options) ?? Array.Empty<Translation>())
+        JsonSerializerOptions options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        foreach (
+            Translation translation in JsonSerializer.Deserialize<Translation[]>(json, options)
+                ?? []
+        )
         {
             yield return translation;
         }

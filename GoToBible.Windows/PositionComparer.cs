@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="PositionComparer.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -13,19 +13,13 @@ using System.Collections.Generic;
 /// A string comparer based on the position of a string in the list specified in the constructor.
 /// </summary>
 /// <typeparam name="T">The type.</typeparam>
-public class PositionComparer<T> : IComparer<T>
+public class PositionComparer<T>(IList<T> orderBy) : IComparer<T>
     where T : IComparable<T>
 {
     /// <summary>
     /// The list to order by.
     /// </summary>
-    private readonly IList<T> orderBy;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PositionComparer{T}" /> class.
-    /// </summary>
-    /// <param name="orderBy">The list to order by.</param>
-    public PositionComparer(IList<T> orderBy) => this.orderBy = orderBy;
+    private readonly IList<T> orderBy = orderBy;
 
     /// <inheritdoc />
     public int Compare(T? x, T? y)
@@ -34,15 +28,28 @@ public class PositionComparer<T> : IComparer<T>
         {
             return this.orderBy.IndexOf(x).CompareTo(this.orderBy.IndexOf(y));
         }
-        else if (x is not null && y is not null && !this.orderBy.Contains(x) && !this.orderBy.Contains(y))
+        else if (
+            x is not null
+            && y is not null
+            && !this.orderBy.Contains(x)
+            && !this.orderBy.Contains(y)
+        )
         {
             return x.CompareTo(y);
         }
-        else if (x is not null && this.orderBy.Contains(x) && (y is null || !this.orderBy.Contains(y)))
+        else if (
+            x is not null
+            && this.orderBy.Contains(x)
+            && (y is null || !this.orderBy.Contains(y))
+        )
         {
             return 1;
         }
-        else if (y is not null && this.orderBy.Contains(y) && (x is null || !this.orderBy.Contains(x)))
+        else if (
+            y is not null
+            && this.orderBy.Contains(y)
+            && (x is null || !this.orderBy.Contains(x))
+        )
         {
             return -1;
         }

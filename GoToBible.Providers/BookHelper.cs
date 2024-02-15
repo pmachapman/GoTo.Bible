@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="BookHelper.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -21,9 +21,7 @@ internal class BookHelper
     /// <summary>
     /// Initializes a new instance of the <see cref="BookHelper"/> class.
     /// </summary>
-    public BookHelper()
-    {
-    }
+    protected BookHelper() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BookHelper"/> class.
@@ -36,17 +34,19 @@ internal class BookHelper
     /// </summary>
     /// <param name="bookName">Name of the book.</param>
     /// <param name="chapters">The chapters.</param>
-    public BookHelper(string bookName, int chapters) => this.BookChapters = new OrderedDictionary { [bookName.ToLowerInvariant()] = chapters };
+    public BookHelper(string bookName, int chapters) =>
+        this.BookChapters = new OrderedDictionary { [bookName.ToLowerInvariant()] = chapters };
 
     /// <summary>
     /// Gets the numbers of chapters in each book.
     /// </summary>
-    protected virtual OrderedDictionary BookChapters { get; } = new OrderedDictionary();
+    protected virtual OrderedDictionary BookChapters { get; } = [];
 
     /// <summary>
     /// Gets the book names.
     /// </summary>
-    private ReadOnlyCollection<string> BookNames => this.BookChapters.Keys.Cast<string>().ToList().AsReadOnly();
+    private ReadOnlyCollection<string> BookNames =>
+        this.BookChapters.Keys.Cast<string>().ToList().AsReadOnly();
 
     /// <summary>
     /// Gets the book number.
@@ -66,19 +66,18 @@ internal class BookHelper
     {
         foreach (string bookName in this.BookNames)
         {
-            string capitalisedBookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(bookName);
+            string capitalisedBookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(
+                bookName
+            );
             if (!includeChapters)
             {
                 // Create and return the book
-                yield return new Book
-                {
-                    Name = capitalisedBookName,
-                };
+                yield return new Book { Name = capitalisedBookName, };
             }
             else if (this.BookChapters[bookName] is int lastChapter)
             {
                 // We need to include the chapters
-                List<ChapterReference> chapters = new List<ChapterReference>();
+                List<ChapterReference> chapters = [];
                 for (int chapter = 1; chapter <= lastChapter; chapter++)
                 {
                     chapters.Add(new ChapterReference(capitalisedBookName, chapter));
@@ -125,7 +124,10 @@ internal class BookHelper
             }
             else
             {
-                return new ChapterReference(this.BookNames[this.BookNames.IndexOf(bookLower) + 1], 1);
+                return new ChapterReference(
+                    this.BookNames[this.BookNames.IndexOf(bookLower) + 1],
+                    1
+                );
             }
         }
         else
@@ -144,7 +146,9 @@ internal class BookHelper
     public int GetNumberOfChapters(string book)
     {
         string bookLower = book.ToLowerInvariant();
-        return this.BookChapters.Contains(bookLower) && this.BookChapters[bookLower] is int chapters ? chapters : 0;
+        return this.BookChapters.Contains(bookLower) && this.BookChapters[bookLower] is int chapters
+            ? chapters
+            : 0;
     }
 
     /// <summary>
@@ -216,6 +220,9 @@ internal class BookHelper
             chapter = 1;
         }
 
-        return this.BookChapters.Contains(bookLower) && this.BookChapters[bookLower] is int chapters && chapter <= chapters && chapter > 0;
+        return this.BookChapters.Contains(bookLower)
+            && this.BookChapters[bookLower] is int chapters
+            && chapter <= chapters
+            && chapter > 0;
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="VerseComparer.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -117,7 +117,9 @@ public partial class VerseComparer : IComparer<string>
                 return -1;
             }
         }
-        else if (VerseNumberWithLetterRegex().IsMatch(x!) && VerseNumberWithLetterRegex().IsMatch(y!))
+        else if (
+            VerseNumberWithLetterRegex().IsMatch(x!) && VerseNumberWithLetterRegex().IsMatch(y!)
+        )
         {
             if (!int.TryParse(x![..^1], out a) || !int.TryParse(y![..^1], out b))
             {
@@ -133,12 +135,13 @@ public partial class VerseComparer : IComparer<string>
                 return a.CompareTo(b);
             }
         }
-        else if (VerseRangeRegex().IsMatch(x!)
-                 && VerseRangeRegex().IsMatch(y!))
+        else if (VerseRangeRegex().IsMatch(x!) && VerseRangeRegex().IsMatch(y!))
         {
             // Get the first digits
-            if (!int.TryParse(new string(x!.TakeWhile(char.IsDigit).ToArray()), out a)
-                || !int.TryParse(new string(y!.TakeWhile(char.IsDigit).ToArray()), out b))
+            if (
+                !int.TryParse(new string(x!.TakeWhile(char.IsDigit).ToArray()), out a)
+                || !int.TryParse(new string(y!.TakeWhile(char.IsDigit).ToArray()), out b)
+            )
             {
                 // This should not occur, based on the regex
                 return string.Compare(x, y, StringComparison.Ordinal);

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Program.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ public static class Program
     /// <value>
     /// The forms.
     /// </value>
-    public static List<FormMain> Forms { get; } = new List<FormMain>();
+    public static List<FormMain> Forms { get; } = [];
 
     /// <summary>
     /// Gets the program title.
@@ -32,7 +32,9 @@ public static class Program
     /// <value>
     /// The program title.
     /// </value>
-    public static string Title => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? @"GoTo.Bible";
+    public static string Title =>
+        Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyTitleAttribute>()?.Title
+        ?? @"GoTo.Bible";
 
     /// <summary>
     /// The main entry point for the application.

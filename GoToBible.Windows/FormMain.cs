@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FormMain.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -8,7 +8,6 @@ namespace GoToBible.Windows;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
@@ -41,9 +40,14 @@ using Microsoft.Web.WebView2.WinForms;
 public sealed partial class FormMain : Form
 {
     /// <summary>
+    /// An array containing a comma.
+    /// </summary>
+    private static readonly char[] CommaSeparated = [','];
+
+    /// <summary>
     /// The commentaries.
     /// </summary>
-    private readonly List<Translation> commentaries = new List<Translation>();
+    private readonly List<Translation> commentaries = [];
 
     /// <summary>
     /// Whether or not this is the primary window.
@@ -53,7 +57,7 @@ public sealed partial class FormMain : Form
     /// <summary>
     /// The providers.
     /// </summary>
-    private readonly List<IProvider> providers = new List<IProvider>();
+    private readonly List<IProvider> providers = [];
 
     /// <summary>
     /// The system menu.
@@ -63,12 +67,14 @@ public sealed partial class FormMain : Form
     /// <summary>
     /// The translations.
     /// </summary>
-    private readonly List<Translation> translations = new List<Translation>();
+    private readonly List<Translation> translations = [];
 
     /// <summary>
     /// The cache.
     /// </summary>
-    private IDistributedCache cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
+    private IDistributedCache cache = new MemoryDistributedCache(
+        Options.Create(new MemoryDistributedCacheOptions())
+    );
 
     /// <summary>
     /// The rendered passage.
@@ -108,8 +114,13 @@ public sealed partial class FormMain : Form
         this.InitializeComponent();
 
         // Set the program caption
-        object[] productAttributes = typeof(FormMain).Assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
-        this.Text = (productAttributes.FirstOrDefault() as AssemblyProductAttribute)?.Product ?? "GoTo.Bible";
+        object[] productAttributes = typeof(FormMain).Assembly.GetCustomAttributes(
+            typeof(AssemblyProductAttribute),
+            true
+        );
+        this.Text =
+            (productAttributes.FirstOrDefault() as AssemblyProductAttribute)?.Product
+            ?? "GoTo.Bible";
 
         // Setup the system menu
         this.systemMenu = new SystemMenu(this);
@@ -120,15 +131,30 @@ public sealed partial class FormMain : Form
         this.ToolStripNavigate.Dock = DockStyle.None;
         this.ToolStripNavigate.Location = new Point(0, 0);
         this.ToolStripPassage.Dock = DockStyle.None;
-        this.ToolStripPassage.Location = new Point(this.ToolStripNavigate.Left + this.ToolStripNavigate.Width, 0);
+        this.ToolStripPassage.Location = new Point(
+            this.ToolStripNavigate.Left + this.ToolStripNavigate.Width,
+            0
+        );
         this.ToolStripTranslation.Dock = DockStyle.None;
-        this.ToolStripTranslation.Location = new Point(this.ToolStripPassage.Left + this.ToolStripPassage.Width, 0);
+        this.ToolStripTranslation.Location = new Point(
+            this.ToolStripPassage.Left + this.ToolStripPassage.Width,
+            0
+        );
         this.ToolStripResource.Dock = DockStyle.None;
-        this.ToolStripResource.Location = new Point(this.ToolStripTranslation.Left + this.ToolStripTranslation.Width, 0);
+        this.ToolStripResource.Location = new Point(
+            this.ToolStripTranslation.Left + this.ToolStripTranslation.Width,
+            0
+        );
         this.ToolStripSettings.Dock = DockStyle.None;
-        this.ToolStripSettings.Location = new Point(this.ToolStripResource.Left + this.ToolStripResource.Width, 0);
+        this.ToolStripSettings.Location = new Point(
+            this.ToolStripResource.Left + this.ToolStripResource.Width,
+            0
+        );
         this.ToolStripExtras.Dock = DockStyle.None;
-        this.ToolStripExtras.Location = new Point(this.ToolStripSettings.Left + this.ToolStripSettings.Width, 0);
+        this.ToolStripExtras.Location = new Point(
+            this.ToolStripSettings.Left + this.ToolStripSettings.Width,
+            0
+        );
         this.ToolStripContainerMain.ResumeLayout();
 
         // Set initial button states
@@ -150,16 +176,21 @@ public sealed partial class FormMain : Form
         {
             try
             {
-                Configuration userConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+                Configuration userConfig = ConfigurationManager.OpenExeConfiguration(
+                    ConfigurationUserLevel.PerUserRoamingAndLocal
+                );
                 return Path.GetDirectoryName(userConfig.FilePath) ?? Path.GetTempPath();
             }
             catch (Exception ex)
             {
-                if (ex is ArgumentException
-                    or ConfigurationErrorsException
-                    or ConfigurationException
-                    or PathTooLongException
-                    or SecurityException)
+                if (
+                    ex
+                    is ArgumentException
+                        or ConfigurationErrorsException
+                        or ConfigurationException
+                        or PathTooLongException
+                        or SecurityException
+                )
                 {
                     return Path.GetTempPath();
                 }
@@ -289,7 +320,7 @@ public sealed partial class FormMain : Form
         }
 
         // If there are no forms left, exit
-        if (!Program.Forms.Any())
+        if (Program.Forms.Count == 0)
         {
             Application.Exit();
         }
@@ -317,22 +348,37 @@ public sealed partial class FormMain : Form
             splitterDistance = this.Width - (this.Width / 3);
         }
 
-        this.SplitContainerMain.SplitterDistance = splitterDistance;
+        try
+        {
+            this.SplitContainerMain.SplitterDistance = splitterDistance;
+        }
+        catch (InvalidOperationException) { }
 
         // Get the colours and font
-        this.ColourDialogBackground.Color = ColorTranslator.FromOle(Settings.Default.BackgroundColour);
-        this.ColourDialogBackground.CustomColors = Settings.Default.BackgroundCustomColours
-            .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        this.ColourDialogBackground.Color = ColorTranslator.FromOle(
+            Settings.Default.BackgroundColour
+        );
+        this.ColourDialogBackground.CustomColors = Settings
+            .Default.BackgroundCustomColours.Split(
+                CommaSeparated,
+                StringSplitOptions.RemoveEmptyEntries
+            )
             .Select(c => int.TryParse(c, out int i) ? i : 16777215)
             .ToArray();
-        this.ColourDialogHighlight.Color = ColorTranslator.FromOle(Settings.Default.HighlightColour);
-        this.ColourDialogHighlight.CustomColors = Settings.Default.HighlightCustomColours
-            .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        this.ColourDialogHighlight.Color = ColorTranslator.FromOle(
+            Settings.Default.HighlightColour
+        );
+        this.ColourDialogHighlight.CustomColors = Settings
+            .Default.HighlightCustomColours.Split(
+                CommaSeparated,
+                StringSplitOptions.RemoveEmptyEntries
+            )
             .Select(c => int.TryParse(c, out int i) ? i : 16777215)
             .ToArray();
         this.FontDialogMain.Color = ColorTranslator.FromOle(Settings.Default.ForegroundColour);
         TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
-        this.FontDialogMain.Font = converter.ConvertFromString(Settings.Default.Font) as Font ?? Default.Font.AsFont();
+        this.FontDialogMain.Font =
+            converter.ConvertFromString(Settings.Default.Font) as Font ?? Default.Font.AsFont();
 
         // Setup the rendering parameters for CSS
         this.parameters = new RenderingParameters
@@ -357,27 +403,36 @@ public sealed partial class FormMain : Form
         if (this.ToolStripComboBoxPrimaryTranslation.ComboBox is not null)
         {
             this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
-            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
+            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawItem +=
+                this.ToolStripComboBox_DrawItem;
+            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DropDownClosed +=
+                this.ToolStripComboBox_DropDownClosed;
         }
 
         if (this.ToolStripComboBoxSecondaryTranslation.ComboBox is not null)
         {
             this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
-            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
+            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawItem +=
+                this.ToolStripComboBox_DrawItem;
+            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DropDownClosed +=
+                this.ToolStripComboBox_DropDownClosed;
         }
 
         if (this.ToolStripComboBoxResource.ComboBox is not null)
         {
             this.ToolStripComboBoxResource.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             this.ToolStripComboBoxResource.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
-            this.ToolStripComboBoxResource.ComboBox.DropDownClosed += this.ToolStripComboBox_DropDownClosed;
+            this.ToolStripComboBoxResource.ComboBox.DropDownClosed +=
+                this.ToolStripComboBox_DropDownClosed;
         }
 
         this.ToolStripMenuItemIgnoreCase.Checked = Settings.Default.InterlinearIgnoresCase;
-        this.ToolStripMenuItemIgnoreDiacritics.Checked = Settings.Default.InterlinearIgnoresDiacritics;
-        this.ToolStripMenuItemIgnorePunctuation.Checked = Settings.Default.InterlinearIgnoresPunctuation;
+        this.ToolStripMenuItemIgnoreDiacritics.Checked = Settings
+            .Default
+            .InterlinearIgnoresDiacritics;
+        this.ToolStripMenuItemIgnorePunctuation.Checked = Settings
+            .Default
+            .InterlinearIgnoresPunctuation;
         this.ToolStripMenuItemShowItalics.Checked = Settings.Default.RenderItalics;
         this.ToolStripMenuItemDebugMode.Checked = Settings.Default.IsDebug;
         this.ToolStripMenuItemLegacyBrowser.Checked = Settings.Default.IsLegacyBrowser;
@@ -397,7 +452,12 @@ public sealed partial class FormMain : Form
         this.LoadSqlCache(Settings.Default.SqlConnectionString);
 
         // Set up the translation combo boxes
-        await this.LoadTranslationComboBoxes(this.LoadProviders(), primaryTranslation, secondaryTranslation, resource);
+        await this.LoadTranslationComboBoxes(
+            this.LoadProviders(),
+            primaryTranslation,
+            secondaryTranslation,
+            resource
+        );
 
         // Set up the autocomplete
         await this.SetupAutoCompleteAsync();
@@ -430,9 +490,15 @@ public sealed partial class FormMain : Form
     private async Task InitialiseAsync()
     {
         // Edge specific configuration
-        if (this.WebViewMain is WebView2 webViewMain && this.WebViewResource is WebView2 webViewResource)
+        if (
+            this.WebViewMain is WebView2 webViewMain
+            && this.WebViewResource is WebView2 webViewResource
+        )
         {
-            CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(SettingsDirectory, "WebView2"));
+            CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(
+                null,
+                Path.Combine(SettingsDirectory, "WebView2")
+            );
             await webViewMain.EnsureCoreWebView2Async(environment);
             await webViewResource.EnsureCoreWebView2Async(environment);
         }
@@ -515,14 +581,23 @@ public sealed partial class FormMain : Form
             }
             catch (Exception)
             {
-                if (MessageBox.Show(Resources.WebViewNotFound, $@"Cannot Start {Program.Title}", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (
+                    MessageBox.Show(
+                        Resources.WebViewNotFound,
+                        $@"Cannot Start {Program.Title}",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Exclamation
+                    ) == DialogResult.Yes
+                )
                 {
                     // Download WebView2
-                    Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
-                    {
-                        UseShellExecute = true,
-                        Verb = "open",
-                    });
+                    Process.Start(
+                        new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
+                        {
+                            UseShellExecute = true,
+                            Verb = "open",
+                        }
+                    );
                     Application.Exit();
                 }
                 else
@@ -548,13 +623,13 @@ public sealed partial class FormMain : Form
     /// <returns>
     /// The providers that were loaded.
     /// </returns>
-    private IList<IProvider> LoadProviders()
+    private List<IProvider> LoadProviders()
     {
         // Clear the providers
         this.providers.Clear();
 
         // Create a list of blocked and enabled providers
-        List<string> blockedProviders = new List<string>();
+        List<string> blockedProviders = [];
 
         if (this.IsDeveloper)
         {
@@ -562,36 +637,73 @@ public sealed partial class FormMain : Form
             string bibleApiKey = Settings.Default.BibleApiKey;
             if (!string.IsNullOrWhiteSpace(bibleApiKey))
             {
-                this.providers.Add(new BibleApi(Options.Create(new BibleApiOptions { ApiKey = bibleApiKey }), this.cache));
+                this.providers.Add(
+                    new BibleApi(
+                        Options.Create(new BibleApiOptions { ApiKey = bibleApiKey }),
+                        this.cache
+                    )
+                );
             }
 
             // Load the Biblia Provider
             string bibliaApiKey = Settings.Default.BibliaApiKey;
             if (!string.IsNullOrWhiteSpace(bibliaApiKey))
             {
-                this.providers.Add(new BibliaApi(Options.Create(new BibliaApiOptions { ApiKey = bibliaApiKey }), this.cache));
+                this.providers.Add(
+                    new BibliaApi(
+                        Options.Create(new BibliaApiOptions { ApiKey = bibliaApiKey }),
+                        this.cache
+                    )
+                );
             }
 
             // Load the Digital Bible Platform Provider
             string digitalBiblePlatformApiKey = Settings.Default.DigitalBiblePlatformApiKey;
             if (!string.IsNullOrWhiteSpace(digitalBiblePlatformApiKey))
             {
-                this.providers.Add(new DigitalBiblePlatformApi(Options.Create(new DigitalBiblePlatformApiOptions { ApiKey = digitalBiblePlatformApiKey }), this.cache));
+                this.providers.Add(
+                    new DigitalBiblePlatformApi(
+                        Options.Create(
+                            new DigitalBiblePlatformApiOptions
+                            {
+                                ApiKey = digitalBiblePlatformApiKey
+                            }
+                        ),
+                        this.cache
+                    )
+                );
             }
 
             // Load the ESV Provider
             string esvApiKey = Settings.Default.EsvApiKey;
             if (!string.IsNullOrWhiteSpace(esvApiKey))
             {
-                this.providers.Add(new EsvBible(Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }), this.cache));
+                this.providers.Add(
+                    new EsvBible(
+                        Options.Create(new EsvBibleOptions { ApiKey = esvApiKey }),
+                        this.cache
+                    )
+                );
             }
 
             // Load the providers that use Local Resources
             string localResourcesDirectory = Settings.Default.LocalResourcesDirectory;
             if (!string.IsNullOrWhiteSpace(localResourcesDirectory))
             {
-                this.providers.Add(new Zefania(Options.Create(new LocalResourceOptions { Directory = localResourcesDirectory })));
-                this.providers.Add(new LegacyStandardBible(Options.Create(new LocalResourceOptions { Directory = localResourcesDirectory })));
+                this.providers.Add(
+                    new Zefania(
+                        Options.Create(
+                            new LocalResourceOptions { Directory = localResourcesDirectory }
+                        )
+                    )
+                );
+                this.providers.Add(
+                    new LegacyStandardBible(
+                        Options.Create(
+                            new LocalResourceOptions { Directory = localResourcesDirectory }
+                        )
+                    )
+                );
             }
 
             // Load the Logos Provider
@@ -604,11 +716,16 @@ public sealed partial class FormMain : Form
             string nltApiKey = Settings.Default.NltApiKey;
             if (!string.IsNullOrWhiteSpace(nltApiKey))
             {
-                this.providers.Add(new NltBible(Options.Create(new NltBibleOptions { ApiKey = nltApiKey }), this.cache));
+                this.providers.Add(
+                    new NltBible(
+                        Options.Create(new NltBibleOptions { ApiKey = nltApiKey }),
+                        this.cache
+                    )
+                );
             }
 
             // Get the list of blocked providers
-            blockedProviders = Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
+            blockedProviders = Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? [];
 
             // Set the renderer
             if (this.renderer is not Renderer)
@@ -634,7 +751,9 @@ public sealed partial class FormMain : Form
         }
 
         // Set the providers for the renderer
-        List<IProvider> enabledProviders = this.providers.Where(p => !blockedProviders.Contains(p.Id)).ToList();
+        List<IProvider> enabledProviders = this
+            .providers.Where(p => !blockedProviders.Contains(p.Id))
+            .ToList();
 
         // Set the renderer providers
         this.renderer.Providers = enabledProviders.AsReadOnly();
@@ -651,22 +770,30 @@ public sealed partial class FormMain : Form
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            this.cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
+            this.cache = new MemoryDistributedCache(
+                Options.Create(new MemoryDistributedCacheOptions())
+            );
         }
         else
         {
             try
             {
-                this.cache = new SqlServerCache(Options.Create(new SqlServerCacheOptions
-                {
-                    ConnectionString = connectionString,
-                    SchemaName = "dbo",
-                    TableName = "GoToBible",
-                }));
+                this.cache = new SqlServerCache(
+                    Options.Create(
+                        new SqlServerCacheOptions
+                        {
+                            ConnectionString = connectionString,
+                            SchemaName = "dbo",
+                            TableName = "GoToBible",
+                        }
+                    )
+                );
             }
             catch (Exception)
             {
-                this.cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
+                this.cache = new MemoryDistributedCache(
+                    Options.Create(new MemoryDistributedCacheOptions())
+                );
             }
         }
     }
@@ -678,23 +805,37 @@ public sealed partial class FormMain : Form
     /// <param name="primaryTranslation">The primary translation.</param>
     /// <param name="secondaryTranslation">The secondary translation.</param>
     /// <param name="resource">The open resource.</param>
-    private async Task LoadTranslationComboBoxes(IEnumerable<IProvider> translationProviders, string primaryTranslation, string secondaryTranslation, string resource)
+    private async Task LoadTranslationComboBoxes(
+        IEnumerable<IProvider> translationProviders,
+        string primaryTranslation,
+        string secondaryTranslation,
+        string resource
+    )
     {
         // If we do not have a primary translation, secondary translation, or resource, see if we can get them
-        if (string.IsNullOrWhiteSpace(primaryTranslation)
-            && this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryComboBoxItem)
+        if (
+            string.IsNullOrWhiteSpace(primaryTranslation)
+            && this.ToolStripComboBoxPrimaryTranslation.SelectedItem
+                is TranslationComboBoxItem primaryComboBoxItem
+        )
         {
             primaryTranslation = primaryComboBoxItem.Code;
         }
 
-        if (string.IsNullOrWhiteSpace(secondaryTranslation)
-            && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryComboBoxItem)
+        if (
+            string.IsNullOrWhiteSpace(secondaryTranslation)
+            && this.ToolStripComboBoxSecondaryTranslation.SelectedItem
+                is TranslationComboBoxItem secondaryComboBoxItem
+        )
         {
             secondaryTranslation = secondaryComboBoxItem.Code;
         }
 
-        if (string.IsNullOrWhiteSpace(resource)
-            && this.ToolStripComboBoxResource.SelectedItem is TranslationComboBoxItem resourceComboBoxItem)
+        if (
+            string.IsNullOrWhiteSpace(resource)
+            && this.ToolStripComboBoxResource.SelectedItem
+                is TranslationComboBoxItem resourceComboBoxItem
+        )
         {
             resource = resourceComboBoxItem.Code;
         }
@@ -710,21 +851,22 @@ public sealed partial class FormMain : Form
         this.ToolStripComboBoxResource.Items.Clear();
 
         // Add the No Translation item
-        this.ToolStripComboBoxSecondaryTranslation.Items.Add(new ComboBoxItem
-        {
-            Text = Resources.NoTranslation,
-        });
-        this.ToolStripComboBoxResource.Items.Add(new ComboBoxItem
-        {
-            Text = Resources.NoTranslation,
-        });
+        this.ToolStripComboBoxSecondaryTranslation.Items.Add(
+            new ComboBoxItem { Text = Resources.NoTranslation, }
+        );
+        this.ToolStripComboBoxResource.Items.Add(
+            new ComboBoxItem { Text = Resources.NoTranslation, }
+        );
 
         // Get the full list of translations
-        List<string> blockedLanguages = Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
-        List<string> blockedTranslations = Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
-        List<string> blockedCommentaries = Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
-        List<Translation> unsortedCommentaries = new List<Translation>();
-        List<Translation> unsortedTranslations = new List<Translation>();
+        List<string> blockedLanguages =
+            Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? [];
+        List<string> blockedTranslations =
+            Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? [];
+        List<string> blockedCommentaries =
+            Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? [];
+        List<Translation> unsortedCommentaries = [];
+        List<Translation> unsortedTranslations = [];
         foreach (IProvider provider in translationProviders)
         {
             await foreach (Translation translation in provider.GetTranslationsAsync())
@@ -736,7 +878,12 @@ public sealed partial class FormMain : Form
                 else
                 {
                     // Clean up any names we are displaying
-                    if (ApiProvider.NameSubstitutions.TryGetValue(translation.Name, out string? translationName))
+                    if (
+                        ApiProvider.NameSubstitutions.TryGetValue(
+                            translation.Name,
+                            out string? translationName
+                        )
+                    )
                     {
                         translation.Name = translationName;
                     }
@@ -748,7 +895,11 @@ public sealed partial class FormMain : Form
 
         // Store the translations for use by other methods
         this.translations.Clear();
-        this.translations.AddRange(unsortedTranslations.OrderBy(t => t.Language, new LanguageComparer()).ThenBy(t => t.Name));
+        this.translations.AddRange(
+            unsortedTranslations
+                .OrderBy(t => t.Language, new LanguageComparer())
+                .ThenBy(t => t.Name)
+        );
         this.commentaries.Clear();
         this.commentaries.AddRange(unsortedCommentaries.OrderBy(t => t.Name));
         this.ToolStripMenuItemConfigure.Enabled = true;
@@ -763,7 +914,11 @@ public sealed partial class FormMain : Form
         string lastLanguage = string.Empty;
 
         // Add the commentaries that are not blocked to resources
-        foreach (Translation commentary in this.commentaries.Where(c => !blockedCommentaries.Contains(c.UniqueKey())))
+        foreach (
+            Translation commentary in this.commentaries.Where(c =>
+                !blockedCommentaries.Contains(c.UniqueKey())
+            )
+        )
         {
             // Add the commentaries heading if required
             if (resourceIndex == 0)
@@ -798,12 +953,17 @@ public sealed partial class FormMain : Form
             resourceIndex++;
         }
 
-        List<Translation> unblockedTranslations = this.translations.Where(t => !blockedTranslations.Contains(t.UniqueKey())).ToList();
+        List<Translation> unblockedTranslations = this
+            .translations.Where(t => !blockedTranslations.Contains(t.UniqueKey()))
+            .ToList();
         foreach (Translation translation in this.translations)
         {
             // If this translation is not blocked
             string translationLanguage = translation.Language ?? Resources.UnknownLanguage;
-            if (!blockedTranslations.Contains(translation.UniqueKey()) && !blockedLanguages.Contains(translationLanguage))
+            if (
+                !blockedTranslations.Contains(translation.UniqueKey())
+                && !blockedLanguages.Contains(translationLanguage)
+            )
             {
                 // Add a heading, if required
                 if (translationLanguage != lastLanguage)
@@ -865,15 +1025,15 @@ public sealed partial class FormMain : Form
         // Add none to the primary, if it is empty
         if (this.ToolStripComboBoxPrimaryTranslation.Items.Count == 0)
         {
-            this.ToolStripComboBoxPrimaryTranslation.Items.Add(new ComboBoxItem
-            {
-                Text = Resources.NoTranslation,
-            });
+            this.ToolStripComboBoxPrimaryTranslation.Items.Add(
+                new ComboBoxItem { Text = Resources.NoTranslation, }
+            );
         }
 
         // Select the first items in each translation drop down
         this.ToolStripComboBoxPrimaryTranslation.SelectedIndex = primaryTranslationSelectedIndex;
-        this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = secondaryTranslationSelectedIndex;
+        this.ToolStripComboBoxSecondaryTranslation.SelectedIndex =
+            secondaryTranslationSelectedIndex;
         this.ToolStripComboBoxResource.SelectedIndex = resourceSelectedIndex;
 
         // The translations are loaded
@@ -885,12 +1045,15 @@ public sealed partial class FormMain : Form
     /// </summary>
     private async Task ProcessSuggestions()
     {
-        if (this.renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation
+        if (
+            this.renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation
             && MessageBox.Show(
                 Resources.IgnoreCaseDiacriticsAndPunctuation,
                 Program.Title,
                 MessageBoxButtons.YesNo,
-                MessageBoxIcon.Information) == DialogResult.Yes)
+                MessageBoxIcon.Information
+            ) == DialogResult.Yes
+        )
         {
             this.ToolStripMenuItemIgnoreCase.Checked = true;
             this.ToolStripMenuItemIgnoreDiacritics.Checked = true;
@@ -900,7 +1063,8 @@ public sealed partial class FormMain : Form
         else if (this.renderedPassage.Suggestions.NavigateToChapter is not null)
         {
             // If this book is not present, go to the suggested book
-            this.ToolStripTextBoxPassage.Text = this.renderedPassage.Suggestions.NavigateToChapter.ToString();
+            this.ToolStripTextBoxPassage.Text =
+                this.renderedPassage.Suggestions.NavigateToChapter.ToString();
             await this.ShowPassage(true, true);
         }
     }
@@ -913,12 +1077,15 @@ public sealed partial class FormMain : Form
     {
         try
         {
-            string body = this.translationsLoaded && !this.translations.Any() ? string.Empty : Html.LoadingCodeBody;
-            webView.NavigateToString($"<!DOCTYPE html>\n<html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><style type=\"text/css\">{this.parameters.RenderCss()}{Html.LoadingCodeCss}</style></head><body>{body}</body></html>");
+            string body =
+                this.translationsLoaded && this.translations.Count == 0
+                    ? string.Empty
+                    : Html.LoadingCodeBody;
+            webView.NavigateToString(
+                $"<!DOCTYPE html>\n<html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><style type=\"text/css\">{this.parameters.RenderCss()}{Html.LoadingCodeCss}</style></head><body>{body}</body></html>"
+            );
         }
-        catch (InvalidOperationException)
-        {
-        }
+        catch (InvalidOperationException) { }
     }
 
     /// <summary>
@@ -928,7 +1095,12 @@ public sealed partial class FormMain : Form
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
     private void ToolStripButtonApparatusGenerator_Click(object sender, EventArgs e)
     {
-        FormApparatusGenerator formApparatusGenerator = new FormApparatusGenerator(this.parameters.PrimaryTranslation, this.renderer, this.translations, this.providers);
+        FormApparatusGenerator formApparatusGenerator = new FormApparatusGenerator(
+            this.parameters.PrimaryTranslation,
+            this.renderer,
+            this.translations,
+            this.providers
+        );
         formApparatusGenerator.ShowDialog();
     }
 
@@ -939,12 +1111,22 @@ public sealed partial class FormMain : Form
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
     private async void ToolStripButtonExport_Click(object sender, EventArgs e)
     {
-        this.SaveFileDialogMain.FileName = this.parameters.PassageReference.ChapterReference + ".txt";
+        this.SaveFileDialogMain.FileName =
+            this.parameters.PassageReference.ChapterReference + ".txt";
         if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
         {
             // Render for export to Accordance
-            RenderedPassage renderedPassageForExport = await this.renderer.RenderAsync(this.parameters with { Format = RenderFormat.Accordance }, false);
-            await File.WriteAllTextAsync(this.SaveFileDialogMain.FileName, renderedPassageForExport.Content);
+            RenderedPassage renderedPassageForExport = await this.renderer.RenderAsync(
+                this.parameters with
+                {
+                    Format = RenderFormat.Accordance
+                },
+                false
+            );
+            await File.WriteAllTextAsync(
+                this.SaveFileDialogMain.FileName,
+                renderedPassageForExport.Content
+            );
         }
     }
 
@@ -953,8 +1135,14 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private void ToolStripButtonGitHub_Click(object sender, EventArgs e)
-        => Process.Start(new ProcessStartInfo("https://github.com/pmachapman/GoTo.Bible") { UseShellExecute = true, Verb = "open" });
+    private void ToolStripButtonGitHub_Click(object sender, EventArgs e) =>
+        Process.Start(
+            new ProcessStartInfo("https://github.com/pmachapman/GoTo.Bible")
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            }
+        );
 
     /// <summary>
     /// Handles the Click event of the Navigate Back ToolStripButton control.
@@ -965,7 +1153,8 @@ public sealed partial class FormMain : Form
     {
         if (this.renderedPassage.PreviousPassage.IsValid)
         {
-            this.ToolStripTextBoxPassage.Text = this.renderedPassage.PreviousPassage.ChapterReference.ToString();
+            this.ToolStripTextBoxPassage.Text =
+                this.renderedPassage.PreviousPassage.ChapterReference.ToString();
             await this.ShowPassage(true, true);
         }
     }
@@ -979,7 +1168,8 @@ public sealed partial class FormMain : Form
     {
         if (this.renderedPassage.NextPassage.IsValid)
         {
-            this.ToolStripTextBoxPassage.Text = this.renderedPassage.NextPassage.ChapterReference.ToString();
+            this.ToolStripTextBoxPassage.Text =
+                this.renderedPassage.NextPassage.ChapterReference.ToString();
             await this.ShowPassage(true, true);
         }
     }
@@ -989,7 +1179,8 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-    private async void ToolStripButtonPassageGo_Click(object sender, EventArgs e) => await this.ShowPassage(true, true);
+    private async void ToolStripButtonPassageGo_Click(object sender, EventArgs e) =>
+        await this.ShowPassage(true, true);
 
     /// <summary>
     /// Sets up the automatic complete asynchronously.
@@ -997,13 +1188,18 @@ public sealed partial class FormMain : Form
     private async Task SetupAutoCompleteAsync()
     {
         // Build the list of suggestions
-        List<string> suggestions = new List<string>();
+        List<string> suggestions = [];
 
         // If we have a translation in the primary combo box
-        if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryComboBoxItem)
+        if (
+            this.ToolStripComboBoxPrimaryTranslation.SelectedItem
+            is TranslationComboBoxItem primaryComboBoxItem
+        )
         {
             // Add the book names to the suggestions list
-            IProvider? provider = this.providers.FirstOrDefault(p => p.Id == primaryComboBoxItem.Provider) ?? this.providers.FirstOrDefault();
+            IProvider? provider =
+                this.providers.FirstOrDefault(p => p.Id == primaryComboBoxItem.Provider)
+                ?? this.providers.FirstOrDefault();
             if (provider is not null)
             {
                 await foreach (Book book in provider.GetBooksAsync(primaryComboBoxItem.Code, false))
@@ -1017,13 +1213,20 @@ public sealed partial class FormMain : Form
         }
 
         // If we have a translation in the secondary combo box
-        if (this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryComboBoxItem)
+        if (
+            this.ToolStripComboBoxSecondaryTranslation.SelectedItem
+            is TranslationComboBoxItem secondaryComboBoxItem
+        )
         {
             // Add the book names to the suggestions list
-            IProvider? provider = this.providers.FirstOrDefault(p => p.Id == secondaryComboBoxItem.Provider) ?? this.providers.FirstOrDefault();
+            IProvider? provider =
+                this.providers.FirstOrDefault(p => p.Id == secondaryComboBoxItem.Provider)
+                ?? this.providers.FirstOrDefault();
             if (provider is not null)
             {
-                await foreach (Book book in provider.GetBooksAsync(secondaryComboBoxItem.Code, false))
+                await foreach (
+                    Book book in provider.GetBooksAsync(secondaryComboBoxItem.Code, false)
+                )
                 {
                     if (!suggestions.Contains(book.Name))
                     {
@@ -1037,7 +1240,7 @@ public sealed partial class FormMain : Form
         if (this.ToolStripTextBoxPassage.TextBox is not null)
         {
             AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
-            AutoSuggest.Enable(this.ToolStripTextBoxPassage.TextBox, suggestions.ToArray());
+            AutoSuggest.Enable(this.ToolStripTextBoxPassage.TextBox, [.. suggestions]);
         }
     }
 
@@ -1076,7 +1279,10 @@ public sealed partial class FormMain : Form
 
         string primaryTranslation = string.Empty;
         string primaryProvider = string.Empty;
-        if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryComboBoxItem)
+        if (
+            this.ToolStripComboBoxPrimaryTranslation.SelectedItem
+            is TranslationComboBoxItem primaryComboBoxItem
+        )
         {
             primaryProvider = primaryComboBoxItem.Provider;
             primaryTranslation = primaryComboBoxItem.Code;
@@ -1084,7 +1290,10 @@ public sealed partial class FormMain : Form
 
         string secondaryTranslation = string.Empty;
         string secondaryProvider = string.Empty;
-        if (this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryComboBoxItem)
+        if (
+            this.ToolStripComboBoxSecondaryTranslation.SelectedItem
+            is TranslationComboBoxItem secondaryComboBoxItem
+        )
         {
             secondaryProvider = secondaryComboBoxItem.Provider;
             secondaryTranslation = secondaryComboBoxItem.Code;
@@ -1092,7 +1301,10 @@ public sealed partial class FormMain : Form
 
         string resource = string.Empty;
         string resourceProvider = string.Empty;
-        if (this.ToolStripComboBoxResource.SelectedItem is TranslationComboBoxItem resourceComboBoxItem)
+        if (
+            this.ToolStripComboBoxResource.SelectedItem
+            is TranslationComboBoxItem resourceComboBoxItem
+        )
         {
             resourceProvider = resourceComboBoxItem.Provider;
             resource = resourceComboBoxItem.Code;
@@ -1125,15 +1337,28 @@ public sealed partial class FormMain : Form
         RenderedPassage renderedResource = new RenderedPassage();
         if (!string.IsNullOrWhiteSpace(resource) && updateResource)
         {
-            renderedResource = await this.renderer.RenderAsync(this.parameters with { PrimaryProvider = resourceProvider, PrimaryTranslation = resource, SecondaryTranslation = null }, false);
+            renderedResource = await this.renderer.RenderAsync(
+                this.parameters with
+                {
+                    PrimaryProvider = resourceProvider,
+                    PrimaryTranslation = resource,
+                    SecondaryTranslation = null
+                },
+                false
+            );
         }
 
         // Save settings
-        if (!string.IsNullOrWhiteSpace(this.renderedPassage.Content) && (this.primaryWindow || Program.Forms.Count == 1))
+        if (
+            !string.IsNullOrWhiteSpace(this.renderedPassage.Content)
+            && (this.primaryWindow || Program.Forms.Count == 1)
+        )
         {
             Settings.Default.InterlinearIgnoresCase = this.parameters.InterlinearIgnoresCase;
-            Settings.Default.InterlinearIgnoresDiacritics = this.parameters.InterlinearIgnoresDiacritics;
-            Settings.Default.InterlinearIgnoresPunctuation = this.parameters.InterlinearIgnoresPunctuation;
+            Settings.Default.InterlinearIgnoresDiacritics =
+                this.parameters.InterlinearIgnoresDiacritics;
+            Settings.Default.InterlinearIgnoresPunctuation =
+                this.parameters.InterlinearIgnoresPunctuation;
             Settings.Default.IsDebug = this.parameters.IsDebug;
             Settings.Default.IsDeveloper = this.IsDeveloper;
             Settings.Default.IsLegacyBrowser = this.IsLegacyBrowser;
@@ -1142,10 +1367,20 @@ public sealed partial class FormMain : Form
             Settings.Default.PrimaryTranslation = this.parameters.PrimaryTranslation;
             Settings.Default.SecondaryTranslation = this.parameters.SecondaryTranslation;
             Settings.Default.Resource = resource;
-            Settings.Default.BackgroundCustomColours = string.Join(',', this.ColourDialogBackground.CustomColors.Select(c => c.ToString()));
-            Settings.Default.BackgroundColour = ColorTranslator.ToOle(this.ColourDialogBackground.Color);
-            Settings.Default.HighlightCustomColours = string.Join(',', this.ColourDialogHighlight.CustomColors.Select(c => c.ToString()));
-            Settings.Default.HighlightColour = ColorTranslator.ToOle(this.ColourDialogHighlight.Color);
+            Settings.Default.BackgroundCustomColours = string.Join(
+                ',',
+                this.ColourDialogBackground.CustomColors.Select(c => c.ToString())
+            );
+            Settings.Default.BackgroundColour = ColorTranslator.ToOle(
+                this.ColourDialogBackground.Color
+            );
+            Settings.Default.HighlightCustomColours = string.Join(
+                ',',
+                this.ColourDialogHighlight.CustomColors.Select(c => c.ToString())
+            );
+            Settings.Default.HighlightColour = ColorTranslator.ToOle(
+                this.ColourDialogHighlight.Color
+            );
             Settings.Default.ForegroundColour = ColorTranslator.ToOle(this.FontDialogMain.Color);
             TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
             Settings.Default.Font = converter.ConvertToString(this.FontDialogMain.Font);
@@ -1180,7 +1415,10 @@ public sealed partial class FormMain : Form
         this.ToolStripButtonNavigateBack.Enabled = this.renderedPassage.PreviousPassage.IsValid;
 
         // If we have a translation in the primary combo box
-        if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem translationItem)
+        if (
+            this.ToolStripComboBoxPrimaryTranslation.SelectedItem
+            is TranslationComboBoxItem translationItem
+        )
         {
             // Show/hide the export button
             this.ToolStripButtonExport.Enabled = translationItem.CanBeExported;
@@ -1193,18 +1431,32 @@ public sealed partial class FormMain : Form
     private void SystemMenuAbout_Click()
     {
         Assembly assembly = typeof(FormMain).Assembly;
-        object[] titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
-        string title = (titleAttributes.FirstOrDefault() as AssemblyTitleAttribute)?.Title ?? "GoTo.Bible";
-        object[] versionAttributes = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
-        Version version =
-            new Version((versionAttributes.FirstOrDefault() as AssemblyFileVersionAttribute)?.Version ?? "1.0");
-        object[] copyrightAttributes = assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), true);
-        string copyright = (copyrightAttributes.FirstOrDefault() as AssemblyCopyrightAttribute)?.Copyright ?? string.Empty;
+        object[] titleAttributes = assembly.GetCustomAttributes(
+            typeof(AssemblyTitleAttribute),
+            true
+        );
+        string title =
+            (titleAttributes.FirstOrDefault() as AssemblyTitleAttribute)?.Title ?? "GoTo.Bible";
+        object[] versionAttributes = assembly.GetCustomAttributes(
+            typeof(AssemblyFileVersionAttribute),
+            true
+        );
+        Version version = new Version(
+            (versionAttributes.FirstOrDefault() as AssemblyFileVersionAttribute)?.Version ?? "1.0"
+        );
+        object[] copyrightAttributes = assembly.GetCustomAttributes(
+            typeof(AssemblyCopyrightAttribute),
+            true
+        );
+        string copyright =
+            (copyrightAttributes.FirstOrDefault() as AssemblyCopyrightAttribute)?.Copyright
+            ?? string.Empty;
         NativeMethods.ShellAbout(
             this.Handle,
             "Windows",
             $"{title} {version.Major}.{version.Minor}.{version.Build}{Environment.NewLine}{copyright}",
-            this.Icon?.Handle ?? 0);
+            this.Icon?.Handle ?? 0
+        );
     }
 
     /// <summary>
@@ -1215,10 +1467,7 @@ public sealed partial class FormMain : Form
     private void ToolStripButtonNewWindow_Click(object sender, EventArgs e)
     {
         // Create the form
-        FormMain formMain = new FormMain(false)
-        {
-            StartPosition = FormStartPosition.CenterParent,
-        };
+        FormMain formMain = new FormMain(false) { StartPosition = FormStartPosition.CenterParent, };
         Program.Forms.Add(formMain);
         formMain.Show();
 
@@ -1250,7 +1499,8 @@ public sealed partial class FormMain : Form
         if (this.ToolStripComboBoxSecondaryTranslation.Text != Resources.NoTranslation)
         {
             int secondaryIndex = this.ToolStripComboBoxSecondaryTranslation.SelectedIndex;
-            this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = this.ToolStripComboBoxPrimaryTranslation.SelectedIndex + 1;
+            this.ToolStripComboBoxSecondaryTranslation.SelectedIndex =
+                this.ToolStripComboBoxPrimaryTranslation.SelectedIndex + 1;
             this.ToolStripComboBoxPrimaryTranslation.SelectedIndex = secondaryIndex - 1;
             await this.ShowPassage(true, false);
         }
@@ -1261,8 +1511,14 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-    private void ToolStripButtonWebBrowser_Click(object sender, EventArgs e)
-        => Process.Start(new ProcessStartInfo(this.parameters.AsUrl().ToString()) { UseShellExecute = true, Verb = "open" });
+    private void ToolStripButtonWebBrowser_Click(object sender, EventArgs e) =>
+        Process.Start(
+            new ProcessStartInfo(this.parameters.AsUrl().ToString())
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            }
+        );
 
     /// <summary>
     /// Handles the SelectedIndexChanged event of the Resource ToolStripComboBox.
@@ -1274,7 +1530,10 @@ public sealed partial class FormMain : Form
         if (this.ToolStripComboBoxResource.SelectedItem is ComboBoxItem { Selectable: false })
         {
             // Handle the non-selectable items
-            if (this.ToolStripComboBoxResource.Items.Count - 1 > this.ToolStripComboBoxResource.SelectedIndex)
+            if (
+                this.ToolStripComboBoxResource.Items.Count - 1
+                > this.ToolStripComboBoxResource.SelectedIndex
+            )
             {
                 this.ToolStripComboBoxResource.SelectedIndex++;
             }
@@ -1290,7 +1549,8 @@ public sealed partial class FormMain : Form
         else
         {
             await this.SetupAutoCompleteAsync();
-            this.SplitContainerMain.Panel2Collapsed = this.ToolStripComboBoxResource.SelectedIndex < 1;
+            this.SplitContainerMain.Panel2Collapsed =
+                this.ToolStripComboBoxResource.SelectedIndex < 1;
             if (!string.IsNullOrWhiteSpace(this.ToolStripTextBoxPassage.Text))
             {
                 await this.ShowPassage(false, true);
@@ -1303,12 +1563,23 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private async void ToolStripComboBoxPrimaryTranslation_SelectedIndexChanged(object sender, EventArgs e)
+    private async void ToolStripComboBoxPrimaryTranslation_SelectedIndexChanged(
+        object sender,
+        EventArgs e
+    )
     {
-        if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is ComboBoxItem { Selectable: false })
+        if (
+            this.ToolStripComboBoxPrimaryTranslation.SelectedItem is ComboBoxItem
+            {
+                Selectable: false
+            }
+        )
         {
             // Handle the non-selectable items
-            if (this.ToolStripComboBoxPrimaryTranslation.Items.Count - 1 > this.ToolStripComboBoxPrimaryTranslation.SelectedIndex)
+            if (
+                this.ToolStripComboBoxPrimaryTranslation.Items.Count - 1
+                > this.ToolStripComboBoxPrimaryTranslation.SelectedIndex
+            )
             {
                 this.ToolStripComboBoxPrimaryTranslation.SelectedIndex++;
             }
@@ -1324,14 +1595,37 @@ public sealed partial class FormMain : Form
         else
         {
             // Make sure we are not showing an interlinear with the original language
-            if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
-                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem
-                && ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
-                    || (primaryItem.Language == "Hebrew" && secondaryItem.Language is not ("Hebrew" or null))
-                    || (secondaryItem.Language == "Greek" && primaryItem.Language is not ("Greek" or null))
-                    || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null))))
+            if (
+                this.ToolStripComboBoxPrimaryTranslation.SelectedItem
+                    is TranslationComboBoxItem primaryItem
+                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem
+                    is TranslationComboBoxItem secondaryItem
+                && (
+                    (
+                        primaryItem.Language == "Greek"
+                        && secondaryItem.Language is not ("Greek" or null)
+                    )
+                    || (
+                        primaryItem.Language == "Hebrew"
+                        && secondaryItem.Language is not ("Hebrew" or null)
+                    )
+                    || (
+                        secondaryItem.Language == "Greek"
+                        && primaryItem.Language is not ("Greek" or null)
+                    )
+                    || (
+                        secondaryItem.Language == "Hebrew"
+                        && primaryItem.Language is not ("Hebrew" or null)
+                    )
+                )
+            )
             {
-                MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    Resources.CannotShowInterlinear,
+                    Program.Title,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
                 this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
             }
 
@@ -1350,12 +1644,23 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private async void ToolStripComboBoxSecondaryTranslation_SelectedIndexChanged(object sender, EventArgs e)
+    private async void ToolStripComboBoxSecondaryTranslation_SelectedIndexChanged(
+        object sender,
+        EventArgs e
+    )
     {
-        if (this.ToolStripComboBoxSecondaryTranslation.SelectedItem is ComboBoxItem { Selectable: false })
+        if (
+            this.ToolStripComboBoxSecondaryTranslation.SelectedItem is ComboBoxItem
+            {
+                Selectable: false
+            }
+        )
         {
             // Handle the non-selectable items
-            if (this.ToolStripComboBoxSecondaryTranslation.Items.Count - 1 > this.ToolStripComboBoxSecondaryTranslation.SelectedIndex)
+            if (
+                this.ToolStripComboBoxSecondaryTranslation.Items.Count - 1
+                > this.ToolStripComboBoxSecondaryTranslation.SelectedIndex
+            )
             {
                 this.ToolStripComboBoxSecondaryTranslation.SelectedIndex++;
             }
@@ -1371,14 +1676,37 @@ public sealed partial class FormMain : Form
         else
         {
             // Make sure we are not showing an interlinear with the original language
-            if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
-                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem
-                && ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
-                    || (primaryItem.Language == "Hebrew" && secondaryItem.Language is not ("Hebrew" or null))
-                    || (secondaryItem.Language == "Greek" && primaryItem.Language is not ("Greek" or null))
-                    || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null))))
+            if (
+                this.ToolStripComboBoxPrimaryTranslation.SelectedItem
+                    is TranslationComboBoxItem primaryItem
+                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem
+                    is TranslationComboBoxItem secondaryItem
+                && (
+                    (
+                        primaryItem.Language == "Greek"
+                        && secondaryItem.Language is not ("Greek" or null)
+                    )
+                    || (
+                        primaryItem.Language == "Hebrew"
+                        && secondaryItem.Language is not ("Hebrew" or null)
+                    )
+                    || (
+                        secondaryItem.Language == "Greek"
+                        && primaryItem.Language is not ("Greek" or null)
+                    )
+                    || (
+                        secondaryItem.Language == "Hebrew"
+                        && primaryItem.Language is not ("Hebrew" or null)
+                    )
+                )
+            )
             {
-                MessageBox.Show(Resources.CannotShowInterlinear, Program.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    Resources.CannotShowInterlinear,
+                    Program.Title,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
                 this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
             }
 
@@ -1399,7 +1727,11 @@ public sealed partial class FormMain : Form
     /// <param name="e">The <see cref="DrawItemEventArgs"/> instance containing the event data.</param>
     private void ToolStripComboBox_DrawItem(object? sender, DrawItemEventArgs e)
     {
-        if (sender is ComboBox comboBox && e.Index > -1 && comboBox.Items[e.Index] is ComboBoxItem item)
+        if (
+            sender is ComboBox comboBox
+            && e.Index > -1
+            && comboBox.Items[e.Index] is ComboBoxItem item
+        )
         {
             if (item.Selectable)
             {
@@ -1415,13 +1747,25 @@ public sealed partial class FormMain : Form
             if (item.Bold)
             {
                 using Font font = new Font(comboBox.Font, FontStyle.Bold);
-                e.Graphics.DrawString(item.Text, font, SystemBrushes.ControlText, e.Bounds, StringFormat.GenericTypographic);
+                e.Graphics.DrawString(
+                    item.Text,
+                    font,
+                    SystemBrushes.ControlText,
+                    e.Bounds,
+                    StringFormat.GenericTypographic
+                );
                 size = e.Graphics.MeasureString(item.Text, font);
             }
             else
             {
                 using Font font = new Font(comboBox.Font, FontStyle.Regular);
-                e.Graphics.DrawString(item.Text, font, SystemBrushes.ControlText, e.Bounds, StringFormat.GenericTypographic);
+                e.Graphics.DrawString(
+                    item.Text,
+                    font,
+                    SystemBrushes.ControlText,
+                    e.Bounds,
+                    StringFormat.GenericTypographic
+                );
                 size = e.Graphics.MeasureString(item.Text, font);
             }
 
@@ -1489,7 +1833,12 @@ public sealed partial class FormMain : Form
     {
         // Show the API.Bible Key Dialog
         string key = Settings.Default.BibleApiKey;
-        using FormApiKey formApiKey = new FormApiKey(key, "API.Bible", new Uri("https://scripture.api.bible/", UriKind.Absolute), Resources.BibleApiIcon);
+        using FormApiKey formApiKey = new FormApiKey(
+            key,
+            "API.Bible",
+            new Uri("https://scripture.api.bible/", UriKind.Absolute),
+            Resources.BibleApiIcon
+        );
         formApiKey.ShowDialog(this);
 
         // Only load the provider if the key has changed
@@ -1500,7 +1849,12 @@ public sealed partial class FormMain : Form
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.LoadProviders(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1513,7 +1867,12 @@ public sealed partial class FormMain : Form
     {
         // Show the Biblia API Key Dialog
         string key = Settings.Default.BibliaApiKey;
-        using FormApiKey formApiKey = new FormApiKey(key, "Biblia API", new Uri("https://api.biblia.com/v1/Users/SignIn", UriKind.Absolute), Resources.BibliaIcon);
+        using FormApiKey formApiKey = new FormApiKey(
+            key,
+            "Biblia API",
+            new Uri("https://api.biblia.com/v1/Users/SignIn", UriKind.Absolute),
+            Resources.BibliaIcon
+        );
         formApiKey.ShowDialog(this);
 
         // Only load the provider if the key has changed
@@ -1524,7 +1883,12 @@ public sealed partial class FormMain : Form
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.LoadProviders(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1536,19 +1900,27 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemBlockedTranslations_Click(object sender, EventArgs e)
     {
         // Generate the new list of blocked translations
-        string[] blockedTranslations =
-            (Settings.Default.BlockedTranslations?.Cast<string>() ?? new List<string>())
-            .Concat(ApiProvider.BlockedTranslations).Distinct().ToArray();
+        string[] blockedTranslations = (
+            Settings.Default.BlockedTranslations?.Cast<string>() ?? new List<string>()
+        )
+            .Concat(ApiProvider.BlockedTranslations)
+            .Distinct()
+            .ToArray();
 
         // Save the blocked translations
         Settings.Default.BlockedTranslations?.Clear();
-        Settings.Default.BlockedTranslations ??= new StringCollection();
+        Settings.Default.BlockedTranslations ??= [];
 
         Settings.Default.BlockedTranslations.AddRange(blockedTranslations);
         Settings.Default.Save();
 
         // Reload the providers and translations
-        await this.LoadTranslationComboBoxes(this.renderer.Providers.ToList(), string.Empty, string.Empty, string.Empty);
+        await this.LoadTranslationComboBoxes(
+            this.renderer.Providers.ToList(),
+            string.Empty,
+            string.Empty,
+            string.Empty
+        );
     }
 
     /// <summary>
@@ -1559,21 +1931,35 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemCommentaries_Click(object sender, EventArgs e)
     {
         // Show the show/hide commentaries dialog
-        List<string> blockedCommentaries = Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? new List<string>();
-        Dictionary<string, string> items = this.commentaries.ToDictionary(k => k.UniqueKey(), v => v.UniqueName(this.commentaries));
-        using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedCommentaries, "Configure Commentaries", Resources.CommentariesIcon);
+        List<string> blockedCommentaries =
+            Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? [];
+        Dictionary<string, string> items = this.commentaries.ToDictionary(
+            k => k.UniqueKey(),
+            v => v.UniqueName(this.commentaries)
+        );
+        using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(
+            items,
+            blockedCommentaries,
+            "Configure Commentaries",
+            Resources.CommentariesIcon
+        );
         DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
         if (dialogResult == DialogResult.OK)
         {
             // Save the blocked commentaries
             Settings.Default.BlockedCommentaries?.Clear();
-            Settings.Default.BlockedCommentaries ??= new StringCollection();
+            Settings.Default.BlockedCommentaries ??= [];
 
-            Settings.Default.BlockedCommentaries.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+            Settings.Default.BlockedCommentaries.AddRange([.. formCheckBoxList.UncheckedItems]);
             Settings.Default.Save();
 
             // Reload the commentaries
-            await this.LoadTranslationComboBoxes(this.renderer.Providers.ToList(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.renderer.Providers.ToList(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1599,7 +1985,8 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private async void ToolStripMenuItemDeveloperMode_Click(object sender, EventArgs e) => await this.UpdateDeveloperMode();
+    private async void ToolStripMenuItemDeveloperMode_Click(object sender, EventArgs e) =>
+        await this.UpdateDeveloperMode();
 
     /// <summary>
     /// Handles the Click event of the Digital Bible Platform ToolStripMenuItem.
@@ -1610,7 +1997,12 @@ public sealed partial class FormMain : Form
     {
         // Show the Digital Bible Platform API Key Dialog
         string key = Settings.Default.DigitalBiblePlatformApiKey;
-        using FormApiKey formApiKey = new FormApiKey(key, "Digital Bible Platform API", new Uri("https://www.digitalbibleplatform.com/", UriKind.Absolute), Resources.DigitalBiblePlatformIcon);
+        using FormApiKey formApiKey = new FormApiKey(
+            key,
+            "Digital Bible Platform API",
+            new Uri("https://www.digitalbibleplatform.com/", UriKind.Absolute),
+            Resources.DigitalBiblePlatformIcon
+        );
         formApiKey.ShowDialog(this);
 
         // Only load the provider if the key has changed
@@ -1621,7 +2013,12 @@ public sealed partial class FormMain : Form
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.LoadProviders(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1634,7 +2031,12 @@ public sealed partial class FormMain : Form
     {
         // Show the ESV API Key Dialog
         string key = Settings.Default.EsvApiKey;
-        using FormApiKey formApiKey = new FormApiKey(key, "ESV API", new Uri("https://api.esv.org/", UriKind.Absolute), Resources.EsvIcon);
+        using FormApiKey formApiKey = new FormApiKey(
+            key,
+            "ESV API",
+            new Uri("https://api.esv.org/", UriKind.Absolute),
+            Resources.EsvIcon
+        );
         formApiKey.ShowDialog(this);
 
         // Only load the provider if the key has changed
@@ -1645,7 +2047,12 @@ public sealed partial class FormMain : Form
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.LoadProviders(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1699,21 +2106,24 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private async void ToolStripMenuItemIgnoreCase_Click(object sender, EventArgs e) => await this.ShowPassage(true, false);
+    private async void ToolStripMenuItemIgnoreCase_Click(object sender, EventArgs e) =>
+        await this.ShowPassage(true, false);
 
     /// <summary>
     /// Handles the Click event of the Ignore Diacritics ToolStripMenuItem.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private async void ToolStripMenuItemIgnoreDiacritics_Click(object sender, EventArgs e) => await this.ShowPassage(true, false);
+    private async void ToolStripMenuItemIgnoreDiacritics_Click(object sender, EventArgs e) =>
+        await this.ShowPassage(true, false);
 
     /// <summary>
     /// Handles the Click event of the Ignore Punctuation ToolStripMenuItem.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private async void ToolStripMenuItemIgnorePunctuation_Click(object sender, EventArgs e) => await this.ShowPassage(true, false);
+    private async void ToolStripMenuItemIgnorePunctuation_Click(object sender, EventArgs e) =>
+        await this.ShowPassage(true, false);
 
     /// <summary>
     /// Handles the Click event of the Languages ToolStripMenuItem.
@@ -1723,24 +2133,35 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemLanguages_Click(object sender, EventArgs e)
     {
         // Show the show/hide languages dialog
-        List<string> blockedLanguages = Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
-        Dictionary<string, string> items = this.translations
-            .Select(t => t.Language ?? Resources.UnknownLanguage)
+        List<string> blockedLanguages =
+            Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? [];
+        Dictionary<string, string> items = this
+            .translations.Select(t => t.Language ?? Resources.UnknownLanguage)
             .Distinct()
             .ToDictionary(k => k, v => v);
-        using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedLanguages, "Configure Languages", Resources.LanguagesIcon);
+        using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(
+            items,
+            blockedLanguages,
+            "Configure Languages",
+            Resources.LanguagesIcon
+        );
         DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
         if (dialogResult == DialogResult.OK)
         {
             // Save the blocked providers
             Settings.Default.BlockedLanguages?.Clear();
-            Settings.Default.BlockedLanguages ??= new StringCollection();
+            Settings.Default.BlockedLanguages ??= [];
 
-            Settings.Default.BlockedLanguages.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+            Settings.Default.BlockedLanguages.AddRange([.. formCheckBoxList.UncheckedItems]);
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.LoadProviders(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1749,7 +2170,8 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-    private async void ToolStripMenuItemLegacyBrowser_Click(object sender, EventArgs e) => await this.InitialiseWebBrowser(true);
+    private async void ToolStripMenuItemLegacyBrowser_Click(object sender, EventArgs e) =>
+        await this.InitialiseWebBrowser(true);
 
     /// <summary>
     /// Handles the Click event of the Local Resources ToolStripMenuItem.
@@ -1763,14 +2185,22 @@ public sealed partial class FormMain : Form
         this.FolderBrowserDialogMain.Description = Resources.LocalResourcesDialogDescription;
         this.FolderBrowserDialogMain.AutoUpgradeEnabled = false;
         this.FolderBrowserDialogMain.SelectedPath = localResourcesDirectory;
-        if (this.FolderBrowserDialogMain.ShowDialog() == DialogResult.OK && localResourcesDirectory != this.FolderBrowserDialogMain.SelectedPath)
+        if (
+            this.FolderBrowserDialogMain.ShowDialog() == DialogResult.OK
+            && localResourcesDirectory != this.FolderBrowserDialogMain.SelectedPath
+        )
         {
             // Save the directory
             Settings.Default.LocalResourcesDirectory = this.FolderBrowserDialogMain.SelectedPath;
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.LoadProviders(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1783,7 +2213,12 @@ public sealed partial class FormMain : Form
     {
         // Show the NLT API Key Dialog
         string key = Settings.Default.NltApiKey;
-        using FormApiKey formApiKey = new FormApiKey(key, "NLT API", new Uri("https://api.nlt.to/", UriKind.Absolute), Resources.NltIcon);
+        using FormApiKey formApiKey = new FormApiKey(
+            key,
+            "NLT API",
+            new Uri("https://api.nlt.to/", UriKind.Absolute),
+            Resources.NltIcon
+        );
         formApiKey.ShowDialog(this);
 
         // Only load the provider if the key has changed
@@ -1794,7 +2229,12 @@ public sealed partial class FormMain : Form
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.LoadProviders(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1806,21 +2246,32 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemProviders_Click(object sender, EventArgs e)
     {
         // Show the show/hide providers dialog
-        List<string> blockedProviders = Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? new List<string>();
+        List<string> blockedProviders =
+            Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? [];
         Dictionary<string, string> items = this.providers.ToDictionary(k => k.Id, v => v.Name);
-        using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedProviders, "Configure Providers", Resources.ProviderIcon);
+        using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(
+            items,
+            blockedProviders,
+            "Configure Providers",
+            Resources.ProviderIcon
+        );
         DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
         if (dialogResult == DialogResult.OK)
         {
             // Save the blocked providers
             Settings.Default.BlockedProviders?.Clear();
-            Settings.Default.BlockedProviders ??= new StringCollection();
+            Settings.Default.BlockedProviders ??= [];
 
-            Settings.Default.BlockedProviders.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+            Settings.Default.BlockedProviders.AddRange([.. formCheckBoxList.UncheckedItems]);
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.LoadProviders(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1829,15 +2280,18 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-    private void ToolStripMenuItemSettingsDirectory_Click(object sender, EventArgs e)
-        => Process.Start(new ProcessStartInfo(SettingsDirectory) { UseShellExecute = true, Verb = "open" });
+    private void ToolStripMenuItemSettingsDirectory_Click(object sender, EventArgs e) =>
+        Process.Start(
+            new ProcessStartInfo(SettingsDirectory) { UseShellExecute = true, Verb = "open" }
+        );
 
     /// <summary>
     /// Handles the Click event of the ShowItalics ToolStripMenuItem.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private async void ToolStripMenuItemShowItalics_Click(object sender, EventArgs e) => await this.ShowPassage(true, true);
+    private async void ToolStripMenuItemShowItalics_Click(object sender, EventArgs e) =>
+        await this.ShowPassage(true, true);
 
     /// <summary>
     /// Handles the Click event of the SQL ToolStripMenuItem.
@@ -1848,7 +2302,15 @@ public sealed partial class FormMain : Form
     {
         // Show the SQL Server Connection String Dialog
         string key = Settings.Default.SqlConnectionString;
-        using FormApiKey formApiKey = new FormApiKey(key, "SQL Server", new Uri("https://www.microsoft.com/en-us/sql-server/sql-server-downloads/", UriKind.Absolute), Resources.SqlIcon);
+        using FormApiKey formApiKey = new FormApiKey(
+            key,
+            "SQL Server",
+            new Uri(
+                "https://www.microsoft.com/en-us/sql-server/sql-server-downloads/",
+                UriKind.Absolute
+            ),
+            Resources.SqlIcon
+        );
         formApiKey.ShowDialog(this);
 
         // Only load the provider if the key has changed
@@ -1861,7 +2323,9 @@ public sealed partial class FormMain : Form
             // Update the cache
             if (string.IsNullOrWhiteSpace(formApiKey.Key))
             {
-                this.cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
+                this.cache = new MemoryDistributedCache(
+                    Options.Create(new MemoryDistributedCacheOptions())
+                );
             }
             else
             {
@@ -1878,21 +2342,35 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemTranslations_Click(object sender, EventArgs e)
     {
         // Show the show/hide translations dialog
-        List<string> blockedTranslations = Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
-        Dictionary<string, string> items = this.translations.ToDictionary(k => k.UniqueKey(), v => v.UniqueName(this.translations));
-        using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(items, blockedTranslations, "Configure Translations", Resources.TranslationsIcon);
+        List<string> blockedTranslations =
+            Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? [];
+        Dictionary<string, string> items = this.translations.ToDictionary(
+            k => k.UniqueKey(),
+            v => v.UniqueName(this.translations)
+        );
+        using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(
+            items,
+            blockedTranslations,
+            "Configure Translations",
+            Resources.TranslationsIcon
+        );
         DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
         if (dialogResult == DialogResult.OK)
         {
             // Save the blocked translations
             Settings.Default.BlockedTranslations?.Clear();
-            Settings.Default.BlockedTranslations ??= new StringCollection();
+            Settings.Default.BlockedTranslations ??= [];
 
-            Settings.Default.BlockedTranslations.AddRange(formCheckBoxList.UncheckedItems.ToArray());
+            Settings.Default.BlockedTranslations.AddRange([.. formCheckBoxList.UncheckedItems]);
             Settings.Default.Save();
 
             // Reload the providers and translations
-            await this.LoadTranslationComboBoxes(this.renderer.Providers.ToList(), string.Empty, string.Empty, string.Empty);
+            await this.LoadTranslationComboBoxes(
+                this.renderer.Providers.ToList(),
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 
@@ -1901,7 +2379,8 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private void ToolStripSplitButtonSettings_ButtonClick(object sender, EventArgs e) => this.ToolStripSplitButtonSettings.ShowDropDown();
+    private void ToolStripSplitButtonSettings_ButtonClick(object sender, EventArgs e) =>
+        this.ToolStripSplitButtonSettings.ShowDropDown();
 
     /// <summary>
     /// Handles the KeyDown event of the Passage ToolStripTextBox.
@@ -1933,6 +2412,11 @@ public sealed partial class FormMain : Form
         this.ToolStripMenuItemSettingsDirectory.Visible = this.IsDeveloper;
 
         // Reload the providers and translations
-        await this.LoadTranslationComboBoxes(this.LoadProviders(), string.Empty, string.Empty, string.Empty);
+        await this.LoadTranslationComboBoxes(
+            this.LoadProviders(),
+            string.Empty,
+            string.Empty,
+            string.Empty
+        );
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FormApparatusGenerator.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ public partial class FormApparatusGenerator : Form
     /// <summary>
     /// The books in order.
     /// </summary>
-    private readonly List<string> books = new List<string>();
+    private readonly List<string> books = [];
 
     /// <summary>
     /// The available providers.
@@ -76,7 +76,7 @@ public partial class FormApparatusGenerator : Form
     /// <summary>
     /// The selected file names.
     /// </summary>
-    private string[] selectedFileNames = Array.Empty<string>();
+    private string[] selectedFileNames = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FormApparatusGenerator" /> class.
@@ -89,7 +89,8 @@ public partial class FormApparatusGenerator : Form
         string selectedBaseTranslation,
         IRenderer renderer,
         IEnumerable<Translation> translations,
-        IEnumerable<IProvider> providers)
+        IEnumerable<IProvider> providers
+    )
     {
         this.InitializeComponent();
         this.renderer = renderer;
@@ -130,7 +131,10 @@ public partial class FormApparatusGenerator : Form
         if (this.OpenFileDialogMain.ShowDialog() == DialogResult.OK)
         {
             this.selectedFileNames = this.OpenFileDialogMain.FileNames;
-            this.TextBoxIncludeApparatusData.Text = string.Join(";", this.OpenFileDialogMain.FileNames);
+            this.TextBoxIncludeApparatusData.Text = string.Join(
+                ";",
+                this.OpenFileDialogMain.FileNames
+            );
         }
     }
 
@@ -154,7 +158,7 @@ public partial class FormApparatusGenerator : Form
     private async void ButtonOk_Click(object sender, EventArgs e)
     {
         // Check for valid inputs
-        if (!this.selectedFileNames.Any())
+        if (this.selectedFileNames.Length == 0)
         {
             if (this.CheckedListBoxComparisonTexts.CheckedItems.Count == 0)
             {
@@ -162,7 +166,8 @@ public partial class FormApparatusGenerator : Form
                     @"You must select at least one comparison translation, or additional apparatus data file.",
                     this.Text,
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -172,7 +177,8 @@ public partial class FormApparatusGenerator : Form
                     @"You must select at least one book.",
                     this.Text,
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                    MessageBoxIcon.Error
+                );
                 return;
             }
         }
@@ -180,7 +186,12 @@ public partial class FormApparatusGenerator : Form
         // Get the primary translation
         if (this.ComboBoxBaseText.SelectedItem is not TranslationComboBoxItem primaryTranslation)
         {
-            MessageBox.Show(@"You must select a base translation.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(
+                @"You must select a base translation.",
+                this.Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error
+            );
             return;
         }
 
@@ -191,7 +202,15 @@ public partial class FormApparatusGenerator : Form
         using DataTable dataTable = new DataTable();
 
         // Book,Chapter,Verse,Occurrence,Phrase,Variant
-        Type[] columnTypes = { typeof(string), typeof(int), typeof(string), typeof(int), typeof(string), typeof(string) };
+        Type[] columnTypes =
+        [
+            typeof(string),
+            typeof(int),
+            typeof(string),
+            typeof(int),
+            typeof(string),
+            typeof(string)
+        ];
         dataTable.Columns.Add("Book", columnTypes[0]);
         dataTable.Columns.Add("Chapter", columnTypes[1]);
         dataTable.Columns.Add("Verse", columnTypes[2]);
@@ -199,8 +218,10 @@ public partial class FormApparatusGenerator : Form
         dataTable.Columns.Add("Phrase", columnTypes[4]);
 
         // Use variant if we are only comparing with one text
-        if (this.CheckedListBoxComparisonTexts.CheckedItems.Count == 1
-            && !this.selectedFileNames.Any())
+        if (
+            this.CheckedListBoxComparisonTexts.CheckedItems.Count == 1
+            && this.selectedFileNames.Length == 0
+        )
         {
             dataTable.Columns.Add("Variant", columnTypes[5]);
         }
@@ -218,18 +239,24 @@ public partial class FormApparatusGenerator : Form
         };
 
         // For every comparison translation
-        foreach (TranslationComboBoxItem comboBoxItem in this.CheckedListBoxComparisonTexts.CheckedItems)
+        foreach (
+            TranslationComboBoxItem comboBoxItem in this.CheckedListBoxComparisonTexts.CheckedItems
+        )
         {
             // For every selected book
             foreach (Book book in this.CheckedListBoxBooks.CheckedItems)
             {
                 // For every chapter in the book
-                foreach (SpreadsheetRenderingParameters parameters in book.Chapters.Select(c => apparatusParameters with
-                {
-                    PassageReference = c.AsPassageReference(),
-                    SecondaryProvider = comboBoxItem.Provider,
-                    SecondaryTranslation = comboBoxItem.Code,
-                }))
+                foreach (
+                    SpreadsheetRenderingParameters parameters in book.Chapters.Select(c =>
+                        apparatusParameters with
+                        {
+                            PassageReference = c.AsPassageReference(),
+                            SecondaryProvider = comboBoxItem.Provider,
+                            SecondaryTranslation = comboBoxItem.Code,
+                        }
+                    )
+                )
                 {
                     // Render the output
                     RenderedPassage passage = await this.renderer.RenderAsync(parameters, true);
@@ -262,7 +289,8 @@ public partial class FormApparatusGenerator : Form
                                 $@"There was an unknown error rendering the apparatus for {parameters}.",
                                 this.Text,
                                 MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
+                                MessageBoxIcon.Error
+                            );
                         }
 
                         return;
@@ -287,7 +315,8 @@ public partial class FormApparatusGenerator : Form
                     $@"There was an error loading: {Path.GetFileName(path)}.",
                     this.Text,
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -339,27 +368,39 @@ public partial class FormApparatusGenerator : Form
 
                 // De-duplicate the rows by filling in empty columns
                 DataRow? lastRow = null;
-                foreach (DataRow row in dataTable.AsEnumerable()
-                             .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
-                             .ThenBy(r => (int)r["Chapter"])
-                             .ThenBy(r => (string)r["Verse"], new VerseComparer())
-                             .ThenBy(r => (int)r["Occurrence"])
-                             .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters))
-                             .ThenBy(r => (int)r["RowNumber"]))
+                foreach (
+                    DataRow row in dataTable
+                        .AsEnumerable()
+                        .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
+                        .ThenBy(r => (int)r["Chapter"])
+                        .ThenBy(r => (string)r["Verse"], new VerseComparer())
+                        .ThenBy(r => (int)r["Occurrence"])
+                        .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters))
+                        .ThenBy(r => (int)r["RowNumber"])
+                )
                 {
                     // If the last row is the same as this row
-                    if (lastRow is not null
+                    if (
+                        lastRow is not null
                         && (string)row["Book"] == (string)lastRow["Book"]
                         && (int)row["Chapter"] == (int)lastRow["Chapter"]
                         && (string)row["Verse"] == (string)lastRow["Verse"]
                         && (int)row["Occurrence"] == (int)lastRow["Occurrence"]
-                        && string.Compare(((string)row["Phrase"]).Clean(), ((string)lastRow["Phrase"]).Clean(), CultureInfo.InvariantCulture, apparatusParameters.AsCompareOptions()) == 0)
+                        && string.Compare(
+                            ((string)row["Phrase"]).Clean(),
+                            ((string)lastRow["Phrase"]).Clean(),
+                            CultureInfo.InvariantCulture,
+                            apparatusParameters.AsCompareOptions()
+                        ) == 0
+                    )
                     {
                         // Fill in the empty fields
                         for (int i = 5; i < row.ItemArray.Length - 1; i++)
                         {
-                            if (string.IsNullOrEmpty(lastRow[i].ToString())
-                                && !string.IsNullOrEmpty(row[i].ToString()))
+                            if (
+                                string.IsNullOrEmpty(lastRow[i].ToString())
+                                && !string.IsNullOrEmpty(row[i].ToString())
+                            )
                             {
                                 lastRow.BeginEdit();
                                 lastRow[i] = row[i];
@@ -379,19 +420,26 @@ public partial class FormApparatusGenerator : Form
 
                 // Set up the final data table which will be sorted
                 finalDataTable = new DataTable();
-                foreach (DataColumn column in dataTable.Columns.Cast<DataColumn>().Where(c => c.ColumnName != "RowNumber"))
+                foreach (
+                    DataColumn column in dataTable
+                        .Columns.Cast<DataColumn>()
+                        .Where(c => c.ColumnName != "RowNumber")
+                )
                 {
                     finalDataTable.Columns.Add(column.ColumnName, column.DataType);
                 }
 
                 // Sort the output
-                foreach (DataRow row in unsortedDataTable.AsEnumerable()
-                             .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
-                             .ThenBy(r => (int)r["Chapter"])
-                             .ThenBy(r => (string)r["Verse"], new VerseComparer())
-                             .ThenBy(r => (int)r["RowNumber"])
-                             .ThenBy(r => (int)r["Occurrence"])
-                             .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters)))
+                foreach (
+                    DataRow row in unsortedDataTable
+                        .AsEnumerable()
+                        .OrderBy(r => (string)r["Book"], new PositionComparer<string>(this.books))
+                        .ThenBy(r => (int)r["Chapter"])
+                        .ThenBy(r => (string)r["Verse"], new VerseComparer())
+                        .ThenBy(r => (int)r["RowNumber"])
+                        .ThenBy(r => (int)r["Occurrence"])
+                        .ThenBy(r => (string)r["Phrase"], new WordComparer(apparatusParameters))
+                )
                 {
                     // Add the data row to the new table
                     DataRow newRow = finalDataTable.NewRow();
@@ -409,14 +457,16 @@ public partial class FormApparatusGenerator : Form
             {
                 // Save the spreadsheet
                 this.SaveFileDialogMain.DefaultExt = "*.csv";
-                this.SaveFileDialogMain.Filter = @"CSV Spreadsheet (*.csv)|*.csv|All Files (*.*)|*.*";
+                this.SaveFileDialogMain.Filter =
+                    @"CSV Spreadsheet (*.csv)|*.csv|All Files (*.*)|*.*";
                 if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
                     // Save the file with the BOM
                     await File.WriteAllTextAsync(
                         this.SaveFileDialogMain.FileName,
                         finalDataTable.AsCsvData(),
-                        Encoding.UTF8);
+                        Encoding.UTF8
+                    );
                 }
                 else
                 {
@@ -428,14 +478,16 @@ public partial class FormApparatusGenerator : Form
             {
                 // Save the HTML file
                 this.SaveFileDialogMain.DefaultExt = "*.html";
-                this.SaveFileDialogMain.Filter = @"HTML File (*.html)|*.html;*.htm|All Files (*.*)|*.*";
+                this.SaveFileDialogMain.Filter =
+                    @"HTML File (*.html)|*.html;*.htm|All Files (*.*)|*.*";
                 if (this.SaveFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
                     // Save the file with the BOM
                     await File.WriteAllTextAsync(
                         this.SaveFileDialogMain.FileName,
                         finalDataTable.AsHtmlApparatus(apparatusParameters),
-                        Encoding.UTF8);
+                        Encoding.UTF8
+                    );
                 }
                 else
                 {
@@ -467,7 +519,10 @@ public partial class FormApparatusGenerator : Form
             this.checkedListBoxBooksIsUpdating = true;
             for (int i = 0; i < this.CheckedListBoxBooks.Items.Count; i++)
             {
-                this.CheckedListBoxBooks.SetItemChecked(i, this.CheckBoxSelectAllBooks.Text == @"Select A&ll");
+                this.CheckedListBoxBooks.SetItemChecked(
+                    i,
+                    this.CheckBoxSelectAllBooks.Text == @"Select A&ll"
+                );
             }
 
             this.CheckedListBoxBooks.EndUpdate();
@@ -489,7 +544,10 @@ public partial class FormApparatusGenerator : Form
             this.checkedListBoxComparisonTextsIsUpdating = true;
             for (int i = 0; i < this.CheckedListBoxComparisonTexts.Items.Count; i++)
             {
-                this.CheckedListBoxComparisonTexts.SetItemChecked(i, this.CheckBoxSelectAllComparisonTexts.Text == @"Select &All");
+                this.CheckedListBoxComparisonTexts.SetItemChecked(
+                    i,
+                    this.CheckBoxSelectAllComparisonTexts.Text == @"Select &All"
+                );
             }
 
             this.CheckedListBoxComparisonTexts.EndUpdate();
@@ -503,14 +561,16 @@ public partial class FormApparatusGenerator : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="ItemCheckEventArgs"/> instance containing the event data.</param>
-    private void CheckedListBoxBooks_ItemCheck(object sender, ItemCheckEventArgs e) => this.UpdateCheckBoxSelectAllBooks(e.NewValue == CheckState.Checked);
+    private void CheckedListBoxBooks_ItemCheck(object sender, ItemCheckEventArgs e) =>
+        this.UpdateCheckBoxSelectAllBooks(e.NewValue == CheckState.Checked);
 
     /// <summary>
     /// Handles the ItemCheck event of the Comparison Texts CheckedListBox.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="ItemCheckEventArgs"/> instance containing the event data.</param>
-    private void CheckedListBoxComparisonTexts_ItemCheck(object sender, ItemCheckEventArgs e) => this.UpdateCheckBoxSelectAllComparisonTexts(e.NewValue == CheckState.Checked);
+    private void CheckedListBoxComparisonTexts_ItemCheck(object sender, ItemCheckEventArgs e) =>
+        this.UpdateCheckBoxSelectAllComparisonTexts(e.NewValue == CheckState.Checked);
 
     /// <summary>
     /// Handles the DrawItem event of the Base Text ComboBox.
@@ -519,7 +579,11 @@ public partial class FormApparatusGenerator : Form
     /// <param name="e">The <see cref="DrawItemEventArgs"/> instance containing the event data.</param>
     private void ComboBoxBaseText_DrawItem(object sender, DrawItemEventArgs e)
     {
-        if (sender is ComboBox comboBox && e.Index > -1 && comboBox.Items[e.Index] is ComboBoxItem item)
+        if (
+            sender is ComboBox comboBox
+            && e.Index > -1
+            && comboBox.Items[e.Index] is ComboBoxItem item
+        )
         {
             if (item.Selectable)
             {
@@ -539,7 +603,8 @@ public partial class FormApparatusGenerator : Form
                     font,
                     SystemBrushes.ControlText,
                     e.Bounds,
-                    StringFormat.GenericTypographic);
+                    StringFormat.GenericTypographic
+                );
             }
             else
             {
@@ -549,7 +614,8 @@ public partial class FormApparatusGenerator : Form
                     font,
                     SystemBrushes.ControlText,
                     e.Bounds,
-                    StringFormat.GenericTypographic);
+                    StringFormat.GenericTypographic
+                );
             }
 
             if (item.Selectable && comboBox.DroppedDown)
@@ -578,7 +644,8 @@ public partial class FormApparatusGenerator : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private void FormApparatusGenerator_FormClosing(object sender, FormClosingEventArgs e) => this.IsGenerating = false;
+    private void FormApparatusGenerator_FormClosing(object sender, FormClosingEventArgs e) =>
+        this.IsGenerating = false;
 
     /// <summary>
     /// Handles the Load event of the Form.
@@ -592,9 +659,9 @@ public partial class FormApparatusGenerator : Form
 
         // Get the blocked languages and translations so we do not show them
         List<string> blockedLanguages =
-            Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? new List<string>();
+            Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? [];
         List<string> blockedTranslations =
-            Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? new List<string>();
+            Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? [];
 
         // Add the translations
         string lastLanguage = string.Empty;
@@ -604,8 +671,10 @@ public partial class FormApparatusGenerator : Form
         {
             // If this translation is not blocked
             string translationLanguage = translation.Language ?? Resources.UnknownLanguage;
-            if (!blockedTranslations.Contains(translation.UniqueKey()) &&
-                !blockedLanguages.Contains(translationLanguage))
+            if (
+                !blockedTranslations.Contains(translation.UniqueKey())
+                && !blockedLanguages.Contains(translationLanguage)
+            )
             {
                 // Add a heading, if required
                 if (translationLanguage != lastLanguage)
@@ -654,7 +723,8 @@ public partial class FormApparatusGenerator : Form
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private void TextBoxIncludeApparatusData_Click(object sender, EventArgs e) => this.ButtonBrowse_Click(sender, e);
+    private void TextBoxIncludeApparatusData_Click(object sender, EventArgs e) =>
+        this.ButtonBrowse_Click(sender, e);
 
     /// <summary>
     /// Updates the books to match the base translation's canon asynchronously.
@@ -672,14 +742,18 @@ public partial class FormApparatusGenerator : Form
         if (this.ComboBoxBaseText.SelectedItem is TranslationComboBoxItem comboBoxItem)
         {
             // Add the book names to the suggestions list
-            IProvider? provider = this.providers.FirstOrDefault(p => p.Id == comboBoxItem.Provider) ??
-                                  this.providers.FirstOrDefault();
+            IProvider? provider =
+                this.providers.FirstOrDefault(p => p.Id == comboBoxItem.Provider)
+                ?? this.providers.FirstOrDefault();
             if (provider is not null)
             {
                 await foreach (Book book in provider.GetBooksAsync(comboBoxItem.Code, true))
                 {
                     this.books.Add(book.Name);
-                    this.CheckedListBoxBooks.Items.Add(book, this.CheckBoxSelectAllBooks.CheckState == CheckState.Checked);
+                    this.CheckedListBoxBooks.Items.Add(
+                        book,
+                        this.CheckBoxSelectAllBooks.CheckState == CheckState.Checked
+                    );
                 }
             }
         }
@@ -703,21 +777,32 @@ public partial class FormApparatusGenerator : Form
         if (this.ComboBoxBaseText.SelectedItem is TranslationComboBoxItem comboBoxItem)
         {
             // Add the other texts with the same language, or from Logos
-            foreach (TranslationComboBoxItem translationItem in this.translations
-                         .Where(t => t.Code != comboBoxItem.Code && (t.Language == comboBoxItem.Language || t.Provider == nameof(LogosProvider)))
-                         .Select(t => new TranslationComboBoxItem
-                         {
-                             Bold = false,
-                             Selectable = true,
-                             Text = t.UniqueName(this.translations),
-                             CanBeExported = t.CanBeExported,
-                             Code = t.Code,
-                             Language = t.Language,
-                             Provider = t.Provider,
-                         }))
+            foreach (
+                TranslationComboBoxItem translationItem in this
+                    .translations.Where(t =>
+                        t.Code != comboBoxItem.Code
+                        && (
+                            t.Language == comboBoxItem.Language
+                            || t.Provider == nameof(LogosProvider)
+                        )
+                    )
+                    .Select(t => new TranslationComboBoxItem
+                    {
+                        Bold = false,
+                        Selectable = true,
+                        Text = t.UniqueName(this.translations),
+                        CanBeExported = t.CanBeExported,
+                        Code = t.Code,
+                        Language = t.Language,
+                        Provider = t.Provider,
+                    })
+            )
             {
                 // Add the translation combo box item for display
-                this.CheckedListBoxComparisonTexts.Items.Add(translationItem, this.CheckBoxSelectAllComparisonTexts.CheckState == CheckState.Checked);
+                this.CheckedListBoxComparisonTexts.Items.Add(
+                    translationItem,
+                    this.CheckBoxSelectAllComparisonTexts.CheckState == CheckState.Checked
+                );
             }
         }
 
@@ -748,7 +833,10 @@ public partial class FormApparatusGenerator : Form
             if (checkedCount == this.CheckedListBoxBooks.Items.Count)
             {
                 this.CheckBoxSelectAllBooks.Text = @"Deselect A&ll";
-                this.ToolTipItem.SetToolTip(this.CheckBoxSelectAllBooks, $"{checkedCount} items selected");
+                this.ToolTipItem.SetToolTip(
+                    this.CheckBoxSelectAllBooks,
+                    $"{checkedCount} items selected"
+                );
                 this.CheckBoxSelectAllBooks.CheckState = CheckState.Checked;
             }
             else
@@ -756,7 +844,8 @@ public partial class FormApparatusGenerator : Form
                 this.CheckBoxSelectAllBooks.Text = @"Select A&ll";
                 this.ToolTipItem.SetToolTip(
                     this.CheckBoxSelectAllBooks,
-                    $"{this.CheckedListBoxBooks.Items.Count} items");
+                    $"{this.CheckedListBoxBooks.Items.Count} items"
+                );
                 this.CheckBoxSelectAllBooks.CheckState =
                     checkedCount == 0 ? CheckState.Unchecked : CheckState.Indeterminate;
             }
@@ -787,14 +876,21 @@ public partial class FormApparatusGenerator : Form
             if (checkedCount == this.CheckedListBoxComparisonTexts.Items.Count)
             {
                 this.CheckBoxSelectAllComparisonTexts.Text = @"Deselect &All";
-                this.ToolTipItem.SetToolTip(this.CheckBoxSelectAllComparisonTexts, $"{checkedCount} items selected");
+                this.ToolTipItem.SetToolTip(
+                    this.CheckBoxSelectAllComparisonTexts,
+                    $"{checkedCount} items selected"
+                );
                 this.CheckBoxSelectAllComparisonTexts.CheckState = CheckState.Checked;
             }
             else
             {
                 this.CheckBoxSelectAllComparisonTexts.Text = @"Select &All";
-                this.ToolTipItem.SetToolTip(this.CheckBoxSelectAllComparisonTexts, $"{this.CheckedListBoxComparisonTexts.Items.Count} items");
-                this.CheckBoxSelectAllComparisonTexts.CheckState = checkedCount == 0 ? CheckState.Unchecked : CheckState.Indeterminate;
+                this.ToolTipItem.SetToolTip(
+                    this.CheckBoxSelectAllComparisonTexts,
+                    $"{this.CheckedListBoxComparisonTexts.Items.Count} items"
+                );
+                this.CheckBoxSelectAllComparisonTexts.CheckState =
+                    checkedCount == 0 ? CheckState.Unchecked : CheckState.Indeterminate;
             }
 
             this.checkBoxSelectAllComparisonTextsIsUpdating = false;

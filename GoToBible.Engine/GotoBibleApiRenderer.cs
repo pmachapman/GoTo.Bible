@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="GotoBibleApiRenderer.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -60,12 +60,22 @@ public sealed class GotoBibleApiRenderer : IRenderer
     }
 
     /// <inheritdoc/>
-    public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage, CancellationToken cancellationToken = default)
+    public async Task<RenderedPassage> RenderAsync(
+        RenderingParameters parameters,
+        bool renderCompleteHtmlPage,
+        CancellationToken cancellationToken = default
+    )
     {
         string url = $"RenderPassage?renderCompleteHtmlPage={renderCompleteHtmlPage}";
-        HttpResponseMessage response = await this.httpClient.PostAsJsonAsync(url, parameters, cancellationToken);
+        HttpResponseMessage response = await this.httpClient.PostAsJsonAsync(
+            url,
+            parameters,
+            cancellationToken
+        );
         return response.IsSuccessStatusCode
-            ? await response.Content.ReadFromJsonAsync<RenderedPassage>(cancellationToken: cancellationToken) ?? new RenderedPassage()
+            ? await response.Content.ReadFromJsonAsync<RenderedPassage>(
+                cancellationToken: cancellationToken
+            ) ?? new RenderedPassage()
             : new RenderedPassage();
     }
 

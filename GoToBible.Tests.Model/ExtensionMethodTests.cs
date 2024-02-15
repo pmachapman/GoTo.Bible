@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethodTests.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ public class ExtensionMethodTests
         {
             ChapterReference = chapterReference,
             Display = "1 John 1",
-            HighlightedVerses = Array.Empty<string>(),
+            HighlightedVerses = [],
         };
         PassageReference actual = chapterReference.AsPassageReference();
         Assert.AreEqual(expected, actual);
@@ -165,7 +165,10 @@ public class ExtensionMethodTests
             PassageReference = new PassageReference { Display = "1 John 1:3,6-7" },
             PrimaryTranslation = "ESV",
         };
-        Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV"), renderingParameters.AsUrl());
+        Assert.AreEqual(
+            new Uri("https://goto.bible/1.John.1_3~6-7/ESV"),
+            renderingParameters.AsUrl()
+        );
     }
 
     /// <summary>
@@ -182,7 +185,10 @@ public class ExtensionMethodTests
             InterlinearIgnoresDiacritics = true,
             InterlinearIgnoresPunctuation = false,
         };
-        Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV"), renderingParameters.AsUrl());
+        Assert.AreEqual(
+            new Uri("https://goto.bible/1.John.1_3~6-7/ESV"),
+            renderingParameters.AsUrl()
+        );
     }
 
     /// <summary>
@@ -197,7 +203,10 @@ public class ExtensionMethodTests
             PrimaryTranslation = "ESV",
             SecondaryTranslation = "NET",
         };
-        Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV/NET"), renderingParameters.AsUrl());
+        Assert.AreEqual(
+            new Uri("https://goto.bible/1.John.1_3~6-7/ESV/NET"),
+            renderingParameters.AsUrl()
+        );
     }
 
     /// <summary>
@@ -215,32 +224,39 @@ public class ExtensionMethodTests
             InterlinearIgnoresDiacritics = true,
             InterlinearIgnoresPunctuation = true,
         };
-        Assert.AreEqual(new Uri("https://goto.bible/1.John.1_3~6-7/ESV/NET?settings=7"), renderingParameters.AsUrl());
+        Assert.AreEqual(
+            new Uri("https://goto.bible/1.John.1_3~6-7/ESV/NET?settings=7"),
+            renderingParameters.AsUrl()
+        );
     }
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.DecodePassageFromUrl"/>.
     /// </summary>
     [TestMethod]
-    public void TestDecodePassageFromUrl() => Assert.AreEqual("1 John 1:3,6-7", "/1.John.1_3~6-7/".DecodePassageFromUrl());
+    public void TestDecodePassageFromUrl() =>
+        Assert.AreEqual("1 John 1:3,6-7", "/1.John.1_3~6-7/".DecodePassageFromUrl());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.DecodePassageFromUrl"/> with brackets.
     /// </summary>
     [TestMethod]
-    public void TestDecodePassageWithBracketsFromUrl() => Assert.AreEqual("Daniel (Greek) 1", "/Daniel.(Greek).1/".DecodePassageFromUrl());
+    public void TestDecodePassageWithBracketsFromUrl() =>
+        Assert.AreEqual("Daniel (Greek) 1", "/Daniel.(Greek).1/".DecodePassageFromUrl());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.EncodePassageForUrl"/>.
     /// </summary>
     [TestMethod]
-    public void TestEncodePassageFromUrl() => Assert.AreEqual("1.John.1_3~6-7", "1 John 1:3,6-7".EncodePassageForUrl());
+    public void TestEncodePassageFromUrl() =>
+        Assert.AreEqual("1.John.1_3~6-7", "1 John 1:3,6-7".EncodePassageForUrl());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.EncodePassageForUrl"/>.
     /// </summary>
     [TestMethod]
-    public void TestEncodePassageWithBracketsFromUrl() => Assert.AreEqual("Daniel.(Greek).1", "Daniel (Greek) 1".EncodePassageForUrl());
+    public void TestEncodePassageWithBracketsFromUrl() =>
+        Assert.AreEqual("Daniel.(Greek).1", "Daniel (Greek) 1".EncodePassageForUrl());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.GetBook"/>.
@@ -252,7 +268,8 @@ public class ExtensionMethodTests
     /// Tests <see cref="ExtensionMethods.GetBook"/> for a book with brackets.
     /// </summary>
     [TestMethod]
-    public void TestGetBookWithBrackets() => Assert.AreEqual("esther (greek)", "est(greek)1:1".GetBook());
+    public void TestGetBookWithBrackets() =>
+        Assert.AreEqual("esther (greek)", "est(greek)1:1".GetBook());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.GetRanges"/>.
@@ -260,7 +277,7 @@ public class ExtensionMethodTests
     [TestMethod]
     public void TestGetRanges()
     {
-        string[] expected = { "1:1", "1:2", "...", "1:3", "1:4", "1:5", "...", "1:6" };
+        string[] expected = ["1:1", "1:2", "...", "1:3", "1:4", "1:5", "...", "1:6"];
         Assert.IsTrue("1john1:1,2-3,4,5-6".GetRanges().SequenceEqual(expected));
     }
 
@@ -268,65 +285,119 @@ public class ExtensionMethodTests
     /// Tests <see cref="ExtensionMethods.NormaliseCommas"/>.
     /// </summary>
     [TestMethod]
-    public void TestNormaliseCommas() => Assert.AreEqual("1john1:1;1john1:2-3;1john1:4;1john1:5-6", "1john1:1,2-3,4,5-6".NormaliseCommas());
+    public void TestNormaliseCommas() =>
+        Assert.AreEqual(
+            "1john1:1;1john1:2-3;1john1:4;1john1:5-6",
+            "1john1:1,2-3,4,5-6".NormaliseCommas()
+        );
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.NormaliseSingleChapterReference"/> for a single chapter reference.
     /// </summary>
     [TestMethod]
-    public void TestNormaliseSingleChapterReference() => Assert.AreEqual("jude1:1", "jude1".NormaliseSingleChapterReference());
+    public void TestNormaliseSingleChapterReference() =>
+        Assert.AreEqual("jude1:1", "jude1".NormaliseSingleChapterReference());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.NormaliseSingleChapterReference"/> for a single chapter reference with a chapter already specified.
     /// </summary>
     [TestMethod]
-    public void TestNormaliseSingleChapterReferenceWithChapterAlreadySpecified() => Assert.AreEqual("jude1:1", "jude1:1".NormaliseSingleChapterReference());
+    public void TestNormaliseSingleChapterReferenceWithChapterAlreadySpecified() =>
+        Assert.AreEqual("jude1:1", "jude1:1".NormaliseSingleChapterReference());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.NormaliseSingleChapterReference"/> for a book beginning with a number.
     /// </summary>
     [TestMethod]
-    public void TestNormaliseSingleChapterReferenceForBookBeginningWithNumber() => Assert.AreEqual("2john", "2john".NormaliseSingleChapterReference());
+    public void TestNormaliseSingleChapterReferenceForBookBeginningWithNumber() =>
+        Assert.AreEqual("2john", "2john".NormaliseSingleChapterReference());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.RenderCss"/> for blank <see cref="RenderingParameters"/>.
     /// </summary>
     [TestMethod]
-    public void TestRenderCssBlank() => Assert.AreNotEqual(string.Empty, new RenderingParameters().RenderCss());
+    public void TestRenderCssBlank() =>
+        Assert.AreNotEqual(string.Empty, new RenderingParameters().RenderCss());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.SanitisePassageReference"/>.
     /// </summary>
     [TestMethod]
-    public void TestSanitisePassageReference() => Assert.AreEqual("1john1:1-2", "1 John 1.1‐2".SanitisePassageReference());
+    public void TestSanitisePassageReference() =>
+        Assert.AreEqual("1john1:1-2", "1 John 1.1‐2".SanitisePassageReference());
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.ToHtml(RenderColour)"/> for black.
     /// </summary>
     [TestMethod]
-    public void TestToHtml_Black() => Assert.AreEqual("#000000", new RenderColour { R = 0, G = 0, B = 0 }.ToHtml());
+    public void TestToHtml_Black() =>
+        Assert.AreEqual(
+            "#000000",
+            new RenderColour
+            {
+                R = 0,
+                G = 0,
+                B = 0
+            }.ToHtml()
+        );
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.ToHtml(RenderColour)"/> for blue.
     /// </summary>
     [TestMethod]
-    public void TestToHtml_Blue() => Assert.AreEqual("#0000FF", new RenderColour { R = 0, G = 0, B = 255 }.ToHtml());
+    public void TestToHtml_Blue() =>
+        Assert.AreEqual(
+            "#0000FF",
+            new RenderColour
+            {
+                R = 0,
+                G = 0,
+                B = 255
+            }.ToHtml()
+        );
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.ToHtml(RenderColour)"/> for green.
     /// </summary>
     [TestMethod]
-    public void TestToHtml_Green() => Assert.AreEqual("#00FF00", new RenderColour { R = 0, G = 255, B = 0 }.ToHtml());
+    public void TestToHtml_Green() =>
+        Assert.AreEqual(
+            "#00FF00",
+            new RenderColour
+            {
+                R = 0,
+                G = 255,
+                B = 0
+            }.ToHtml()
+        );
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.ToHtml(RenderColour)"/> for red.
     /// </summary>
     [TestMethod]
-    public void TestToHtml_Red() => Assert.AreEqual("#FF0000", new RenderColour { R = 255, G = 0, B = 0 }.ToHtml());
+    public void TestToHtml_Red() =>
+        Assert.AreEqual(
+            "#FF0000",
+            new RenderColour
+            {
+                R = 255,
+                G = 0,
+                B = 0
+            }.ToHtml()
+        );
 
     /// <summary>
     /// Tests <see cref="ExtensionMethods.ToHtml(RenderColour)"/> for white.
     /// </summary>
     [TestMethod]
-    public void TestToHtml_White() => Assert.AreEqual("#FFFFFF", new RenderColour { R = 255, G = 255, B = 255 }.ToHtml());
+    public void TestToHtml_White() =>
+        Assert.AreEqual(
+            "#FFFFFF",
+            new RenderColour
+            {
+                R = 255,
+                G = 255,
+                B = 255
+            }.ToHtml()
+        );
 }

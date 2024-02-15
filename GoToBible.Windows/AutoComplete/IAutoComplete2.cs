@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IAutoComplete2.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -61,7 +61,8 @@ public interface IAutoComplete2
         nint hwndEdit,
         [MarshalAs(UnmanagedType.IUnknown)] object punkACL,
         [MarshalAs(UnmanagedType.LPWStr)] string pwszRegKeyPath,
-        [MarshalAs(UnmanagedType.LPWStr)] string pwszQuickComplete);
+        [MarshalAs(UnmanagedType.LPWStr)] string pwszQuickComplete
+    );
 
     /// <summary>
     /// Enables or disables autocompletion.

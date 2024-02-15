@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
 // <copyright file="TranslationTests.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -41,10 +41,7 @@ public class TranslationTests
     [TestMethod]
     public void TestName()
     {
-        Translation translation = new Translation
-        {
-            Name = "KJV",
-        };
+        Translation translation = new Translation { Name = "KJV", };
         Assert.IsNull(translation.Author);
         Assert.IsFalse(translation.CanBeExported);
         Assert.AreEqual(string.Empty, translation.Code);
@@ -64,11 +61,7 @@ public class TranslationTests
     [TestMethod]
     public void TestNameAndLanguage()
     {
-        Translation translation = new Translation
-        {
-            Language = "English",
-            Name = "KJV",
-        };
+        Translation translation = new Translation { Language = "English", Name = "KJV", };
         Assert.IsNull(translation.Author);
         Assert.IsFalse(translation.CanBeExported);
         Assert.AreEqual(string.Empty, translation.Code);

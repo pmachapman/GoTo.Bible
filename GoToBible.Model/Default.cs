@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Default.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -25,7 +25,13 @@ public static class Default
     /// <remarks>
     /// This is white by default.
     /// </remarks>
-    public static RenderColour BackgroundColour => new RenderColour { R = 255, G = 255, B = 255 };
+    public static RenderColour BackgroundColour =>
+        new RenderColour
+        {
+            R = 255,
+            G = 255,
+            B = 255
+        };
 
     /// <summary>
     /// Gets the default font.
@@ -33,11 +39,8 @@ public static class Default
     /// <value>
     /// The default font.
     /// </value>
-    public static RenderFont Font => new RenderFont
-    {
-        FamilyName = "Calibri",
-        SizeInPoints = 14.25f,
-    };
+    public static RenderFont Font =>
+        new RenderFont { FamilyName = "Calibri", SizeInPoints = 14.25f, };
 
     /// <summary>
     /// Gets the default foreground colour.
@@ -48,7 +51,13 @@ public static class Default
     /// <remarks>
     /// This is black by default.
     /// </remarks>
-    public static RenderColour ForegroundColour => new RenderColour { R = 0, G = 0, B = 0 };
+    public static RenderColour ForegroundColour =>
+        new RenderColour
+        {
+            R = 0,
+            G = 0,
+            B = 0
+        };
 
     /// <summary>
     /// Gets the default highlight colour.
@@ -59,7 +68,13 @@ public static class Default
     /// <remarks>
     /// This is yellow by default.
     /// </remarks>
-    public static RenderColour HighlightColour => new RenderColour { R = 255, G = 255, B = 0 };
+    public static RenderColour HighlightColour =>
+        new RenderColour
+        {
+            R = 255,
+            G = 255,
+            B = 0
+        };
 
     /// <summary>
     /// Gets the default passage reference.

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -32,11 +32,17 @@ public static class ExtensionMethods
     public static string AsCsvData(this DataTable dataTable, char separator = ',')
     {
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine(string.Join(separator, dataTable.Columns.Cast<DataColumn>().Select(column => column.ColumnName)));
+        sb.AppendLine(
+            string.Join(
+                separator,
+                dataTable.Columns.Cast<DataColumn>().Select(column => column.ColumnName)
+            )
+        );
         foreach (DataRow row in dataTable.Rows)
         {
-            IEnumerable<string> fields = row.ItemArray
-                .Select(field => field?.ToString()?.EncodeCsvField(separator) ?? string.Empty);
+            IEnumerable<string> fields = row.ItemArray.Select(field =>
+                field?.ToString()?.EncodeCsvField(separator) ?? string.Empty
+            );
             sb.AppendLine(string.Join(separator, fields));
         }
 
@@ -52,7 +58,9 @@ public static class ExtensionMethods
     /// <exception cref="ArgumentException">There was an error parsing the CSV data.</exception>
     public static DataTable AsDataTable(this string csvData, params Type[] columnTypes)
     {
-        string[] lines = csvData.NormaliseLineEndings().Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        string[] lines = csvData
+            .NormaliseLineEndings()
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         lines[0] = lines[0].TrimEnd(',');
         string[] fields = lines[0].Split(',');
         int cols = fields.Length;
@@ -61,13 +69,16 @@ public static class ExtensionMethods
         // The first row must be column names
         for (int i = 0; i < cols; i++)
         {
-            dt.Columns.Add(fields[i].Trim('"'), i < columnTypes.Length ? columnTypes[i] : columnTypes.Last());
+            dt.Columns.Add(
+                fields[i].Trim('"'),
+                i < columnTypes.Length ? columnTypes[i] : columnTypes.Last()
+            );
         }
 
         int rowCount = 0;
         try
         {
-            string[] toBeContinued = Array.Empty<string>();
+            string[] toBeContinued = [];
             bool lineToBeContinued = false;
             for (int i = 1; i < lines.Length; i++)
             {
@@ -95,7 +106,7 @@ public static class ExtensionMethods
                         if (toBeContinued.Length >= cols && quoteCount % 2 == 0)
                         {
                             fields = toBeContinued;
-                            toBeContinued = Array.Empty<string>();
+                            toBeContinued = [];
                             lineToBeContinued = false;
                         }
                         else
@@ -108,8 +119,8 @@ public static class ExtensionMethods
                     // Deserialize CSV following Excel's rule:
                     // 1: If there are commas in a field, quote the field.
                     // 2: Two consecutive quotes indicate a user's quote.
-                    List<int> singleLeftQuota = new List<int>();
-                    List<int> singleRightQuota = new List<int>();
+                    List<int> singleLeftQuota = [];
+                    List<int> singleRightQuota = [];
 
                     // Combine fields if the number of commas match
                     if (fields.Length > cols)
@@ -191,8 +202,9 @@ public static class ExtensionMethods
 
                         if (singleLeftQuota.Count == singleRightQuota.Count)
                         {
-                            int insideCommas =
-                                singleLeftQuota.Select((t, indexN) => singleRightQuota[indexN] - t).Sum();
+                            int insideCommas = singleLeftQuota
+                                .Select((t, indexN) => singleRightQuota[indexN] - t)
+                                .Sum();
 
                             // Probably matched
                             if (fields.Length - cols >= insideCommas)
@@ -205,7 +217,11 @@ public static class ExtensionMethods
                                 {
                                     bool combine = false;
                                     int storedIndex = 0;
-                                    for (int iInLeft = 0; iInLeft < singleLeftQuota.Count; iInLeft++)
+                                    for (
+                                        int iInLeft = 0;
+                                        iInLeft < singleLeftQuota.Count;
+                                        iInLeft++
+                                    )
                                     {
                                         if (j + totalOffSet == singleLeftQuota[iInLeft])
                                         {
@@ -217,7 +233,9 @@ public static class ExtensionMethods
 
                                     if (combine)
                                     {
-                                        int offset = singleRightQuota[storedIndex] - singleLeftQuota[storedIndex];
+                                        int offset =
+                                            singleRightQuota[storedIndex]
+                                            - singleLeftQuota[storedIndex];
                                         for (int combineI = 0; combineI <= offset; combineI++)
                                         {
                                             temp[j] += fields[j + totalOffSet + combineI] + ",";
@@ -241,9 +259,12 @@ public static class ExtensionMethods
                     for (int f = 0; f < cols; f++)
                     {
                         // Two consecutive quotes indicate a user's quote
-                        fields[f] = fields[f].Replace("\"\"", "\"", StringComparison.OrdinalIgnoreCase);
-                        if (fields[f].StartsWith("\"", StringComparison.OrdinalIgnoreCase)
-                            && fields[f].EndsWith("\"", StringComparison.OrdinalIgnoreCase))
+                        fields[f] = fields[f]
+                            .Replace("\"\"", "\"", StringComparison.OrdinalIgnoreCase);
+                        if (
+                            fields[f].StartsWith("\"", StringComparison.OrdinalIgnoreCase)
+                            && fields[f].EndsWith("\"", StringComparison.OrdinalIgnoreCase)
+                        )
                         {
                             fields[f] = fields[f].Remove(0, 1);
                             if (fields[f].Length > 0)
@@ -276,12 +297,16 @@ public static class ExtensionMethods
     /// The <see cref="Font" /> corresponding to the <see cref="RenderFont" />.
     /// </returns>
     [SupportedOSPlatform("windows")]
-    public static Font AsFont(this RenderFont renderFont)
-        => new Font(
+    public static Font AsFont(this RenderFont renderFont) =>
+        new Font(
             renderFont.FamilyName,
             renderFont.SizeInPoints,
-            (renderFont.Bold ? FontStyle.Bold : FontStyle.Regular) & (renderFont.Italic ? FontStyle.Italic : FontStyle.Regular) & (renderFont.Strikeout ? FontStyle.Strikeout : FontStyle.Regular) & (renderFont.Underline ? FontStyle.Underline : FontStyle.Regular),
-            GraphicsUnit.Point);
+            (renderFont.Bold ? FontStyle.Bold : FontStyle.Regular)
+                & (renderFont.Italic ? FontStyle.Italic : FontStyle.Regular)
+                & (renderFont.Strikeout ? FontStyle.Strikeout : FontStyle.Regular)
+                & (renderFont.Underline ? FontStyle.Underline : FontStyle.Regular),
+            GraphicsUnit.Point
+        );
 
     /// <summary>
     /// Generates an HTML apparatus from a DataTable.
@@ -289,13 +314,17 @@ public static class ExtensionMethods
     /// <param name="dataTable">The data table.</param>
     /// <param name="parameters">The apparatus rendering parameters.</param>
     /// <returns>The HTML code for the apparatus.</returns>
-    public static string AsHtmlApparatus(this DataTable dataTable, ApparatusRenderingParameters parameters)
+    public static string AsHtmlApparatus(
+        this DataTable dataTable,
+        ApparatusRenderingParameters parameters
+    )
     {
         // Set upp the page
         StringBuilder sb = new StringBuilder();
         sb.AppendLine("<!DOCTYPE html>");
         sb.AppendLine(
-            "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
+            "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
+        );
         sb.AppendLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
         sb.Append("<style>");
         sb.Append(parameters.RenderCss());
@@ -307,7 +336,10 @@ public static class ExtensionMethods
         foreach (DataRow row in dataTable.Rows)
         {
             // Separate from the previous phrase if we are in the same chapter/verse
-            ChapterReference thisChapter = new ChapterReference((string)row["Book"], (int)row["Chapter"]);
+            ChapterReference thisChapter = new ChapterReference(
+                (string)row["Book"],
+                (int)row["Chapter"]
+            );
             string thisVerse = (string)row["Verse"];
             if (thisVerse == lastVerse && thisChapter == lastChapter)
             {
@@ -329,12 +361,17 @@ public static class ExtensionMethods
                 sb.Append(' ');
             }
 
-            if (thisChapter.ChapterNumber != lastChapter.ChapterNumber
-                || thisChapter.Book != lastChapter.Book)
+            if (
+                thisChapter.ChapterNumber != lastChapter.ChapterNumber
+                || thisChapter.Book != lastChapter.Book
+            )
             {
                 // We are in a new chapter number
                 sb.Append("<sup>");
-                if (thisChapter.Book is not ("Obadiah" or "Philemon" or "2 John" or "3 John" or "Jude"))
+                if (
+                    thisChapter.Book
+                    is not ("Obadiah" or "Philemon" or "2 John" or "3 John" or "Jude")
+                )
                 {
                     // We don't show the chapter number in one chapter books
                     sb.Append($"{thisChapter.ChapterNumber}:");
@@ -356,13 +393,19 @@ public static class ExtensionMethods
             if (occurrence > 0)
             {
                 // There is more than one occurrence in this line
-                sb.Append(parameters.OccurrenceMarker.Replace("%OCCURRENCE%", occurrence.ToString(), StringComparison.OrdinalIgnoreCase));
+                sb.Append(
+                    parameters.OccurrenceMarker.Replace(
+                        "%OCCURRENCE%",
+                        occurrence.ToString(),
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                );
             }
 
             sb.Append(' ');
 
             // Get the variants by text
-            Dictionary<string, string> variants = new Dictionary<string, string>();
+            Dictionary<string, string> variants = [];
             for (int i = 5; i < dataTable.Columns.Count; i++)
             {
                 // Format based on interlinear parameters
@@ -377,8 +420,12 @@ public static class ExtensionMethods
                     if (parameters.InterlinearIgnoresDiacritics)
                     {
                         variant = variant.Normalize(NormalizationForm.FormD);
-                        char[] chars = variant.Where(c =>
-                            CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
+                        char[] chars = variant
+                            .Where(c =>
+                                CharUnicodeInfo.GetUnicodeCategory(c)
+                                != UnicodeCategory.NonSpacingMark
+                            )
+                            .ToArray();
                         variant = new string(chars).Normalize(NormalizationForm.FormC);
                     }
 
@@ -393,7 +440,13 @@ public static class ExtensionMethods
                     // Add the variant
                     bool variantFound = false;
                     string? key = variants.Keys.FirstOrDefault(k =>
-                        string.Compare(k.Clean(), variant.Clean(), CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0);
+                        string.Compare(
+                            k.Clean(),
+                            variant.Clean(),
+                            CultureInfo.InvariantCulture,
+                            parameters.AsCompareOptions()
+                        ) == 0
+                    );
                     if (key is not null)
                     {
                         variants[key] += $" {dataTable.Columns[i].ColumnName}";
@@ -441,8 +494,13 @@ public static class ExtensionMethods
     /// <returns>
     /// The <see cref="RenderColour" /> corresponding to the <see cref="Color" />.
     /// </returns>
-    public static RenderColour AsRenderColour(this Color color)
-        => new RenderColour { R = color.R, G = color.G, B = color.B };
+    public static RenderColour AsRenderColour(this Color color) =>
+        new RenderColour
+        {
+            R = color.R,
+            G = color.G,
+            B = color.B
+        };
 
     /// <summary>
     /// Returns a <see cref="Font" /> as a <see cref="RenderFont" />.
@@ -452,15 +510,16 @@ public static class ExtensionMethods
     /// The <see cref="RenderFont" /> corresponding to the <see cref="Font" />.
     /// </returns>
     [SupportedOSPlatform("windows")]
-    public static RenderFont AsRenderFont(this Font font) => new RenderFont
-    {
-        FamilyName = font.FontFamily.Name,
-        Bold = font.Bold,
-        Italic = font.Italic,
-        SizeInPoints = font.SizeInPoints,
-        Strikeout = font.Strikeout,
-        Underline = font.Underline,
-    };
+    public static RenderFont AsRenderFont(this Font font) =>
+        new RenderFont
+        {
+            FamilyName = font.FontFamily.Name,
+            Bold = font.Bold,
+            Italic = font.Italic,
+            SizeInPoints = font.SizeInPoints,
+            Strikeout = font.Strikeout,
+            Underline = font.Underline,
+        };
 
     /// <summary>
     /// Removes extra whitespace, and changes all white space to a simple space.
@@ -500,5 +559,6 @@ public static class ExtensionMethods
     /// <returns>
     /// The unique key.
     /// </returns>
-    public static string UniqueKey(this Translation translation) => $"{translation.Provider}-{translation.Code}";
+    public static string UniqueKey(this Translation translation) =>
+        $"{translation.Provider}-{translation.Code}";
 }

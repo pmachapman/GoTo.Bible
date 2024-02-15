@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Translation.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -95,5 +95,6 @@ public class Translation
     public int Year { get; set; }
 
     /// <inheritdoc/>
-    public override string ToString() => this.Language is null ? this.Name : $"{this.Language}: {this.Name}";
+    public override string ToString() =>
+        this.Language is null ? this.Name : $"{this.Language}: {this.Name}";
 }

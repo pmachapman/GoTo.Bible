@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Renderer.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -25,7 +25,8 @@ public partial class Renderer : IRenderer
     /// <summary>
     /// A horizontal line.
     /// </summary>
-    private const string HorizontalLine = "<hr style=\"padding:0;border:none;width:100%;height:1px;color:#000;background-color:#000\">";
+    private const string HorizontalLine =
+        "<hr style=\"padding:0;border:none;width:100%;height:1px;color:#000;background-color:#000\">";
 
     /// <summary>
     /// A value indicating whether or not this instance has been disposed.
@@ -61,23 +62,35 @@ public partial class Renderer : IRenderer
     }
 
     /// <inheritdoc/>
-    public async Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage, CancellationToken cancellationToken = default)
+    public async Task<RenderedPassage> RenderAsync(
+        RenderingParameters parameters,
+        bool renderCompleteHtmlPage,
+        CancellationToken cancellationToken = default
+    )
     {
         // Set up the rendered passage
         RenderedPassage renderedPassage = new RenderedPassage();
 
         // Get the first provider
-        IProvider? firstProvider = this.Providers.FirstOrDefault(p => p.Id == parameters.PrimaryProvider);
+        IProvider? firstProvider = this.Providers.FirstOrDefault(p =>
+            p.Id == parameters.PrimaryProvider
+        );
         if (firstProvider is null)
         {
             return renderedPassage;
         }
 
         // Get the first translation
-        Chapter firstChapter = await firstProvider.GetChapterAsync(parameters.PrimaryTranslation, parameters.PassageReference.ChapterReference, cancellationToken);
+        Chapter firstChapter = await firstProvider.GetChapterAsync(
+            parameters.PrimaryTranslation,
+            parameters.PassageReference.ChapterReference,
+            cancellationToken
+        );
 
         // Setup the previous chapter reference
-        renderedPassage.PreviousPassage = firstChapter.PreviousChapterReference.IsValid ? firstChapter.PreviousChapterReference.AsPassageReference() : new PassageReference();
+        renderedPassage.PreviousPassage = firstChapter.PreviousChapterReference.IsValid
+            ? firstChapter.PreviousChapterReference.AsPassageReference()
+            : new PassageReference();
 
         // Setup the next chapter reference
         renderedPassage.NextPassage = firstChapter.NextChapterReference.IsValid
@@ -94,7 +107,10 @@ public partial class Renderer : IRenderer
             if (firstChapter.SupportsItalics)
             {
                 StringBuilder sb = new StringBuilder();
-                string[] lines = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                string[] lines = firstChapter.Text.Split(
+                    new[] { Environment.NewLine },
+                    StringSplitOptions.RemoveEmptyEntries
+                );
                 foreach (string line in lines)
                 {
                     hasContent = true;
@@ -115,7 +131,10 @@ public partial class Renderer : IRenderer
             if (firstChapter.SupportsItalics)
             {
                 StringBuilder sb = new StringBuilder();
-                string[] lines = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                string[] lines = firstChapter.Text.Split(
+                    new[] { Environment.NewLine },
+                    StringSplitOptions.RemoveEmptyEntries
+                );
                 foreach (string line in lines)
                 {
                     hasContent = true;
@@ -153,7 +172,8 @@ public partial class Renderer : IRenderer
                 {
                     sb.AppendLine("<!DOCTYPE html>");
                     sb.AppendLine(
-                        "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
+                        "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
+                    );
                     sb.AppendLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
                     sb.Append("<style>");
                     sb.Append(parameters.RenderCss());
@@ -164,32 +184,59 @@ public partial class Renderer : IRenderer
             if (!string.IsNullOrWhiteSpace(parameters.SecondaryTranslation))
             {
                 // Get the second provider
-                IProvider secondProvider = this.Providers.FirstOrDefault(p => p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider)) ?? firstProvider;
+                IProvider secondProvider =
+                    this.Providers.FirstOrDefault(p =>
+                        p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider)
+                    ) ?? firstProvider;
 
                 // Get the second translation, if specified
-                Chapter secondChapter = await secondProvider.GetChapterAsync(parameters.SecondaryTranslation, parameters.PassageReference.ChapterReference, cancellationToken);
+                Chapter secondChapter = await secondProvider.GetChapterAsync(
+                    parameters.SecondaryTranslation,
+                    parameters.PassageReference.ChapterReference,
+                    cancellationToken
+                );
 
                 // If the next chapter reference is invalid, see if this chapter has a valid reference
-                if (!renderedPassage.NextPassage.IsValid && secondChapter.NextChapterReference.IsValid)
+                if (
+                    !renderedPassage.NextPassage.IsValid
+                    && secondChapter.NextChapterReference.IsValid
+                )
                 {
-                    renderedPassage.NextPassage = secondChapter.NextChapterReference.AsPassageReference();
+                    renderedPassage.NextPassage =
+                        secondChapter.NextChapterReference.AsPassageReference();
                 }
 
                 // If the previous chapter reference is invalid, see if this chapter has a valid reference
-                if (!renderedPassage.PreviousPassage.IsValid && secondChapter.PreviousChapterReference.IsValid)
+                if (
+                    !renderedPassage.PreviousPassage.IsValid
+                    && secondChapter.PreviousChapterReference.IsValid
+                )
                 {
-                    renderedPassage.PreviousPassage = secondChapter.PreviousChapterReference.AsPassageReference();
+                    renderedPassage.PreviousPassage =
+                        secondChapter.PreviousChapterReference.AsPassageReference();
                 }
 
                 // Render both interlinear
-                List<string> lines1 = firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                List<string> lines2 = secondChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> lines1 =
+                [
+                    .. firstChapter.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+                ];
+                List<string> lines2 =
+                [
+                    .. secondChapter.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+                ];
 
                 // Add any missing verses
                 for (int i = 0; i < lines1.Count; i++)
                 {
                     int expectedVerseNumber = i + 1;
-                    if (int.TryParse(lines1[i].AsSpan(0, lines1[i].IndexOf(' ')), out int verseNumber) && verseNumber > expectedVerseNumber)
+                    if (
+                        int.TryParse(
+                            lines1[i].AsSpan(0, lines1[i].IndexOf(' ')),
+                            out int verseNumber
+                        )
+                        && verseNumber > expectedVerseNumber
+                    )
                     {
                         lines1.Insert(i, $"{expectedVerseNumber}  ");
                     }
@@ -198,31 +245,42 @@ public partial class Renderer : IRenderer
                 for (int i = 0; i < lines2.Count; i++)
                 {
                     int expectedVerseNumber = i + 1;
-                    if (int.TryParse(lines2[i].AsSpan(0, lines2[i].IndexOf(' ')), out int verseNumber) && verseNumber > expectedVerseNumber)
+                    if (
+                        int.TryParse(
+                            lines2[i].AsSpan(0, lines2[i].IndexOf(' ')),
+                            out int verseNumber
+                        )
+                        && verseNumber > expectedVerseNumber
+                    )
                     {
                         lines2.Insert(i, $"{expectedVerseNumber}  ");
                     }
                 }
 
                 // Add a superscription, if missing
-                if (lines1.Count > lines2.Count
+                if (
+                    lines1.Count > lines2.Count
                     && lines2.Count > 0
                     && int.TryParse(lines2[0].AsSpan(0, lines2[0].IndexOf(' ')), out int _)
-                    && !int.TryParse(lines1[0].AsSpan(0, lines1[0].IndexOf(' ')), out int _))
+                    && !int.TryParse(lines1[0].AsSpan(0, lines1[0].IndexOf(' ')), out int _)
+                )
                 {
                     lines2.Insert(0, string.Empty);
                 }
-                else if (lines2.Count > lines1.Count
-                         && lines1.Count > 0
-                         && int.TryParse(lines1[0].AsSpan(0, lines1[0].IndexOf(' ')), out int _)
-                         && !int.TryParse(lines2[0].AsSpan(0, lines2[0].IndexOf(' ')), out int _))
+                else if (
+                    lines2.Count > lines1.Count
+                    && lines1.Count > 0
+                    && int.TryParse(lines1[0].AsSpan(0, lines1[0].IndexOf(' ')), out int _)
+                    && !int.TryParse(lines2[0].AsSpan(0, lines2[0].IndexOf(' ')), out int _)
+                )
                 {
                     lines1.Insert(0, string.Empty);
                 }
 
                 // The following is used to calculate rendering suggestions
                 int linesWithLessThanThreeWordsInCommon = 0;
-                int totalInterlinearLines = lines1.Count < lines2.Count ? lines1.Count : lines2.Count;
+                int totalInterlinearLines =
+                    lines1.Count < lines2.Count ? lines1.Count : lines2.Count;
 
                 // Render each line
                 for (int i = 0; i < lines1.Count; i++)
@@ -231,12 +289,40 @@ public partial class Renderer : IRenderer
                     hasContent = true;
                     if (i < lines2.Count)
                     {
-                        RenderedVerse firstAttempt = RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, false, firstChapter.SupportsItalics);
-                        RenderedVerse secondAttempt = RenderInterlinearLinesAsHtml(lines1[i], lines2[i], parameters, true, firstChapter.SupportsItalics);
+                        RenderedVerse firstAttempt = RenderInterlinearLinesAsHtml(
+                            lines1[i],
+                            lines2[i],
+                            parameters,
+                            false,
+                            firstChapter.SupportsItalics
+                        );
+                        RenderedVerse secondAttempt = RenderInterlinearLinesAsHtml(
+                            lines1[i],
+                            lines2[i],
+                            parameters,
+                            true,
+                            firstChapter.SupportsItalics
+                        );
 
                         // If there are no words in any, skip
-                        if (firstAttempt is { TotalWordsLine1: 0, TotalWordsLine2: 0, DivergentPhrases: 0, WordsInCommon: 0 }
-                            && secondAttempt is { TotalWordsLine1: 0, TotalWordsLine2: 0, DivergentPhrases: 0, WordsInCommon: 0 })
+                        if (
+                            firstAttempt
+                                is
+                            {
+                                TotalWordsLine1: 0,
+                                TotalWordsLine2: 0,
+                                DivergentPhrases: 0,
+                                WordsInCommon: 0
+                            }
+                            && secondAttempt
+                                is
+                            {
+                                TotalWordsLine1: 0,
+                                TotalWordsLine2: 0,
+                                DivergentPhrases: 0,
+                                WordsInCommon: 0
+                            }
+                        )
                         {
                             continue;
                         }
@@ -246,12 +332,14 @@ public partial class Renderer : IRenderer
                         if (firstAttempt.WordsInCommon == secondAttempt.WordsInCommon)
                         {
                             // Use the number of divergent phrases, as both have the same number of words in common
-                            useFirstAttempt = firstAttempt.DivergentPhrases > secondAttempt.DivergentPhrases;
+                            useFirstAttempt =
+                                firstAttempt.DivergentPhrases > secondAttempt.DivergentPhrases;
                         }
                         else
                         {
                             // When rendering the text we want more words in common
-                            useFirstAttempt = firstAttempt.WordsInCommon > secondAttempt.WordsInCommon;
+                            useFirstAttempt =
+                                firstAttempt.WordsInCommon > secondAttempt.WordsInCommon;
                         }
 
                         if (parameters is { IsDebug: true, Format: RenderFormat.Html })
@@ -264,14 +352,21 @@ public partial class Renderer : IRenderer
                             }
 
                             // Build the verse statistics output
-                            string verseStatistics1 = $" <span style=\"font-family:consolas,courier\">[DivergentPhrases={firstAttempt.DivergentPhrases},TotalWordsLine1={firstAttempt.TotalWordsLine1},TotalWordsLine2={firstAttempt.TotalWordsLine2},WordsInCommon={firstAttempt.WordsInCommon}]</span><br>";
-                            string verseStatistics2 = $" <span style=\"font-family:consolas,courier\">[DivergentPhrases={secondAttempt.DivergentPhrases},TotalWordsLine1={secondAttempt.TotalWordsLine1},TotalWordsLine2={secondAttempt.TotalWordsLine2},WordsInCommon={secondAttempt.WordsInCommon}]</span><br>";
+                            string verseStatistics1 =
+                                $" <span style=\"font-family:consolas,courier\">[DivergentPhrases={firstAttempt.DivergentPhrases},TotalWordsLine1={firstAttempt.TotalWordsLine1},TotalWordsLine2={firstAttempt.TotalWordsLine2},WordsInCommon={firstAttempt.WordsInCommon}]</span><br>";
+                            string verseStatistics2 =
+                                $" <span style=\"font-family:consolas,courier\">[DivergentPhrases={secondAttempt.DivergentPhrases},TotalWordsLine1={secondAttempt.TotalWordsLine1},TotalWordsLine2={secondAttempt.TotalWordsLine2},WordsInCommon={secondAttempt.WordsInCommon}]</span><br>";
 
-                            const string bestNote = " title=\"This is the method selected as the best by the renderer\"";
+                            const string bestNote =
+                                " title=\"This is the method selected as the best by the renderer\"";
                             if (useFirstAttempt)
                             {
-                                sb.Append($"<strong style=\"font-family:consolas,courier\"{bestNote}>Reverse Scan*</strong>{verseStatistics1} {firstAttempt.Content}");
-                                sb.Append($"<strong style=\"font-family:consolas,courier\">Forward Scan&nbsp;</strong>{verseStatistics2} {secondAttempt.Content}");
+                                sb.Append(
+                                    $"<strong style=\"font-family:consolas,courier\"{bestNote}>Reverse Scan*</strong>{verseStatistics1} {firstAttempt.Content}"
+                                );
+                                sb.Append(
+                                    $"<strong style=\"font-family:consolas,courier\">Forward Scan&nbsp;</strong>{verseStatistics2} {secondAttempt.Content}"
+                                );
 
                                 // Store information for calculating suggestions
                                 if (firstAttempt.WordsInCommon < 3)
@@ -281,8 +376,12 @@ public partial class Renderer : IRenderer
                             }
                             else
                             {
-                                sb.Append($"<strong style=\"font-family:consolas,courier\"{bestNote}>Reverse Scan&nbsp;</strong>{verseStatistics1} {firstAttempt.Content}");
-                                sb.Append($"<strong style=\"font-family:consolas,courier\"{bestNote}>Forward Scan*</strong>{verseStatistics2} {secondAttempt.Content}");
+                                sb.Append(
+                                    $"<strong style=\"font-family:consolas,courier\"{bestNote}>Reverse Scan&nbsp;</strong>{verseStatistics1} {firstAttempt.Content}"
+                                );
+                                sb.Append(
+                                    $"<strong style=\"font-family:consolas,courier\"{bestNote}>Forward Scan*</strong>{verseStatistics2} {secondAttempt.Content}"
+                                );
 
                                 // Store information for calculating suggestions
                                 if (secondAttempt.WordsInCommon < 3)
@@ -316,7 +415,13 @@ public partial class Renderer : IRenderer
                     }
                     else
                     {
-                        content = RenderInterlinearLinesAsHtml(lines1[i], string.Empty, parameters, false, firstChapter.SupportsItalics).Content;
+                        content = RenderInterlinearLinesAsHtml(
+                            lines1[i],
+                            string.Empty,
+                            parameters,
+                            false,
+                            firstChapter.SupportsItalics
+                        ).Content;
                     }
 
                     // Render the content if we are in HTML
@@ -343,7 +448,15 @@ public partial class Renderer : IRenderer
                     for (int i = lines1.Count; i < lines2.Count; i++)
                     {
                         hasContent = true;
-                        sb.Append(RenderInterlinearLinesAsHtml(string.Empty, lines2[i], parameters, false, secondChapter.SupportsItalics).Content);
+                        sb.Append(
+                            RenderInterlinearLinesAsHtml(
+                                string.Empty,
+                                lines2[i],
+                                parameters,
+                                false,
+                                secondChapter.SupportsItalics
+                            ).Content
+                        );
                     }
                 }
 
@@ -351,25 +464,35 @@ public partial class Renderer : IRenderer
                 if (hasContent && parameters.Format == RenderFormat.Html)
                 {
                     // Get all of the translations
-                    List<Translation> translations = new List<Translation>();
-                    await foreach (Translation translation in firstProvider.GetTranslationsAsync(cancellationToken))
+                    List<Translation> translations = [];
+                    await foreach (
+                        Translation translation in firstProvider.GetTranslationsAsync(
+                            cancellationToken
+                        )
+                    )
                     {
                         translations.Add(translation);
                     }
 
                     if (secondProvider.Id != firstProvider.Id)
                     {
-                        await foreach (Translation translation in secondProvider.GetTranslationsAsync(cancellationToken))
+                        await foreach (
+                            Translation translation in secondProvider.GetTranslationsAsync(
+                                cancellationToken
+                            )
+                        )
                         {
                             translations.Add(translation);
                         }
                     }
 
                     // Get the primary and secondary translations for the following calculations
-                    Translation? primaryTranslation =
-                        translations.FirstOrDefault(t => t.Code == parameters.PrimaryTranslation);
-                    Translation? secondaryTranslation =
-                        translations.FirstOrDefault(t => t.Code == parameters.SecondaryTranslation);
+                    Translation? primaryTranslation = translations.FirstOrDefault(t =>
+                        t.Code == parameters.PrimaryTranslation
+                    );
+                    Translation? secondaryTranslation = translations.FirstOrDefault(t =>
+                        t.Code == parameters.SecondaryTranslation
+                    );
 
                     // If we are rendering as HTML or an apparatus
                     if (parameters.Format != RenderFormat.Spreadsheet)
@@ -378,39 +501,52 @@ public partial class Renderer : IRenderer
                         string primaryTranslationName =
                             primaryTranslation?.UniqueName(translations) ?? "Primary Translation";
                         string secondaryTranslationName =
-                            secondaryTranslation?.UniqueName(translations) ?? "Secondary Translation";
+                            secondaryTranslation?.UniqueName(translations)
+                            ?? "Secondary Translation";
                         sb.Replace(
                             $"<span title=\"{parameters.PrimaryTranslation}\">",
-                            $"<span title=\"{primaryTranslationName}\">");
+                            $"<span title=\"{primaryTranslationName}\">"
+                        );
                         sb.Replace(
                             $"<span title=\"{parameters.SecondaryTranslation}\">",
-                            $"<span title=\"{secondaryTranslationName}\">");
+                            $"<span title=\"{secondaryTranslationName}\">"
+                        );
 
                         // Supplement the translation copyrights if the chapter copyrights are missing
-                        if (string.IsNullOrWhiteSpace(firstChapter.Copyright) &&
-                            !string.IsNullOrWhiteSpace(primaryTranslation?.Copyright))
+                        if (
+                            string.IsNullOrWhiteSpace(firstChapter.Copyright)
+                            && !string.IsNullOrWhiteSpace(primaryTranslation?.Copyright)
+                        )
                         {
                             firstChapter.Copyright = primaryTranslation.Copyright;
                         }
 
-                        if (string.IsNullOrWhiteSpace(secondChapter.Copyright) &&
-                            !string.IsNullOrWhiteSpace(secondaryTranslation?.Copyright))
+                        if (
+                            string.IsNullOrWhiteSpace(secondChapter.Copyright)
+                            && !string.IsNullOrWhiteSpace(secondaryTranslation?.Copyright)
+                        )
                         {
                             secondChapter.Copyright = secondaryTranslation.Copyright;
                         }
 
                         // Display copyright
-                        if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) ||
-                            !string.IsNullOrWhiteSpace(secondChapter.Copyright))
+                        if (
+                            !string.IsNullOrWhiteSpace(firstChapter.Copyright)
+                            || !string.IsNullOrWhiteSpace(secondChapter.Copyright)
+                        )
                         {
                             sb.Append("<p class=\"copyright\">");
                             if (!string.IsNullOrWhiteSpace(firstChapter.Copyright))
                             {
-                                sb.Append($"<strong>{primaryTranslationName}: </strong> {firstChapter.Copyright}");
+                                sb.Append(
+                                    $"<strong>{primaryTranslationName}: </strong> {firstChapter.Copyright}"
+                                );
                             }
 
-                            if (!string.IsNullOrWhiteSpace(firstChapter.Copyright) &&
-                                !string.IsNullOrWhiteSpace(secondChapter.Copyright))
+                            if (
+                                !string.IsNullOrWhiteSpace(firstChapter.Copyright)
+                                && !string.IsNullOrWhiteSpace(secondChapter.Copyright)
+                            )
                             {
                                 sb.Append("<br>");
                             }
@@ -418,7 +554,8 @@ public partial class Renderer : IRenderer
                             if (!string.IsNullOrWhiteSpace(secondChapter.Copyright))
                             {
                                 sb.Append(
-                                    $"<strong>{secondaryTranslationName}: </strong> {secondChapter.Copyright}");
+                                    $"<strong>{secondaryTranslationName}: </strong> {secondChapter.Copyright}"
+                                );
                             }
 
                             sb.AppendLine("</p>");
@@ -426,11 +563,15 @@ public partial class Renderer : IRenderer
                     }
 
                     // Generate the rendering suggestions
-                    if ((!parameters.InterlinearIgnoresCase
-                         || !parameters.InterlinearIgnoresDiacritics
-                         || !parameters.InterlinearIgnoresPunctuation)
+                    if (
+                        (
+                            !parameters.InterlinearIgnoresCase
+                            || !parameters.InterlinearIgnoresDiacritics
+                            || !parameters.InterlinearIgnoresPunctuation
+                        )
                         && linesWithLessThanThreeWordsInCommon > totalInterlinearLines / 2
-                        && primaryTranslation?.Language == secondaryTranslation?.Language)
+                        && primaryTranslation?.Language == secondaryTranslation?.Language
+                    )
                     {
                         // If at least one of "Ignore Case", "Ignore Diacritics", and "Ignore Punctuation" is false, and
                         // more than half of the rendered passage has less than three words in common, and the two
@@ -445,7 +586,11 @@ public partial class Renderer : IRenderer
                         sb.Append(HorizontalLine);
                         sb.Append("<strong>Rendering Suggestions</strong><br>");
                         sb.Append("Ignore Case, Diacritics and Punctuation: <em>");
-                        sb.Append(renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation ? "Yes" : "No");
+                        sb.Append(
+                            renderedPassage.Suggestions.IgnoreCaseDiacriticsAndPunctuation
+                                ? "Yes"
+                                : "No"
+                        );
                         sb.AppendLine("</em></p>");
                     }
                 }
@@ -453,7 +598,12 @@ public partial class Renderer : IRenderer
             else
             {
                 // Just render the first translation
-                foreach (string line in firstChapter.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (
+                    string line in firstChapter.Text.Split(
+                        new[] { Environment.NewLine },
+                        StringSplitOptions.RemoveEmptyEntries
+                    )
+                )
                 {
                     hasContent = true;
                     sb.Append(RenderLineAsHtml(line, parameters, firstChapter.SupportsItalics));
@@ -465,7 +615,11 @@ public partial class Renderer : IRenderer
                     // Use the translation copyright if the chapter copyright is missing
                     if (string.IsNullOrWhiteSpace(firstChapter.Copyright))
                     {
-                        await foreach (Translation translation in firstProvider.GetTranslationsAsync(cancellationToken))
+                        await foreach (
+                            Translation translation in firstProvider.GetTranslationsAsync(
+                                cancellationToken
+                            )
+                        )
                         {
                             if (translation.Code == parameters.PrimaryTranslation)
                             {
@@ -495,7 +649,13 @@ public partial class Renderer : IRenderer
         // If we do not have content, make a suggestion
         if (!hasContent)
         {
-            await foreach (Book book in firstProvider.GetBooksAsync(parameters.PrimaryTranslation, true, cancellationToken))
+            await foreach (
+                Book book in firstProvider.GetBooksAsync(
+                    parameters.PrimaryTranslation,
+                    true,
+                    cancellationToken
+                )
+            )
             {
                 renderedPassage.Suggestions.NavigateToChapter = book.Chapters.First();
                 break;
@@ -568,7 +728,16 @@ public partial class Renderer : IRenderer
     /// <param name="baseLine">The line which <c>param1</c> sits within.Used for apparatus calculations.</param>
     /// <param name="verseNumber">The verse number. This should be the verse number of the base line.</param>
     /// <param name="approximatePosition">The approximate position of this phrase. Use for occurrence number calculations.</param>
-    private static void RenderInterlinearLineSegmentsAsHtml(StringBuilder sb, string line1, string line2, RenderingParameters parameters, int insertAt, string baseLine, string verseNumber, int approximatePosition)
+    private static void RenderInterlinearLineSegmentsAsHtml(
+        StringBuilder sb,
+        string line1,
+        string line2,
+        RenderingParameters parameters,
+        int insertAt,
+        string baseLine,
+        string verseNumber,
+        int approximatePosition
+    )
     {
         // Do not allow empty lines
         if (string.IsNullOrWhiteSpace(line1) && string.IsNullOrWhiteSpace(line2))
@@ -595,7 +764,8 @@ public partial class Renderer : IRenderer
         if (parameters.Format == RenderFormat.Html)
         {
             // Render interlinear lines
-            lineToRender = $"</span><span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">{line1}</span><span title=\"{parameters.SecondaryTranslation}\">{line2}</span></span><span> ";
+            lineToRender =
+                $"</span><span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">{line1}</span><span title=\"{parameters.SecondaryTranslation}\">{line2}</span></span><span> ";
         }
         else
         {
@@ -605,7 +775,11 @@ public partial class Renderer : IRenderer
             int occurrence = 0;
             if (baseLine.CountOccurrences(line1, StringComparison.OrdinalIgnoreCase) > 1)
             {
-                occurrence = baseLine.GetOccurrence(line1, approximatePosition, StringComparison.OrdinalIgnoreCase);
+                occurrence = baseLine.GetOccurrence(
+                    line1,
+                    approximatePosition,
+                    StringComparison.OrdinalIgnoreCase
+                );
             }
 
             // Clean up the line
@@ -621,12 +795,15 @@ public partial class Renderer : IRenderer
                     verseNumber,
                     occurrence.ToString(),
                     line1,
-                    line2.Trim());
+                    line2.Trim()
+                );
             }
             else if (line2.Contains("%OMITTED_PHRASE%", StringComparison.OrdinalIgnoreCase))
             {
                 // Allow substitutions for omitted phrases
-                lineToRender = line2.Replace("%OMITTED_PHRASE%", line1, StringComparison.OrdinalIgnoreCase) + " | ";
+                lineToRender =
+                    line2.Replace("%OMITTED_PHRASE%", line1, StringComparison.OrdinalIgnoreCase)
+                    + " | ";
             }
             else if (occurrence > 0)
             {
@@ -634,7 +811,11 @@ public partial class Renderer : IRenderer
                 string occurrenceMarker = string.Empty;
                 if (parameters is ApparatusRenderingParameters apparatusParameters)
                 {
-                    occurrenceMarker = apparatusParameters.OccurrenceMarker.Replace("%OCCURRENCE%", occurrence.ToString(), StringComparison.OrdinalIgnoreCase);
+                    occurrenceMarker = apparatusParameters.OccurrenceMarker.Replace(
+                        "%OCCURRENCE%",
+                        occurrence.ToString(),
+                        StringComparison.OrdinalIgnoreCase
+                    );
                 }
 
                 lineToRender = $"<strong>{line1}</strong>{occurrenceMarker} {line2} | ";
@@ -666,7 +847,11 @@ public partial class Renderer : IRenderer
     /// <returns>
     /// The line as HTML.
     /// </returns>
-    private static string RenderLineAsHtml(string line, RenderingParameters parameters, bool supportsItalics)
+    private static string RenderLineAsHtml(
+        string line,
+        RenderingParameters parameters,
+        bool supportsItalics
+    )
     {
         if (!string.IsNullOrWhiteSpace(line))
         {
@@ -680,13 +865,22 @@ public partial class Renderer : IRenderer
                 string verseNumber = line.GetVerseNumber();
                 if (verseNumber.IsValidVerseNumber())
                 {
-                    if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
+                    if (
+                        verseNumber.MatchesHighlightedVerses(
+                            parameters.PassageReference.HighlightedVerses
+                        )
+                    )
                     {
-                        line = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <mark>" + line[(line.IndexOf(' ') + 1)..].Trim() + "</mark>";
+                        line =
+                            $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <mark>"
+                            + line[(line.IndexOf(' ') + 1)..].Trim()
+                            + "</mark>";
                     }
                     else
                     {
-                        line = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  " + line[(line.IndexOf(' ') + 1)..].Trim();
+                        line =
+                            $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  "
+                            + line[(line.IndexOf(' ') + 1)..].Trim();
                     }
                 }
             }
@@ -703,7 +897,9 @@ public partial class Renderer : IRenderer
             }
 
             // Add a HTML and text new line
-            return parameters.Format == RenderFormat.Spreadsheet ? line : $"{line} <br>{Environment.NewLine}";
+            return parameters.Format == RenderFormat.Spreadsheet
+                ? line
+                : $"{line} <br>{Environment.NewLine}";
         }
         else
         {
@@ -722,7 +918,13 @@ public partial class Renderer : IRenderer
     /// <returns>
     /// The lines as HTML content, with the verse statistics calculated for the rendering (if interlinear).
     /// </returns>
-    private static RenderedVerse RenderInterlinearLinesAsHtml(string line1, string line2, RenderingParameters parameters, bool reverseScan, bool supportsItalics)
+    private static RenderedVerse RenderInterlinearLinesAsHtml(
+        string line1,
+        string line2,
+        RenderingParameters parameters,
+        bool reverseScan,
+        bool supportsItalics
+    )
     {
         // Declare variables
         RenderedVerse renderedVerse = new RenderedVerse();
@@ -738,9 +940,17 @@ public partial class Renderer : IRenderer
                     line1 = line1.RenderItalics();
 
                     // Only run a maximum for the number of spaces in the line
-                    for (int i = 0; i < line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).Length; i++)
+                    for (
+                        int i = 0;
+                        i
+                            < line1
+                                .Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
+                                .Length;
+                        i++
+                    )
                     {
-                        string updatedLine1 = ItaliciseWordsRegex().Replace(line1, "$1</em>$2<em>$3");
+                        string updatedLine1 = ItaliciseWordsRegex()
+                            .Replace(line1, "$1</em>$2<em>$3");
                         if (updatedLine1 == line1)
                         {
                             break;
@@ -752,7 +962,11 @@ public partial class Renderer : IRenderer
                     }
 
                     line1 = line1.Replace("<em><em>", "<em>", StringComparison.OrdinalIgnoreCase);
-                    line1 = line1.Replace("</em></em>", "</em>", StringComparison.OrdinalIgnoreCase);
+                    line1 = line1.Replace(
+                        "</em></em>",
+                        "</em>",
+                        StringComparison.OrdinalIgnoreCase
+                    );
                 }
                 else
                 {
@@ -767,9 +981,17 @@ public partial class Renderer : IRenderer
                     line2 = line2.RenderItalics();
 
                     // Only run a maximum for the number of spaces in the line
-                    for (int i = 0; i < line2.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).Length; i++)
+                    for (
+                        int i = 0;
+                        i
+                            < line2
+                                .Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
+                                .Length;
+                        i++
+                    )
                     {
-                        string updatedLine2 = ItaliciseWordsRegex().Replace(line2, "$1</em>$2<em>$3");
+                        string updatedLine2 = ItaliciseWordsRegex()
+                            .Replace(line2, "$1</em>$2<em>$3");
                         if (updatedLine2 == line2)
                         {
                             break;
@@ -781,7 +1003,11 @@ public partial class Renderer : IRenderer
                     }
 
                     line2 = line2.Replace("<em><em>", "<em>", StringComparison.OrdinalIgnoreCase);
-                    line2 = line2.Replace("</em></em>", "</em>", StringComparison.OrdinalIgnoreCase);
+                    line2 = line2.Replace(
+                        "</em></em>",
+                        "</em>",
+                        StringComparison.OrdinalIgnoreCase
+                    );
                 }
                 else
                 {
@@ -822,8 +1048,14 @@ public partial class Renderer : IRenderer
                 }
 
                 // Split the words
-                List<string> words1 = line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList();
-                List<string> words2 = line2.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> words1 =
+                [
+                    .. line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
+                ];
+                List<string> words2 =
+                [
+                    .. line2.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
+                ];
 
                 // Get the word counts
                 renderedVerse.TotalWordsLine1 = words1.Count;
@@ -855,24 +1087,48 @@ public partial class Renderer : IRenderer
                         word2 = words2[i];
                     }
 
-                    if (string.Compare(word1.Clean(), word2.Clean(), CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0)
+                    if (
+                        string.Compare(
+                            word1.Clean(),
+                            word2.Clean(),
+                            CultureInfo.InvariantCulture,
+                            parameters.AsCompareOptions()
+                        ) == 0
+                    )
                     {
                         // If we are in interlinear mode, return to non-interlinear mode
                         if (interlinear)
                         {
                             // If we are to render the neighbouring word in the apparatus for additions
                             bool skipThisWord = false;
-                            if (parameters is SpreadsheetRenderingParameters { RenderNeighbourForAddition: true }
-                                && string.IsNullOrWhiteSpace(interlinear1))
+                            if (
+                                parameters
+                                    is SpreadsheetRenderingParameters
+                                {
+                                    RenderNeighbourForAddition: true
+                                }
+                                && string.IsNullOrWhiteSpace(interlinear1)
+                            )
                             {
                                 // Add the appropriate neighbour
                                 skipThisWord = true;
                                 interlinear1 = word1;
-                                interlinear2 = reverseScan ? $"{word2} {interlinear2}" : $"{interlinear2} {word2}";
+                                interlinear2 = reverseScan
+                                    ? $"{word2} {interlinear2}"
+                                    : $"{interlinear2} {word2}";
                             }
 
                             // Render interlinear lines
-                            RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1, line1, verseNumber1, approximatePosition);
+                            RenderInterlinearLineSegmentsAsHtml(
+                                sb,
+                                interlinear1,
+                                interlinear2,
+                                parameters,
+                                reverseScan ? 0 : -1,
+                                line1,
+                                verseNumber1,
+                                approximatePosition
+                            );
 
                             // Reset interlinear
                             interlinear = false;
@@ -902,7 +1158,10 @@ public partial class Renderer : IRenderer
                                 count = words1.Count - count - 1;
                             }
 
-                            approximatePosition = count < 1 ? 0 : words1.GetRange(index, count).Sum(w => w.Length + 1);
+                            approximatePosition =
+                                count < 1
+                                    ? 0
+                                    : words1.GetRange(index, count).Sum(w => w.Length + 1);
                         }
 
                         // Remember the last word in common for the RenderNeighbourForAddition setting
@@ -932,12 +1191,19 @@ public partial class Renderer : IRenderer
                         if (!string.IsNullOrWhiteSpace(word1) && !string.IsNullOrWhiteSpace(word2))
                         {
                             // Get the word matches on the rest of the line
-                            Dictionary<int, int> matches = new Dictionary<int, int>();
+                            Dictionary<int, int> matches = [];
                             for (int k = i; k < words1.Count; k++)
                             {
                                 for (int l = i; l < words2.Count; l++)
                                 {
-                                    if (string.Compare(words1[k].Clean(), words2[l].Clean(), CultureInfo.InvariantCulture, parameters.AsCompareOptions()) == 0)
+                                    if (
+                                        string.Compare(
+                                            words1[k].Clean(),
+                                            words2[l].Clean(),
+                                            CultureInfo.InvariantCulture,
+                                            parameters.AsCompareOptions()
+                                        ) == 0
+                                    )
                                     {
                                         matches.Add(k, l);
                                         break;
@@ -946,73 +1212,151 @@ public partial class Renderer : IRenderer
                             }
 
                             // If there is any match in the next few words where key and value are the same, skip
-                            if (matches.Any() && !matches.Any(m => m.Key == m.Value && m.Key < i + 7))
+                            if (
+                                matches.Count > 0
+                                && !matches.Any(m => m.Key == m.Value && m.Key < i + 7)
+                            )
                             {
                                 KeyValuePair<int, int> closest1 = matches.MinBy(m => m.Key);
                                 KeyValuePair<int, int> closest2 = matches.MinBy(m => m.Value);
 
                                 // If there is a closest match where key and value are the same, skip
-                                if (closest1.Key != closest1.Value && closest2.Key != closest2.Value)
+                                if (
+                                    closest1.Key != closest1.Value
+                                    && closest2.Key != closest2.Value
+                                )
                                 {
-                                    if (closest1.Key == closest2.Key && closest1.Value == closest2.Value)
+                                    if (
+                                        closest1.Key == closest2.Key
+                                        && closest1.Value == closest2.Value
+                                    )
                                     {
                                         // If they are the same, just do it
                                         if (closest1.Key < closest1.Value)
                                         {
-                                            words1.InsertRange(i, Enumerable.Repeat(string.Empty, closest1.Value - closest1.Key));
+                                            words1.InsertRange(
+                                                i,
+                                                Enumerable.Repeat(
+                                                    string.Empty,
+                                                    closest1.Value - closest1.Key
+                                                )
+                                            );
                                         }
                                         else
                                         {
-                                            words2.InsertRange(i, Enumerable.Repeat(string.Empty, closest1.Key - closest1.Value));
+                                            words2.InsertRange(
+                                                i,
+                                                Enumerable.Repeat(
+                                                    string.Empty,
+                                                    closest1.Key - closest1.Value
+                                                )
+                                            );
                                         }
                                     }
-                                    else if (Math.Abs(closest1.Key - closest1.Value) < Math.Abs(closest2.Value - closest2.Key))
+                                    else if (
+                                        Math.Abs(closest1.Key - closest1.Value)
+                                        < Math.Abs(closest2.Value - closest2.Key)
+                                    )
                                     {
-                                        if (Math.Abs(closest1.Key - closest1.Value) == closest1.Key - closest1.Value)
+                                        if (
+                                            Math.Abs(closest1.Key - closest1.Value)
+                                            == closest1.Key - closest1.Value
+                                        )
                                         {
                                             if (closest1.Key < closest1.Value)
                                             {
-                                                words1.InsertRange(i, Enumerable.Repeat(string.Empty, closest1.Value - closest1.Key));
+                                                words1.InsertRange(
+                                                    i,
+                                                    Enumerable.Repeat(
+                                                        string.Empty,
+                                                        closest1.Value - closest1.Key
+                                                    )
+                                                );
                                             }
                                             else
                                             {
-                                                words2.InsertRange(i, Enumerable.Repeat(string.Empty, closest1.Key - closest1.Value));
+                                                words2.InsertRange(
+                                                    i,
+                                                    Enumerable.Repeat(
+                                                        string.Empty,
+                                                        closest1.Key - closest1.Value
+                                                    )
+                                                );
                                             }
                                         }
                                         else
                                         {
                                             if (closest1.Value < closest1.Key)
                                             {
-                                                words2.InsertRange(i, Enumerable.Repeat(string.Empty, closest1.Key - closest1.Value));
+                                                words2.InsertRange(
+                                                    i,
+                                                    Enumerable.Repeat(
+                                                        string.Empty,
+                                                        closest1.Key - closest1.Value
+                                                    )
+                                                );
                                             }
                                             else
                                             {
-                                                words1.InsertRange(i, Enumerable.Repeat(string.Empty, closest1.Value - closest1.Key));
+                                                words1.InsertRange(
+                                                    i,
+                                                    Enumerable.Repeat(
+                                                        string.Empty,
+                                                        closest1.Value - closest1.Key
+                                                    )
+                                                );
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        if (Math.Abs(closest2.Value - closest2.Key) == closest2.Value - closest2.Key)
+                                        if (
+                                            Math.Abs(closest2.Value - closest2.Key)
+                                            == closest2.Value - closest2.Key
+                                        )
                                         {
                                             if (closest2.Key < closest2.Value)
                                             {
-                                                words1.InsertRange(i, Enumerable.Repeat(string.Empty, closest2.Value - closest2.Key));
+                                                words1.InsertRange(
+                                                    i,
+                                                    Enumerable.Repeat(
+                                                        string.Empty,
+                                                        closest2.Value - closest2.Key
+                                                    )
+                                                );
                                             }
                                             else
                                             {
-                                                words2.InsertRange(i, Enumerable.Repeat(string.Empty, closest2.Key - closest2.Value));
+                                                words2.InsertRange(
+                                                    i,
+                                                    Enumerable.Repeat(
+                                                        string.Empty,
+                                                        closest2.Key - closest2.Value
+                                                    )
+                                                );
                                             }
                                         }
                                         else
                                         {
                                             if (closest2.Value < closest2.Key)
                                             {
-                                                words2.InsertRange(i, Enumerable.Repeat(string.Empty, closest2.Key - closest2.Value));
+                                                words2.InsertRange(
+                                                    i,
+                                                    Enumerable.Repeat(
+                                                        string.Empty,
+                                                        closest2.Key - closest2.Value
+                                                    )
+                                                );
                                             }
                                             else
                                             {
-                                                words1.InsertRange(i, Enumerable.Repeat(string.Empty, closest2.Value - closest2.Key));
+                                                words1.InsertRange(
+                                                    i,
+                                                    Enumerable.Repeat(
+                                                        string.Empty,
+                                                        closest2.Value - closest2.Key
+                                                    )
+                                                );
                                             }
                                         }
                                     }
@@ -1054,18 +1398,32 @@ public partial class Renderer : IRenderer
                 if (interlinear)
                 {
                     // If we are to render the neighbouring word in the apparatus for additions
-                    if (parameters is SpreadsheetRenderingParameters { RenderNeighbourForAddition: true }
-                        && string.IsNullOrWhiteSpace(interlinear1))
+                    if (
+                        parameters
+                            is SpreadsheetRenderingParameters { RenderNeighbourForAddition: true }
+                        && string.IsNullOrWhiteSpace(interlinear1)
+                    )
                     {
                         // Add the appropriate neighbour
                         // Note how the order for interlinear2 varies from the block this same operation is performed above.
                         // That is because there we are working with the word after the interlinear portion, here as we are at
                         // end of the line, we are dealing with the word before the interlinear portion.
                         interlinear1 = lastWordInCommon;
-                        interlinear2 = reverseScan ? $"{interlinear2} {lastWordInCommon}" : $"{lastWordInCommon} {interlinear2}";
+                        interlinear2 = reverseScan
+                            ? $"{interlinear2} {lastWordInCommon}"
+                            : $"{lastWordInCommon} {interlinear2}";
                     }
 
-                    RenderInterlinearLineSegmentsAsHtml(sb, interlinear1, interlinear2, parameters, reverseScan ? 0 : -1, line1, verseNumber1, approximatePosition);
+                    RenderInterlinearLineSegmentsAsHtml(
+                        sb,
+                        interlinear1,
+                        interlinear2,
+                        parameters,
+                        reverseScan ? 0 : -1,
+                        line1,
+                        verseNumber1,
+                        approximatePosition
+                    );
 
                     // Record as a divergent phrase
                     renderedVerse.DivergentPhrases++;
@@ -1077,17 +1435,29 @@ public partial class Renderer : IRenderer
                     sb.Append("</span>");
 
                     // Add any highlighting
-                    if (verseNumber1.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses)
-                        || verseNumber2.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
+                    if (
+                        verseNumber1.MatchesHighlightedVerses(
+                            parameters.PassageReference.HighlightedVerses
+                        )
+                        || verseNumber2.MatchesHighlightedVerses(
+                            parameters.PassageReference.HighlightedVerses
+                        )
+                    )
                     {
                         // Add the verse number
                         if (verseNumber1 == verseNumber2)
                         {
-                            sb.Insert(0, $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <mark><span>");
+                            sb.Insert(
+                                0,
+                                $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <mark><span>"
+                            );
                         }
                         else
                         {
-                            sb.Insert(0, $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <mark><span> ");
+                            sb.Insert(
+                                0,
+                                $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <mark><span> "
+                            );
                         }
 
                         sb.Append("</mark>");
@@ -1097,11 +1467,17 @@ public partial class Renderer : IRenderer
                         // Add the verse number without highlighting
                         if (verseNumber1 == verseNumber2)
                         {
-                            sb.Insert(0, $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <span>");
+                            sb.Insert(
+                                0,
+                                $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\">{verseNumber1}</sup>  <span>"
+                            );
                         }
                         else
                         {
-                            sb.Insert(0, $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <span> ");
+                            sb.Insert(
+                                0,
+                                $"<span class=\"supsub\" id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber1}\"><span class=\"sup\">{verseNumber1}</span><span class=\"sup\">{verseNumber2}</span></span>  <span> "
+                            );
                         }
                     }
                 }
@@ -1120,8 +1496,7 @@ public partial class Renderer : IRenderer
             else
             {
                 // Cleanup the end of the apparatus
-                if (parameters.Format == RenderFormat.Apparatus
-                    && sb[^9] == '|')
+                if (parameters.Format == RenderFormat.Apparatus && sb[^9] == '|')
                 {
                     // Remove "| " from the end (" | </span>") by replacing with a space
                     // as HTML doesn't mind multiple spaces
@@ -1145,7 +1520,10 @@ public partial class Renderer : IRenderer
                     {
                         // Just in case parameters is not a SpreadsheetRenderingParameters
                         string omissionMarker = SpreadsheetRenderingParameters.Omit;
-                        if (parameters is SpreadsheetRenderingParameters spreadsheetRenderingParameters)
+                        if (
+                            parameters
+                            is SpreadsheetRenderingParameters spreadsheetRenderingParameters
+                        )
                         {
                             omissionMarker = spreadsheetRenderingParameters.OmissionMarker;
                         }
@@ -1157,20 +1535,34 @@ public partial class Renderer : IRenderer
                             verseNumber,
                             "0",
                             line2[(line2.IndexOf(' ') + 1)..].Trim(),
-                            omissionMarker);
+                            omissionMarker
+                        );
                     }
-                    else if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
+                    else if (
+                        verseNumber.MatchesHighlightedVerses(
+                            parameters.PassageReference.HighlightedVerses
+                        )
+                    )
                     {
-                        line1 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\"><mark>" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</mark></span><span>&nbsp;</span></span>";
+                        line1 =
+                            $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\"><mark>"
+                            + line1[(line1.IndexOf(' ') + 1)..].Trim()
+                            + "</mark></span><span>&nbsp;</span></span>";
                     }
                     else
                     {
-                        line1 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line1[(line1.IndexOf(' ') + 1)..].Trim() + "</span><span>&nbsp;</span></span>";
+                        line1 =
+                            $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">"
+                            + line1[(line1.IndexOf(' ') + 1)..].Trim()
+                            + "</span><span>&nbsp;</span></span>";
                     }
                 }
                 else if (parameters.Format != RenderFormat.Spreadsheet)
                 {
-                    line1 = $"<span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line1.Trim() + "</span><span>&nbsp;</span></span>";
+                    line1 =
+                        $"<span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">"
+                        + line1.Trim()
+                        + "</span><span>&nbsp;</span></span>";
                 }
             }
 
@@ -1178,7 +1570,10 @@ public partial class Renderer : IRenderer
             renderedVerse.DivergentPhrases = 1;
 
             // Add an HTML and text new line if not a spreadsheet
-            renderedVerse.Content = parameters.Format == RenderFormat.Spreadsheet ? line1 : $"{line1} <br>{Environment.NewLine}";
+            renderedVerse.Content =
+                parameters.Format == RenderFormat.Spreadsheet
+                    ? line1
+                    : $"{line1} <br>{Environment.NewLine}";
         }
         else if (!string.IsNullOrWhiteSpace(line2))
         {
@@ -1198,20 +1593,34 @@ public partial class Renderer : IRenderer
                             verseNumber,
                             "0",
                             string.Empty,
-                            line2[(line2.IndexOf(' ') + 1)..].Trim());
+                            line2[(line2.IndexOf(' ') + 1)..].Trim()
+                        );
                     }
-                    else if (verseNumber.MatchesHighlightedVerses(parameters.PassageReference.HighlightedVerses))
+                    else if (
+                        verseNumber.MatchesHighlightedVerses(
+                            parameters.PassageReference.HighlightedVerses
+                        )
+                    )
                     {
-                        line2 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\"><mark>" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</mark></span></span>";
+                        line2 =
+                            $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\"><mark>"
+                            + line2[(line2.IndexOf(' ') + 1)..].Trim()
+                            + "</mark></span></span>";
                     }
                     else
                     {
-                        line2 = $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\">" + line2[(line2.IndexOf(' ') + 1)..].Trim() + "</span></span>";
+                        line2 =
+                            $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <span class=\"supsub\"><span>&nbsp;</span><span title=\"{parameters.SecondaryTranslation}\">"
+                            + line2[(line2.IndexOf(' ') + 1)..].Trim()
+                            + "</span></span>";
                     }
                 }
                 else if (parameters.Format != RenderFormat.Spreadsheet)
                 {
-                    line2 = $"<span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">" + line2.Trim() + "</span><span>&nbsp;</span></span>";
+                    line2 =
+                        $"<span class=\"supsub\"><span title=\"{parameters.PrimaryTranslation}\">"
+                        + line2.Trim()
+                        + "</span><span>&nbsp;</span></span>";
                 }
             }
 
@@ -1219,7 +1628,10 @@ public partial class Renderer : IRenderer
             renderedVerse.DivergentPhrases = 1;
 
             // Add an HTML and text new line if not a spreadsheet
-            renderedVerse.Content = parameters.Format == RenderFormat.Spreadsheet ? line2 : $"{line2} <br>{Environment.NewLine}";
+            renderedVerse.Content =
+                parameters.Format == RenderFormat.Spreadsheet
+                    ? line2
+                    : $"{line2} <br>{Environment.NewLine}";
         }
         else
         {

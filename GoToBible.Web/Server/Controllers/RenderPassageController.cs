@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="RenderPassageController.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -29,35 +29,26 @@ using Microsoft.Extensions.Logging;
 [ApiController]
 [Route("v1/[controller]")]
 [Route("[controller]")]
-public class RenderPassageController : ControllerBase
+public class RenderPassageController(
+    IEnumerable<IProvider> providers,
+    ILoggerFactory loggerFactory,
+    StatisticsContext? context = null
+) : ControllerBase
 {
     /// <summary>
     /// The statistics database context.
     /// </summary>
-    private readonly StatisticsContext? context;
+    private readonly StatisticsContext? context = context;
 
     /// <summary>
     /// The logger.
     /// </summary>
-    private readonly ILogger logger;
+    private readonly ILogger logger = loggerFactory.CreateLogger<RenderPassageController>();
 
     /// <summary>
     /// The renderer.
     /// </summary>
-    private readonly Renderer renderer;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RenderPassageController" /> class.
-    /// </summary>
-    /// <param name="providers">The providers.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    /// <param name="context">The statistics database context.</param>
-    public RenderPassageController(IEnumerable<IProvider> providers, ILoggerFactory loggerFactory, StatisticsContext? context = null)
-    {
-        this.context = context;
-        this.logger = loggerFactory.CreateLogger<RenderPassageController>();
-        this.renderer = new Renderer(providers);
-    }
+    private readonly Renderer renderer = new Renderer(providers);
 
     /// <summary>
     /// POST: <c>/v1/RenderPassage</c>.
@@ -69,7 +60,11 @@ public class RenderPassageController : ControllerBase
     /// The task containing an action result.
     /// </returns>
     [HttpPost]
-    public async Task<IActionResult> Post(RenderingParameters parameters, bool renderCompleteHtmlPage = false, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Post(
+        RenderingParameters parameters,
+        bool renderCompleteHtmlPage = false,
+        CancellationToken cancellationToken = default
+    )
     {
         // If we can record statistics
         if (this.context is not null)
@@ -102,7 +97,13 @@ public class RenderPassageController : ControllerBase
 
         try
         {
-            return this.Ok(await this.renderer.RenderAsync(parameters, renderCompleteHtmlPage, cancellationToken));
+            return this.Ok(
+                await this.renderer.RenderAsync(
+                    parameters,
+                    renderCompleteHtmlPage,
+                    cancellationToken
+                )
+            );
         }
         catch (Exception ex)
         {
@@ -114,7 +115,8 @@ public class RenderPassageController : ControllerBase
                 "URL: {DisplayUrl}\r\nReferer: {Referer}\r\nRenderingParameters: {RenderingParameters}",
                 this.Request.GetDisplayUrl(),
                 header.Referer,
-                renderingParameters);
+                renderingParameters
+            );
             return this.Problem();
         }
     }

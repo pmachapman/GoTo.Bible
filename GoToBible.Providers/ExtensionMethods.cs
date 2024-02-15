@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -19,15 +19,16 @@ public static partial class ExtensionMethods
     /// </summary>
     /// <param name="value">The value to remove duplicates spaces from.</param>
     /// <returns>The value with duplicate spaces removed.</returns>
-    public static string RemoveDuplicateSpaces(this string value) => DuplicateSpacesRegex().Replace(value, " ");
+    public static string RemoveDuplicateSpaces(this string value) =>
+        DuplicateSpacesRegex().Replace(value, " ");
 
     /// <summary>
     /// Normalises the language name.
     /// </summary>
     /// <param name="language">The language.</param>
     /// <returns>The language, suitable for display and grouping.</returns>
-    public static string NormaliseLanguage(this string language)
-        => language switch
+    public static string NormaliseLanguage(this string language) =>
+        language switch
         {
             "Arabic, Standard" => "Arabic",
             "German, Standard" => "German",
@@ -43,8 +44,11 @@ public static partial class ExtensionMethods
     /// <returns>
     /// The value with normalised line endings.
     /// </returns>
-    public static string NormaliseLineEndings(this string value, string lineEnding = "\n")
-        => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal).Replace("\n", lineEnding, StringComparison.Ordinal);
+    public static string NormaliseLineEndings(this string value, string lineEnding = "\n") =>
+        value
+            .Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Replace("\r", "\n", StringComparison.Ordinal)
+            .Replace("\n", lineEnding, StringComparison.Ordinal);
 
     /// <summary>
     /// The regular expression to find duplicate spaces.

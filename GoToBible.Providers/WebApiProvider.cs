@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="WebApiProvider.cs" company="PlaceholderCompany">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -23,7 +23,10 @@ public abstract class WebApiProvider : ApiProvider
     /// <summary>
     /// A map of the Bible book codes to the Passage Reference book names.
     /// </summary>
-    protected static readonly IReadOnlyDictionary<string, string> BookCodeMap = new Dictionary<string, string>
+    protected static readonly IReadOnlyDictionary<string, string> BookCodeMap = new Dictionary<
+        string,
+        string
+    >
     {
         // Old Testament
         ["genesis"] = "GEN",
@@ -65,7 +68,6 @@ public abstract class WebApiProvider : ApiProvider
         ["haggai"] = "HAG",
         ["zechariah"] = "ZEC",
         ["malachi"] = "MAL",
-
         // Old Testament Apocrypha
         ["1 esdras"] = "1ES",
         ["2 esdras"] = "2ES",
@@ -86,7 +88,6 @@ public abstract class WebApiProvider : ApiProvider
         ["3 maccabees"] = "3MA",
         ["4 maccabees"] = "4MA",
         ["psalm 151"] = "PS2",
-
         // New Testament
         ["matthew"] = "MAT",
         ["mark"] = "MRK",
@@ -115,7 +116,6 @@ public abstract class WebApiProvider : ApiProvider
         ["3 john"] = "3JN",
         ["jude"] = "JUD",
         ["revelation"] = "REV",
-
         // New Testament Apocrypha
         ["laodiceans"] = "LAO",
     };
@@ -123,15 +123,14 @@ public abstract class WebApiProvider : ApiProvider
     /// <summary>
     /// The cache entry options.
     /// </summary>
-    protected static readonly DistributedCacheEntryOptions CacheEntryOptions = new DistributedCacheEntryOptions
-    {
-        SlidingExpiration = TimeSpan.FromHours(24),
-    };
+    protected static readonly DistributedCacheEntryOptions CacheEntryOptions =
+        new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(24), };
 
     /// <summary>
     /// The reverse book code map.
     /// </summary>
-    protected static readonly IReadOnlyDictionary<string, string> ReverseBookCodeMap = BookCodeMap.ToDictionary(x => x.Value, x => x.Key);
+    protected static readonly IReadOnlyDictionary<string, string> ReverseBookCodeMap =
+        BookCodeMap.ToDictionary(x => x.Value, x => x.Key);
 
     /// <summary>
     /// A value indicating whether or not this instance has been disposed.
@@ -146,7 +145,9 @@ public abstract class WebApiProvider : ApiProvider
     {
         this.Cache = cache;
         this.HttpClient.DefaultRequestHeaders.Accept.Clear();
-        this.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        this.HttpClient.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
     }
 
     /// <summary>
@@ -187,8 +188,11 @@ public abstract class WebApiProvider : ApiProvider
     /// <param name="_">The anonymous type object.</param>
     /// <param name="options">The options.</param>
     /// <returns>The value.</returns>
-    protected static TValue? DeserializeAnonymousType<TValue>(string json, TValue _, JsonSerializerOptions? options = default)
-        => JsonSerializer.Deserialize<TValue>(json, options);
+    protected static TValue? DeserializeAnonymousType<TValue>(
+        string json,
+        TValue _,
+        JsonSerializerOptions? options = default
+    ) => JsonSerializer.Deserialize<TValue>(json, options);
 
     /// <summary>
     /// Creates an empty list of an anonymous object.
@@ -234,6 +238,5 @@ public abstract class WebApiProvider : ApiProvider
     /// <returns>
     /// The cache key.
     /// </returns>
-    protected string GetCacheKey(string url)
-        => this.HttpClient.BaseAddress + url;
+    protected string GetCacheKey(string url) => this.HttpClient.BaseAddress + url;
 }

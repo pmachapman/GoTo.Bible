@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IRenderer.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -36,5 +36,9 @@ public interface IRenderer : IDisposable
     /// <returns>
     /// The output of the rendering.
     /// </returns>
-    Task<RenderedPassage> RenderAsync(RenderingParameters parameters, bool renderCompleteHtmlPage, CancellationToken cancellationToken = default);
+    Task<RenderedPassage> RenderAsync(
+        RenderingParameters parameters,
+        bool renderCompleteHtmlPage,
+        CancellationToken cancellationToken = default
+    );
 }

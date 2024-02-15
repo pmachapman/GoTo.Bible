@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="BundledTranslations.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -27,7 +27,10 @@ public partial class BundledTranslations : IProvider
     /// <summary>
     /// The SBL copyright messages.
     /// </summary>
-    private static readonly IReadOnlyDictionary<string, string> Copyright = new Dictionary<string, string>
+    private static readonly IReadOnlyDictionary<string, string> Copyright = new Dictionary<
+        string,
+        string
+    >
     {
         { "BCP1979PSALMS", "Public Domain" },
         { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
@@ -47,7 +50,10 @@ public partial class BundledTranslations : IProvider
     /// <summary>
     /// The canon.
     /// </summary>
-    private static readonly IReadOnlyDictionary<string, BookHelper> Canon = new Dictionary<string, BookHelper>
+    private static readonly IReadOnlyDictionary<string, BookHelper> Canon = new Dictionary<
+        string,
+        BookHelper
+    >
     {
         { "BCP1979PSALMS", new BookHelper("Psalm", 150) },
         { "BCPPSALMS", new BookHelper("Psalm", 150) },
@@ -58,27 +64,36 @@ public partial class BundledTranslations : IProvider
         { "LAOGRK", new BookHelper("Laodiceans", 1) },
         { "LAOLAT", new BookHelper("Laodiceans", 1) },
         {
-            "NTA", new BookHelper(new OrderedDictionary
-            {
-                { "psalm 151", 1 },
-                { "manasseh", 1 },
-                { "laodiceans", 1 },
-            })
+            "NTA",
+            new BookHelper(
+                new OrderedDictionary
+                {
+                    { "psalm 151", 1 },
+                    { "manasseh", 1 },
+                    { "laodiceans", 1 },
+                }
+            )
         },
         {
-            "NTANOTES", new BookHelper(new OrderedDictionary
-            {
-                { "psalm 151", 1 },
-                { "manasseh", 1 },
-                { "laodiceans", 1 },
-            })
+            "NTANOTES",
+            new BookHelper(
+                new OrderedDictionary
+                {
+                    { "psalm 151", 1 },
+                    { "manasseh", 1 },
+                    { "laodiceans", 1 },
+                }
+            )
         },
         { "SBLGNT", new NewTestamentCanon() },
         { "SBLGNTAPP", new NewTestamentCanon() },
         { "TRWHAPP", new NewTestamentCanon() },
     };
 
-    private static readonly IReadOnlyDictionary<string, bool> SupportsItalics = new Dictionary<string, bool>
+    private static readonly IReadOnlyDictionary<string, bool> SupportsItalics = new Dictionary<
+        string,
+        bool
+    >
     {
         { "BCP1979PSALMS", false },
         { "BCPPSALMS", false },
@@ -104,9 +119,7 @@ public partial class BundledTranslations : IProvider
     /// Initializes a new instance of the <see cref="BundledTranslations" /> class.
     /// </summary>
     /// ReSharper disable once UnusedMember.Global
-    public BundledTranslations()
-    {
-    }
+    public BundledTranslations() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BundledTranslations" /> class.
@@ -124,7 +137,11 @@ public partial class BundledTranslations : IProvider
     public void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         foreach (Book book in Canon[translation].GetBooks(includeChapters))
         {
@@ -133,7 +150,12 @@ public partial class BundledTranslations : IProvider
     }
 
     /// <inheritdoc/>
-    public async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
+    public async Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    )
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -154,7 +176,8 @@ public partial class BundledTranslations : IProvider
             // await using Stream? stream = File.OpenRead(@$"..\..\..\..\GoToBible.Providers\Texts\{translation}.txt");
 
             // Get the text
-            await using Stream? stream = this.GetType().Assembly.GetManifestResourceStream($"GoToBible.Providers.Texts.{translation}.txt");
+            await using Stream? stream = this.GetType()
+                .Assembly.GetManifestResourceStream($"GoToBible.Providers.Texts.{translation}.txt");
             if (stream is not null)
             {
                 // Read the stream from the assembly
@@ -173,7 +196,11 @@ public partial class BundledTranslations : IProvider
                         if (hasVerse.Success)
                         {
                             // See SBLGNT Acts 19:40 for an example of a verse like this
-                            lineToAppend = lineToAppend.Replace(hasVerse.Value, $"\r\n{hasVerse.Value}", StringComparison.OrdinalIgnoreCase);
+                            lineToAppend = lineToAppend.Replace(
+                                hasVerse.Value,
+                                $"\r\n{hasVerse.Value}",
+                                StringComparison.OrdinalIgnoreCase
+                            );
                         }
 
                         // Remove verse number from Psalm inscriptions
@@ -193,7 +220,11 @@ public partial class BundledTranslations : IProvider
 
                 chapter.Text = sb.ToString();
             }
-            else if (this.renderer is not null && translation == "TRWHAPP" && this.renderer.Providers.Any(r => r.Id == "BibliaApi"))
+            else if (
+                this.renderer is not null
+                && translation == "TRWHAPP"
+                && this.renderer.Providers.Any(r => r.Id == "BibliaApi")
+            )
             {
                 // Use the renderer to generate this apparatus
                 ApparatusRenderingParameters parameters = new ApparatusRenderingParameters
@@ -209,14 +240,19 @@ public partial class BundledTranslations : IProvider
                     SecondaryProvider = "BibliaApi",
                     SecondaryTranslation = "wh1881mr",
                 };
-                RenderedPassage renderedPassage = await this.renderer.RenderAsync(parameters, false, cancellationToken);
+                RenderedPassage renderedPassage = await this.renderer.RenderAsync(
+                    parameters,
+                    false,
+                    cancellationToken
+                );
                 chapter.Text = renderedPassage.Content;
             }
         }
 
         if (!string.IsNullOrWhiteSpace(chapter.Text))
         {
-            chapter.PreviousChapterReference = Canon[translation].GetPreviousChapter(book, chapterNumber);
+            chapter.PreviousChapterReference = Canon[translation]
+                .GetPreviousChapter(book, chapterNumber);
             chapter.NextChapterReference = Canon[translation].GetNextChapter(book, chapterNumber);
             return chapter;
         }
@@ -227,148 +263,176 @@ public partial class BundledTranslations : IProvider
     }
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Translation> GetTranslationsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
-        yield return await Task.FromResult(new Translation
-        {
-            CanBeExported = true,
-            Code = "BCP1979PSALMS",
-            Copyright = Copyright["BCP1979PSALMS"],
-            Language = "English",
-            Name = "Book of Common Prayer (1979) Psalter",
-            Provider = this.Id,
-            Year = 1979,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            CanBeExported = true,
-            Code = "BCPPSALMS",
-            Copyright = Copyright["BCPPSALMS"],
-            Language = "English",
-            Name = "Coverdale Psalter",
-            Provider = this.Id,
-            Year = 1539,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            CanBeExported = true,
-            Code = "BCPPSALMSALT",
-            Copyright = Copyright["BCPPSALMSALT"],
-            Language = "English",
-            Name = "Coverdale Psalter (KJV Versification)",
-            Provider = this.Id,
-            Year = 1539,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            CanBeExported = true,
-            Code = "BCPPSALMSVUL",
-            Copyright = Copyright["BCPPSALMSVUL"],
-            Language = "English",
-            Name = "Coverdale Psalter (Douay Versification)",
-            Provider = this.Id,
-            Year = 1539,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            CanBeExported = true,
-            Code = "BSB",
-            Copyright = Copyright["BSB"],
-            Language = "English",
-            Name = "Berean Standard Bible",
-            Provider = this.Id,
-            Year = 2020,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            Author = "Joseph Barber Lightfoot; Updated by Peter Chapman",
-            CanBeExported = true,
-            Code = "LAOGRK",
-            Copyright = Copyright["LAOGRK"],
-            Language = "Greek",
-            Name = "Epistle to the Laodiceans (Greek)",
-            Provider = this.Id,
-            Year = 2021,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            Author = "Joseph Barber Lightfoot; Updated by Peter Chapman",
-            CanBeExported = true,
-            Code = "LAOLAT",
-            Copyright = Copyright["LAOLAT"],
-            Language = "Latin",
-            Name = "Epistle to the Laodiceans (Latin)",
-            Provider = this.Id,
-            Year = 2021,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            Author = "John Wycliffe",
-            CanBeExported = true,
-            Code = "LAOANG",
-            Copyright = Copyright["LAOANG"],
-            Language = "Old English",
-            Name = "Epistle to the Laodiceans (Old English)",
-            Provider = this.Id,
-            Year = 2021,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            CanBeExported = true,
-            Code = "NTA",
-            Copyright = Copyright["NTA"],
-            Language = "English",
-            Name = "New Translation of the Apocrypha",
-            Provider = this.Id,
-            Year = 2021,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            CanBeExported = true,
-            Commentary = true,
-            Code = "NTANOTES",
-            Copyright = Copyright["NTANOTES"],
-            Language = "English",
-            Name = "New Translation of the Apocrypha Notes",
-            Provider = this.Id,
-            Year = 2021,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            Author = "Michael W. Holmes",
-            Code = "SBLGNT",
-            Copyright = Copyright["SBLGNT"],
-            Language = "Greek",
-            Name = "SBL Greek New Testament",
-            Provider = this.Id,
-            Year = 2010,
-        });
-        yield return await Task.FromResult(new Translation
-        {
-            Author = "Michael W. Holmes",
-            Code = "SBLGNTAPP",
-            Commentary = true,
-            Copyright = Copyright["SBLGNTAPP"],
-            Language = "Greek",
-            Name = "SBL Greek New Testament Apparatus",
-            Provider = this.Id,
-            Year = 2010,
-        });
+        yield return await Task.FromResult(
+            new Translation
+            {
+                CanBeExported = true,
+                Code = "BCP1979PSALMS",
+                Copyright = Copyright["BCP1979PSALMS"],
+                Language = "English",
+                Name = "Book of Common Prayer (1979) Psalter",
+                Provider = this.Id,
+                Year = 1979,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                CanBeExported = true,
+                Code = "BCPPSALMS",
+                Copyright = Copyright["BCPPSALMS"],
+                Language = "English",
+                Name = "Coverdale Psalter",
+                Provider = this.Id,
+                Year = 1539,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                CanBeExported = true,
+                Code = "BCPPSALMSALT",
+                Copyright = Copyright["BCPPSALMSALT"],
+                Language = "English",
+                Name = "Coverdale Psalter (KJV Versification)",
+                Provider = this.Id,
+                Year = 1539,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                CanBeExported = true,
+                Code = "BCPPSALMSVUL",
+                Copyright = Copyright["BCPPSALMSVUL"],
+                Language = "English",
+                Name = "Coverdale Psalter (Douay Versification)",
+                Provider = this.Id,
+                Year = 1539,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                CanBeExported = true,
+                Code = "BSB",
+                Copyright = Copyright["BSB"],
+                Language = "English",
+                Name = "Berean Standard Bible",
+                Provider = this.Id,
+                Year = 2020,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                Author = "Joseph Barber Lightfoot; Updated by Peter Chapman",
+                CanBeExported = true,
+                Code = "LAOGRK",
+                Copyright = Copyright["LAOGRK"],
+                Language = "Greek",
+                Name = "Epistle to the Laodiceans (Greek)",
+                Provider = this.Id,
+                Year = 2021,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                Author = "Joseph Barber Lightfoot; Updated by Peter Chapman",
+                CanBeExported = true,
+                Code = "LAOLAT",
+                Copyright = Copyright["LAOLAT"],
+                Language = "Latin",
+                Name = "Epistle to the Laodiceans (Latin)",
+                Provider = this.Id,
+                Year = 2021,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                Author = "John Wycliffe",
+                CanBeExported = true,
+                Code = "LAOANG",
+                Copyright = Copyright["LAOANG"],
+                Language = "Old English",
+                Name = "Epistle to the Laodiceans (Old English)",
+                Provider = this.Id,
+                Year = 2021,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                CanBeExported = true,
+                Code = "NTA",
+                Copyright = Copyright["NTA"],
+                Language = "English",
+                Name = "New Translation of the Apocrypha",
+                Provider = this.Id,
+                Year = 2021,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                CanBeExported = true,
+                Commentary = true,
+                Code = "NTANOTES",
+                Copyright = Copyright["NTANOTES"],
+                Language = "English",
+                Name = "New Translation of the Apocrypha Notes",
+                Provider = this.Id,
+                Year = 2021,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                Author = "Michael W. Holmes",
+                Code = "SBLGNT",
+                Copyright = Copyright["SBLGNT"],
+                Language = "Greek",
+                Name = "SBL Greek New Testament",
+                Provider = this.Id,
+                Year = 2010,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                Author = "Michael W. Holmes",
+                Code = "SBLGNTAPP",
+                Commentary = true,
+                Copyright = Copyright["SBLGNTAPP"],
+                Language = "Greek",
+                Name = "SBL Greek New Testament Apparatus",
+                Provider = this.Id,
+                Year = 2010,
+            }
+        );
 
         // We can only generate an apparatus if we have a renderer
         if (this.renderer is not null)
         {
-            yield return await Task.FromResult(new Translation
-            {
-                Author = "Peter Chapman",
-                Code = "TRWHAPP",
-                Commentary = true,
-                Copyright = Copyright["TRWHAPP"],
-                Language = "Greek",
-                Name = "Textus Receptus/Westcott and Hort Apparatus",
-                Provider = this.Id,
-                Year = 2022,
-            });
+            yield return await Task.FromResult(
+                new Translation
+                {
+                    Author = "Peter Chapman",
+                    Code = "TRWHAPP",
+                    Commentary = true,
+                    Copyright = Copyright["TRWHAPP"],
+                    Language = "Greek",
+                    Name = "Textus Receptus/Westcott and Hort Apparatus",
+                    Provider = this.Id,
+                    Year = 2022,
+                }
+            );
         }
     }
 

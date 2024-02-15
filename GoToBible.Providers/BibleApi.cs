@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="BibleApi.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -29,7 +29,10 @@ public partial class BibleApi : WebApiProvider
     /// <summary>
     /// The regular expression to clean up verse numbers.
     /// </summary>
-    private static readonly Regex VerseNumberRegex = new Regex($"{Regex.Escape(Environment.NewLine)}(\\d+|\\d+\\-\\d+|\\d+[a-z])\\]", RegexOptions.Compiled);
+    private static readonly Regex VerseNumberRegex = new Regex(
+        $"{Regex.Escape(Environment.NewLine)}(\\d+|\\d+\\-\\d+|\\d+[a-z])\\]",
+        RegexOptions.Compiled
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BibleApi" /> class.
@@ -39,7 +42,10 @@ public partial class BibleApi : WebApiProvider
     public BibleApi(IOptions<BibleApiOptions> options, IDistributedCache cache)
         : base(cache)
     {
-        this.HttpClient.BaseAddress = new Uri("https://api.scripture.api.bible/v1/", UriKind.Absolute);
+        this.HttpClient.BaseAddress = new Uri(
+            "https://api.scripture.api.bible/v1/",
+            UriKind.Absolute
+        );
         if (!string.IsNullOrWhiteSpace(options.Value.ApiKey))
         {
             this.HttpClient.DefaultRequestHeaders.Add("api-key", options.Value.ApiKey);
@@ -53,7 +59,11 @@ public partial class BibleApi : WebApiProvider
     public override string Name => "Bible.API";
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Book> GetBooksAsync(string translation, bool includeChapters, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Book> GetBooksAsync(
+        string translation,
+        bool includeChapters,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         string url = $"bibles/{translation}/books";
         string cacheKey = this.GetCacheKey(url);
@@ -61,11 +71,19 @@ public partial class BibleApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    json,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -74,29 +92,33 @@ public partial class BibleApi : WebApiProvider
             }
         }
 
-        var books = DeserializeAnonymousType(json, new
-        {
-            data = EmptyListOf(new
+        var books = DeserializeAnonymousType(
+            json,
+            new
             {
-                id = string.Empty,
-                bibleId = string.Empty,
-                abbreviation = string.Empty,
-                name = string.Empty,
-                nameLong = string.Empty,
-            }),
-        });
+                data = EmptyListOf(
+                    new
+                    {
+                        id = string.Empty,
+                        bibleId = string.Empty,
+                        abbreviation = string.Empty,
+                        name = string.Empty,
+                        nameLong = string.Empty,
+                    }
+                ),
+            }
+        );
         if (books is not null)
         {
             foreach (var bookData in books.data)
             {
-                string bookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(ReverseBookCodeMap[bookData.id]);
+                string bookName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(
+                    ReverseBookCodeMap[bookData.id]
+                );
                 if (!includeChapters)
                 {
                     // Return the book
-                    yield return new Book
-                    {
-                        Name = bookName,
-                    };
+                    yield return new Book { Name = bookName, };
                 }
                 else
                 {
@@ -107,32 +129,47 @@ public partial class BibleApi : WebApiProvider
 
                     if (string.IsNullOrWhiteSpace(json))
                     {
-                        using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+                        using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                            url,
+                            cancellationToken
+                        );
                         if (response.IsSuccessStatusCode)
                         {
                             json = await response.Content.ReadAsStringAsync(cancellationToken);
-                            await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                            await this.Cache.SetStringAsync(
+                                cacheKey,
+                                json,
+                                CacheEntryOptions,
+                                cancellationToken
+                            );
                         }
                         else
                         {
-                            Debug.Print($"{response.StatusCode} error in BibleApi.GetBooksAsync() [Chapters]");
+                            Debug.Print(
+                                $"{response.StatusCode} error in BibleApi.GetBooksAsync() [Chapters]"
+                            );
                             yield break;
                         }
                     }
 
-                    var chapters = DeserializeAnonymousType(json, new
-                    {
-                        data = EmptyListOf(new
+                    var chapters = DeserializeAnonymousType(
+                        json,
+                        new
                         {
-                            id = string.Empty,
-                            bibleId = string.Empty,
-                            bookId = string.Empty,
-                            number = string.Empty,
-                            reference = string.Empty,
-                        }),
-                    });
+                            data = EmptyListOf(
+                                new
+                                {
+                                    id = string.Empty,
+                                    bibleId = string.Empty,
+                                    bookId = string.Empty,
+                                    number = string.Empty,
+                                    reference = string.Empty,
+                                }
+                            ),
+                        }
+                    );
 
-                    List<ChapterReference> chapterReferences = new List<ChapterReference>();
+                    List<ChapterReference> chapterReferences = [];
                     if (chapters is not null)
                     {
                         foreach (var chapter in chapters.data)
@@ -144,7 +181,10 @@ public partial class BibleApi : WebApiProvider
                             }
                             else if (!int.TryParse(chapter.number, out chapterNumber))
                             {
-                                throw new ArgumentException($"Unknown Chapter: {chapter.number}", nameof(translation));
+                                throw new ArgumentException(
+                                    $"Unknown Chapter: {chapter.number}",
+                                    nameof(translation)
+                                );
                             }
 
                             chapterReferences.Add(new ChapterReference(bookName, chapterNumber));
@@ -163,7 +203,12 @@ public partial class BibleApi : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async Task<Chapter> GetChapterAsync(string translation, string book, int chapterNumber, CancellationToken cancellationToken = default)
+    public override async Task<Chapter> GetChapterAsync(
+        string translation,
+        string book,
+        int chapterNumber,
+        CancellationToken cancellationToken = default
+    )
     {
         // Set up the chapter
         Chapter chapter = new Chapter
@@ -192,7 +237,9 @@ public partial class BibleApi : WebApiProvider
         // See if that book is in the translation
         bool bookExists = false;
         string alternateBookName = string.Empty;
-        await foreach (Book translationBook in this.GetBooksAsync(translation, false, cancellationToken))
+        await foreach (
+            Book translationBook in this.GetBooksAsync(translation, false, cancellationToken)
+        )
         {
             string translationBookName = translationBook.Name.ToLowerInvariant();
             if (translationBookName == bookName)
@@ -226,20 +273,30 @@ public partial class BibleApi : WebApiProvider
         }
 
         // Chapter 0 is the intro
-        string chapterString = chapterNumber == 0 ? "intro" : chapterNumber.ToString(CultureInfo.InvariantCulture);
+        string chapterString =
+            chapterNumber == 0 ? "intro" : chapterNumber.ToString(CultureInfo.InvariantCulture);
 
         // Load the book
-        string url = $"bibles/{translation}/chapters/{bookCode}.{chapterString}?content-type=text&include-titles=false";
+        string url =
+            $"bibles/{translation}/chapters/{bookCode}.{chapterString}?content-type=text&include-titles=false";
         string cacheKey = this.GetCacheKey(url);
         string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    json,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -248,39 +305,41 @@ public partial class BibleApi : WebApiProvider
             }
         }
 
-        var chapterJson = DeserializeAnonymousType(json, new
-        {
-            data = new
+        var chapterJson = DeserializeAnonymousType(
+            json,
+            new
             {
-                id = string.Empty,
-                content = string.Empty,
-                copyright = string.Empty,
-                next = Nullable(new
+                data = new
                 {
-                    number = string.Empty,
-                    bookId = string.Empty,
-                }),
-                previous = Nullable(new
-                {
-                    number = string.Empty,
-                    bookId = string.Empty,
-                }),
-            },
-            meta = new
-            {
-                fumsNoScript = string.Empty,
-            },
-        });
+                    id = string.Empty,
+                    content = string.Empty,
+                    copyright = string.Empty,
+                    next = Nullable(new { number = string.Empty, bookId = string.Empty, }),
+                    previous = Nullable(new { number = string.Empty, bookId = string.Empty, }),
+                },
+                meta = new { fumsNoScript = string.Empty, },
+            }
+        );
         if (chapterJson?.data is not null)
         {
             // Get the text
             string output = chapterJson.data.content.Trim().Replace("\n", " ");
             output = VerseLinesRegex().Replace(output, Environment.NewLine);
             output = VerseNumberRegex.Replace(output, $"{Environment.NewLine}$1 ");
-            chapter.Copyright = chapterJson.data.copyright.Trim().Replace("\n", " ") + chapterJson.meta.fumsNoScript;
-            if (chapterNumber > 0
+            chapter.Copyright =
+                chapterJson.data.copyright.Trim().Replace("\n", " ")
+                + chapterJson.meta.fumsNoScript;
+            if (
+                chapterNumber > 0
                 && output[..1] != "1"
-                && !(output.Contains($"{Environment.NewLine}1 ", StringComparison.OrdinalIgnoreCase) || output.StartsWith($"{Environment.NewLine}1", StringComparison.OrdinalIgnoreCase)))
+                && !(
+                    output.Contains($"{Environment.NewLine}1 ", StringComparison.OrdinalIgnoreCase)
+                    || output.StartsWith(
+                        $"{Environment.NewLine}1",
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                )
+            )
             {
                 output = $"1 {output}";
             }
@@ -288,20 +347,33 @@ public partial class BibleApi : WebApiProvider
             chapter.Text = output;
 
             // Get the previous chapter reference
-            if (chapterJson.data.previous is not null
-                && ReverseBookCodeMap.TryGetValue(chapterJson.data.previous.bookId, out string? previousBook))
+            if (
+                chapterJson.data.previous is not null
+                && ReverseBookCodeMap.TryGetValue(
+                    chapterJson.data.previous.bookId,
+                    out string? previousBook
+                )
+            )
             {
                 if (!int.TryParse(chapterJson.data.previous.number, out int previousChapter))
                 {
                     previousChapter = 0;
                 }
 
-                chapter.PreviousChapterReference = new ChapterReference(previousBook, previousChapter);
+                chapter.PreviousChapterReference = new ChapterReference(
+                    previousBook,
+                    previousChapter
+                );
             }
 
             // Get the next chapter reference
-            if (chapterJson.data.next is not null
-                && ReverseBookCodeMap.TryGetValue(chapterJson.data.next.bookId, out string? nextBook))
+            if (
+                chapterJson.data.next is not null
+                && ReverseBookCodeMap.TryGetValue(
+                    chapterJson.data.next.bookId,
+                    out string? nextBook
+                )
+            )
             {
                 if (!int.TryParse(chapterJson.data.next.number, out int nextChapter))
                 {
@@ -317,7 +389,9 @@ public partial class BibleApi : WebApiProvider
     }
 
     /// <inheritdoc/>
-    public override async IAsyncEnumerable<Translation> GetTranslationsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Translation> GetTranslationsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
     {
         const string url = "bibles";
         string cacheKey = this.GetCacheKey(url);
@@ -325,11 +399,19 @@ public partial class BibleApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(url, cancellationToken);
+            using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                url,
+                cancellationToken
+            );
             if (response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(cacheKey, json, CacheEntryOptions, cancellationToken);
+                await this.Cache.SetStringAsync(
+                    cacheKey,
+                    json,
+                    CacheEntryOptions,
+                    cancellationToken
+                );
             }
             else
             {
@@ -338,19 +420,21 @@ public partial class BibleApi : WebApiProvider
             }
         }
 
-        var translations = DeserializeAnonymousType(json, new
-        {
-            data = EmptyListOf(new
+        var translations = DeserializeAnonymousType(
+            json,
+            new
             {
-                id = string.Empty,
-                name = string.Empty,
-                description = string.Empty,
-                language = new
-                {
-                    name = string.Empty,
-                },
-            }),
-        });
+                data = EmptyListOf(
+                    new
+                    {
+                        id = string.Empty,
+                        name = string.Empty,
+                        description = string.Empty,
+                        language = new { name = string.Empty, },
+                    }
+                ),
+            }
+        );
         if (translations is not null)
         {
             foreach (var translation in translations.data)

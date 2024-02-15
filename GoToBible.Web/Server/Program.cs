@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Program.cs" company="Conglomo">
-// Copyright 2020-2023 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -25,7 +25,8 @@ using Pomelo.Extensions.Caching.MySql;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Setup Razor and Web API
-builder.Services.AddControllersWithViews()
+builder
+    .Services.AddControllersWithViews()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new StringConverter()));
 builder.Services.AddRazorPages();
 
@@ -42,23 +43,35 @@ builder.Services.AddSingleton<IProvider, Zefania>();
 
 // Add options for providers that require them
 builder.Services.Configure<BibleApiOptions>(builder.Configuration.GetSection("Providers:BibleApi"));
-builder.Services.Configure<BibliaApiOptions>(builder.Configuration.GetSection("Providers:BibliaApi"));
-builder.Services.Configure<DigitalBiblePlatformApiOptions>(builder.Configuration.GetSection("Providers:DigitalBiblePlatformApi"));
+builder.Services.Configure<BibliaApiOptions>(
+    builder.Configuration.GetSection("Providers:BibliaApi")
+);
+builder.Services.Configure<DigitalBiblePlatformApiOptions>(
+    builder.Configuration.GetSection("Providers:DigitalBiblePlatformApi")
+);
 builder.Services.Configure<EsvBibleOptions>(builder.Configuration.GetSection("Providers:EsvBible"));
-builder.Services.Configure<LocalResourceOptions>(builder.Configuration.GetSection("Providers:LocalResource"));
+builder.Services.Configure<LocalResourceOptions>(
+    builder.Configuration.GetSection("Providers:LocalResource")
+);
 builder.Services.Configure<NltBibleOptions>(builder.Configuration.GetSection("Providers:NltBible"));
 
 // Load the caching provider
-CacheSettings? cacheConfig = builder.Configuration.GetSection("Providers:Cache").Get<CacheSettings>();
+CacheSettings? cacheConfig = builder
+    .Configuration.GetSection("Providers:Cache")
+    .Get<CacheSettings>();
 switch (cacheConfig?.DatabaseProvider.ToUpperInvariant())
 {
     case "MSSQL":
-        builder.Services.Configure<SqlServerCacheOptions>(builder.Configuration.GetSection("Providers:Cache"));
+        builder.Services.Configure<SqlServerCacheOptions>(
+            builder.Configuration.GetSection("Providers:Cache")
+        );
         builder.Services.AddSingleton<IDistributedCache, SqlServerCache>();
         break;
     case "MARIADB":
     case "MYSQL":
-        builder.Services.Configure<MySqlCacheOptions>(builder.Configuration.GetSection("Providers:Cache"));
+        builder.Services.Configure<MySqlCacheOptions>(
+            builder.Configuration.GetSection("Providers:Cache")
+        );
         builder.Services.AddSingleton<IDistributedCache, MySqlCache>();
         break;
     default:
@@ -67,7 +80,9 @@ switch (cacheConfig?.DatabaseProvider.ToUpperInvariant())
 }
 
 // Load the statistics context
-StatisticsSettings? statisticsConfig = builder.Configuration.GetSection("Providers:Statistics").Get<StatisticsSettings>();
+StatisticsSettings? statisticsConfig = builder
+    .Configuration.GetSection("Providers:Statistics")
+    .Get<StatisticsSettings>();
 ServerVersion serverVersion;
 switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
 {
@@ -79,7 +94,8 @@ switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
         if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
         {
             builder.Services.AddDbContext<StatisticsContext>(options =>
-            options.UseMySql(statisticsConfig.ConnectionString, serverVersion));
+                options.UseMySql(statisticsConfig.ConnectionString, serverVersion)
+            );
         }
 
         break;
@@ -87,7 +103,8 @@ switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
         if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
         {
             builder.Services.AddDbContext<StatisticsContext>(options =>
-            options.UseSqlServer(statisticsConfig.ConnectionString));
+                options.UseSqlServer(statisticsConfig.ConnectionString)
+            );
         }
 
         break;
@@ -99,7 +116,8 @@ switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
         if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
         {
             builder.Services.AddDbContext<StatisticsContext>(options =>
-            options.UseMySql(statisticsConfig.ConnectionString, serverVersion));
+                options.UseMySql(statisticsConfig.ConnectionString, serverVersion)
+            );
         }
 
         break;
@@ -122,25 +140,33 @@ else
 
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
-app.UseDefaultFiles(new DefaultFilesOptions
-{
-    DefaultFileNames = { "index.html" },
-    RequestPath = new PathString("/about"),
-});
+app.UseDefaultFiles(
+    new DefaultFilesOptions
+    {
+        DefaultFileNames = { "index.html" },
+        RequestPath = new PathString("/about"),
+    }
+);
 app.UseStaticFiles();
 
 // Allow static files within the about directory to allow for automatic SSL renewal
-app.UseStaticFiles(new StaticFileOptions
-{
-    ServeUnknownFileTypes = true, // this was needed as IIS would not serve extension-less URLs from the directory without it
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "about")),
-    RequestPath = new PathString("/about"),
-});
+app.UseStaticFiles(
+    new StaticFileOptions
+    {
+        ServeUnknownFileTypes = true, // this was needed as IIS would not serve extension-less URLs from the directory without it
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "about")
+        ),
+        RequestPath = new PathString("/about"),
+    }
+);
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-});
+app.UseForwardedHeaders(
+    new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    }
+);
 
 app.UseRouting();
 app.MapRazorPages();
