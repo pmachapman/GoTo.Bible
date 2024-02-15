@@ -25,6 +25,8 @@ public abstract class ApiProvider : IProvider
     /// </summary>
     public static readonly ReadOnlyCollection<string> BlockedTranslations = new List<string>
     {
+        "BibleApi-32664dc3288a28df-02",
+        "BibleApi-32664dc3288a28df-03",
         "BibleApi-685d1470fe4d5c3b-01",
         "BibleApi-6bab4d6c61b31b80-01",
         "BibleApi-7142879509583d59-02",
@@ -46,6 +48,8 @@ public abstract class ApiProvider : IProvider
         "DigitalBiblePlatformApi-ENGASV",
         "DigitalBiblePlatformApi-ENGESH",
         "DigitalBiblePlatformApi-ENGKJV",
+        "DigitalBiblePlatformApi-ENGNLH",
+        "DigitalBiblePlatformApi-ENGNLT",
         "DigitalBiblePlatformApi-ENGREV",
         "DigitalBiblePlatformApi-ENGWEB",
     }.AsReadOnly();
