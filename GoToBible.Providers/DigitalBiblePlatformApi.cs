@@ -257,26 +257,17 @@ public class DigitalBiblePlatformApi : WebApiProvider
             {
                 foreach (var verse in chapterJson.data)
                 {
-                    string verseText = verse
-                        .verse_text.Trim()
-                        .Replace("\n", " ")
-                        .RemoveDuplicateSpaces();
+                    sb.Append(verse.verse_start);
 
                     // Allow multi-verse lines, i.e. "1-2  In the beginning"
                     if (verse.verse_start != verse.verse_end)
                     {
-                        sb.Append(verse.verse_start);
                         sb.Append('-');
                         sb.Append(verse.verse_end);
-                        sb.Append("  ");
-                        sb.Append(verseText);
                     }
-                    else
-                    {
-                        sb.Append(verse.verse_start);
-                        sb.Append("  ");
-                        sb.AppendLine(verseText);
-                    }
+
+                    sb.Append("  ");
+                    sb.AppendLine(verse.verse_text.Trim().Replace("\n", " ").RemoveDuplicateSpaces());
                 }
             }
 
