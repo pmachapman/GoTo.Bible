@@ -724,7 +724,7 @@ public static partial class ExtensionMethods
     /// The dash replacement regular expression.
     /// </summary>
     /// <returns>The regular expression to find dashes.</returns>
-    [GeneratedRegex(@"[‐‑‒–—-]", RegexOptions.Compiled)]
+    [GeneratedRegex("[‐‑‒–—-]", RegexOptions.Compiled)]
     private static partial Regex DashRegex();
 
     /// <summary>
@@ -755,6 +755,6 @@ public static partial class ExtensionMethods
     /// <remarks>
     /// This includes support for verses with letters.
     /// </remarks>
-    [GeneratedRegex(@"[0-9]+[a-z]?", RegexOptions.Compiled)]
+    [GeneratedRegex("[0-9]+[a-z]?", RegexOptions.Compiled)]
     private static partial Regex VerseNumberRegex();
 }

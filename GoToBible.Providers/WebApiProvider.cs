@@ -202,7 +202,7 @@ public abstract class WebApiProvider : ApiProvider
     /// <returns>
     /// An empty list of the anonymous object.
     /// </returns>
-    protected static List<TValue> EmptyListOf<TValue>(TValue _) => new List<TValue>();
+    protected static List<TValue> EmptyListOf<TValue>(TValue _) => [];
 
     /// <summary>
     /// Creates a nullable type of the specified anonymous object.
