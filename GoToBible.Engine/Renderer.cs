@@ -108,7 +108,7 @@ public partial class Renderer : IRenderer
             {
                 StringBuilder sb = new StringBuilder();
                 string[] lines = firstChapter.Text.Split(
-                    new[] { Environment.NewLine },
+                    [Environment.NewLine],
                     StringSplitOptions.RemoveEmptyEntries
                 );
                 foreach (string line in lines)
@@ -132,7 +132,7 @@ public partial class Renderer : IRenderer
             {
                 StringBuilder sb = new StringBuilder();
                 string[] lines = firstChapter.Text.Split(
-                    new[] { Environment.NewLine },
+                    [Environment.NewLine],
                     StringSplitOptions.RemoveEmptyEntries
                 );
                 foreach (string line in lines)
@@ -600,7 +600,7 @@ public partial class Renderer : IRenderer
                 // Just render the first translation
                 foreach (
                     string line in firstChapter.Text.Split(
-                        new[] { Environment.NewLine },
+                        [Environment.NewLine],
                         StringSplitOptions.RemoveEmptyEntries
                     )
                 )

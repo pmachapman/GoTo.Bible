@@ -6,7 +6,6 @@
 
 namespace GoToBible.Windows.AutoComplete;
 
-using System;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 
