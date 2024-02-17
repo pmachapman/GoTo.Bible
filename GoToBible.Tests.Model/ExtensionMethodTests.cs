@@ -44,7 +44,7 @@ public class ExtensionMethodTests
         {
             ChapterReference = new ChapterReference("1 John", 1),
             Display = "1 John 1:3,6-7,9-12",
-            HighlightedVerses = new string[] { "3", "6", "-", "7", "9", "-", "12" },
+            HighlightedVerses = ["3", "6", "-", "7", "9", "-", "12"],
         };
         PassageReference actual = "1 John 1:3,6-7,9-12".AsPassageReference();
         Assert.AreEqual(expected, actual);
@@ -90,7 +90,7 @@ public class ExtensionMethodTests
         {
             ChapterReference = new ChapterReference("2 John", 1),
             Display = "2 John 1:2",
-            HighlightedVerses = new string[] { "2" },
+            HighlightedVerses = ["2"],
         };
         PassageReference actual = "2 John 2".AsPassageReference();
         Assert.AreEqual(expected, actual);
@@ -106,7 +106,7 @@ public class ExtensionMethodTests
         {
             ChapterReference = new ChapterReference("2 John", 1),
             Display = "2 John 1:1-2",
-            HighlightedVerses = new string[] { "1", "-", "2" },
+            HighlightedVerses = ["1", "-", "2"],
         };
         PassageReference actual = "2 John 1-2".AsPassageReference();
         Assert.AreEqual(expected, actual);
@@ -122,7 +122,7 @@ public class ExtensionMethodTests
         {
             ChapterReference = new ChapterReference("2 John", 1),
             Display = "2 John 1:1",
-            HighlightedVerses = new string[] { "1" },
+            HighlightedVerses = ["1"],
         };
         PassageReference actual = "2 John 1:1".AsPassageReference();
         Assert.AreEqual(expected, actual);
@@ -138,7 +138,7 @@ public class ExtensionMethodTests
         {
             ChapterReference = new ChapterReference("1 Kings", 12),
             Display = "1 Kings 12:24b-24g,24y-25",
-            HighlightedVerses = new string[] { "24b", "-", "24g", "24y", "-", "25" },
+            HighlightedVerses = ["24b", "-", "24g", "24y", "-", "25"],
         };
         PassageReference actual = "1 Kings 12:24b-24g,24y-25".AsPassageReference();
         Assert.AreEqual(expected, actual);
@@ -272,6 +272,146 @@ public class ExtensionMethodTests
         Assert.AreEqual("esther (greek)", "est(greek)1:1".GetBook());
 
     /// <summary>
+    /// Tests <see cref="ExtensionMethods.GetInterlinearMode"/> with no interlinear parameters.
+    /// </summary>
+    [TestMethod]
+    public void TestGetInterlinearMode_None()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            InterlinearIgnoresCase = false,
+            InterlinearIgnoresDiacritics = false,
+            InterlinearIgnoresPunctuation = false,
+        };
+        Assert.AreEqual(InterlinearMode.None, renderingParameters.GetInterlinearMode());
+    }
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.GetInterlinearMode"/> with ignore case.
+    /// </summary>
+    [TestMethod]
+    public void TestGetInterlinearMode_IgnoreCase()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            InterlinearIgnoresCase = true,
+            InterlinearIgnoresDiacritics = false,
+            InterlinearIgnoresPunctuation = false,
+        };
+        Assert.AreEqual(InterlinearMode.IgnoresCase, renderingParameters.GetInterlinearMode());
+    }
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.GetInterlinearMode"/> with ignore disacritics.
+    /// </summary>
+    [TestMethod]
+    public void TestGetInterlinearMode_IgnoreDiacritics()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            InterlinearIgnoresCase = false,
+            InterlinearIgnoresDiacritics = true,
+            InterlinearIgnoresPunctuation = false,
+        };
+        Assert.AreEqual(
+            InterlinearMode.IgnoresDiacritics,
+            renderingParameters.GetInterlinearMode()
+        );
+    }
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.GetInterlinearMode"/> with ignore case and ignore diacritics.
+    /// </summary>
+    [TestMethod]
+    public void TestGetInterlinearMode_IgnoreCaseAndDiacritics()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            InterlinearIgnoresCase = true,
+            InterlinearIgnoresDiacritics = true,
+            InterlinearIgnoresPunctuation = false,
+        };
+        Assert.AreEqual(
+            InterlinearMode.IgnoresCase | InterlinearMode.IgnoresDiacritics,
+            renderingParameters.GetInterlinearMode()
+        );
+    }
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.GetInterlinearMode"/> with ignore punctuation.
+    /// </summary>
+    [TestMethod]
+    public void TestGetInterlinearMode_IgnorePunctuation()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            InterlinearIgnoresCase = false,
+            InterlinearIgnoresDiacritics = false,
+            InterlinearIgnoresPunctuation = true,
+        };
+        Assert.AreEqual(
+            InterlinearMode.IgnoresPunctuation,
+            renderingParameters.GetInterlinearMode()
+        );
+    }
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.GetInterlinearMode"/> with ignore case and punctuation.
+    /// </summary>
+    [TestMethod]
+    public void TestGetInterlinearMode_IgnoreCaseAndPunctuation()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            InterlinearIgnoresCase = true,
+            InterlinearIgnoresDiacritics = false,
+            InterlinearIgnoresPunctuation = true,
+        };
+        Assert.AreEqual(
+            InterlinearMode.IgnoresCase | InterlinearMode.IgnoresPunctuation,
+            renderingParameters.GetInterlinearMode()
+        );
+    }
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.GetInterlinearMode"/> with ignore diacritics and punctuation.
+    /// </summary>
+    [TestMethod]
+    public void TestGetInterlinearMode_IgnoreDiacriticsAndPunctuation()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            InterlinearIgnoresCase = false,
+            InterlinearIgnoresDiacritics = true,
+            InterlinearIgnoresPunctuation = true,
+        };
+        Assert.AreEqual(
+            InterlinearMode.IgnoresDiacritics | InterlinearMode.IgnoresPunctuation,
+            renderingParameters.GetInterlinearMode()
+        );
+    }
+
+    /// <summary>
+    /// Tests <see cref="ExtensionMethods.GetInterlinearMode"/> with ignore case, diacritics, and punctuation.
+    /// </summary>
+    [TestMethod]
+    public void TestGetInterlinearMode_IgnoreCaseDiacriticsAndPunctuation()
+    {
+        RenderingParameters renderingParameters = new RenderingParameters
+        {
+            InterlinearIgnoresCase = true,
+            InterlinearIgnoresDiacritics = true,
+            InterlinearIgnoresPunctuation = true,
+        };
+        Assert.AreEqual(
+            InterlinearMode.IgnoresCase
+                | InterlinearMode.IgnoresDiacritics
+                | InterlinearMode.IgnoresPunctuation,
+            renderingParameters.GetInterlinearMode()
+        );
+    }
+
+    /// <summary>
     /// Tests <see cref="ExtensionMethods.GetRanges"/>.
     /// </summary>
     [TestMethod]
@@ -337,7 +477,7 @@ public class ExtensionMethodTests
             {
                 R = 0,
                 G = 0,
-                B = 0
+                B = 0,
             }.ToHtml()
         );
 
@@ -352,7 +492,7 @@ public class ExtensionMethodTests
             {
                 R = 0,
                 G = 0,
-                B = 255
+                B = 255,
             }.ToHtml()
         );
 
@@ -367,7 +507,7 @@ public class ExtensionMethodTests
             {
                 R = 0,
                 G = 255,
-                B = 0
+                B = 0,
             }.ToHtml()
         );
 
@@ -382,7 +522,7 @@ public class ExtensionMethodTests
             {
                 R = 255,
                 G = 0,
-                B = 0
+                B = 0,
             }.ToHtml()
         );
 
@@ -397,7 +537,7 @@ public class ExtensionMethodTests
             {
                 R = 255,
                 G = 255,
-                B = 255
+                B = 255,
             }.ToHtml()
         );
 }

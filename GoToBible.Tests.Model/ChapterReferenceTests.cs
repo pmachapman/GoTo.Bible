@@ -19,7 +19,7 @@ public class ChapterReferenceTests
     /// Tests the empty constructor.
     /// </summary>
     [TestMethod]
-    public void TestEmpty()
+    public void TestEmptyConstructor()
     {
         ChapterReference chapterReference = new ChapterReference();
         Assert.AreEqual(string.Empty, chapterReference.Book);
@@ -84,7 +84,7 @@ public class ChapterReferenceTests
     /// Tests a valid chapter constructor.
     /// </summary>
     [TestMethod]
-    public void TestBookAndChapterValidChapterConstructor()
+    public void TestBookAndChapterValidConstructor()
     {
         ChapterReference chapterReference = new ChapterReference("Genesis 50");
         Assert.AreEqual("Genesis", chapterReference.Book);
