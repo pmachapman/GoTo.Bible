@@ -25,6 +25,12 @@ public interface IProvider : IDisposable
     public string Id { get; }
 
     /// <summary>
+    /// Gets a value indicating whether this provider can only be used for local requests.
+    /// </summary>
+    /// <value><c>true</c> if this provider can only be used for local requests, otherwise <c>false</c>.</value>
+    public bool LocalOnly { get; }
+
+    /// <summary>
     /// Gets the provider name.
     /// </summary>
     /// <value>

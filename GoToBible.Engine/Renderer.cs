@@ -62,7 +62,7 @@ public partial class Renderer : IRenderer
     }
 
     /// <inheritdoc/>
-    public async Task<RenderedPassage> RenderAsync(
+    public virtual async Task<RenderedPassage> RenderAsync(
         RenderingParameters parameters,
         bool renderCompleteHtmlPage,
         CancellationToken cancellationToken = default

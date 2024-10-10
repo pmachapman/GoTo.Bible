@@ -130,6 +130,9 @@ public partial class BundledTranslations : IProvider
     /// <inheritdoc/>
     public string Id => nameof(BundledTranslations);
 
+    /// <inheritdoc />
+    public bool LocalOnly => false;
+
     /// <inheritdoc/>
     public string Name => "Bundled Translations";
 

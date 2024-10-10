@@ -8,6 +8,7 @@ namespace GoToBible.Engine;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -17,8 +18,9 @@ using GoToBible.Model;
 /// <summary>
 /// The GoTo.Bible API Renderer.
 /// </summary>
+/// <seealso cref="GoToBible.Engine.Renderer" />
 /// <seealso cref="GoToBible.Model.IRenderer" />
-public sealed class GotoBibleApiRenderer : IRenderer
+public sealed class GotoBibleApiRenderer : Renderer
 {
     /// <summary>
     /// The HTTP client.
@@ -33,14 +35,10 @@ public sealed class GotoBibleApiRenderer : IRenderer
     /// <summary>
     /// Initializes a new instance of the <see cref="GotoBibleApiRenderer" /> class.
     /// </summary>
-    public GotoBibleApiRenderer()
+    public GotoBibleApiRenderer() => this.httpClient = new HttpClient
     {
-        this.Providers = new List<IProvider>();
-        this.httpClient = new HttpClient
-        {
-            BaseAddress = new Uri("https://goto.bible/", UriKind.Absolute),
-        };
-    }
+        BaseAddress = new Uri("https://goto.bible/", UriKind.Absolute),
+    };
 
     /// <summary>
     /// Finalizes an instance of the <see cref="GotoBibleApiRenderer"/> class.
@@ -49,23 +47,18 @@ public sealed class GotoBibleApiRenderer : IRenderer
     ~GotoBibleApiRenderer() => this.Dispose(false);
 
     /// <inheritdoc/>
-    public IReadOnlyCollection<IProvider> Providers { get; set; }
-
-    /// <inheritdoc/>
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        this.Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <inheritdoc/>
-    public async Task<RenderedPassage> RenderAsync(
+    public override async Task<RenderedPassage> RenderAsync(
         RenderingParameters parameters,
         bool renderCompleteHtmlPage,
         CancellationToken cancellationToken = default
     )
     {
+        // If one of the translations requires local rendering, they both must be rendered locally
+        if (this.Providers.Any(p => (p.Id == parameters.PrimaryProvider || p.Id == parameters.SecondaryProvider) && p.LocalOnly))
+        {
+            return await base.RenderAsync(parameters, renderCompleteHtmlPage, cancellationToken);
+        }
+
         string url = $"RenderPassage?renderCompleteHtmlPage={renderCompleteHtmlPage}";
         HttpResponseMessage response = await this.httpClient.PostAsJsonAsync(
             url,
@@ -83,8 +76,9 @@ public sealed class GotoBibleApiRenderer : IRenderer
     /// Releases unmanaged and - optionally - managed resources.
     /// </summary>
     /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-    private void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
+        base.Dispose(disposing);
         if (!this.disposedValue)
         {
             if (disposing)

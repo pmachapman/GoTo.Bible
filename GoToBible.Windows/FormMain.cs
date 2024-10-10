@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="FormMain.cs" company="Conglomo">
 // Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
@@ -279,6 +279,58 @@ public sealed partial class FormMain : Form
     {
         base.WndProc(ref msg);
         this.systemMenu.HandleMessage(ref msg);
+    }
+
+    /// <summary>
+    /// Check for prihibited interlinear renderings, and display an error and reset the secondary translation if these occur.
+    /// </summary>
+    private void CheckForProhibitedInterlinearRenderings()
+    {
+        // Check for prohibited interlinear renderings
+        if (this.ToolStripComboBoxPrimaryTranslation.SelectedItem is TranslationComboBoxItem primaryItem
+            && this.ToolStripComboBoxSecondaryTranslation.SelectedItem is TranslationComboBoxItem secondaryItem)
+        {
+            // Make sure we are not showing an interlinear with the original language
+            if ((primaryItem.Language == "Greek" && secondaryItem.Language is not ("Greek" or null))
+                || (primaryItem.Language == "Hebrew" && secondaryItem.Language is not ("Hebrew" or null))
+                || (secondaryItem.Language == "Greek" && primaryItem.Language is not ("Greek" or null))
+                || (secondaryItem.Language == "Hebrew" && primaryItem.Language is not ("Hebrew" or null)))
+            {
+                MessageBox.Show(
+                    Resources.CannotShowInterlinear,
+                    Program.Title,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
+            }
+
+            // Make sure that if we are not developing that we do not mix rendering the NET Bible with other translations
+            if (!this.IsDeveloper && ((primaryItem.Provider == nameof(NetBible) && !string.IsNullOrWhiteSpace(primaryItem.Provider))
+                || secondaryItem.Provider == nameof(NetBible)))
+            {
+                MessageBox.Show(
+                    Resources.CannotShowNetBibleInterlinear,
+                    Program.Title,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
+            }
+
+            // Make sure that if we are not developing that we do not mix rendering Logos with other translations
+            if (!this.IsDeveloper && ((primaryItem.Provider == nameof(LogosProvider) && !string.IsNullOrWhiteSpace(primaryItem.Provider))
+                                      || secondaryItem.Provider == nameof(LogosProvider)))
+            {
+                MessageBox.Show(
+                    Resources.CannotShowLogosInterlinear,
+                    Program.Title,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
+            }
+        }
     }
 
     /// <summary>
@@ -696,7 +748,7 @@ public sealed partial class FormMain : Form
             this.providers.Add(new LogosProvider());
 
             // Load the NET Provider
-            this.providers.Add(new NetBible(this.cache));
+            this.providers.Add(new NetBible(this.cache, runningInBrowser: false));
 
             // Load the NLT Provider
             string nltApiKey = Settings.Default.NltApiKey;
@@ -725,8 +777,14 @@ public sealed partial class FormMain : Form
         }
         else
         {
-            // Only one provider is allowed if not developer
+            // Load the GoTo.Bible API provider
             this.providers.Add(new GoToBibleApi(this.cache));
+
+            // Load the Logos Provider
+            this.providers.Add(new LogosProvider());
+
+            // Load the NET Provider
+            this.providers.Add(new NetBible(this.cache, runningInBrowser: false));
 
             // Set the renderer
             if (this.renderer is not GotoBibleApiRenderer)
@@ -1081,11 +1139,27 @@ public sealed partial class FormMain : Form
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
     private void ToolStripButtonApparatusGenerator_Click(object sender, EventArgs e)
     {
+        // Only allow all providers and translations if in developer mode
+        IEnumerable<IProvider> apparatusProviders;
+        IEnumerable<Translation> apparatusTranslations;
+        if (this.IsDeveloper)
+        {
+            apparatusProviders = this.providers;
+            apparatusTranslations = this.translations;
+        }
+        else
+        {
+            // Only use GoTo.Bible API Providers and Translations
+            apparatusProviders = this.providers.Where(p => !p.LocalOnly);
+            IEnumerable<string> localProviderNames = this.providers.Where(p => p.LocalOnly).Select(p => p.Id);
+            apparatusTranslations = this.translations.Where(t => !localProviderNames.Contains(t.Provider)).ToList();
+        }
+
         FormApparatusGenerator formApparatusGenerator = new FormApparatusGenerator(
             this.parameters.PrimaryTranslation,
             this.renderer,
-            this.translations,
-            this.providers
+            apparatusTranslations,
+            apparatusProviders
         );
         formApparatusGenerator.ShowDialog();
     }
@@ -1499,7 +1573,7 @@ public sealed partial class FormMain : Form
             new ProcessStartInfo(this.parameters.AsUrl().ToString())
             {
                 UseShellExecute = true,
-                Verb = "open"
+                Verb = "open",
             }
         );
 

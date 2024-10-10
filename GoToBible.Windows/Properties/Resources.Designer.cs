@@ -150,6 +150,24 @@ namespace GoToBible.Windows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sorry, you cannot show your Preferred Logos Bible interlinear with another translation.
+        /// </summary>
+        internal static string CannotShowLogosInterlinear {
+            get {
+                return ResourceManager.GetString("CannotShowLogosInterlinear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, you cannot show the NET Bible interlinear with another translation.
+        /// </summary>
+        internal static string CannotShowNetBibleInterlinear {
+            get {
+                return ResourceManager.GetString("CannotShowNetBibleInterlinear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Color {

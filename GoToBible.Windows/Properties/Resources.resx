@@ -272,4 +272,10 @@ This will affect future interlinear comparisons, however you can customise this 
   <data name="LocalResourcesDialogDescription" xml:space="preserve">
     <value>Select the folder containing local resources.</value>
   </data>
+  <data name="CannotShowNetBibleInterlinear" xml:space="preserve">
+    <value>Sorry, you cannot show the NET Bible interlinear with another translation</value>
+  </data>
+  <data name="CannotShowLogosInterlinear" xml:space="preserve">
+    <value>Sorry, you cannot show your Preferred Logos Bible interlinear with another translation</value>
+  </data>
 </root>

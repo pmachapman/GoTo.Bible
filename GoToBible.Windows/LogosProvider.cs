@@ -208,6 +208,9 @@ public class LogosProvider : IProvider
     /// <inheritdoc/>
     public string Id => nameof(LogosProvider);
 
+    /// <inheritdoc />
+    public bool LocalOnly => true;
+
     /// <inheritdoc/>
     public string Name => "Logos Bible Software";
 

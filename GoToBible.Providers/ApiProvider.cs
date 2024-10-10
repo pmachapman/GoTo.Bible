@@ -72,6 +72,9 @@ public abstract class ApiProvider : IProvider
     /// <inheritdoc/>
     public abstract string Id { get; }
 
+    /// <inheritdoc />
+    public virtual bool LocalOnly => false;
+
     /// <inheritdoc/>
     public abstract string Name { get; }
 

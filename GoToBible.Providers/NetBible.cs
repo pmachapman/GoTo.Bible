@@ -51,16 +51,24 @@ public class NetBible : WebApiProvider
     /// Initializes a new instance of the <see cref="NetBible" /> class.
     /// </summary>
     /// <param name="cache">The cache.</param>
-    public NetBible(IDistributedCache cache)
+    /// <param name="runningInBrowser">If <c>true</c>, we are running in a Browser</param>
+    public NetBible(IDistributedCache cache, bool runningInBrowser)
     : base(cache)
     {
         this.HttpClient.BaseAddress = new Uri("https://labs.bible.org/api", UriKind.Absolute);
-        this.HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36");
-        this.HttpClient.DefaultRequestHeaders.Add("pragma", "no-cache");
+        if (!runningInBrowser)
+        {
+            this.HttpClient.DefaultRequestHeaders.Add("User-Agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36");
+            this.HttpClient.DefaultRequestHeaders.Add("pragma", "no-cache");
+        }
     }
 
     /// <inheritdoc/>
     public override string Id => nameof(NetBible);
+
+    /// <inheritdoc />
+    public override bool LocalOnly => true;
 
     /// <inheritdoc/>
     public override string Name => "NET Bible API";
