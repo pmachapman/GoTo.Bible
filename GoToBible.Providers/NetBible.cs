@@ -53,11 +53,11 @@ public class NetBible : WebApiProvider
     /// <param name="cache">The cache.</param>
     public NetBible(IDistributedCache cache)
     : base(cache)
-   {
-       this.HttpClient.BaseAddress = new Uri("https://labs.bible.org/api", UriKind.Absolute);
-       this.HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36");
-       this.HttpClient.DefaultRequestHeaders.Add("pragma", "no-cache");
-   }
+    {
+        this.HttpClient.BaseAddress = new Uri("https://labs.bible.org/api", UriKind.Absolute);
+        this.HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36");
+        this.HttpClient.DefaultRequestHeaders.Add("pragma", "no-cache");
+    }
 
     /// <inheritdoc/>
     public override string Id => nameof(NetBible);
@@ -149,6 +149,11 @@ public class NetBible : WebApiProvider
                 Environment.NewLine,
                 data.Select(d => $"{d.verse}  {d.text}")
             );
+
+            // Clean up 3 John 15
+            chapter.Text = chapter.Text.Replace("(1:15)", Environment.NewLine + "15  ");
+
+            // Add the next and previous chapter references
             chapter.PreviousChapterReference = Canon.GetPreviousChapter(book, chapterNumber);
             chapter.NextChapterReference = Canon.GetNextChapter(book, chapterNumber);
         }
