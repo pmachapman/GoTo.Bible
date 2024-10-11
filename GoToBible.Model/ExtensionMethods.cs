@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
 // Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
@@ -349,7 +349,7 @@ public static partial class ExtensionMethods
                     {
                         ChapterReference = passageReference.ChapterReference,
                         Display = $"{book} {chapter}:{sb}",
-                        HighlightedVerses = [..highlightedVerses],
+                        HighlightedVerses = [.. highlightedVerses],
                     };
                 }
                 else
@@ -638,7 +638,7 @@ public static partial class ExtensionMethods
             ranges.AddRange($"Book{semiParts[i]}".GetRanges());
         }
 
-        return [..ranges];
+        return [.. ranges];
     }
 
     /// <summary>
