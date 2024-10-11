@@ -37,7 +37,6 @@ builder.Services.AddSingleton<IProvider, BundledTranslations>();
 builder.Services.AddSingleton<IProvider, DigitalBiblePlatformApi>();
 builder.Services.AddSingleton<IProvider, EsvBible>();
 builder.Services.AddSingleton<IProvider, LegacyStandardBible>();
-builder.Services.AddSingleton<IProvider, NetBible>();
 builder.Services.AddSingleton<IProvider, NltBible>();
 builder.Services.AddSingleton<IProvider, Zefania>();
 
