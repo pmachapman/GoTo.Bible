@@ -223,7 +223,7 @@ public partial class BundledTranslations : IProvider
             else if (
                 this.renderer is not null
                 && translation == "TRWHAPP"
-                && this.renderer.Providers.Any(r => r.Id == "BibliaApi")
+                && this.renderer.Providers.Any(r => r.Id == nameof(BibliaApi))
             )
             {
                 // Use the renderer to generate this apparatus
@@ -234,10 +234,10 @@ public partial class BundledTranslations : IProvider
                     InterlinearIgnoresDiacritics = true,
                     InterlinearIgnoresPunctuation = true,
                     PassageReference = book.AsPassageReference(chapterNumber),
-                    PrimaryProvider = "BibliaApi",
+                    PrimaryProvider = nameof(BibliaApi),
                     PrimaryTranslation = "tr1894mr",
                     RenderNeighbourForAddition = true,
-                    SecondaryProvider = "BibliaApi",
+                    SecondaryProvider = nameof(BibliaApi),
                     SecondaryTranslation = "wh1881mr",
                 };
                 RenderedPassage renderedPassage = await this.renderer.RenderAsync(

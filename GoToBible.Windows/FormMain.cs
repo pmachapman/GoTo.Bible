@@ -194,10 +194,8 @@ public sealed partial class FormMain : Form
                 {
                     return Path.GetTempPath();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
         }
     }
@@ -314,10 +312,7 @@ public sealed partial class FormMain : Form
         Program.Forms.Remove(this);
 
         // Disable autocomplete
-        if (this.ToolStripTextBoxPassage.TextBox is not null)
-        {
-            AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
-        }
+        AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
 
         // If there are no forms left, exit
         if (Program.Forms.Count == 0)
@@ -400,31 +395,22 @@ public sealed partial class FormMain : Form
         }
 
         // Setup the tool strip controls
-        if (this.ToolStripComboBoxPrimaryTranslation.ComboBox is not null)
-        {
-            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawItem +=
-                this.ToolStripComboBox_DrawItem;
-            this.ToolStripComboBoxPrimaryTranslation.ComboBox.DropDownClosed +=
-                this.ToolStripComboBox_DropDownClosed;
-        }
+        this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+        this.ToolStripComboBoxPrimaryTranslation.ComboBox.DrawItem +=
+            this.ToolStripComboBox_DrawItem;
+        this.ToolStripComboBoxPrimaryTranslation.ComboBox.DropDownClosed +=
+            this.ToolStripComboBox_DropDownClosed;
 
-        if (this.ToolStripComboBoxSecondaryTranslation.ComboBox is not null)
-        {
-            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawItem +=
-                this.ToolStripComboBox_DrawItem;
-            this.ToolStripComboBoxSecondaryTranslation.ComboBox.DropDownClosed +=
-                this.ToolStripComboBox_DropDownClosed;
-        }
+        this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+        this.ToolStripComboBoxSecondaryTranslation.ComboBox.DrawItem +=
+            this.ToolStripComboBox_DrawItem;
+        this.ToolStripComboBoxSecondaryTranslation.ComboBox.DropDownClosed +=
+            this.ToolStripComboBox_DropDownClosed;
 
-        if (this.ToolStripComboBoxResource.ComboBox is not null)
-        {
-            this.ToolStripComboBoxResource.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ToolStripComboBoxResource.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
-            this.ToolStripComboBoxResource.ComboBox.DropDownClosed +=
-                this.ToolStripComboBox_DropDownClosed;
-        }
+        this.ToolStripComboBoxResource.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+        this.ToolStripComboBoxResource.ComboBox.DrawItem += this.ToolStripComboBox_DrawItem;
+        this.ToolStripComboBoxResource.ComboBox.DropDownClosed +=
+            this.ToolStripComboBox_DropDownClosed;
 
         this.ToolStripMenuItemIgnoreCase.Checked = Settings.Default.InterlinearIgnoresCase;
         this.ToolStripMenuItemIgnoreDiacritics.Checked = Settings
@@ -1119,7 +1105,7 @@ public sealed partial class FormMain : Form
             RenderedPassage renderedPassageForExport = await this.renderer.RenderAsync(
                 this.parameters with
                 {
-                    Format = RenderFormat.Accordance
+                    Format = RenderFormat.Accordance,
                 },
                 false
             );
@@ -1140,7 +1126,7 @@ public sealed partial class FormMain : Form
             new ProcessStartInfo("https://github.com/pmachapman/GoTo.Bible")
             {
                 UseShellExecute = true,
-                Verb = "open"
+                Verb = "open",
             }
         );
 
@@ -1237,11 +1223,8 @@ public sealed partial class FormMain : Form
         }
 
         // Enable autocomplete
-        if (this.ToolStripTextBoxPassage.TextBox is not null)
-        {
-            AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
-            AutoSuggest.Enable(this.ToolStripTextBoxPassage.TextBox, [.. suggestions]);
-        }
+        AutoSuggest.Disable(this.ToolStripTextBoxPassage.TextBox);
+        AutoSuggest.Enable(this.ToolStripTextBoxPassage.TextBox, [.. suggestions]);
     }
 
     /// <summary>
@@ -1342,7 +1325,7 @@ public sealed partial class FormMain : Form
                 {
                     PrimaryProvider = resourceProvider,
                     PrimaryTranslation = resource,
-                    SecondaryTranslation = null
+                    SecondaryTranslation = null,
                 },
                 false
             );
@@ -1521,6 +1504,76 @@ public sealed partial class FormMain : Form
         );
 
     /// <summary>
+    /// Handles the SelectedIndexChanged event of the Translation ToolStripComboBoxes.
+    /// </summary>
+    /// <param name="toolStripComboBox">The Tool Strip Combo Box.</param>
+    /// <returns>An asynchronous task.</returns>
+    private async Task ToolStripComboBoxTranslation_SelectedIndexChanged(ToolStripComboBox toolStripComboBox)
+    {
+        if (toolStripComboBox.SelectedItem is ComboBoxItem { Selectable: false })
+        {
+            // Handle the non-selectable items
+            if (toolStripComboBox.Items.Count - 1 > toolStripComboBox.SelectedIndex)
+            {
+                toolStripComboBox.SelectedIndex++;
+            }
+            else if (toolStripComboBox.SelectedIndex > 0)
+            {
+                toolStripComboBox.SelectedIndex--;
+            }
+            else
+            {
+                toolStripComboBox.SelectedIndex = -1;
+            }
+        }
+        else
+        {
+            // Make sure we are not showing an interlinear with the original language
+            if (
+                this.ToolStripComboBoxPrimaryTranslation.SelectedItem
+                    is TranslationComboBoxItem primaryItem
+                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem
+                    is TranslationComboBoxItem secondaryItem
+                && (
+                    (
+                        primaryItem.Language == "Greek"
+                        && secondaryItem.Language is not ("Greek" or null)
+                    )
+                    || (
+                        primaryItem.Language == "Hebrew"
+                        && secondaryItem.Language is not ("Hebrew" or null)
+                    )
+                    || (
+                        secondaryItem.Language == "Greek"
+                        && primaryItem.Language is not ("Greek" or null)
+                    )
+                    || (
+                        secondaryItem.Language == "Hebrew"
+                        && primaryItem.Language is not ("Hebrew" or null)
+                    )
+                )
+            )
+            {
+                MessageBox.Show(
+                    Resources.CannotShowInterlinear,
+                    Program.Title,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
+            }
+
+            // Show the passage
+            await this.SetupAutoCompleteAsync();
+            if (!string.IsNullOrWhiteSpace(this.ToolStripTextBoxPassage.Text))
+            {
+                await this.ShowPassage(true, false);
+                await this.ProcessSuggestions();
+            }
+        }
+    }
+
+    /// <summary>
     /// Handles the SelectedIndexChanged event of the Resource ToolStripComboBox.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
@@ -1566,78 +1619,7 @@ public sealed partial class FormMain : Form
     private async void ToolStripComboBoxPrimaryTranslation_SelectedIndexChanged(
         object sender,
         EventArgs e
-    )
-    {
-        if (
-            this.ToolStripComboBoxPrimaryTranslation.SelectedItem is ComboBoxItem
-            {
-                Selectable: false
-            }
-        )
-        {
-            // Handle the non-selectable items
-            if (
-                this.ToolStripComboBoxPrimaryTranslation.Items.Count - 1
-                > this.ToolStripComboBoxPrimaryTranslation.SelectedIndex
-            )
-            {
-                this.ToolStripComboBoxPrimaryTranslation.SelectedIndex++;
-            }
-            else if (this.ToolStripComboBoxPrimaryTranslation.SelectedIndex > 0)
-            {
-                this.ToolStripComboBoxPrimaryTranslation.SelectedIndex--;
-            }
-            else
-            {
-                this.ToolStripComboBoxPrimaryTranslation.SelectedIndex = -1;
-            }
-        }
-        else
-        {
-            // Make sure we are not showing an interlinear with the original language
-            if (
-                this.ToolStripComboBoxPrimaryTranslation.SelectedItem
-                    is TranslationComboBoxItem primaryItem
-                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem
-                    is TranslationComboBoxItem secondaryItem
-                && (
-                    (
-                        primaryItem.Language == "Greek"
-                        && secondaryItem.Language is not ("Greek" or null)
-                    )
-                    || (
-                        primaryItem.Language == "Hebrew"
-                        && secondaryItem.Language is not ("Hebrew" or null)
-                    )
-                    || (
-                        secondaryItem.Language == "Greek"
-                        && primaryItem.Language is not ("Greek" or null)
-                    )
-                    || (
-                        secondaryItem.Language == "Hebrew"
-                        && primaryItem.Language is not ("Hebrew" or null)
-                    )
-                )
-            )
-            {
-                MessageBox.Show(
-                    Resources.CannotShowInterlinear,
-                    Program.Title,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
-            }
-
-            // Show the passage
-            await this.SetupAutoCompleteAsync();
-            if (!string.IsNullOrWhiteSpace(this.ToolStripTextBoxPassage.Text))
-            {
-                await this.ShowPassage(true, false);
-                await this.ProcessSuggestions();
-            }
-        }
-    }
+    ) => await this.ToolStripComboBoxTranslation_SelectedIndexChanged(this.ToolStripComboBoxPrimaryTranslation);
 
     /// <summary>
     /// Handles the SelectedIndexChanged event of the Secondary Translation ToolStripComboBox.
@@ -1647,78 +1629,7 @@ public sealed partial class FormMain : Form
     private async void ToolStripComboBoxSecondaryTranslation_SelectedIndexChanged(
         object sender,
         EventArgs e
-    )
-    {
-        if (
-            this.ToolStripComboBoxSecondaryTranslation.SelectedItem is ComboBoxItem
-            {
-                Selectable: false
-            }
-        )
-        {
-            // Handle the non-selectable items
-            if (
-                this.ToolStripComboBoxSecondaryTranslation.Items.Count - 1
-                > this.ToolStripComboBoxSecondaryTranslation.SelectedIndex
-            )
-            {
-                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex++;
-            }
-            else if (this.ToolStripComboBoxSecondaryTranslation.SelectedIndex > 0)
-            {
-                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex--;
-            }
-            else
-            {
-                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = -1;
-            }
-        }
-        else
-        {
-            // Make sure we are not showing an interlinear with the original language
-            if (
-                this.ToolStripComboBoxPrimaryTranslation.SelectedItem
-                    is TranslationComboBoxItem primaryItem
-                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem
-                    is TranslationComboBoxItem secondaryItem
-                && (
-                    (
-                        primaryItem.Language == "Greek"
-                        && secondaryItem.Language is not ("Greek" or null)
-                    )
-                    || (
-                        primaryItem.Language == "Hebrew"
-                        && secondaryItem.Language is not ("Hebrew" or null)
-                    )
-                    || (
-                        secondaryItem.Language == "Greek"
-                        && primaryItem.Language is not ("Greek" or null)
-                    )
-                    || (
-                        secondaryItem.Language == "Hebrew"
-                        && primaryItem.Language is not ("Hebrew" or null)
-                    )
-                )
-            )
-            {
-                MessageBox.Show(
-                    Resources.CannotShowInterlinear,
-                    Program.Title,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
-            }
-
-            // Show the passage
-            await this.SetupAutoCompleteAsync();
-            if (!string.IsNullOrWhiteSpace(this.ToolStripTextBoxPassage.Text))
-            {
-                await this.ShowPassage(true, false);
-                await this.ProcessSuggestions();
-            }
-        }
-    }
+    ) => await this.ToolStripComboBoxTranslation_SelectedIndexChanged(this.ToolStripComboBoxSecondaryTranslation);
 
     /// <summary>
     /// Handles the DrawItem event of the ToolStripComboBox controls.

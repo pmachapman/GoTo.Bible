@@ -8,6 +8,7 @@
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <IsAotCompatible>true</IsAotCompatible>
     <Authors>Peter Chapman</Authors>
     <Company>Conglomo Limited</Company>
     <Product>GoTo.Bible Model</Product>
