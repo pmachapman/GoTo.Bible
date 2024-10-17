@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using GoToBible.Model;
-using GoToBible.Providers;
+using GoToBible.Client;
 using Microsoft.AspNetCore.Mvc;
 
 /// <summary>

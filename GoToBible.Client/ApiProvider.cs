@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers;
+namespace GoToBible.Client;
 
 using System;
 using System.Collections.Generic;

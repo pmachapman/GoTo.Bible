@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers;
+namespace GoToBible.Client;
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +16,7 @@ using GoToBible.Model;
 /// <summary>
 /// Bible Book helper functions.
 /// </summary>
-internal class BookHelper
+public class BookHelper
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="BookHelper"/> class.

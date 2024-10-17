@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
+using GoToBible.Client;
 using GoToBible.Model;
 using Microsoft.Extensions.Options;
 

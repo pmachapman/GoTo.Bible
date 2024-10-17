@@ -19,6 +19,7 @@ using System.Runtime.Versioning;
 using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GoToBible.Client;
 using GoToBible.Engine;
 using GoToBible.Model;
 using GoToBible.Providers;
@@ -748,7 +749,7 @@ public sealed partial class FormMain : Form
             this.providers.Add(new LogosProvider());
 
             // Load the NET Provider
-            this.providers.Add(new NetBible(this.cache, runningInBrowser: false));
+            this.providers.Add(new NetBible(runningInBrowser: false));
 
             // Load the NLT Provider
             string nltApiKey = Settings.Default.NltApiKey;
@@ -778,13 +779,13 @@ public sealed partial class FormMain : Form
         else
         {
             // Load the GoTo.Bible API provider
-            this.providers.Add(new GoToBibleApi(this.cache));
+            this.providers.Add(new GoToBibleApi(isLocal: false));
 
             // Load the Logos Provider
             this.providers.Add(new LogosProvider());
 
             // Load the NET Provider
-            this.providers.Add(new NetBible(this.cache, runningInBrowser: false));
+            this.providers.Add(new NetBible(runningInBrowser: false));
 
             // Set the renderer
             if (this.renderer is not GotoBibleApiRenderer)
@@ -1602,40 +1603,8 @@ public sealed partial class FormMain : Form
         }
         else
         {
-            // Make sure we are not showing an interlinear with the original language
-            if (
-                this.ToolStripComboBoxPrimaryTranslation.SelectedItem
-                    is TranslationComboBoxItem primaryItem
-                && this.ToolStripComboBoxSecondaryTranslation.SelectedItem
-                    is TranslationComboBoxItem secondaryItem
-                && (
-                    (
-                        primaryItem.Language == "Greek"
-                        && secondaryItem.Language is not ("Greek" or null)
-                    )
-                    || (
-                        primaryItem.Language == "Hebrew"
-                        && secondaryItem.Language is not ("Hebrew" or null)
-                    )
-                    || (
-                        secondaryItem.Language == "Greek"
-                        && primaryItem.Language is not ("Greek" or null)
-                    )
-                    || (
-                        secondaryItem.Language == "Hebrew"
-                        && primaryItem.Language is not ("Hebrew" or null)
-                    )
-                )
-            )
-            {
-                MessageBox.Show(
-                    Resources.CannotShowInterlinear,
-                    Program.Title,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-                this.ToolStripComboBoxSecondaryTranslation.SelectedIndex = 0;
-            }
+            // Check for prohibited interlinear renderings
+            this.CheckForProhibitedInterlinearRenderings();
 
             // Show the passage
             await this.SetupAutoCompleteAsync();

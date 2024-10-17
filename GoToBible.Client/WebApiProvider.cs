@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers;
+namespace GoToBible.Client;
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Microsoft.Extensions.Caching.Distributed;
 
 /// <summary>
 /// The API Provider base class.
@@ -121,12 +120,6 @@ public abstract class WebApiProvider : ApiProvider
     };
 
     /// <summary>
-    /// The cache entry options.
-    /// </summary>
-    protected static readonly DistributedCacheEntryOptions CacheEntryOptions =
-        new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(24), };
-
-    /// <summary>
     /// The reverse book code map.
     /// </summary>
     protected static readonly IReadOnlyDictionary<string, string> ReverseBookCodeMap =
@@ -140,10 +133,8 @@ public abstract class WebApiProvider : ApiProvider
     /// <summary>
     /// Initializes a new instance of the <see cref="WebApiProvider" /> class.
     /// </summary>
-    /// <param name="cache">The cache.</param>
-    protected WebApiProvider(IDistributedCache cache)
+    protected WebApiProvider()
     {
-        this.Cache = cache;
         this.HttpClient.DefaultRequestHeaders.Accept.Clear();
         this.HttpClient.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json")
@@ -155,14 +146,6 @@ public abstract class WebApiProvider : ApiProvider
     /// </summary>
     /// <remarks>Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</remarks>
     ~WebApiProvider() => this.Dispose(false);
-
-    /// <summary>
-    /// Gets the request cache.
-    /// </summary>
-    /// <value>
-    /// The request cache.
-    /// </value>
-    protected IDistributedCache Cache { get; }
 
     /// <summary>
     /// Gets the HTTP client.
@@ -230,13 +213,4 @@ public abstract class WebApiProvider : ApiProvider
             this.disposedValue = true;
         }
     }
-
-    /// <summary>
-    /// Gets the cache key.
-    /// </summary>
-    /// <param name="url">The URL.</param>
-    /// <returns>
-    /// The cache key.
-    /// </returns>
-    protected string GetCacheKey(string url) => this.HttpClient.BaseAddress + url;
 }

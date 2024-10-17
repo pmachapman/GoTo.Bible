@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers;
+namespace GoToBible.Client;
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using GoToBible.Model;
-using Microsoft.Extensions.Caching.Distributed;
 
 /// <summary>
 /// The GoTo.Bible API Provider.
@@ -28,10 +27,14 @@ public class GoToBibleApi : WebApiProvider
     /// <summary>
     /// Initializes a new instance of the <see cref="GoToBibleApi" /> class.
     /// </summary>
-    /// <param name="cache">The cache.</param>
-    public GoToBibleApi(IDistributedCache cache)
-        : base(cache) =>
-        this.HttpClient.BaseAddress = new Uri("https://api.goto.bible/v1/", UriKind.Absolute);
+    /// <param name="isLocal">If <c>true</c>, then the base address will not be set.</param>
+    public GoToBibleApi(bool isLocal)
+    {
+        if (!isLocal)
+        {
+            this.HttpClient.BaseAddress = new Uri("https://api.goto.bible/v1/", UriKind.Absolute);
+        }
+    }
 
     /// <inheritdoc/>
     public override string Id => nameof(GoToBibleApi);
@@ -56,35 +59,24 @@ public class GoToBibleApi : WebApiProvider
                 string urlTranslation = HttpUtility.UrlEncode(providerTranslation.Code);
                 string url =
                     $"Books?provider={urlProvider}&translation={urlTranslation}&includeChapters=false";
-                string cacheKey = this.GetCacheKey(url);
-                string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
-
-                if (string.IsNullOrWhiteSpace(json))
+                string json;
+                using HttpResponseMessage response = await this.HttpClient.GetAsync(
+                    url,
+                    cancellationToken
+                );
+                if (response.IsSuccessStatusCode)
                 {
-                    using HttpResponseMessage response = await this.HttpClient.GetAsync(
-                        url,
-                        cancellationToken
-                    );
-                    if (response.IsSuccessStatusCode)
-                    {
-                        json = await response.Content.ReadAsStringAsync(cancellationToken);
-                        await this.Cache.SetStringAsync(
-                            cacheKey,
-                            json,
-                            CacheEntryOptions,
-                            cancellationToken
-                        );
-                    }
-                    else
-                    {
-                        Debug.Print($"{response.StatusCode} error in GoToBibleApi.GetBooksAsync()");
-                        yield break;
-                    }
+                    json = await response.Content.ReadAsStringAsync(cancellationToken);
+                }
+                else
+                {
+                    Debug.Print($"{response.StatusCode} error in GoToBibleApi.GetBooksAsync()");
+                    yield break;
                 }
 
                 JsonSerializerOptions options = new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
                 };
                 foreach (Book book in JsonSerializer.Deserialize<Book[]>(json, options) ?? [])
                 {
@@ -111,35 +103,24 @@ public class GoToBibleApi : WebApiProvider
     )
     {
         const string url = "Translations";
-        string cacheKey = this.GetCacheKey(url);
-        string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
-
-        if (string.IsNullOrWhiteSpace(json))
+        string json;
+        using HttpResponseMessage response = await this.HttpClient.GetAsync(
+            url,
+            cancellationToken
+        );
+        if (response.IsSuccessStatusCode)
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(
-                url,
-                cancellationToken
-            );
-            if (response.IsSuccessStatusCode)
-            {
-                json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(
-                    cacheKey,
-                    json,
-                    CacheEntryOptions,
-                    cancellationToken
-                );
-            }
-            else
-            {
-                Debug.Print($"{response.StatusCode} error in GoToBibleApi.GetTranslationsAsync()");
-                yield break;
-            }
+            json = await response.Content.ReadAsStringAsync(cancellationToken);
+        }
+        else
+        {
+            Debug.Print($"{response.StatusCode} error in GoToBibleApi.GetTranslationsAsync()");
+            yield break;
         }
 
         JsonSerializerOptions options = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
         };
         foreach (
             Translation translation in JsonSerializer.Deserialize<Translation[]>(json, options)

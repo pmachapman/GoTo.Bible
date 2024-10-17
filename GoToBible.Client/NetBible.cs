@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers;
+namespace GoToBible.Client;
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using GoToBible.Model;
-using Microsoft.Extensions.Caching.Distributed;
 
 /// <summary>
 /// The NET Bible Provider.
@@ -37,7 +36,7 @@ public class NetBible : WebApiProvider
     /// <summary>
     /// This translation.
     /// </summary>
-    private static readonly Translation Translation = new Translation
+    public static readonly Translation Translation = new Translation
     {
         Code = "NET",
         Copyright = Copyright,
@@ -50,10 +49,8 @@ public class NetBible : WebApiProvider
     /// <summary>
     /// Initializes a new instance of the <see cref="NetBible" /> class.
     /// </summary>
-    /// <param name="cache">The cache.</param>
     /// <param name="runningInBrowser">If <c>true</c>, we are running in a Browser</param>
-    public NetBible(IDistributedCache cache, bool runningInBrowser)
-    : base(cache)
+    public NetBible(bool runningInBrowser)
     {
         this.HttpClient.BaseAddress = new Uri("https://labs.bible.org/api", UriKind.Absolute);
         if (!runningInBrowser)
@@ -105,38 +102,27 @@ public class NetBible : WebApiProvider
             Translation = translation,
         };
 
-        // Load the book
-        string url = $"?passage={book}+{chapterNumber}&formatting=plain&type=json";
-        string cacheKey = this.GetCacheKey(url);
-        string? json = await this.Cache.GetStringAsync(cacheKey, cancellationToken);
-
         // The NET will return the first chapter for any invalid references
         if (!Canon.IsValidChapter(book, chapterNumber))
         {
             return chapter;
         }
 
-        if (string.IsNullOrWhiteSpace(json))
+        // Load the book
+        string url = $"?passage={book}+{chapterNumber}&formatting=plain&type=json";
+        string json;
+        using HttpResponseMessage response = await this.HttpClient.GetAsync(
+            url,
+            cancellationToken
+        );
+        if (response.IsSuccessStatusCode)
         {
-            using HttpResponseMessage response = await this.HttpClient.GetAsync(
-                url,
-                cancellationToken
-            );
-            if (response.IsSuccessStatusCode)
-            {
-                json = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.Cache.SetStringAsync(
-                    cacheKey,
-                    json,
-                    CacheEntryOptions,
-                    cancellationToken
-                );
-            }
-            else
-            {
-                Debug.Print($"{response.StatusCode} error in NetBible.GetChapterAsync()");
-                return chapter;
-            }
+            json = await response.Content.ReadAsStringAsync(cancellationToken);
+        }
+        else
+        {
+            Debug.Print($"{response.StatusCode} error in NetBible.GetChapterAsync()");
+            return chapter;
         }
 
         var data = DeserializeAnonymousType(

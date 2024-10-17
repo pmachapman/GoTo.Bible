@@ -15,6 +15,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using GoToBible.Client;
 using GoToBible.Model;
 using Microsoft.Extensions.Options;
 

@@ -23,14 +23,14 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The API.Bible Provider.
 /// </summary>
-/// <seealso cref="WebApiProvider" />
-public partial class BibleApi : WebApiProvider
+/// <seealso cref="CachedApiProvider" />
+public partial class BibleApi : CachedApiProvider
 {
     /// <summary>
     /// The regular expression to clean up verse numbers.
     /// </summary>
     private static readonly Regex VerseNumberRegex = new Regex(
-        $"{Regex.Escape(Environment.NewLine)}(\\d+|\\d+\\-\\d+|\\d+[a-z])\\]",
+        $@"{Regex.Escape(Environment.NewLine)}(\d+|\d+\-\d+|\d+[a-z])\]",
         RegexOptions.Compiled
     );
 

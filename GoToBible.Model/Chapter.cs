@@ -9,7 +9,7 @@ namespace GoToBible.Model;
 /// <summary>
 /// A chapter retrieved from a provider.
 /// </summary>
-public class Chapter
+public record Chapter
 {
     /// <summary>
     /// Gets or sets the book.

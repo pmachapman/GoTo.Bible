@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using GoToBible.Client;
 using GoToBible.Model;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -22,8 +23,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The ESV Bible Provider.
 /// </summary>
-/// <seealso cref="WebApiProvider" />
-public partial class EsvBible : WebApiProvider
+/// <seealso cref="CachedApiProvider" />
+public partial class EsvBible : CachedApiProvider
 {
     /// <summary>
     /// The copyright message.

@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GoToBible.Client;
 using GoToBible.Model;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -23,8 +24,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The Digital Bible Platform API Provider.
 /// </summary>
-/// <seealso cref="WebApiProvider" />
-public class DigitalBiblePlatformApi : WebApiProvider
+/// <seealso cref="CachedApiProvider" />
+public class DigitalBiblePlatformApi : CachedApiProvider
 {
     /// <summary>
     /// The New Testament canon.

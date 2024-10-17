@@ -4,14 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers;
+namespace GoToBible.Client;
 
 using System.Collections.Specialized;
 
 /// <summary>
 /// Protestant Canon helper functions.
 /// </summary>
-internal class ProtestantCanon : BookHelper
+public class ProtestantCanon : BookHelper
 {
     /// <inheritdoc />
     protected override OrderedDictionary BookChapters =>

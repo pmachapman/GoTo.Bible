@@ -95,6 +95,17 @@ public record RenderingParameters
     public PassageReference PassageReference { get; set; } = Default.PassageReference;
 
     /// <summary>
+    /// Gets or sets the primary chapter.
+    /// </summary>
+    /// <value>
+    /// Optional. The primary chapter.
+    /// </value>
+    /// <remarks>
+    /// When configured this overrides the primary chapter retrieved by the Renderer.
+    /// </remarks>
+    public Chapter? PrimaryChapter { get; set; }
+
+    /// <summary>
     /// Gets or sets the primary translation provider.
     /// </summary>
     /// <value>
@@ -117,6 +128,17 @@ public record RenderingParameters
     ///   <c>true</c> if we are to render supplied words in italics; otherwise, <c>false</c>.
     /// </value>
     public bool RenderItalics { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the secondary chapter.
+    /// </summary>
+    /// <value>
+    /// Optional. The secondary chapter.
+    /// </value>
+    /// <remarks>
+    /// When configured this overrides the secondary chapter retrieved by the Renderer.
+    /// </remarks>
+    public Chapter? SecondaryChapter { get; set; }
 
     /// <summary>
     /// Gets or sets the secondary translation provider.

@@ -4,14 +4,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace GoToBible.Providers;
+namespace GoToBible.Client;
 
 using System.Collections.Specialized;
 
 /// <summary>
 /// Old Testament Canon helper functions.
 /// </summary>
-internal class OldTestamentCanon : BookHelper
+public class OldTestamentCanon : BookHelper
 {
     /// <inheritdoc />
     protected override OrderedDictionary BookChapters =>

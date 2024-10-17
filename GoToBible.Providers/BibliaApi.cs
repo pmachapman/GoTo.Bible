@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using GoToBible.Client;
 using GoToBible.Model;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -22,8 +23,8 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The Biblia API Provider.
 /// </summary>
-/// <seealso cref="WebApiProvider" />
-public class BibliaApi : WebApiProvider
+/// <seealso cref="CachedApiProvider" />
+public class BibliaApi : CachedApiProvider
 {
     /// <summary>
     /// The copyright message.
