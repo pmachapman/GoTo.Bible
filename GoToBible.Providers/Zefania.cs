@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Zefania.cs" company="Conglomo">
 // Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
@@ -8,6 +8,7 @@ namespace GoToBible.Providers;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -261,18 +262,26 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
 
                         // Clean up the file
                         string xmlFilePath = Path.Join(this.Options.Directory, xmlFilename);
-                        if (File.Exists(xmlFilePath))
+                        try
                         {
-                            File.Delete(xmlFilePath);
+                            if (File.Exists(xmlFilePath))
+                            {
+                                File.Delete(xmlFilePath);
+                            }
+                        }
+                        catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or UnauthorizedAccessException)
+                        {
+                            // Log the exception or handle it appropriately
+                            Debug.WriteLine($"Error deleting file: {xmlFilePath}");
                         }
                     }
                 }
             }
-
-            // free unmanaged resources (unmanaged objects) and override finalizer
-            // set large fields to null
-            this.disposedValue = true;
         }
+
+        // free unmanaged resources (unmanaged objects) and override finalizer
+        // set large fields to null
+        this.disposedValue = true;
     }
 
     /// <summary>
