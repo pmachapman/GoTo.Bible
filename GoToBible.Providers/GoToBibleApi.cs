@@ -61,6 +61,7 @@ public class GoToBibleApi : WebApiProvider
 
                 if (string.IsNullOrWhiteSpace(json))
                 {
+                    Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
                     using HttpResponseMessage response = await this.HttpClient.GetAsync(
                         url,
                         cancellationToken
@@ -77,7 +78,7 @@ public class GoToBibleApi : WebApiProvider
                     }
                     else
                     {
-                        Debug.Print($"{response.StatusCode} error in GoToBibleApi.GetBooksAsync()");
+                        Debug.WriteLine($"{response.StatusCode} error in GoToBibleApi.GetBooksAsync()");
                         yield break;
                     }
                 }
@@ -116,6 +117,7 @@ public class GoToBibleApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -132,7 +134,7 @@ public class GoToBibleApi : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in GoToBibleApi.GetTranslationsAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in GoToBibleApi.GetTranslationsAsync()");
                 yield break;
             }
         }

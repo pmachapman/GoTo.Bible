@@ -202,6 +202,7 @@ public partial class EsvBible : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -218,7 +219,7 @@ public partial class EsvBible : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in EsvBible.GetChapterAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in EsvBible.GetChapterAsync()");
                 return chapter;
             }
         }

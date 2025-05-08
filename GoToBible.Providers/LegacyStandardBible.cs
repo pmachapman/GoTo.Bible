@@ -22,20 +22,14 @@ using Microsoft.Extensions.Options;
 /// The Legacy Standard Bible XML Provider.
 /// </summary>
 /// <seealso cref="ApiProvider" />
-public partial class LegacyStandardBible : LocalResourceProvider
+/// <param name="options">The options.</param>
+/// <exception cref="ArgumentException">Invalid Resource Directory - options.</exception>
+public partial class LegacyStandardBible(IOptions<LocalResourceOptions> options) : LocalResourceProvider(options)
 {
     /// <summary>
     /// The canon.
     /// </summary>
     private static readonly BookHelper Canon = new ProtestantCanon();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LegacyStandardBible"/> class.
-    /// </summary>
-    /// <param name="options">The options.</param>
-    /// <exception cref="ArgumentException">Invalid Resource Directory - options.</exception>
-    public LegacyStandardBible(IOptions<LocalResourceOptions> options)
-        : base(options) { }
 
     /// <inheritdoc/>
     public override string Id => nameof(LegacyStandardBible);
@@ -44,7 +38,6 @@ public partial class LegacyStandardBible : LocalResourceProvider
     public override string Name => "Legacy Standard Bible";
 
     /// <inheritdoc/>
-    /// <inheritdoc />
     public override void Dispose() => GC.SuppressFinalize(this);
 
     /// <inheritdoc/>

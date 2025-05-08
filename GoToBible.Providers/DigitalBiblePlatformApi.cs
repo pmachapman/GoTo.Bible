@@ -80,6 +80,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -96,7 +97,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
             }
             else
             {
-                Debug.Print(
+                Debug.WriteLine(
                     $"{response.StatusCode} error in DigitalBiblePlatformApi.GetBooksAsync()"
                 );
                 yield break;
@@ -211,6 +212,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -227,7 +229,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
             }
             else
             {
-                Debug.Print(
+                Debug.WriteLine(
                     $"{response.StatusCode} error in DigitalBiblePlatformApi.GetChapterAsync()"
                 );
                 return chapter;
@@ -301,6 +303,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
 
             if (string.IsNullOrWhiteSpace(json))
             {
+                Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
                 using HttpResponseMessage response = await this.HttpClient.GetAsync(
                     url,
                     cancellationToken
@@ -317,7 +320,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
                 }
                 else
                 {
-                    Debug.Print(
+                    Debug.WriteLine(
                         $"{response.StatusCode} error in DigitalBiblePlatformApi.GetTranslationsAsync()"
                     );
                     yield break;
@@ -434,6 +437,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -450,7 +454,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
             }
             else
             {
-                Debug.Print(
+                Debug.WriteLine(
                     $"{response.StatusCode} error in DigitalBiblePlatformApi.GetCopyright()"
                 );
                 return string.Empty;

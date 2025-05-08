@@ -93,7 +93,7 @@ public static class ExtensionMethods
                         if (toBeContinued.Length > 0)
                         {
                             toBeContinued[^1] += "\n" + fields[0];
-                            fields = fields.Skip(1).ToArray();
+                            fields = [.. fields.Skip(1)];
                         }
 
                         string[] newArray = new string[toBeContinued.Length + fields.Length];
@@ -241,7 +241,7 @@ public static class ExtensionMethods
                                             temp[j] += fields[j + totalOffSet + combineI] + ",";
                                         }
 
-                                        temp[j] = temp[j].Remove(temp[j].Length - 1, 1);
+                                        temp[j] = temp[j][..^1];
                                         totalOffSet += offset;
                                     }
                                     else
@@ -266,10 +266,10 @@ public static class ExtensionMethods
                             && fields[f].EndsWith("\"", StringComparison.OrdinalIgnoreCase)
                         )
                         {
-                            fields[f] = fields[f].Remove(0, 1);
+                            fields[f] = fields[f][1..];
                             if (fields[f].Length > 0)
                             {
-                                fields[f] = fields[f].Remove(fields[f].Length - 1, 1);
+                                fields[f] = fields[f][..^1];
                             }
                         }
 
@@ -420,18 +420,17 @@ public static class ExtensionMethods
                     if (parameters.InterlinearIgnoresDiacritics)
                     {
                         variant = variant.Normalize(NormalizationForm.FormD);
-                        char[] chars = variant
+                        char[] chars = [.. variant
                             .Where(c =>
                                 CharUnicodeInfo.GetUnicodeCategory(c)
                                 != UnicodeCategory.NonSpacingMark
-                            )
-                            .ToArray();
+                            )];
                         variant = new string(chars).Normalize(NormalizationForm.FormC);
                     }
 
                     if (parameters.InterlinearIgnoresPunctuation)
                     {
-                        variant = new string(variant.Where(c => !char.IsPunctuation(c)).ToArray());
+                        variant = new string([.. variant.Where(c => !char.IsPunctuation(c))]);
                     }
 
                     // Final clean up

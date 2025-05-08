@@ -8,6 +8,7 @@ namespace GoToBible.Engine;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -67,6 +68,7 @@ public sealed class GotoBibleApiRenderer : IRenderer
     )
     {
         string url = $"RenderPassage?renderCompleteHtmlPage={renderCompleteHtmlPage}";
+        Debug.WriteLine($"POST: {this.httpClient.BaseAddress}{url}");
         HttpResponseMessage response = await this.httpClient.PostAsJsonAsync(
             url,
             parameters,

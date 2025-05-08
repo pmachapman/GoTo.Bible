@@ -353,23 +353,21 @@ public sealed partial class FormMain : Form
         this.ColourDialogBackground.Color = ColorTranslator.FromOle(
             Settings.Default.BackgroundColour
         );
-        this.ColourDialogBackground.CustomColors = Settings
+        this.ColourDialogBackground.CustomColors = [.. Settings
             .Default.BackgroundCustomColours.Split(
                 CommaSeparated,
                 StringSplitOptions.RemoveEmptyEntries
             )
-            .Select(c => int.TryParse(c, out int i) ? i : 16777215)
-            .ToArray();
+            .Select(c => int.TryParse(c, out int i) ? i : 16777215)];
         this.ColourDialogHighlight.Color = ColorTranslator.FromOle(
             Settings.Default.HighlightColour
         );
-        this.ColourDialogHighlight.CustomColors = Settings
+        this.ColourDialogHighlight.CustomColors = [.. Settings
             .Default.HighlightCustomColours.Split(
                 CommaSeparated,
                 StringSplitOptions.RemoveEmptyEntries
             )
-            .Select(c => int.TryParse(c, out int i) ? i : 16777215)
-            .ToArray();
+            .Select(c => int.TryParse(c, out int i) ? i : 16777215)];
         this.FontDialogMain.Color = ColorTranslator.FromOle(Settings.Default.ForegroundColour);
         TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
         this.FontDialogMain.Font =
@@ -737,9 +735,7 @@ public sealed partial class FormMain : Form
         }
 
         // Set the providers for the renderer
-        List<IProvider> enabledProviders = this
-            .providers.Where(p => !blockedProviders.Contains(p.Id))
-            .ToList();
+        List<IProvider> enabledProviders = [.. this.providers.Where(p => !blockedProviders.Contains(p.Id))];
 
         // Set the renderer providers
         this.renderer.Providers = enabledProviders.AsReadOnly();
@@ -939,9 +935,8 @@ public sealed partial class FormMain : Form
             resourceIndex++;
         }
 
-        List<Translation> unblockedTranslations = this
-            .translations.Where(t => !blockedTranslations.Contains(t.UniqueKey()))
-            .ToList();
+        List<Translation> unblockedTranslations = [.. this
+            .translations.Where(t => !blockedTranslations.Contains(t.UniqueKey()))];
         foreach (Translation translation in this.translations)
         {
             // If this translation is not blocked
@@ -1811,12 +1806,11 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemBlockedTranslations_Click(object sender, EventArgs e)
     {
         // Generate the new list of blocked translations
-        string[] blockedTranslations = (
-            Settings.Default.BlockedTranslations?.Cast<string>() ?? new List<string>()
+        string[] blockedTranslations = [.. (
+            Settings.Default.BlockedTranslations?.Cast<string>() ?? []
         )
             .Concat(ApiProvider.BlockedTranslations)
-            .Distinct()
-            .ToArray();
+            .Distinct()];
 
         // Save the blocked translations
         Settings.Default.BlockedTranslations?.Clear();

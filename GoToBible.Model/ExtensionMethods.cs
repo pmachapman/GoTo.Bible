@@ -602,7 +602,7 @@ public static partial class ExtensionMethods
         rangePart = rangePart.NormaliseCommas();
         string[] semiParts = rangePart.Split(';');
         rangePart = semiParts[0];
-        semiParts = semiParts.Skip(1).ToArray();
+        semiParts = [.. semiParts.Skip(1)];
 
         List<string> ranges = [];
 

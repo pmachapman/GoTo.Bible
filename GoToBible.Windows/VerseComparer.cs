@@ -58,7 +58,7 @@ public partial class VerseComparer : IComparer<string>
             else if (VerseRangeRegex().IsMatch(y!))
             {
                 // Get the first digit
-                if (!int.TryParse(new string(y!.TakeWhile(char.IsDigit).ToArray()), out b))
+                if (!int.TryParse(new string([.. y!.TakeWhile(char.IsDigit)]), out b))
                 {
                     return -1;
                 }
@@ -98,7 +98,7 @@ public partial class VerseComparer : IComparer<string>
             else if (VerseRangeRegex().IsMatch(x!))
             {
                 // Get the first digit
-                if (!int.TryParse(new string(x!.TakeWhile(char.IsDigit).ToArray()), out a))
+                if (!int.TryParse(new string([.. x!.TakeWhile(char.IsDigit)]), out a))
                 {
                     return 1;
                 }
@@ -139,8 +139,8 @@ public partial class VerseComparer : IComparer<string>
         {
             // Get the first digits
             if (
-                !int.TryParse(new string(x!.TakeWhile(char.IsDigit).ToArray()), out a)
-                || !int.TryParse(new string(y!.TakeWhile(char.IsDigit).ToArray()), out b)
+                !int.TryParse(new string([.. x!.TakeWhile(char.IsDigit)]), out a)
+                || !int.TryParse(new string([.. y!.TakeWhile(char.IsDigit)]), out b)
             )
             {
                 // This should not occur, based on the regex

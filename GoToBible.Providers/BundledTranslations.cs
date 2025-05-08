@@ -27,7 +27,7 @@ public partial class BundledTranslations : IProvider
     /// <summary>
     /// The SBL copyright messages.
     /// </summary>
-    private static readonly IReadOnlyDictionary<string, string> Copyright = new Dictionary<
+    private static readonly Dictionary<string, string> Copyright = new Dictionary<
         string,
         string
     >
@@ -50,7 +50,7 @@ public partial class BundledTranslations : IProvider
     /// <summary>
     /// The canon.
     /// </summary>
-    private static readonly IReadOnlyDictionary<string, BookHelper> Canon = new Dictionary<
+    private static readonly Dictionary<string, BookHelper> Canon = new Dictionary<
         string,
         BookHelper
     >
@@ -90,7 +90,7 @@ public partial class BundledTranslations : IProvider
         { "TRWHAPP", new NewTestamentCanon() },
     };
 
-    private static readonly IReadOnlyDictionary<string, bool> SupportsItalics = new Dictionary<
+    private static readonly Dictionary<string, bool> SupportsItalics = new Dictionary<
         string,
         bool
     >
