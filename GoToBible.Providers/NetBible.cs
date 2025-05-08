@@ -110,6 +110,7 @@ public class NetBible : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -126,7 +127,7 @@ public class NetBible : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in NetBible.GetChapterAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in NetBible.GetChapterAsync()");
                 return chapter;
             }
         }

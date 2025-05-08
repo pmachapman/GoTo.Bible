@@ -71,6 +71,7 @@ public partial class BibleApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -87,7 +88,7 @@ public partial class BibleApi : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in BibleApi.GetBooksAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in BibleApi.GetBooksAsync()");
                 yield break;
             }
         }
@@ -129,6 +130,7 @@ public partial class BibleApi : WebApiProvider
 
                     if (string.IsNullOrWhiteSpace(json))
                     {
+                        Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
                         using HttpResponseMessage response = await this.HttpClient.GetAsync(
                             url,
                             cancellationToken
@@ -145,7 +147,7 @@ public partial class BibleApi : WebApiProvider
                         }
                         else
                         {
-                            Debug.Print(
+                            Debug.WriteLine(
                                 $"{response.StatusCode} error in BibleApi.GetBooksAsync() [Chapters]"
                             );
                             yield break;
@@ -284,6 +286,7 @@ public partial class BibleApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -300,7 +303,7 @@ public partial class BibleApi : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in BibleApi.GetChapterAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in BibleApi.GetChapterAsync()");
                 return chapter;
             }
         }
@@ -399,6 +402,7 @@ public partial class BibleApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -415,7 +419,7 @@ public partial class BibleApi : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in BibleApi.GetTranslationsAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in BibleApi.GetTranslationsAsync()");
                 yield break;
             }
         }

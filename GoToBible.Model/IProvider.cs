@@ -22,7 +22,7 @@ public interface IProvider : IDisposable
     /// <value>
     /// The provider identifier.
     /// </value>
-    public string Id { get; }
+    string Id { get; }
 
     /// <summary>
     /// Gets the provider name.
@@ -30,7 +30,7 @@ public interface IProvider : IDisposable
     /// <value>
     /// The provider name.
     /// </value>
-    public string Name { get; }
+    string Name { get; }
 
     /// <summary>
     /// Gets the books for a translation.

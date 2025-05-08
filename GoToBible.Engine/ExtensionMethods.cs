@@ -326,7 +326,7 @@ public static partial class ExtensionMethods
     )
     {
         IEnumerable<Translation> enumerable =
-            translations as Translation[] ?? translations.ToArray();
+            translations as Translation[] ?? [.. translations];
         if (
             enumerable.Count(t =>
                 string.Equals(t.Name, translation.Name, StringComparison.OrdinalIgnoreCase)

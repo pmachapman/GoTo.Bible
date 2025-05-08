@@ -72,6 +72,7 @@ public class BibliaApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -88,7 +89,7 @@ public class BibliaApi : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in BibliaApi.GetBooksAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in BibliaApi.GetBooksAsync()");
                 yield break;
             }
         }
@@ -166,6 +167,7 @@ public class BibliaApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(output))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -182,7 +184,7 @@ public class BibliaApi : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in BibliaApi.GetChapterAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in BibliaApi.GetChapterAsync()");
                 return chapter;
             }
         }
@@ -229,6 +231,7 @@ public class BibliaApi : WebApiProvider
 
         if (string.IsNullOrWhiteSpace(json))
         {
+            Debug.WriteLine($"GET: {this.HttpClient.BaseAddress}{url}");
             using HttpResponseMessage response = await this.HttpClient.GetAsync(
                 url,
                 cancellationToken
@@ -245,7 +248,7 @@ public class BibliaApi : WebApiProvider
             }
             else
             {
-                Debug.Print($"{response.StatusCode} error in BibliaApi.GetTranslationsAsync()");
+                Debug.WriteLine($"{response.StatusCode} error in BibliaApi.GetTranslationsAsync()");
                 yield break;
             }
         }
