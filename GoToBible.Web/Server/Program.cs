@@ -154,7 +154,7 @@ app.UseStaticFiles(
     {
         ServeUnknownFileTypes = true, // this was needed as IIS would not serve extension-less URLs from the directory without it
         FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "about")
+            Path.Join(Directory.GetCurrentDirectory(), "about")
         ),
         RequestPath = new PathString("/about"),
     }

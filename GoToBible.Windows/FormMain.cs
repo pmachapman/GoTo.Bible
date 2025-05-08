@@ -481,7 +481,7 @@ public sealed partial class FormMain : Form
         {
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(
                 null,
-                Path.Combine(SettingsDirectory, "WebView2")
+                Path.Join(SettingsDirectory, "WebView2")
             );
             await webViewMain.EnsureCoreWebView2Async(environment);
             await webViewResource.EnsureCoreWebView2Async(environment);

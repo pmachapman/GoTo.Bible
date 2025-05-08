@@ -191,7 +191,7 @@ public abstract class WebApiProvider : ApiProvider
     protected static TValue? DeserializeAnonymousType<TValue>(
         string json,
         TValue _,
-        JsonSerializerOptions? options = default
+        JsonSerializerOptions? options = null
     ) => JsonSerializer.Deserialize<TValue>(json, options);
 
     /// <summary>
@@ -215,7 +215,7 @@ public abstract class WebApiProvider : ApiProvider
     protected static TValue? Nullable<TValue>(TValue _) => default;
 
     /// <inheritdoc cref="IDisposable" />
-    protected virtual void Dispose(bool disposing)
+    protected void Dispose(bool disposing)
     {
         if (!this.disposedValue)
         {

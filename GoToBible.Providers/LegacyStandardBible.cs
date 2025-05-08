@@ -93,7 +93,7 @@ public partial class LegacyStandardBible(IOptions<LocalResourceOptions> options)
                 StringBuilder sb = new StringBuilder();
                 await foreach (
                     string line in File.ReadLinesAsync(
-                        Path.Combine(this.Options.Directory, zefaniaTranslation.Filename),
+                        Path.Join(this.Options.Directory, zefaniaTranslation.Filename),
                         cancellationToken
                     )
                 )
