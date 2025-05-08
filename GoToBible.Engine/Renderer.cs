@@ -865,23 +865,14 @@ public partial class Renderer : IRenderer
                 string verseNumber = line.GetVerseNumber();
                 if (verseNumber.IsValidVerseNumber())
                 {
-                    if (
-                        verseNumber.MatchesHighlightedVerses(
-                            parameters.PassageReference.HighlightedVerses
-                        )
+                    line = verseNumber.MatchesHighlightedVerses(
+                        parameters.PassageReference.HighlightedVerses
                     )
-                    {
-                        line =
-                            $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <mark>"
-                            + line[(line.IndexOf(' ') + 1)..].Trim()
-                            + "</mark>";
-                    }
-                    else
-                    {
-                        line =
-                            $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  "
-                            + line[(line.IndexOf(' ') + 1)..].Trim();
-                    }
+                        ? $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <mark>"
+                          + line[(line.IndexOf(' ') + 1)..].Trim()
+                          + "</mark>"
+                        : $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  "
+                          + line[(line.IndexOf(' ') + 1)..].Trim();
                 }
             }
             else if (int.TryParse(line, out int _))

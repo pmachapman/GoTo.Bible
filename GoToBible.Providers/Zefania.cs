@@ -74,7 +74,7 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
                 // Make sure the file is extracted, if it is a zip file
                 string fileName = this.ExtractFile(zefaniaTranslation.Filename);
                 XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(Path.Combine(this.Options.Directory, fileName));
+                xmlDocument.Load(Path.Join(this.Options.Directory, fileName));
                 if (xmlDocument.DocumentElement?.HasChildNodes ?? false)
                 {
                     foreach (XmlNode bookNode in xmlDocument.DocumentElement.ChildNodes)
@@ -146,7 +146,7 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
                 if (!string.IsNullOrWhiteSpace(book) && chapterNumber > 0)
                 {
                     XmlDocument xmlDocument = new XmlDocument();
-                    xmlDocument.Load(Path.Combine(this.Options.Directory, fileName));
+                    xmlDocument.Load(Path.Join(this.Options.Directory, fileName));
                     if (xmlDocument.DocumentElement?.HasChildNodes ?? false)
                     {
                         foreach (XmlNode bookNode in xmlDocument.DocumentElement.ChildNodes)
@@ -226,47 +226,44 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
     }
 
     /// <inheritdoc cref="IDisposable" />
-    protected virtual void Dispose(bool disposing)
+    protected void Dispose(bool disposing)
     {
         if (!this.disposedValue)
         {
-            if (disposing)
+            if (disposing && this.Translations.Count > 0)
             {
                 // dispose managed state (managed objects)
 
                 // Make sure we have the translations cache set up
-                if (this.Translations.Count > 0)
+                foreach (LocalTranslation translation in this.Translations)
                 {
-                    foreach (LocalTranslation translation in this.Translations)
+                    // Make sure the translation file is is a zip file
+                    string fileExtension = Path.GetExtension(translation.Filename)
+                        .ToUpperInvariant();
+                    if (fileExtension == ".ZIP")
                     {
-                        // Make sure the translation file is is a zip file
-                        string fileExtension = Path.GetExtension(translation.Filename)
-                            .ToUpperInvariant();
-                        if (fileExtension == ".ZIP")
+                        // Check if a non-strongs version is in a strongs file
+                        string xmlFilename =
+                            Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
+                        if (
+                            translation.Filename.Contains(
+                                "_STRONG",
+                                StringComparison.OrdinalIgnoreCase
+                            ) && !File.Exists(Path.Join(this.Options.Directory, xmlFilename))
+                        )
                         {
-                            // Check if a non-strongs version is in a strongs file
-                            string xmlFilename =
-                                Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
-                            if (
-                                translation.Filename.Contains(
-                                    "_STRONG",
-                                    StringComparison.OrdinalIgnoreCase
-                                ) && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename))
-                            )
-                            {
-                                xmlFilename = xmlFilename.Replace(
-                                    "_strong",
-                                    string.Empty,
-                                    StringComparison.OrdinalIgnoreCase
-                                );
-                            }
+                            xmlFilename = xmlFilename.Replace(
+                                "_strong",
+                                string.Empty,
+                                StringComparison.OrdinalIgnoreCase
+                            );
+                        }
 
-                            // Clean up the file
-                            string xmlFilePath = Path.Combine(this.Options.Directory, xmlFilename);
-                            if (File.Exists(xmlFilePath))
-                            {
-                                File.Delete(xmlFilePath);
-                            }
+                        // Clean up the file
+                        string xmlFilePath = Path.Join(this.Options.Directory, xmlFilename);
+                        if (File.Exists(xmlFilePath))
+                        {
+                            File.Delete(xmlFilePath);
                         }
                     }
                 }
@@ -291,12 +288,12 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
         if (fileExtension == ".ZIP")
         {
             string xmlFilename = Path.GetFileNameWithoutExtension(fileName) + ".xml";
-            if (!File.Exists(Path.Combine(this.Options.Directory, xmlFilename)))
+            if (!File.Exists(Path.Join(this.Options.Directory, xmlFilename)))
             {
                 try
                 {
                     ZipFile.ExtractToDirectory(
-                        Path.Combine(this.Options.Directory, fileName),
+                        Path.Join(this.Options.Directory, fileName),
                         this.Options.Directory
                     );
                 }
@@ -309,7 +306,7 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
             // Check if a non-strongs version is in a strongs file
             if (
                 fileName.Contains("_STRONG", StringComparison.OrdinalIgnoreCase)
-                && !File.Exists(Path.Combine(this.Options.Directory, xmlFilename))
+                && !File.Exists(Path.Join(this.Options.Directory, xmlFilename))
             )
             {
                 xmlFilename = xmlFilename.Replace(
