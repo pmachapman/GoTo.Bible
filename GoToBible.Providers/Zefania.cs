@@ -229,51 +229,48 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
     /// <inheritdoc cref="IDisposable" />
     protected void Dispose(bool disposing)
     {
-        if (!this.disposedValue)
+        if (!this.disposedValue && disposing && this.Translations.Count > 0)
         {
-            if (disposing && this.Translations.Count > 0)
+            // dispose managed state (managed objects)
+
+            // Make sure we have the translations cache set up
+            foreach (LocalTranslation translation in this.Translations)
             {
-                // dispose managed state (managed objects)
-
-                // Make sure we have the translations cache set up
-                foreach (LocalTranslation translation in this.Translations)
+                // Make sure the translation file is is a zip file
+                string fileExtension = Path.GetExtension(translation.Filename)
+                    .ToUpperInvariant();
+                if (fileExtension == ".ZIP")
                 {
-                    // Make sure the translation file is is a zip file
-                    string fileExtension = Path.GetExtension(translation.Filename)
-                        .ToUpperInvariant();
-                    if (fileExtension == ".ZIP")
+                    // Check if a non-strongs version is in a strongs file
+                    string xmlFilename =
+                        Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
+                    if (
+                        translation.Filename.Contains(
+                            "_STRONG",
+                            StringComparison.OrdinalIgnoreCase
+                        ) && !File.Exists(Path.Join(this.Options.Directory, xmlFilename))
+                    )
                     {
-                        // Check if a non-strongs version is in a strongs file
-                        string xmlFilename =
-                            Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
-                        if (
-                            translation.Filename.Contains(
-                                "_STRONG",
-                                StringComparison.OrdinalIgnoreCase
-                            ) && !File.Exists(Path.Join(this.Options.Directory, xmlFilename))
-                        )
-                        {
-                            xmlFilename = xmlFilename.Replace(
-                                "_strong",
-                                string.Empty,
-                                StringComparison.OrdinalIgnoreCase
-                            );
-                        }
+                        xmlFilename = xmlFilename.Replace(
+                            "_strong",
+                            string.Empty,
+                            StringComparison.OrdinalIgnoreCase
+                        );
+                    }
 
-                        // Clean up the file
-                        string xmlFilePath = Path.Join(this.Options.Directory, xmlFilename);
-                        try
+                    // Clean up the file
+                    string xmlFilePath = Path.Join(this.Options.Directory, xmlFilename);
+                    try
+                    {
+                        if (File.Exists(xmlFilePath))
                         {
-                            if (File.Exists(xmlFilePath))
-                            {
-                                File.Delete(xmlFilePath);
-                            }
+                            File.Delete(xmlFilePath);
                         }
-                        catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or UnauthorizedAccessException)
-                        {
-                            // Log the exception or handle it appropriately
-                            Debug.WriteLine($"Error deleting file: {xmlFilePath}");
-                        }
+                    }
+                    catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or UnauthorizedAccessException)
+                    {
+                        // Log the exception or handle it appropriately
+                        Debug.WriteLine($"Error deleting file: {xmlFilePath}");
                     }
                 }
             }
