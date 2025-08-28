@@ -20,7 +20,7 @@ The Windows App requires the following:
  * Windows 10
 
 ## Notes
- * This app is Copyright 2020-2024 Conglomo Limited. Please see [LICENSE](LICENSE) for license details.
+ * This app is Copyright 2020-2025 Conglomo Limited. Please see [LICENSE](LICENSE) for license details.
  * This project is tested with BrowserStack.
  * The app is still under development, so if you wish to add features, feel free to make a pull request.
  * I provide no warranty or support for this app or its code. Use at your own risk.

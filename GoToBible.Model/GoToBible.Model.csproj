@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,7 +13,7 @@
     <Company>Conglomo Limited</Company>
     <Product>GoTo.Bible Model</Product>
     <Description>The model for use with the GoTo.Bible API, with Bible verse parsing support.</Description>
-    <Copyright>Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.</Copyright>
+    <Copyright>Copyright 2020-2025 Conglomo Limited. Please see LICENSE.md for license details.</Copyright>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageProjectUrl>https://goto.bible/</PackageProjectUrl>
     <PackageIcon>App.png</PackageIcon>

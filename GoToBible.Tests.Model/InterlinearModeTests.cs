@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
 // <copyright file="InterlinearModeTests.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE.md for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
