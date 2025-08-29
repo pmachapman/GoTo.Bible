@@ -6,6 +6,7 @@
 
 namespace GoToBible.Windows.WebBrowser;
 
+using System.ComponentModel;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,6 +20,7 @@ using System.Windows.Forms;
 public class LegacyWebBrowser : WebBrowser, IWebBrowser
 {
     /// <inheritdoc/>
+    [DefaultValue(false)]
     public bool DeveloperMode
     {
         get => this.IsWebBrowserContextMenuEnabled;

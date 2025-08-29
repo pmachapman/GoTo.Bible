@@ -10,7 +10,7 @@ The Windows App requires the following:
 ## NuGet Package Requirements
 
 The [NuGet Package](https://www.nuget.org/packages/GoToBible.Model/) requires the following:
- * [Microsoft .NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+ * [Microsoft .NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 
 ## Development Environment Requirements

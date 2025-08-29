@@ -6,6 +6,7 @@
 
 namespace GoToBible.Windows.WebBrowser;
 
+using System.ComponentModel;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,6 +21,7 @@ using Microsoft.Web.WebView2.WinForms;
 public class EdgeWebBrowser : WebView2, IWebBrowser
 {
     /// <inheritdoc />
+    [DefaultValue(false)]
     public bool DeveloperMode
     {
         get => this.CoreWebView2.Settings.AreDevToolsEnabled;
