@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Program.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -146,9 +146,9 @@ app.UseDefaultFiles(
         RequestPath = new PathString("/about"),
     }
 );
-app.UseStaticFiles();
+app.MapStaticAssets();
 
-// Allow static files within the about directory to allow for automatic SSL renewal
+// Allow static files within the about directory
 app.UseStaticFiles(
     new StaticFileOptions
     {

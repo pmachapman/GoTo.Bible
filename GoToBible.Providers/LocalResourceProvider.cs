@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="LocalResourceProvider.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ public abstract class LocalResourceProvider : ApiProvider
         if (this.Translations.Count == 0)
         {
             // This is just so we can have some async code to cancel the error
-            await foreach (Translation? _ in this.GetTranslationsAsync(cancellationToken)) { }
+            await foreach (Translation _ in this.GetTranslationsAsync(cancellationToken)) { }
         }
     }
 }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
 // <copyright file="Program.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.Services.AddScoped(_ => new HttpClient
 {
-    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
 });
 builder.Services.AddBlazoredLocalStorage();
 await builder.Build().RunAsync();

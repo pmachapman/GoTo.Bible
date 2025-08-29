@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>GoToBible.Model.snk</AssemblyOriginatorKeyFile>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -13,7 +13,7 @@
     <Company>Conglomo Limited</Company>
     <Product>GoTo.Bible Model</Product>
     <Description>The model for use with the GoTo.Bible API, with Bible verse parsing support.</Description>
-    <Copyright>Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.</Copyright>
+    <Copyright>Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.</Copyright>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageProjectUrl>https://goto.bible/</PackageProjectUrl>
     <PackageIcon>App.png</PackageIcon>
@@ -28,8 +28,8 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Minor bug fixes</PackageReleaseNotes>
-    <Version>1.5.2</Version>
+    <PackageReleaseNotes>.NET 9.0 Support</PackageReleaseNotes>
+    <Version>1.6.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

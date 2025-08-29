@@ -1,8 +1,11 @@
 // -----------------------------------------------------------------------
 // <copyright file="RenderFormatTests.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
+
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable MSTEST0032 // Review or remove the assertion as its condition is known to be always true
 
 namespace GoToBible.Tests.Model;
 

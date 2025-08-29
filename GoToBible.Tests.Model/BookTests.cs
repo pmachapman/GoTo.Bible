@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
 // <copyright file="BookTests.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ public class BookTests
     {
         Book book = new Book();
         Assert.AreEqual(string.Empty, book.Name);
-        Assert.AreEqual(0, book.Chapters.Count);
+        Assert.IsEmpty(book.Chapters);
         Assert.AreEqual(string.Empty, book.ToString());
     }
 
@@ -33,9 +33,9 @@ public class BookTests
     [TestMethod]
     public void TestName()
     {
-        Book book = new Book { Name = "Genesis", };
+        Book book = new Book { Name = "Genesis" };
         Assert.AreEqual("Genesis", book.Name);
-        Assert.AreEqual(0, book.Chapters.Count);
+        Assert.IsEmpty(book.Chapters);
         Assert.AreEqual("Genesis", book.ToString());
     }
 }

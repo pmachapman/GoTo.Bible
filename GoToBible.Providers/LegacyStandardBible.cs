@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="LegacyStandardBible.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ using GoToBible.Model;
 using Microsoft.Extensions.Options;
 
 /// <summary>
-/// The Legacy Standard Bible XML Provider.
+/// The Legacy Standard Bible Provider.
 /// </summary>
 /// <seealso cref="ApiProvider" />
 /// <param name="options">The options.</param>

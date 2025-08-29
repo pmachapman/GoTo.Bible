@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="AssemblyInfo.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Conglomo")]
 [assembly: AssemblyProduct("GoTo.Bible")]
-[assembly: AssemblyCopyright("Copyright 2020-2024 Conglomo Limited.")]
+[assembly: AssemblyCopyright("Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -39,5 +39,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.5.2.0")]
+[assembly: AssemblyFileVersion("1.6.0.0")]
 [assembly: NeutralResourcesLanguage("en-NZ")]

@@ -1,11 +1,12 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="EdgeWebBrowser.cs" company="Conglomo">
-// Copyright 2020-2024 Conglomo Limited. Please see LICENSE.md for license details.
+// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace GoToBible.Windows.WebBrowser;
 
+using System.ComponentModel;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,6 +21,7 @@ using Microsoft.Web.WebView2.WinForms;
 public class EdgeWebBrowser : WebView2, IWebBrowser
 {
     /// <inheritdoc />
+    [DefaultValue(false)]
     public bool DeveloperMode
     {
         get => this.CoreWebView2.Settings.AreDevToolsEnabled;
