@@ -47,6 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.8" />
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>GoToBible.Tests.Model, PublicKey=0024000004800000940000000602000000240000525341310004000001000100451405b438b9725f449dd5b93d547517f8e31d58f90db632f8dae6d329245b7d7fea4ccec586e0285e6067e14030379d2c813efb46abd5db044ee781fef435fb38c6cacfa007d739424291880fbfc1b0fe5171fb5e78f5d6d8b00fb80b371ac2f278d26c2feab7b54a545c976839a5502c811689a5b2528e89d890d5358ccce5</_Parameter1>
     </AssemblyAttribute>
