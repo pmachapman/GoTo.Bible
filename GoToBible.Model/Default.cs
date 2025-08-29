@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Default.cs" company="Conglomo">
 // Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
@@ -30,7 +30,7 @@ public static class Default
         {
             R = 255,
             G = 255,
-            B = 255
+            B = 255,
         };
 
     /// <summary>
@@ -56,7 +56,7 @@ public static class Default
         {
             R = 0,
             G = 0,
-            B = 0
+            B = 0,
         };
 
     /// <summary>
@@ -73,7 +73,7 @@ public static class Default
         {
             R = 255,
             G = 255,
-            B = 0
+            B = 0,
         };
 
     /// <summary>

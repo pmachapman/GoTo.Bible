@@ -111,7 +111,7 @@ public abstract class LocalResourceProvider : ApiProvider
         if (this.Translations.Count == 0)
         {
             // This is just so we can have some async code to cancel the error
-            await foreach (Translation? _ in this.GetTranslationsAsync(cancellationToken)) { }
+            await foreach (Translation _ in this.GetTranslationsAsync(cancellationToken)) { }
         }
     }
 }

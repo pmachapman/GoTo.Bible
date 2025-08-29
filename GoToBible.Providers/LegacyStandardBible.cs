@@ -19,7 +19,7 @@ using GoToBible.Model;
 using Microsoft.Extensions.Options;
 
 /// <summary>
-/// The Legacy Standard Bible XML Provider.
+/// The Legacy Standard Bible Provider.
 /// </summary>
 /// <seealso cref="ApiProvider" />
 /// <param name="options">The options.</param>
