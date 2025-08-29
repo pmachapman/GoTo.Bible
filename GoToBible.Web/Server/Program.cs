@@ -146,9 +146,9 @@ app.UseDefaultFiles(
         RequestPath = new PathString("/about"),
     }
 );
-app.UseStaticFiles();
+app.MapStaticAssets();
 
-// Allow static files within the about directory to allow for automatic SSL renewal
+// Allow static files within the about directory
 app.UseStaticFiles(
     new StaticFileOptions
     {
