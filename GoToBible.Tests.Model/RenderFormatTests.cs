@@ -4,6 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable MSTEST0032 // Review or remove the assertion as its condition is known to be always true
+
 namespace GoToBible.Tests.Model;
 
 using GoToBible.Model;
