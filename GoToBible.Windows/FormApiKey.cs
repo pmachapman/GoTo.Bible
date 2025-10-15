@@ -7,6 +7,7 @@
 namespace GoToBible.Windows;
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.Versioning;
@@ -41,6 +42,7 @@ public partial class FormApiKey : Form
     /// <value>
     /// The API key.
     /// </value>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public string Key { get; private set; }
 
     /// <summary>

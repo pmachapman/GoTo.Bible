@@ -9,6 +9,7 @@ namespace GoToBible.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Runtime.Versioning;
@@ -64,6 +65,7 @@ public partial class FormCheckBoxList : Form
 
     /// <inheritdoc />
     [AllowNull]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public sealed override string Text
     {
         get => base.Text;
@@ -76,6 +78,7 @@ public partial class FormCheckBoxList : Form
     /// <value>
     /// The unchecked items.
     /// </value>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ReadOnlyCollection<string> UncheckedItems { get; private set; }
 
     /// <summary>
