@@ -22,15 +22,15 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.9" PrivateAssets="all" />
-    <PackageReference Include="System.Net.Http.Json" Version="9.0.9" />
-    <PackageReference Include="System.Text.Json" Version="9.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.10" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.Json" Version="9.0.10" />
+    <PackageReference Include="System.Text.Json" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.9" />
-    <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="9.0.9" />
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.10" />
+    <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="9.0.10" />
     <ProjectReference Include="..\..\GoToBible.Model\GoToBible.Model.csproj" />
   </ItemGroup>
 
