@@ -24,7 +24,7 @@ public class PassageReferenceTests
         PassageReference passageReference = new PassageReference();
         Assert.IsFalse(passageReference.ChapterReference.IsValid);
         Assert.AreEqual(string.Empty, passageReference.Display);
-        Assert.AreEqual(0, passageReference.HighlightedVerses.Length);
+        Assert.IsEmpty(passageReference.HighlightedVerses);
         Assert.IsFalse(passageReference.IsValid);
     }
 
@@ -40,7 +40,7 @@ public class PassageReferenceTests
         };
         Assert.IsTrue(passageReference.ChapterReference.IsValid);
         Assert.AreEqual(string.Empty, passageReference.Display);
-        Assert.AreEqual(0, passageReference.HighlightedVerses.Length);
+        Assert.IsEmpty(passageReference.HighlightedVerses);
         Assert.IsTrue(passageReference.IsValid);
     }
 }
