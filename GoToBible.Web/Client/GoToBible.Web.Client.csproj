@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.2" />
     <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.10" />
     <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="9.0.10" />
     <ProjectReference Include="..\..\GoToBible.Model\GoToBible.Model.csproj" />
