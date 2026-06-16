@@ -31,8 +31,12 @@ public static partial class ExtensionMethods
         language switch
         {
             "Arabic, Standard" => "Arabic",
+            "English: USA" => "English",
             "German, Standard" => "German",
             "Greek, Ancient" => "Greek",
+            "Greek, Koine" => "Greek",
+            "Hebrew, Ancient" => "Hebrew",
+            "Hebrew, Modern" => "Hebrew",
             _ => language,
         };
 
