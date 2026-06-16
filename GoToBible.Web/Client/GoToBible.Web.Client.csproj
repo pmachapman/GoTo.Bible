@@ -10,6 +10,7 @@
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
     <InvariantGlobalization>true</InvariantGlobalization>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+	<WasmFingerprintAssets>false</WasmFingerprintAssets>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
