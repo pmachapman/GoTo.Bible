@@ -30,8 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.17" />
-    <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="9.0.17" />
     <ProjectReference Include="..\..\GoToBible.Model\GoToBible.Model.csproj" />
   </ItemGroup>
 
