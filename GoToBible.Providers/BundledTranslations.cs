@@ -33,10 +33,10 @@ public partial class BundledTranslations : IProvider
     >
     {
         { "BCP1979PSALMS", "Public Domain" },
-        { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
-        { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
-        { "BCPPSALMSVUL", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
-        { "BSB", "The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href=\"//biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"//discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"//openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>." },
+        { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
+        { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
+        { "BCPPSALMSVUL", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
+        { "BSB", "The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href=\"https://biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"https://discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"https://unfoldingword.org\" target=\"_blank\">unfoldingWord</a>, <a href=\"https://aquifer.bible\" target=\"_blank\">Bible Aquifer</a>, <a href=\"https://openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>. Free resources and databases are available at <a href=\"https://bereanbible.com\" target=\"_blank\">BereanBible.com</a>." },
         { "LAOANG", "Public Domain" },
         { "LAOGRK", "Public Domain" },
         { "LAOLAT", "Public Domain" },
@@ -254,12 +254,9 @@ public partial class BundledTranslations : IProvider
             chapter.PreviousChapterReference = Canon[translation]
                 .GetPreviousChapter(book, chapterNumber);
             chapter.NextChapterReference = Canon[translation].GetNextChapter(book, chapterNumber);
-            return chapter;
         }
-        else
-        {
-            return chapter;
-        }
+
+        return chapter;
     }
 
     /// <inheritdoc/>
