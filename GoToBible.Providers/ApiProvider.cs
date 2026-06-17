@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
 // <copyright file="ApiProvider.cs" company="Conglomo">
-// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
+// Copyright 2020-2026 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -25,6 +25,7 @@ public abstract class ApiProvider : IProvider
     /// </summary>
     public static readonly ReadOnlyCollection<string> BlockedTranslations = new List<string>
     {
+        "BibleApi-317e03834065a236-01",
         "BibleApi-32664dc3288a28df-02",
         "BibleApi-32664dc3288a28df-03",
         "BibleApi-685d1470fe4d5c3b-01",
@@ -32,11 +33,13 @@ public abstract class ApiProvider : IProvider
         "BibleApi-7142879509583d59-02",
         "BibleApi-7142879509583d59-03",
         "BibleApi-7142879509583d59-04",
+        "BibleApi-88f61dc12f0cd778-01",
         "BibleApi-926aa5efbc5e04e2-01",
         "BibleApi-9879dbb7cfe39e4d-02",
         "BibleApi-9879dbb7cfe39e4d-03",
         "BibleApi-9879dbb7cfe39e4d-04",
         "BibleApi-bba9f40183526463-01",
+        "BibleApi-ddd2c314210a7c9b-01",
         "BibleApi-de4e12af7f28f599-02",
         "BibleApi-f72b840c855f362c-04",
         "BibliaApi-asv",

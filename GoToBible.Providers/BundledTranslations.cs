@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
 // <copyright file="BundledTranslations.cs" company="Conglomo">
-// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
+// Copyright 2020-2026 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -33,13 +33,14 @@ public partial class BundledTranslations : IProvider
     >
     {
         { "BCP1979PSALMS", "Public Domain" },
-        { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
-        { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
-        { "BCPPSALMSVUL", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"http://www.cambridge.org/about-us/who-we-are/queens-printers-patent\" target=\"_blank\">http://www.cambridge.org/about-us/who-we-are/queens-printers-patent</a>" },
-        { "BSB", "The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href=\"//biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"//discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"//openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>." },
+        { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
+        { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
+        { "BCPPSALMSVUL", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
+        { "BSB", "The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href=\"https://biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"https://discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"https://unfoldingword.org\" target=\"_blank\">unfoldingWord</a>, <a href=\"https://aquifer.bible\" target=\"_blank\">Bible Aquifer</a>, <a href=\"https://openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>. Free resources and databases are available at <a href=\"https://bereanbible.com\" target=\"_blank\">BereanBible.com</a>." },
         { "LAOANG", "Public Domain" },
         { "LAOGRK", "Public Domain" },
         { "LAOLAT", "Public Domain" },
+        { "MSB", "The Holy Bible, Majority Standard Bible, MSB is produced in cooperation with <a href=\"https://biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"https://discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"https://unfoldingword.org\" target=\"_blank\">unfoldingWord</a>, <a href=\"https://aquifer.bible\" target=\"_blank\">Bible Aquifer</a>, <a href=\"https://openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>. Free resources and databases are available at <a href=\"https://majoritybible.com\" target=\"_blank\">MajorityBible.com</a>." },
         { "NTA", "New Translation of the Apocrypha by <a href=\"https://goto.bible/\" target=\"_blank\">Peter Chapman</a> is licensed under <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">CC BY 4.0</a>" },
         { "NTANOTES", "New Translation of the Apocrypha by <a href=\"https://goto.bible/\" target=\"_blank\">Peter Chapman</a> is licensed under <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">CC BY 4.0</a>" },
         { "SBLGNT", "The <a href=\"http://sblgnt.com/\" target=\"_blank\">SBLGNT</a> is licensed under a <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">Creative Commons Attribution 4.0 International License</a>. Copyright &copy; 2010 <a href=\"http://www.sbl-site.org/\" target=\"_blank\">Society of Biblical Literature</a> and <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>." },
@@ -63,6 +64,7 @@ public partial class BundledTranslations : IProvider
         { "LAOANG", new BookHelper("Laodiceans", 1) },
         { "LAOGRK", new BookHelper("Laodiceans", 1) },
         { "LAOLAT", new BookHelper("Laodiceans", 1) },
+        { "MSB", new ProtestantCanon() },
         {
             "NTA",
             new BookHelper(
@@ -103,6 +105,7 @@ public partial class BundledTranslations : IProvider
         { "LAOANG", false },
         { "LAOGRK", false },
         { "LAOLAT", false },
+        { "MSB", false },
         { "NTA", true },
         { "NTANOTES", true },
         { "SBLGNT", false },
@@ -254,12 +257,9 @@ public partial class BundledTranslations : IProvider
             chapter.PreviousChapterReference = Canon[translation]
                 .GetPreviousChapter(book, chapterNumber);
             chapter.NextChapterReference = Canon[translation].GetNextChapter(book, chapterNumber);
-            return chapter;
         }
-        else
-        {
-            return chapter;
-        }
+
+        return chapter;
     }
 
     /// <inheritdoc/>
@@ -364,6 +364,18 @@ public partial class BundledTranslations : IProvider
                 Name = "Epistle to the Laodiceans (Old English)",
                 Provider = this.Id,
                 Year = 2021,
+            }
+        );
+        yield return await Task.FromResult(
+            new Translation
+            {
+                CanBeExported = true,
+                Code = "MSB",
+                Copyright = Copyright["MSB"],
+                Language = "English",
+                Name = "Majority Standard Bible",
+                Provider = this.Id,
+                Year = 2023,
             }
         );
         yield return await Task.FromResult(

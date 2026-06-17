@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
 // <copyright file="SpreadsheetRenderingParametersTests.cs" company="Conglomo">
-// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
+// Copyright 2020-2026 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 

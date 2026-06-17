@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExtensionMethods.cs" company="Conglomo">
-// Copyright 2020-2025 Conglomo Limited. Please see LICENSE for license details.
+// Copyright 2020-2026 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -31,8 +31,12 @@ public static partial class ExtensionMethods
         language switch
         {
             "Arabic, Standard" => "Arabic",
+            "English: USA" => "English",
             "German, Standard" => "German",
             "Greek, Ancient" => "Greek",
+            "Greek, Koine" => "Greek",
+            "Hebrew, Ancient" => "Hebrew",
+            "Hebrew, Modern" => "Hebrew",
             _ => language,
         };
 

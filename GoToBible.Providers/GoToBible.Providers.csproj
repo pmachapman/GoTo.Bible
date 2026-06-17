@@ -22,6 +22,7 @@
     <None Remove="Texts\LAOANG.txt" />
     <None Remove="Texts\LAOGRK.txt" />
     <None Remove="Texts\LAOLAT.txt" />
+    <None Remove="Texts\MSB.txt" />
     <None Remove="Texts\NTA.txt" />
     <None Remove="Texts\NTANOTES.txt" />
     <None Remove="Texts\SBLGNT.txt" />
@@ -37,6 +38,7 @@
     <EmbeddedResource Include="Texts\LAOANG.txt" />
     <EmbeddedResource Include="Texts\LAOGRK.txt" />
     <EmbeddedResource Include="Texts\LAOLAT.txt" />
+    <EmbeddedResource Include="Texts\MSB.txt" />
     <EmbeddedResource Include="Texts\NTA.txt" />
     <EmbeddedResource Include="Texts\NTANOTES.txt" />
     <EmbeddedResource Include="Texts\SBLGNT.txt" />
