@@ -494,72 +494,68 @@ public partial class Renderer : IRenderer
                         t.Code == parameters.SecondaryTranslation
                     );
 
-                    // If we are rendering as HTML or an apparatus
-                    if (parameters.Format != RenderFormat.Spreadsheet)
+                    // Fix up the tooltips
+                    string primaryTranslationName =
+                        primaryTranslation?.UniqueName(translations) ?? "Primary Translation";
+                    string secondaryTranslationName =
+                        secondaryTranslation?.UniqueName(translations)
+                        ?? "Secondary Translation";
+                    sb.Replace(
+                        $"<span title=\"{parameters.PrimaryTranslation}\">",
+                        $"<span title=\"{primaryTranslationName}\">"
+                    );
+                    sb.Replace(
+                        $"<span title=\"{parameters.SecondaryTranslation}\">",
+                        $"<span title=\"{secondaryTranslationName}\">"
+                    );
+
+                    // Supplement the translation copyrights if the chapter copyrights are missing
+                    if (
+                        string.IsNullOrWhiteSpace(firstChapter.Copyright)
+                        && !string.IsNullOrWhiteSpace(primaryTranslation?.Copyright)
+                    )
                     {
-                        // Fix up the tooltips
-                        string primaryTranslationName =
-                            primaryTranslation?.UniqueName(translations) ?? "Primary Translation";
-                        string secondaryTranslationName =
-                            secondaryTranslation?.UniqueName(translations)
-                            ?? "Secondary Translation";
-                        sb.Replace(
-                            $"<span title=\"{parameters.PrimaryTranslation}\">",
-                            $"<span title=\"{primaryTranslationName}\">"
-                        );
-                        sb.Replace(
-                            $"<span title=\"{parameters.SecondaryTranslation}\">",
-                            $"<span title=\"{secondaryTranslationName}\">"
-                        );
+                        firstChapter.Copyright = primaryTranslation.Copyright;
+                    }
 
-                        // Supplement the translation copyrights if the chapter copyrights are missing
-                        if (
-                            string.IsNullOrWhiteSpace(firstChapter.Copyright)
-                            && !string.IsNullOrWhiteSpace(primaryTranslation?.Copyright)
-                        )
+                    if (
+                        string.IsNullOrWhiteSpace(secondChapter.Copyright)
+                        && !string.IsNullOrWhiteSpace(secondaryTranslation?.Copyright)
+                    )
+                    {
+                        secondChapter.Copyright = secondaryTranslation.Copyright;
+                    }
+
+                    // Display copyright
+                    if (
+                        !string.IsNullOrWhiteSpace(firstChapter.Copyright)
+                        || !string.IsNullOrWhiteSpace(secondChapter.Copyright)
+                    )
+                    {
+                        sb.Append("<p class=\"copyright\">");
+                        if (!string.IsNullOrWhiteSpace(firstChapter.Copyright))
                         {
-                            firstChapter.Copyright = primaryTranslation.Copyright;
+                            sb.Append(
+                                $"<strong>{primaryTranslationName}: </strong> {firstChapter.Copyright}"
+                            );
                         }
 
-                        if (
-                            string.IsNullOrWhiteSpace(secondChapter.Copyright)
-                            && !string.IsNullOrWhiteSpace(secondaryTranslation?.Copyright)
-                        )
-                        {
-                            secondChapter.Copyright = secondaryTranslation.Copyright;
-                        }
-
-                        // Display copyright
                         if (
                             !string.IsNullOrWhiteSpace(firstChapter.Copyright)
-                            || !string.IsNullOrWhiteSpace(secondChapter.Copyright)
+                            && !string.IsNullOrWhiteSpace(secondChapter.Copyright)
                         )
                         {
-                            sb.Append("<p class=\"copyright\">");
-                            if (!string.IsNullOrWhiteSpace(firstChapter.Copyright))
-                            {
-                                sb.Append(
-                                    $"<strong>{primaryTranslationName}: </strong> {firstChapter.Copyright}"
-                                );
-                            }
-
-                            if (
-                                !string.IsNullOrWhiteSpace(firstChapter.Copyright)
-                                && !string.IsNullOrWhiteSpace(secondChapter.Copyright)
-                            )
-                            {
-                                sb.Append("<br>");
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(secondChapter.Copyright))
-                            {
-                                sb.Append(
-                                    $"<strong>{secondaryTranslationName}: </strong> {secondChapter.Copyright}"
-                                );
-                            }
-
-                            sb.AppendLine("</p>");
+                            sb.Append("<br>");
                         }
+
+                        if (!string.IsNullOrWhiteSpace(secondChapter.Copyright))
+                        {
+                            sb.Append(
+                                $"<strong>{secondaryTranslationName}: </strong> {secondChapter.Copyright}"
+                            );
+                        }
+
+                        sb.AppendLine("</p>");
                     }
 
                     // Generate the rendering suggestions
@@ -580,7 +576,7 @@ public partial class Renderer : IRenderer
                     }
 
                     // Display the rendering suggestions, if we are debugging
-                    if (parameters.IsDebug && parameters.Format != RenderFormat.Spreadsheet)
+                    if (parameters.IsDebug)
                     {
                         sb.Append("<p>");
                         sb.Append(HorizontalLine);
