@@ -23,10 +23,10 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.17" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.17" PrivateAssets="all" />
-    <PackageReference Include="System.Net.Http.Json" Version="9.0.17" />
-    <PackageReference Include="System.Text.Json" Version="9.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.12" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.Json" Version="10.0.12" />
+    <PackageReference Include="System.Text.Json" Version="10.0.12" />
   </ItemGroup>
 
   <ItemGroup>
