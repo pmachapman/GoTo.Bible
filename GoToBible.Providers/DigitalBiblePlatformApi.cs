@@ -106,7 +106,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
 
         var bookData = DeserializeAnonymousType(
             json,
-            new { data = EmptyListOf(new { book_id = string.Empty, chapters = new List<int>(), }), }
+            new { data = EmptyListOf(new { book_id = string.Empty, chapters = new List<int>() }) }
         );
 
         if (bookData is not null && bookData.data.Count > 0)
@@ -127,7 +127,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
                     yield return new Book
                     {
                         Chapters = chapterReferences.AsReadOnly(),
-                        Name = bookName
+                        Name = bookName,
                     };
                 }
             }
@@ -344,11 +344,11 @@ public class DigitalBiblePlatformApi : WebApiProvider
                             date = string.Empty,
                             language = string.Empty,
                             filesets = Nullable(
-                                new { dbp_prod = EmptyListOf(new { id = string.Empty, }), }
+                                new { dbp_prod = EmptyListOf(new { id = string.Empty }) }
                             ),
                         }
                     ),
-                    meta = new { pagination = new { current_page = 0, last_page = 0, }, },
+                    meta = new { pagination = new { current_page = 0, last_page = 0 } },
                 }
             );
             if (dbpTranslations is not null)
@@ -468,7 +468,7 @@ public class DigitalBiblePlatformApi : WebApiProvider
             var copyrightJson = DeserializeAnonymousType(
                 json,
                 EmptyListOf(
-                    new { id = string.Empty, copyright = new { copyright = string.Empty, }, }
+                    new { id = string.Empty, copyright = new { copyright = string.Empty } }
                 )
             );
 

@@ -7,7 +7,6 @@
 namespace GoToBible.Model;
 
 using System;
-using System.Linq;
 
 /// <summary>
 /// A passage reference.

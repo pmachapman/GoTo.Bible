@@ -102,7 +102,7 @@ public class BibliaApi : WebApiProvider
                     new
                     {
                         passage = string.Empty,
-                        chapters = EmptyListOf(new { passage = string.Empty, }),
+                        chapters = EmptyListOf(new { passage = string.Empty }),
                     }
                 ),
             }

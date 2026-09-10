@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="global.json" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+    <File Path="SECURITY.md" />
+  </Folder>
+  <Project Path="GoToBible.Engine/GoToBible.Engine.csproj" />
+  <Project Path="GoToBible.Model/GoToBible.Model.csproj" />
+  <Project Path="GoToBible.Providers/GoToBible.Providers.csproj" />
+  <Project Path="GoToBible.Tests.Model/GoToBible.Tests.Model.csproj" />
+  <Project Path="GoToBible.Web/Client/GoToBible.Web.Client.csproj" />
+  <Project Path="GoToBible.Web/Server/GoToBible.Web.Server.csproj" />
+  <Project Path="GoToBible.Windows/GoToBible.Windows.csproj" />
+</Solution>

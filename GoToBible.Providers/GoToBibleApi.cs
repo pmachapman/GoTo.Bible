@@ -85,7 +85,7 @@ public class GoToBibleApi : WebApiProvider
 
                 JsonSerializerOptions options = new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
                 };
                 foreach (Book book in JsonSerializer.Deserialize<Book[]>(json, options) ?? [])
                 {
@@ -141,7 +141,7 @@ public class GoToBibleApi : WebApiProvider
 
         JsonSerializerOptions options = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
         };
         foreach (
             Translation translation in JsonSerializer.Deserialize<Translation[]>(json, options)

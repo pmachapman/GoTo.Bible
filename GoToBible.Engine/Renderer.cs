@@ -219,11 +219,11 @@ public partial class Renderer : IRenderer
                 // Render both interlinear
                 List<string> lines1 =
                 [
-                    .. firstChapter.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+                    .. firstChapter.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries),
                 ];
                 List<string> lines2 =
                 [
-                    .. secondChapter.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+                    .. secondChapter.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries),
                 ];
 
                 // Add any missing verses
@@ -312,7 +312,7 @@ public partial class Renderer : IRenderer
                                 TotalWordsLine1: 0,
                                 TotalWordsLine2: 0,
                                 DivergentPhrases: 0,
-                                WordsInCommon: 0
+                                WordsInCommon: 0,
                             }
                             && secondAttempt
                                 is
@@ -320,7 +320,7 @@ public partial class Renderer : IRenderer
                                 TotalWordsLine1: 0,
                                 TotalWordsLine2: 0,
                                 DivergentPhrases: 0,
-                                WordsInCommon: 0
+                                WordsInCommon: 0,
                             }
                         )
                         {
@@ -1037,11 +1037,11 @@ public partial class Renderer : IRenderer
                 // Split the words
                 List<string> words1 =
                 [
-                    .. line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
+                    .. line1.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries),
                 ];
                 List<string> words2 =
                 [
-                    .. line2.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
+                    .. line2.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries),
                 ];
 
                 // Get the word counts
@@ -1092,7 +1092,7 @@ public partial class Renderer : IRenderer
                                 parameters
                                     is SpreadsheetRenderingParameters
                                 {
-                                    RenderNeighbourForAddition: true
+                                    RenderNeighbourForAddition: true,
                                 }
                                 && string.IsNullOrWhiteSpace(interlinear1)
                             )

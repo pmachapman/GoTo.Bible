@@ -88,7 +88,7 @@ public partial class LegacyStandardBible(IOptions<LocalResourceOptions> options)
                 string[] nextChapter =
                 [
                     $"{{{{{bookNum}::{chapterNumber + 1}}}}}",
-                    $"{{{{{bookNum + 1}::1}}}}"
+                    $"{{{{{bookNum + 1}::1}}}}",
                 ];
                 StringBuilder sb = new StringBuilder();
                 await foreach (

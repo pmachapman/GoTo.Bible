@@ -229,7 +229,7 @@ public partial class EsvBible : WebApiProvider
             new
             {
                 passage_meta = EmptyListOf(
-                    new { prev_chapter = default(List<int>?), next_chapter = default(List<int>?), }
+                    new { prev_chapter = default(List<int>?), next_chapter = default(List<int>?) }
                 ),
                 passages = new List<string>(),
             }
