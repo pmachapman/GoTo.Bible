@@ -72,7 +72,7 @@ internal class BookHelper
             if (!includeChapters)
             {
                 // Create and return the book
-                yield return new Book { Name = capitalisedBookName, };
+                yield return new Book { Name = capitalisedBookName };
             }
             else if (this.BookChapters[bookName] is int lastChapter)
             {

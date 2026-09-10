@@ -7,7 +7,6 @@
 namespace GoToBible.Tests.Model;
 
 using System;
-using System.Linq;
 using GoToBible.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

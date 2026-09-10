@@ -209,7 +209,7 @@ public partial class FormApparatusGenerator : Form
             typeof(string),
             typeof(int),
             typeof(string),
-            typeof(string)
+            typeof(string),
         ];
         dataTable.Columns.Add("Book", columnTypes[0]);
         dataTable.Columns.Add("Chapter", columnTypes[1]);

@@ -124,7 +124,7 @@ public abstract class WebApiProvider : ApiProvider
     /// The cache entry options.
     /// </summary>
     protected static readonly DistributedCacheEntryOptions CacheEntryOptions =
-        new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(24), };
+        new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(24) };
 
     /// <summary>
     /// The reverse book code map.

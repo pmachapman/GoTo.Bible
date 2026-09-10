@@ -650,7 +650,7 @@ public sealed partial class FormMain : Form
                         Options.Create(
                             new DigitalBiblePlatformApiOptions
                             {
-                                ApiKey = digitalBiblePlatformApiKey
+                                ApiKey = digitalBiblePlatformApiKey,
                             }
                         ),
                         this.cache
@@ -834,10 +834,10 @@ public sealed partial class FormMain : Form
 
         // Add the No Translation item
         this.ToolStripComboBoxSecondaryTranslation.Items.Add(
-            new ComboBoxItem { Text = Resources.NoTranslation, }
+            new ComboBoxItem { Text = Resources.NoTranslation }
         );
         this.ToolStripComboBoxResource.Items.Add(
-            new ComboBoxItem { Text = Resources.NoTranslation, }
+            new ComboBoxItem { Text = Resources.NoTranslation }
         );
 
         // Get the full list of translations
@@ -1007,7 +1007,7 @@ public sealed partial class FormMain : Form
         if (this.ToolStripComboBoxPrimaryTranslation.Items.Count == 0)
         {
             this.ToolStripComboBoxPrimaryTranslation.Items.Add(
-                new ComboBoxItem { Text = Resources.NoTranslation, }
+                new ComboBoxItem { Text = Resources.NoTranslation }
             );
         }
 
@@ -1445,7 +1445,7 @@ public sealed partial class FormMain : Form
     private void ToolStripButtonNewWindow_Click(object sender, EventArgs e)
     {
         // Create the form
-        FormMain formMain = new FormMain(false) { StartPosition = FormStartPosition.CenterParent, };
+        FormMain formMain = new FormMain(false) { StartPosition = FormStartPosition.CenterParent };
         Program.Forms.Add(formMain);
         formMain.Show();
 
@@ -1494,7 +1494,7 @@ public sealed partial class FormMain : Form
             new ProcessStartInfo(this.parameters.AsUrl().ToString())
             {
                 UseShellExecute = true,
-                Verb = "open"
+                Verb = "open",
             }
         );
 
@@ -1745,7 +1745,7 @@ public sealed partial class FormMain : Form
             new Uri("https://scripture.api.bible/", UriKind.Absolute),
             Resources.BibleApiIcon
         );
-        formApiKey.ShowDialog(this);
+        await formApiKey.ShowDialogAsync(this);
 
         // Only load the provider if the key has changed
         if (key != formApiKey.Key)
@@ -1779,7 +1779,7 @@ public sealed partial class FormMain : Form
             new Uri("https://api.biblia.com/v1/Users/SignIn", UriKind.Absolute),
             Resources.BibliaIcon
         );
-        formApiKey.ShowDialog(this);
+        await formApiKey.ShowDialogAsync(this);
 
         // Only load the provider if the key has changed
         if (key != formApiKey.Key)
@@ -1848,7 +1848,7 @@ public sealed partial class FormMain : Form
             "Configure Commentaries",
             Resources.CommentariesIcon
         );
-        DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
+        DialogResult dialogResult = await formCheckBoxList.ShowDialogAsync(this);
         if (dialogResult == DialogResult.OK)
         {
             // Save the blocked commentaries
@@ -1908,7 +1908,7 @@ public sealed partial class FormMain : Form
             new Uri("https://www.digitalbibleplatform.com/", UriKind.Absolute),
             Resources.DigitalBiblePlatformIcon
         );
-        formApiKey.ShowDialog(this);
+        await formApiKey.ShowDialogAsync(this);
 
         // Only load the provider if the key has changed
         if (key != formApiKey.Key)
@@ -1942,7 +1942,7 @@ public sealed partial class FormMain : Form
             new Uri("https://api.esv.org/", UriKind.Absolute),
             Resources.EsvIcon
         );
-        formApiKey.ShowDialog(this);
+        await formApiKey.ShowDialogAsync(this);
 
         // Only load the provider if the key has changed
         if (key != formApiKey.Key)
@@ -2050,7 +2050,7 @@ public sealed partial class FormMain : Form
             "Configure Languages",
             Resources.LanguagesIcon
         );
-        DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
+        DialogResult dialogResult = await formCheckBoxList.ShowDialogAsync(this);
         if (dialogResult == DialogResult.OK)
         {
             // Save the blocked providers
@@ -2124,7 +2124,7 @@ public sealed partial class FormMain : Form
             new Uri("https://api.nlt.to/", UriKind.Absolute),
             Resources.NltIcon
         );
-        formApiKey.ShowDialog(this);
+        await formApiKey.ShowDialogAsync(this);
 
         // Only load the provider if the key has changed
         if (key != formApiKey.Key)
@@ -2160,7 +2160,7 @@ public sealed partial class FormMain : Form
             "Configure Providers",
             Resources.ProviderIcon
         );
-        DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
+        DialogResult dialogResult = await formCheckBoxList.ShowDialogAsync(this);
         if (dialogResult == DialogResult.OK)
         {
             // Save the blocked providers
@@ -2259,7 +2259,7 @@ public sealed partial class FormMain : Form
             "Configure Translations",
             Resources.TranslationsIcon
         );
-        DialogResult dialogResult = formCheckBoxList.ShowDialog(this);
+        DialogResult dialogResult = await formCheckBoxList.ShowDialogAsync(this);
         if (dialogResult == DialogResult.OK)
         {
             // Save the blocked translations

@@ -119,7 +119,7 @@ public partial class BibleApi : WebApiProvider
                 if (!includeChapters)
                 {
                     // Return the book
-                    yield return new Book { Name = bookName, };
+                    yield return new Book { Name = bookName };
                 }
                 else
                 {
@@ -317,10 +317,10 @@ public partial class BibleApi : WebApiProvider
                     id = string.Empty,
                     content = string.Empty,
                     copyright = string.Empty,
-                    next = Nullable(new { number = string.Empty, bookId = string.Empty, }),
-                    previous = Nullable(new { number = string.Empty, bookId = string.Empty, }),
+                    next = Nullable(new { number = string.Empty, bookId = string.Empty }),
+                    previous = Nullable(new { number = string.Empty, bookId = string.Empty }),
                 },
-                meta = new { fumsNoScript = string.Empty, },
+                meta = new { fumsNoScript = string.Empty },
             }
         );
         if (chapterJson?.data is not null)
@@ -434,7 +434,7 @@ public partial class BibleApi : WebApiProvider
                         id = string.Empty,
                         name = string.Empty,
                         description = string.Empty,
-                        language = new { name = string.Empty, },
+                        language = new { name = string.Empty },
                     }
                 ),
             }

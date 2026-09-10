@@ -258,7 +258,7 @@ public static partial class ExtensionMethods
                 book = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(book);
                 passageReference = new PassageReference
                 {
-                    ChapterReference = new ChapterReference(book, chapter)
+                    ChapterReference = new ChapterReference(book, chapter),
                 };
 
                 // Do not highlight the first verse of a one chapter book if there is no colon and there is not a range of verses

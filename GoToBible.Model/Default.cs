@@ -40,7 +40,7 @@ public static class Default
     /// The default font.
     /// </value>
     public static RenderFont Font =>
-        new RenderFont { FamilyName = "Calibri", SizeInPoints = 14.25f, };
+        new RenderFont { FamilyName = "Calibri", SizeInPoints = 14.25f };
 
     /// <summary>
     /// Gets the default foreground colour.

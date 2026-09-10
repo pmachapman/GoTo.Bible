@@ -498,7 +498,7 @@ public static class ExtensionMethods
         {
             R = color.R,
             G = color.G,
-            B = color.B
+            B = color.B,
         };
 
     /// <summary>
