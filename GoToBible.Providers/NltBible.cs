@@ -203,13 +203,13 @@ public class NltBible : WebApiProvider
                 }
 
                 HtmlTextNode replacement = doc.CreateTextNode(strippedNode.ToString());
-                node.ParentNode.ReplaceChild(replacement, node);
+                node.ParentNode?.ReplaceChild(replacement, node);
             }
 
             // Output the nodes
             foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//verse_export")?.ToArray() ?? [])
             {
-                string verse = node.Attributes["vn"].Value;
+                string verse = node.Attributes["vn"]?.Value ?? string.Empty;
                 string text = node.InnerText.NormaliseLineEndings().Replace("\n", string.Empty);
                 if (endItalics)
                 {

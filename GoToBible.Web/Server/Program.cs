@@ -82,22 +82,8 @@ switch (cacheConfig?.DatabaseProvider.ToUpperInvariant())
 StatisticsSettings? statisticsConfig = builder
     .Configuration.GetSection("Providers:Statistics")
     .Get<StatisticsSettings>();
-ServerVersion serverVersion;
 switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
 {
-    case "MARIADB":
-        serverVersion = string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion)
-            ? MariaDbServerVersion.LatestSupportedServerVersion
-            : new MariaDbServerVersion(statisticsConfig.DatabaseVersion);
-
-        if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
-        {
-            builder.Services.AddDbContext<StatisticsContext>(options =>
-                options.UseMySql(statisticsConfig.ConnectionString, serverVersion)
-            );
-        }
-
-        break;
     case "MSSQL":
         if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
         {
@@ -107,15 +93,12 @@ switch (statisticsConfig?.DatabaseProvider?.ToUpperInvariant())
         }
 
         break;
+    case "MARIADB":
     case "MYSQL":
-        serverVersion = string.IsNullOrWhiteSpace(statisticsConfig.DatabaseVersion)
-            ? MySqlServerVersion.LatestSupportedServerVersion
-            : new MySqlServerVersion(statisticsConfig.DatabaseVersion);
-
         if (!string.IsNullOrWhiteSpace(statisticsConfig.ConnectionString))
         {
             builder.Services.AddDbContext<StatisticsContext>(options =>
-                options.UseMySql(statisticsConfig.ConnectionString, serverVersion)
+                options.UseMySQL(statisticsConfig.ConnectionString)
             );
         }
 
