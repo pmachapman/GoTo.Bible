@@ -1,8 +1,8 @@
 version: "1.0"
-linter: jetbrains/qodana-cdnet:2026.1-eap
+linter: jetbrains/qodana-cdnet:2026.2
 profile:
   name: qodana.recommended
 include:
   - name: CheckDependencyLicenses
 dotnet:
-  solution: GoToBible.sln
+  solution: GoToBible.slnx
