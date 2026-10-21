@@ -9,3 +9,4 @@ dotnet:
 exclude:
   - name: ArrangeObjectCreationWhenTypeEvident
   - name: RedundantNameQualifier
+  - name: InconsistentNaming
