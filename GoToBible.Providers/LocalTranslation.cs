@@ -6,13 +6,15 @@
 
 namespace GoToBible.Providers;
 
+using CsvHelper;
 using GoToBible.Model;
 
 /// <summary>
 /// A locally available translation.
 /// </summary>
 /// <seealso cref="Translation" />
-public class LocalTranslation : Translation
+[CsvRecord]
+public partial class LocalTranslation : Translation
 {
     /// <summary>
     /// Gets or sets the filename.
