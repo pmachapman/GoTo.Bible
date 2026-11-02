@@ -20,6 +20,10 @@
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="10.0.14" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="10.0.12" />
     <PackageReference Include="Pomelo.Extensions.Caching.MySql" Version="2.2.1" />
+    <!-- Fix vulnerable dependency of Pomelo.Extensions.Caching.MySql 2.2.1 -->
+    <PackageReference Include="MySqlConnector" Version="2.6.2" />
+    <!-- Fix vulnerable dependency of Microsoft.EntityFrameworkCore.SqlServer 10.0.14 -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
   </ItemGroup>
 
   <ItemGroup>

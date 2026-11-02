@@ -56,7 +56,7 @@ public abstract class LocalResourceProvider : ApiProvider
             using StreamReader reader = new StreamReader(
                 Path.Join(this.Options.Directory, "index.csv")
             );
-            using CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+            await using CsvReader csvReader = CsvReader.Create(reader, new CsvReaderOptions { FormatProvider = CultureInfo.InvariantCulture });
             bool initialiseCache = this.Translations.Count == 0;
             await foreach (
                 LocalTranslation translation in csvReader.GetRecordsAsync<LocalTranslation>(
