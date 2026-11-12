@@ -152,11 +152,11 @@ public class NltBible : WebApiProvider
             bool endItalics = false;
             StringBuilder strippedNode = new StringBuilder();
             foreach (
-                HtmlNode node in doc
-                    .DocumentNode.SelectNodes(
+                HtmlNode node in doc.DocumentNode.SelectNodes(
                         "//span[@class='vn']|//span[@class='tn']|//p[@class='psa-hebrew']|//hr[@class='text-critical']|//p[@class='text-critical']|//p[@class='psa-title']|//p[@class='chapter-number']|//p[@class='subhead']|//a[@class='a-tn']|//p[@class='poet1']|//p[@class='poet2']|//p[@class='sos-speaker']|//p[@class='selah']|//h1|//h2|//h3|//h4"
-                    )?
-                    .ToArray() ?? []
+                    )
+                    ?.ToArray()
+                    ?? []
             )
             {
                 strippedNode.Clear();
@@ -207,7 +207,9 @@ public class NltBible : WebApiProvider
             }
 
             // Output the nodes
-            foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//verse_export")?.ToArray() ?? [])
+            foreach (
+                HtmlNode node in doc.DocumentNode.SelectNodes("//verse_export")?.ToArray() ?? []
+            )
             {
                 string verse = node.Attributes["vn"]?.Value ?? string.Empty;
                 string text = node.InnerText.NormaliseLineEndings().Replace("\n", string.Empty);

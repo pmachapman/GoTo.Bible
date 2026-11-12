@@ -16,7 +16,7 @@ The [NuGet Package](https://www.nuget.org/packages/GoToBible.Model/) requires th
 ## Development Environment Requirements
 
 The Windows App requires the following:
- * [Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/)
+ * [Visual Studio 2026 Community](https://visualstudio.microsoft.com/downloads/)
  * Windows 10
 
 ## Notes

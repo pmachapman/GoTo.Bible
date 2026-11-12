@@ -24,28 +24,15 @@ public class PositionComparer<T>(IList<T> orderBy) : IComparer<T>
         {
             return orderBy.IndexOf(x).CompareTo(orderBy.IndexOf(y));
         }
-        else if (
-            x is not null
-            && y is not null
-            && !orderBy.Contains(x)
-            && !orderBy.Contains(y)
-        )
+        else if (x is not null && y is not null && !orderBy.Contains(x) && !orderBy.Contains(y))
         {
             return x.CompareTo(y);
         }
-        else if (
-            x is not null
-            && orderBy.Contains(x)
-            && (y is null || !orderBy.Contains(y))
-        )
+        else if (x is not null && orderBy.Contains(x) && (y is null || !orderBy.Contains(y)))
         {
             return 1;
         }
-        else if (
-            y is not null
-            && orderBy.Contains(y)
-            && (x is null || !orderBy.Contains(x))
-        )
+        else if (y is not null && orderBy.Contains(y) && (x is null || !orderBy.Contains(x)))
         {
             return -1;
         }

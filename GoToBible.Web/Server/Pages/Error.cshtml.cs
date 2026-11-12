@@ -19,7 +19,11 @@ using Microsoft.Extensions.Logging;
 /// <seealso cref="PageModel" />
 [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 [IgnoreAntiforgeryToken]
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:File name should match first type name", Justification = "This is a Razor page model.")]
+[SuppressMessage(
+    "StyleCop.CSharp.DocumentationRules",
+    "SA1649:File name should match first type name",
+    Justification = "This is a Razor page model."
+)]
 public class ErrorModel(ILogger<ErrorModel> logger) : PageModel
 {
     /// <summary>

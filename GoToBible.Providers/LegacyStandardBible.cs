@@ -24,7 +24,8 @@ using Microsoft.Extensions.Options;
 /// <seealso cref="ApiProvider" />
 /// <param name="options">The options.</param>
 /// <exception cref="ArgumentException">Invalid Resource Directory - options.</exception>
-public partial class LegacyStandardBible(IOptions<LocalResourceOptions> options) : LocalResourceProvider(options)
+public partial class LegacyStandardBible(IOptions<LocalResourceOptions> options)
+    : LocalResourceProvider(options)
 {
     /// <summary>
     /// The canon.

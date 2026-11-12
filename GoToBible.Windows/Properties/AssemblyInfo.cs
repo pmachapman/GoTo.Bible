@@ -16,7 +16,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Conglomo")]
 [assembly: AssemblyProduct("GoTo.Bible")]
-[assembly: AssemblyCopyright("Copyright 2020-2026 Conglomo Limited. Please see LICENSE for license details.")]
+[assembly: AssemblyCopyright(
+    "Copyright 2020-2026 Conglomo Limited. Please see LICENSE for license details."
+)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

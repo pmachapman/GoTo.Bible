@@ -175,20 +175,18 @@ public class DigitalBiblePlatformApi : WebApiProvider
         {
             if (NewTestamentCanon.HasBook(bookName))
             {
-                damId =
-                    digitalBiblePlatformTranslation.DamIds.FirstOrDefault(d =>
-                        d.Contains("N_", StringComparison.OrdinalIgnoreCase)
-                    )
+                damId = digitalBiblePlatformTranslation.DamIds.FirstOrDefault(d =>
+                    d.Contains("N_", StringComparison.OrdinalIgnoreCase)
+                )
                     ?? digitalBiblePlatformTranslation.DamIds.First(d =>
                         !d.Contains("O_", StringComparison.OrdinalIgnoreCase)
                     );
             }
             else if (OldTestamentCanon.HasBook(bookName))
             {
-                damId =
-                    digitalBiblePlatformTranslation.DamIds.FirstOrDefault(d =>
-                        d.Contains("O_", StringComparison.OrdinalIgnoreCase)
-                    )
+                damId = digitalBiblePlatformTranslation.DamIds.FirstOrDefault(d =>
+                    d.Contains("O_", StringComparison.OrdinalIgnoreCase)
+                )
                     ?? digitalBiblePlatformTranslation.DamIds.First(d =>
                         !d.Contains("N_", StringComparison.OrdinalIgnoreCase)
                     );
@@ -269,7 +267,9 @@ public class DigitalBiblePlatformApi : WebApiProvider
                     }
 
                     sb.Append("  ");
-                    sb.AppendLine(verse.verse_text.Trim().Replace("\n", " ").RemoveDuplicateSpaces());
+                    sb.AppendLine(
+                        verse.verse_text.Trim().Replace("\n", " ").RemoveDuplicateSpaces()
+                    );
                 }
             }
 
@@ -379,8 +379,8 @@ public class DigitalBiblePlatformApi : WebApiProvider
                         name = translation.abbr;
                     }
 
-                    List<string> damIds =
-                        translation.filesets?.dbp_prod.Select(t => t.id).ToList() ?? [];
+                    List<string> damIds = translation.filesets?.dbp_prod.Select(t => t.id).ToList()
+                        ?? [];
                     DigitalBiblePlatformTranslation digitalBiblePlatformTranslation =
                         new DigitalBiblePlatformTranslation
                         {
@@ -467,15 +467,12 @@ public class DigitalBiblePlatformApi : WebApiProvider
         {
             var copyrightJson = DeserializeAnonymousType(
                 json,
-                EmptyListOf(
-                    new { id = string.Empty, copyright = new { copyright = string.Empty } }
-                )
+                EmptyListOf(new { id = string.Empty, copyright = new { copyright = string.Empty } })
             );
 
             if (copyrightJson is not null && copyrightJson.Count > 0)
             {
-                copyright =
-                    copyrightJson.FirstOrDefault(c => c.id == id)?.copyright.copyright
+                copyright = copyrightJson.FirstOrDefault(c => c.id == id)?.copyright.copyright
                     ?? copyrightJson.First().copyright.copyright;
             }
         }
