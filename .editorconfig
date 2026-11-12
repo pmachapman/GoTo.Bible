@@ -222,6 +222,16 @@ csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental
 csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true:silent
 csharp_prefer_system_threading_lock = true:suggestion
 
+# StyleCop rules
+dotnet_diagnostic.SA1009.severity = none # Closing parenthesis should be spaced correctly
+dotnet_diagnostic.SA1111.severity = none # Closing parenthesis should be on line of last parameter
+dotnet_diagnostic.SA1118.severity = none # Parameter should not span multiple lines
+dotnet_diagnostic.SA1313.severity = none # Parameter names should begin with lower-case letter
+dotnet_diagnostic.SA1143.severity = none # Conditional expressions must be formatted consistently
+dotnet_diagnostic.SA1501.severity = none # Statement should not be on a single line
+dotnet_diagnostic.SA1502.severity = none # Element should not be on a single line
+dotnet_diagnostic.SA1504.severity = none # All accessors should be single-line or multi-line
+
 [*.{cs,vb}]
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4

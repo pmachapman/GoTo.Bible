@@ -34,9 +34,9 @@ public class LegacyWebBrowser : WebBrowser, IWebBrowser
     }
 
     /// <inheritdoc/>
-    public Task SetInnerHtmlAsync(string innerHtml)
+    public Task SetInnerHtmlAsync(string htmlContent)
     {
-        this.Document?.Body?.InnerHtml = innerHtml;
+        this.Document?.Body?.InnerHtml = htmlContent;
         return Task.CompletedTask;
     }
 

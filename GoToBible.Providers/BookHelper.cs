@@ -21,11 +21,6 @@ internal class BookHelper
     /// <summary>
     /// Initializes a new instance of the <see cref="BookHelper"/> class.
     /// </summary>
-    protected BookHelper() { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BookHelper"/> class.
-    /// </summary>
     /// <param name="bookChapters">The book chapters.</param>
     public BookHelper(OrderedDictionary bookChapters) => this.BookChapters = bookChapters;
 
@@ -36,6 +31,11 @@ internal class BookHelper
     /// <param name="chapters">The chapters.</param>
     public BookHelper(string bookName, int chapters) =>
         this.BookChapters = new OrderedDictionary { [bookName.ToLowerInvariant()] = chapters };
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BookHelper"/> class.
+    /// </summary>
+    protected BookHelper() { }
 
     /// <summary>
     /// Gets the numbers of chapters in each book.
@@ -52,7 +52,7 @@ internal class BookHelper
     /// Gets the book number.
     /// </summary>
     /// <param name="book">The name of the book.</param>
-    /// <returns>The number of the book</returns>
+    /// <returns>The number of the book.</returns>
     public int GetBookNum(string book) => this.BookNames.IndexOf(book.ToLowerInvariant()) + 1;
 
     /// <summary>

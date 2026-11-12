@@ -25,6 +25,9 @@ using Microsoft.Extensions.Logging;
 /// <summary>
 /// The render passage controller.
 /// </summary>
+/// <param name="providers">The providers.</param>
+/// <param name="loggerFactory">The logger factory.</param>
+/// <param name="context">The statistics context (optional).</param>
 /// <seealso cref="ControllerBase" />
 [ApiController]
 [Route("v1/[controller]")]

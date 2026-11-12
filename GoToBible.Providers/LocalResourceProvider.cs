@@ -46,6 +46,25 @@ public abstract class LocalResourceProvider : ApiProvider
             && File.Exists(Path.Join(this.Options.Directory, "index.csv"));
     }
 
+    /// <summary>
+    /// Gets the Scripture cache.
+    /// </summary>
+    /// <value>The Scripure cache.</value>
+    protected ConcurrentDictionary<string, Chapter> Cache { get; } =
+        new ConcurrentDictionary<string, Chapter>();
+
+    /// <summary>
+    /// Gets the local resource options.
+    /// </summary>
+    /// <remarks>The options.</remarks>
+    protected LocalResourceOptions Options { get; }
+
+    /// <summary>
+    /// Gets the translations.
+    /// </summary>
+    /// <value>The translations.</value>
+    protected List<LocalTranslation> Translations { get; } = [];
+
     /// <inheritdoc/>
     public override async IAsyncEnumerable<Translation> GetTranslationsAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken = default
@@ -79,27 +98,9 @@ public abstract class LocalResourceProvider : ApiProvider
     }
 
     /// <summary>
-    /// Gets the Scripture cache.
-    /// </summary>
-    /// <value>The Scripure cache.</value>
-    protected ConcurrentDictionary<string, Chapter> Cache { get; } =
-        new ConcurrentDictionary<string, Chapter>();
-
-    /// <summary>
-    /// Gets the local resource options.
-    /// </summary>
-    /// <remarks>The options.</remarks>
-    protected LocalResourceOptions Options { get; }
-
-    /// <summary>
-    /// Gets the translations.
-    /// </summary>
-    /// <value>The translations.</value>
-    protected List<LocalTranslation> Translations { get; } = [];
-
-    /// <summary>
     /// Ensures the translations are cached asynchronously.
     /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The task.
     /// </returns>

@@ -24,6 +24,7 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// The Zefania XML Provider.
 /// </summary>
+/// <param name="options">The location resource options.</param>
 /// <seealso cref="LocalResourceProvider" />
 public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProvider(options)
 {

@@ -14,6 +14,7 @@ using GoToBible.Model;
 /// <summary>
 /// A word/phrase string comparer.
 /// </summary>
+/// <param name="parameters">The rendering parameters.</param>
 public class WordComparer(RenderingParameters parameters) : IComparer<string>
 {
     /// <summary>

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="WebApiProvider.cs" company="PlaceholderCompany">
+// <copyright file="WebApiProvider.cs" company="Conglomo">
 // Copyright 2020-2026 Conglomo Limited. Please see LICENSE for license details.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -68,6 +68,7 @@ public abstract class WebApiProvider : ApiProvider
         ["haggai"] = "HAG",
         ["zechariah"] = "ZEC",
         ["malachi"] = "MAL",
+
         // Old Testament Apocrypha
         ["1 esdras"] = "1ES",
         ["2 esdras"] = "2ES",
@@ -88,6 +89,7 @@ public abstract class WebApiProvider : ApiProvider
         ["3 maccabees"] = "3MA",
         ["4 maccabees"] = "4MA",
         ["psalm 151"] = "PS2",
+
         // New Testament
         ["matthew"] = "MAT",
         ["mark"] = "MRK",
@@ -116,6 +118,7 @@ public abstract class WebApiProvider : ApiProvider
         ["3 john"] = "3JN",
         ["jude"] = "JUD",
         ["revelation"] = "REV",
+
         // New Testament Apocrypha
         ["laodiceans"] = "LAO",
     };
