@@ -184,10 +184,9 @@ public partial class Renderer : IRenderer
             if (!string.IsNullOrWhiteSpace(parameters.SecondaryTranslation))
             {
                 // Get the second provider
-                IProvider secondProvider =
-                    this.Providers.FirstOrDefault(p =>
-                        p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider)
-                    ) ?? firstProvider;
+                IProvider secondProvider = this.Providers.FirstOrDefault(p =>
+                    p.Id == (parameters.SecondaryProvider ?? parameters.PrimaryProvider)
+                ) ?? firstProvider;
 
                 // Get the second translation, if specified
                 Chapter secondChapter = await secondProvider.GetChapterAsync(
@@ -219,11 +218,17 @@ public partial class Renderer : IRenderer
                 // Render both interlinear
                 List<string> lines1 =
                 [
-                    .. firstChapter.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries),
+                    .. firstChapter.Text.Split(
+                        [Environment.NewLine],
+                        StringSplitOptions.RemoveEmptyEntries
+                    ),
                 ];
                 List<string> lines2 =
                 [
-                    .. secondChapter.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries),
+                    .. secondChapter.Text.Split(
+                        [Environment.NewLine],
+                        StringSplitOptions.RemoveEmptyEntries
+                    ),
                 ];
 
                 // Add any missing verses
@@ -307,21 +312,19 @@ public partial class Renderer : IRenderer
                         // If there are no words in any, skip
                         if (
                             firstAttempt
-                                is
-                            {
-                                TotalWordsLine1: 0,
-                                TotalWordsLine2: 0,
-                                DivergentPhrases: 0,
-                                WordsInCommon: 0,
-                            }
+                                is {
+                                    TotalWordsLine1: 0,
+                                    TotalWordsLine2: 0,
+                                    DivergentPhrases: 0,
+                                    WordsInCommon: 0,
+                                }
                             && secondAttempt
-                                is
-                            {
-                                TotalWordsLine1: 0,
-                                TotalWordsLine2: 0,
-                                DivergentPhrases: 0,
-                                WordsInCommon: 0,
-                            }
+                                is {
+                                    TotalWordsLine1: 0,
+                                    TotalWordsLine2: 0,
+                                    DivergentPhrases: 0,
+                                    WordsInCommon: 0,
+                                }
                         )
                         {
                             continue;
@@ -495,10 +498,9 @@ public partial class Renderer : IRenderer
                     );
 
                     // Fix up the tooltips
-                    string primaryTranslationName =
-                        primaryTranslation?.UniqueName(translations) ?? "Primary Translation";
-                    string secondaryTranslationName =
-                        secondaryTranslation?.UniqueName(translations)
+                    string primaryTranslationName = primaryTranslation?.UniqueName(translations)
+                        ?? "Primary Translation";
+                    string secondaryTranslationName = secondaryTranslation?.UniqueName(translations)
                         ?? "Secondary Translation";
                     sb.Replace(
                         $"<span title=\"{parameters.PrimaryTranslation}\">",
@@ -865,10 +867,10 @@ public partial class Renderer : IRenderer
                         parameters.PassageReference.HighlightedVerses
                     )
                         ? $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  <mark>"
-                          + line[(line.IndexOf(' ') + 1)..].Trim()
-                          + "</mark>"
+                            + line[(line.IndexOf(' ') + 1)..].Trim()
+                            + "</mark>"
                         : $"<sup id=\"{parameters.PassageReference.ChapterReference.ToString().EncodePassageForUrl()}_{verseNumber}\">{verseNumber}</sup>  "
-                          + line[(line.IndexOf(' ') + 1)..].Trim();
+                            + line[(line.IndexOf(' ') + 1)..].Trim();
                 }
             }
             else if (int.TryParse(line, out int _))
@@ -1091,9 +1093,9 @@ public partial class Renderer : IRenderer
                             if (
                                 parameters
                                     is SpreadsheetRenderingParameters
-                                {
-                                    RenderNeighbourForAddition: true,
-                                }
+                                    {
+                                        RenderNeighbourForAddition: true,
+                                    }
                                 && string.IsNullOrWhiteSpace(interlinear1)
                             )
                             {

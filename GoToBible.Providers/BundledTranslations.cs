@@ -27,24 +27,48 @@ public partial class BundledTranslations : IProvider
     /// <summary>
     /// The SBL copyright messages.
     /// </summary>
-    private static readonly Dictionary<string, string> Copyright = new Dictionary<
-        string,
-        string
-    >
+    private static readonly Dictionary<string, string> Copyright = new Dictionary<string, string>
     {
         { "BCP1979PSALMS", "Public Domain" },
-        { "BCPPSALMS", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
-        { "BCPPSALMSALT", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
-        { "BCPPSALMSVUL", "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>" },
-        { "BSB", "The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href=\"https://biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"https://discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"https://unfoldingword.org\" target=\"_blank\">unfoldingWord</a>, <a href=\"https://aquifer.bible\" target=\"_blank\">Bible Aquifer</a>, <a href=\"https://openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>. Free resources and databases are available at <a href=\"https://bereanbible.com\" target=\"_blank\">BereanBible.com</a>." },
+        {
+            "BCPPSALMS",
+            "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>"
+        },
+        {
+            "BCPPSALMSALT",
+            "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>"
+        },
+        {
+            "BCPPSALMSVUL",
+            "PUBLIC DOMAIN, except in the United Kingdom, where a Crown Copyright applies to printing the BCP. See <a href=\"https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions\" target=\"_blank\">https://www.cambridge.org/universitypress/bibles/about/rights-and-permissions</a>"
+        },
+        {
+            "BSB",
+            "The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href=\"https://biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"https://discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"https://unfoldingword.org\" target=\"_blank\">unfoldingWord</a>, <a href=\"https://aquifer.bible\" target=\"_blank\">Bible Aquifer</a>, <a href=\"https://openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>. Free resources and databases are available at <a href=\"https://bereanbible.com\" target=\"_blank\">BereanBible.com</a>."
+        },
         { "LAOANG", "Public Domain" },
         { "LAOGRK", "Public Domain" },
         { "LAOLAT", "Public Domain" },
-        { "MSB", "The Holy Bible, Majority Standard Bible, MSB is produced in cooperation with <a href=\"https://biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"https://discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"https://unfoldingword.org\" target=\"_blank\">unfoldingWord</a>, <a href=\"https://aquifer.bible\" target=\"_blank\">Bible Aquifer</a>, <a href=\"https://openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>. Free resources and databases are available at <a href=\"https://majoritybible.com\" target=\"_blank\">MajorityBible.com</a>." },
-        { "NTA", "New Translation of the Apocrypha by <a href=\"https://goto.bible/\" target=\"_blank\">Peter Chapman</a> is licensed under <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">CC BY 4.0</a>" },
-        { "NTANOTES", "New Translation of the Apocrypha by <a href=\"https://goto.bible/\" target=\"_blank\">Peter Chapman</a> is licensed under <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">CC BY 4.0</a>" },
-        { "SBLGNT", "The <a href=\"http://sblgnt.com/\" target=\"_blank\">SBLGNT</a> is licensed under a <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">Creative Commons Attribution 4.0 International License</a>. Copyright &copy; 2010 <a href=\"http://www.sbl-site.org/\" target=\"_blank\">Society of Biblical Literature</a> and <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>." },
-        { "SBLGNTAPP", "The <a href=\"http://sblgnt.com/\" target=\"_blank\">SBLGNT</a> is licensed under a <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">Creative Commons Attribution 4.0 International License</a>. Copyright &copy; 2010 <a href=\"http://www.sbl-site.org/\" target=\"_blank\">Society of Biblical Literature</a> and <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>." },
+        {
+            "MSB",
+            "The Holy Bible, Majority Standard Bible, MSB is produced in cooperation with <a href=\"https://biblehub.com\" target=\"_blank\">Bible Hub</a>, <a href=\"https://discoverybible.com\" target=\"_blank\">Discovery Bible</a>, <a href=\"https://unfoldingword.org\" target=\"_blank\">unfoldingWord</a>, <a href=\"https://aquifer.bible\" target=\"_blank\">Bible Aquifer</a>, <a href=\"https://openbible.com\" target=\"_blank\">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\"> dedicated to the public domain</a>. Free resources and databases are available at <a href=\"https://majoritybible.com\" target=\"_blank\">MajorityBible.com</a>."
+        },
+        {
+            "NTA",
+            "New Translation of the Apocrypha by <a href=\"https://goto.bible/\" target=\"_blank\">Peter Chapman</a> is licensed under <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">CC BY 4.0</a>"
+        },
+        {
+            "NTANOTES",
+            "New Translation of the Apocrypha by <a href=\"https://goto.bible/\" target=\"_blank\">Peter Chapman</a> is licensed under <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">CC BY 4.0</a>"
+        },
+        {
+            "SBLGNT",
+            "The <a href=\"http://sblgnt.com/\" target=\"_blank\">SBLGNT</a> is licensed under a <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">Creative Commons Attribution 4.0 International License</a>. Copyright &copy; 2010 <a href=\"http://www.sbl-site.org/\" target=\"_blank\">Society of Biblical Literature</a> and <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>."
+        },
+        {
+            "SBLGNTAPP",
+            "The <a href=\"http://sblgnt.com/\" target=\"_blank\">SBLGNT</a> is licensed under a <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">Creative Commons Attribution 4.0 International License</a>. Copyright &copy; 2010 <a href=\"http://www.sbl-site.org/\" target=\"_blank\">Society of Biblical Literature</a> and <a href=\"http://www.logos.com/\" target=\"_blank\">Logos Bible Software</a>."
+        },
         { "TRWHAPP", "Public Domain" },
     };
 
@@ -92,10 +116,7 @@ public partial class BundledTranslations : IProvider
         { "TRWHAPP", new NewTestamentCanon() },
     };
 
-    private static readonly Dictionary<string, bool> SupportsItalics = new Dictionary<
-        string,
-        bool
-    >
+    private static readonly Dictionary<string, bool> SupportsItalics = new Dictionary<string, bool>
     {
         { "BCP1979PSALMS", false },
         { "BCPPSALMS", false },

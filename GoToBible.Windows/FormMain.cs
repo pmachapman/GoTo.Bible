@@ -118,8 +118,7 @@ public sealed partial class FormMain : Form
             typeof(AssemblyProductAttribute),
             true
         );
-        this.Text =
-            (productAttributes.FirstOrDefault() as AssemblyProductAttribute)?.Product
+        this.Text = (productAttributes.FirstOrDefault() as AssemblyProductAttribute)?.Product
             ?? "GoTo.Bible";
 
         // Setup the system menu
@@ -353,24 +352,26 @@ public sealed partial class FormMain : Form
         this.ColourDialogBackground.Color = ColorTranslator.FromOle(
             Settings.Default.BackgroundColour
         );
-        this.ColourDialogBackground.CustomColors = [
+        this.ColourDialogBackground.CustomColors =
+        [
             .. Settings
-            .Default.BackgroundCustomColours.Split(
-                CommaSeparated,
-                StringSplitOptions.RemoveEmptyEntries
-            )
-            .Select(c => int.TryParse(c, out int i) ? i : 16777215),
+                .Default.BackgroundCustomColours.Split(
+                    CommaSeparated,
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+                .Select(c => int.TryParse(c, out int i) ? i : 16777215),
         ];
         this.ColourDialogHighlight.Color = ColorTranslator.FromOle(
             Settings.Default.HighlightColour
         );
-        this.ColourDialogHighlight.CustomColors = [
+        this.ColourDialogHighlight.CustomColors =
+        [
             .. Settings
-            .Default.HighlightCustomColours.Split(
-                CommaSeparated,
-                StringSplitOptions.RemoveEmptyEntries
-            )
-            .Select(c => int.TryParse(c, out int i) ? i : 16777215),
+                .Default.HighlightCustomColours.Split(
+                    CommaSeparated,
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+                .Select(c => int.TryParse(c, out int i) ? i : 16777215),
         ];
         this.FontDialogMain.Color = ColorTranslator.FromOle(Settings.Default.ForegroundColour);
         TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
@@ -739,7 +740,10 @@ public sealed partial class FormMain : Form
         }
 
         // Set the providers for the renderer
-        List<IProvider> enabledProviders = [.. this.providers.Where(p => !blockedProviders.Contains(p.Id))];
+        List<IProvider> enabledProviders =
+        [
+            .. this.providers.Where(p => !blockedProviders.Contains(p.Id)),
+        ];
 
         // Set the renderer providers
         this.renderer.Providers = enabledProviders.AsReadOnly();
@@ -845,12 +849,16 @@ public sealed partial class FormMain : Form
         );
 
         // Get the full list of translations
-        List<string> blockedLanguages =
-            Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? [];
-        List<string> blockedTranslations =
-            Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? [];
-        List<string> blockedCommentaries =
-            Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? [];
+        List<string> blockedLanguages = Settings.Default.BlockedLanguages?.Cast<string>().ToList()
+            ?? [];
+        List<string> blockedTranslations = Settings
+            .Default.BlockedTranslations?.Cast<string>()
+            .ToList()
+            ?? [];
+        List<string> blockedCommentaries = Settings
+            .Default.BlockedCommentaries?.Cast<string>()
+            .ToList()
+            ?? [];
         List<Translation> unsortedCommentaries = [];
         List<Translation> unsortedTranslations = [];
         foreach (IProvider provider in translationProviders)
@@ -939,7 +947,8 @@ public sealed partial class FormMain : Form
             resourceIndex++;
         }
 
-        List<Translation> unblockedTranslations = [
+        List<Translation> unblockedTranslations =
+        [
             .. this.translations.Where(t => !blockedTranslations.Contains(t.UniqueKey())),
         ];
         foreach (Translation translation in this.translations)
@@ -1183,9 +1192,9 @@ public sealed partial class FormMain : Form
         )
         {
             // Add the book names to the suggestions list
-            IProvider? provider =
-                this.providers.FirstOrDefault(p => p.Id == primaryComboBoxItem.Provider)
-                ?? this.providers.FirstOrDefault();
+            IProvider? provider = this.providers.FirstOrDefault(p =>
+                p.Id == primaryComboBoxItem.Provider
+            ) ?? this.providers.FirstOrDefault();
             if (provider is not null)
             {
                 await foreach (Book book in provider.GetBooksAsync(primaryComboBoxItem.Code, false))
@@ -1205,9 +1214,9 @@ public sealed partial class FormMain : Form
         )
         {
             // Add the book names to the suggestions list
-            IProvider? provider =
-                this.providers.FirstOrDefault(p => p.Id == secondaryComboBoxItem.Provider)
-                ?? this.providers.FirstOrDefault();
+            IProvider? provider = this.providers.FirstOrDefault(p =>
+                p.Id == secondaryComboBoxItem.Provider
+            ) ?? this.providers.FirstOrDefault();
             if (provider is not null)
             {
                 await foreach (
@@ -1418,8 +1427,8 @@ public sealed partial class FormMain : Form
             typeof(AssemblyTitleAttribute),
             true
         );
-        string title =
-            (titleAttributes.FirstOrDefault() as AssemblyTitleAttribute)?.Title ?? "GoTo.Bible";
+        string title = (titleAttributes.FirstOrDefault() as AssemblyTitleAttribute)?.Title
+            ?? "GoTo.Bible";
         object[] versionAttributes = assembly.GetCustomAttributes(
             typeof(AssemblyFileVersionAttribute),
             true
@@ -1431,8 +1440,9 @@ public sealed partial class FormMain : Form
             typeof(AssemblyCopyrightAttribute),
             true
         );
-        string copyright =
-            (copyrightAttributes.FirstOrDefault() as AssemblyCopyrightAttribute)?.Copyright
+        string copyright = (
+            copyrightAttributes.FirstOrDefault() as AssemblyCopyrightAttribute
+        )?.Copyright
             ?? string.Empty;
         NativeMethods.ShellAbout(
             this.Handle,
@@ -1508,7 +1518,9 @@ public sealed partial class FormMain : Form
     /// </summary>
     /// <param name="toolStripComboBox">The Tool Strip Combo Box.</param>
     /// <returns>An asynchronous task.</returns>
-    private async Task ToolStripComboBoxTranslation_SelectedIndexChanged(ToolStripComboBox toolStripComboBox)
+    private async Task ToolStripComboBoxTranslation_SelectedIndexChanged(
+        ToolStripComboBox toolStripComboBox
+    )
     {
         if (toolStripComboBox.SelectedItem is ComboBoxItem { Selectable: false })
         {
@@ -1619,7 +1631,10 @@ public sealed partial class FormMain : Form
     private async void ToolStripComboBoxPrimaryTranslation_SelectedIndexChanged(
         object sender,
         EventArgs e
-    ) => await this.ToolStripComboBoxTranslation_SelectedIndexChanged(this.ToolStripComboBoxPrimaryTranslation);
+    ) =>
+        await this.ToolStripComboBoxTranslation_SelectedIndexChanged(
+            this.ToolStripComboBoxPrimaryTranslation
+        );
 
     /// <summary>
     /// Handles the SelectedIndexChanged event of the Secondary Translation ToolStripComboBox.
@@ -1629,7 +1644,10 @@ public sealed partial class FormMain : Form
     private async void ToolStripComboBoxSecondaryTranslation_SelectedIndexChanged(
         object sender,
         EventArgs e
-    ) => await this.ToolStripComboBoxTranslation_SelectedIndexChanged(this.ToolStripComboBoxSecondaryTranslation);
+    ) =>
+        await this.ToolStripComboBoxTranslation_SelectedIndexChanged(
+            this.ToolStripComboBoxSecondaryTranslation
+        );
 
     /// <summary>
     /// Handles the DrawItem event of the ToolStripComboBox controls.
@@ -1813,12 +1831,9 @@ public sealed partial class FormMain : Form
         // Generate the new list of blocked translations
         string[] blockedTranslations =
         [
-            ..
-            (
-                Settings.Default.BlockedTranslations?.Cast<string>() ?? []
-            )
-            .Concat(ApiProvider.BlockedTranslations)
-            .Distinct(),
+            .. (Settings.Default.BlockedTranslations?.Cast<string>() ?? [])
+                .Concat(ApiProvider.BlockedTranslations)
+                .Distinct(),
         ];
 
         // Save the blocked translations
@@ -1845,8 +1860,10 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemCommentaries_Click(object sender, EventArgs e)
     {
         // Show the show/hide commentaries dialog
-        List<string> blockedCommentaries =
-            Settings.Default.BlockedCommentaries?.Cast<string>().ToList() ?? [];
+        List<string> blockedCommentaries = Settings
+            .Default.BlockedCommentaries?.Cast<string>()
+            .ToList()
+            ?? [];
         Dictionary<string, string> items = this.commentaries.ToDictionary(
             k => k.UniqueKey(),
             v => v.UniqueName(this.commentaries)
@@ -2047,8 +2064,8 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemLanguages_Click(object sender, EventArgs e)
     {
         // Show the show/hide languages dialog
-        List<string> blockedLanguages =
-            Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? [];
+        List<string> blockedLanguages = Settings.Default.BlockedLanguages?.Cast<string>().ToList()
+            ?? [];
         Dictionary<string, string> items = this
             .translations.Select(t => t.Language ?? Resources.UnknownLanguage)
             .Distinct()
@@ -2160,8 +2177,8 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemProviders_Click(object sender, EventArgs e)
     {
         // Show the show/hide providers dialog
-        List<string> blockedProviders =
-            Settings.Default.BlockedProviders?.Cast<string>().ToList() ?? [];
+        List<string> blockedProviders = Settings.Default.BlockedProviders?.Cast<string>().ToList()
+            ?? [];
         Dictionary<string, string> items = this.providers.ToDictionary(k => k.Id, v => v.Name);
         using FormCheckBoxList formCheckBoxList = new FormCheckBoxList(
             items,
@@ -2256,8 +2273,10 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemTranslations_Click(object sender, EventArgs e)
     {
         // Show the show/hide translations dialog
-        List<string> blockedTranslations =
-            Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? [];
+        List<string> blockedTranslations = Settings
+            .Default.BlockedTranslations?.Cast<string>()
+            .ToList()
+            ?? [];
         Dictionary<string, string> items = this.translations.ToDictionary(
             k => k.UniqueKey(),
             v => v.UniqueName(this.translations)

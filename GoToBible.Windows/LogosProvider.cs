@@ -273,10 +273,10 @@ public class LogosProvider : IProvider
                 {
                     addLine = addLine switch
                     {
-                        false when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase)
-                            => true,
-                        true when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase)
-                            => false,
+                        false when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase) =>
+                            true,
+                        true when line.StartsWith("1 ", StringComparison.OrdinalIgnoreCase) =>
+                            false,
                         _ => addLine,
                     };
 

@@ -238,18 +238,15 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
             foreach (LocalTranslation translation in this.Translations)
             {
                 // Make sure the translation file is is a zip file
-                string fileExtension = Path.GetExtension(translation.Filename)
-                    .ToUpperInvariant();
+                string fileExtension = Path.GetExtension(translation.Filename).ToUpperInvariant();
                 if (fileExtension == ".ZIP")
                 {
                     // Check if a non-strongs version is in a strongs file
                     string xmlFilename =
                         Path.GetFileNameWithoutExtension(translation.Filename) + ".xml";
                     if (
-                        translation.Filename.Contains(
-                            "_STRONG",
-                            StringComparison.OrdinalIgnoreCase
-                        ) && !File.Exists(Path.Join(this.Options.Directory, xmlFilename))
+                        translation.Filename.Contains("_STRONG", StringComparison.OrdinalIgnoreCase)
+                        && !File.Exists(Path.Join(this.Options.Directory, xmlFilename))
                     )
                     {
                         xmlFilename = xmlFilename.Replace(
@@ -268,7 +265,13 @@ public class Zefania(IOptions<LocalResourceOptions> options) : LocalResourceProv
                             File.Delete(xmlFilePath);
                         }
                     }
-                    catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or UnauthorizedAccessException)
+                    catch (Exception ex)
+                        when (ex
+                                is ArgumentException
+                                    or IOException
+                                    or NotSupportedException
+                                    or UnauthorizedAccessException
+                        )
                     {
                         // Log the exception or handle it appropriately
                         Debug.WriteLine($"Error deleting file: {xmlFilePath}");

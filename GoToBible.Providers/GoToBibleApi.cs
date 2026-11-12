@@ -78,7 +78,9 @@ public class GoToBibleApi : WebApiProvider
                     }
                     else
                     {
-                        Debug.WriteLine($"{response.StatusCode} error in GoToBibleApi.GetBooksAsync()");
+                        Debug.WriteLine(
+                            $"{response.StatusCode} error in GoToBibleApi.GetBooksAsync()"
+                        );
                         yield break;
                     }
                 }
@@ -134,7 +136,9 @@ public class GoToBibleApi : WebApiProvider
             }
             else
             {
-                Debug.WriteLine($"{response.StatusCode} error in GoToBibleApi.GetTranslationsAsync()");
+                Debug.WriteLine(
+                    $"{response.StatusCode} error in GoToBibleApi.GetTranslationsAsync()"
+                );
                 yield break;
             }
         }

@@ -658,10 +658,12 @@ public partial class FormApparatusGenerator : Form
         this.ComboBoxBaseText.BeginUpdate();
 
         // Get the blocked languages and translations so we do not show them
-        List<string> blockedLanguages =
-            Settings.Default.BlockedLanguages?.Cast<string>().ToList() ?? [];
-        List<string> blockedTranslations =
-            Settings.Default.BlockedTranslations?.Cast<string>().ToList() ?? [];
+        List<string> blockedLanguages = Settings.Default.BlockedLanguages?.Cast<string>().ToList()
+            ?? [];
+        List<string> blockedTranslations = Settings
+            .Default.BlockedTranslations?.Cast<string>()
+            .ToList()
+            ?? [];
 
         // Add the translations
         string lastLanguage = string.Empty;
@@ -742,8 +744,7 @@ public partial class FormApparatusGenerator : Form
         if (this.ComboBoxBaseText.SelectedItem is TranslationComboBoxItem comboBoxItem)
         {
             // Add the book names to the suggestions list
-            IProvider? provider =
-                this.providers.FirstOrDefault(p => p.Id == comboBoxItem.Provider)
+            IProvider? provider = this.providers.FirstOrDefault(p => p.Id == comboBoxItem.Provider)
                 ?? this.providers.FirstOrDefault();
             if (provider is not null)
             {

@@ -103,10 +103,10 @@ public partial class FormApiKey : Form
             this.LabelEnterKey.Text = this.Provider.Length switch
             {
                 > 15 => $@"Enter your {this.Provider} key below to use your resources.",
-                > 10
-                    => $@"Enter your {this.Provider} key below to use your resources with GoToBible.",
-                _
-                    => $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.",
+                > 10 =>
+                    $@"Enter your {this.Provider} key below to use your resources with GoToBible.",
+                _ =>
+                    $@"Enter your {this.Provider} key below to use your {this.Provider} resources with GoToBible.",
             };
 
             this.LinkLabelSignup.Text = @"&Sign up for an API key";

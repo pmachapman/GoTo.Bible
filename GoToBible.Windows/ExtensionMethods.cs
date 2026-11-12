@@ -420,9 +420,9 @@ public static class ExtensionMethods
                     if (parameters.InterlinearIgnoresDiacritics)
                     {
                         variant = variant.Normalize(NormalizationForm.FormD);
-                        char[] chars = [
-                            .. variant
-                            .Where(c =>
+                        char[] chars =
+                        [
+                            .. variant.Where(c =>
                                 CharUnicodeInfo.GetUnicodeCategory(c)
                                 != UnicodeCategory.NonSpacingMark
                             ),
