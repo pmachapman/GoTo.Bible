@@ -274,11 +274,11 @@ public sealed partial class FormMain : Form
     /// <summary>
     /// Processes Windows messages.
     /// </summary>
-    /// <param name="msg">The Windows <see cref="Message"/> to process.</param>
-    protected override void WndProc(ref Message msg)
+    /// <param name="m">The Windows <see cref="Message"/> to process.</param>
+    protected override void WndProc(ref Message m)
     {
-        base.WndProc(ref msg);
-        this.systemMenu.HandleMessage(ref msg);
+        base.WndProc(ref m);
+        this.systemMenu.HandleMessage(ref m);
     }
 
     /// <summary>
@@ -353,21 +353,25 @@ public sealed partial class FormMain : Form
         this.ColourDialogBackground.Color = ColorTranslator.FromOle(
             Settings.Default.BackgroundColour
         );
-        this.ColourDialogBackground.CustomColors = [.. Settings
+        this.ColourDialogBackground.CustomColors = [
+            .. Settings
             .Default.BackgroundCustomColours.Split(
                 CommaSeparated,
                 StringSplitOptions.RemoveEmptyEntries
             )
-            .Select(c => int.TryParse(c, out int i) ? i : 16777215)];
+            .Select(c => int.TryParse(c, out int i) ? i : 16777215),
+        ];
         this.ColourDialogHighlight.Color = ColorTranslator.FromOle(
             Settings.Default.HighlightColour
         );
-        this.ColourDialogHighlight.CustomColors = [.. Settings
+        this.ColourDialogHighlight.CustomColors = [
+            .. Settings
             .Default.HighlightCustomColours.Split(
                 CommaSeparated,
                 StringSplitOptions.RemoveEmptyEntries
             )
-            .Select(c => int.TryParse(c, out int i) ? i : 16777215)];
+            .Select(c => int.TryParse(c, out int i) ? i : 16777215),
+        ];
         this.FontDialogMain.Color = ColorTranslator.FromOle(Settings.Default.ForegroundColour);
         TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
         this.FontDialogMain.Font =
@@ -935,8 +939,9 @@ public sealed partial class FormMain : Form
             resourceIndex++;
         }
 
-        List<Translation> unblockedTranslations = [.. this
-            .translations.Where(t => !blockedTranslations.Contains(t.UniqueKey()))];
+        List<Translation> unblockedTranslations = [
+            .. this.translations.Where(t => !blockedTranslations.Contains(t.UniqueKey())),
+        ];
         foreach (Translation translation in this.translations)
         {
             // If this translation is not blocked
@@ -1806,11 +1811,15 @@ public sealed partial class FormMain : Form
     private async void ToolStripMenuItemBlockedTranslations_Click(object sender, EventArgs e)
     {
         // Generate the new list of blocked translations
-        string[] blockedTranslations = [.. (
-            Settings.Default.BlockedTranslations?.Cast<string>() ?? []
-        )
+        string[] blockedTranslations =
+        [
+            ..
+            (
+                Settings.Default.BlockedTranslations?.Cast<string>() ?? []
+            )
             .Concat(ApiProvider.BlockedTranslations)
-            .Distinct()];
+            .Distinct(),
+        ];
 
         // Save the blocked translations
         Settings.Default.BlockedTranslations?.Clear();

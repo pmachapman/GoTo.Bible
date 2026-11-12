@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 /// <summary>
 /// The statistics data context.
 /// </summary>
+/// <param name="options">The statistics database context options.</param>
 public class StatisticsContext(DbContextOptions<StatisticsContext> options) : DbContext(options)
 {
     /// <summary>

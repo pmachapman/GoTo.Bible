@@ -420,11 +420,13 @@ public static class ExtensionMethods
                     if (parameters.InterlinearIgnoresDiacritics)
                     {
                         variant = variant.Normalize(NormalizationForm.FormD);
-                        char[] chars = [.. variant
+                        char[] chars = [
+                            .. variant
                             .Where(c =>
                                 CharUnicodeInfo.GetUnicodeCategory(c)
                                 != UnicodeCategory.NonSpacingMark
-                            )];
+                            ),
+                        ];
                         variant = new string(chars).Normalize(NormalizationForm.FormC);
                     }
 

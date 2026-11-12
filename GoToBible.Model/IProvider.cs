@@ -91,6 +91,7 @@ public interface IProvider : IDisposable
     /// <summary>
     /// Gets the translations available from the provider asynchronously.
     /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// The available translations.
     /// </returns>

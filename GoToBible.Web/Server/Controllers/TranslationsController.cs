@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 /// <summary>
 /// The translations controller.
 /// </summary>
+/// <param name="providers">The providers.</param>
 /// <seealso cref="ControllerBase" />
 [ApiController]
 [Route("v1/[controller]")]

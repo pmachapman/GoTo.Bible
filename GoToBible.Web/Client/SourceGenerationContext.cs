@@ -9,6 +9,9 @@ namespace GoToBible.Web.Client;
 using System.Text.Json.Serialization;
 using GoToBible.Model;
 
+/// <summary>
+/// The source generation context.
+/// </summary>
 [JsonSerializable(typeof(RenderedPassage))]
 [JsonSerializable(typeof(RenderingParameters))]
 [JsonSerializable(typeof(Translation[]))]
